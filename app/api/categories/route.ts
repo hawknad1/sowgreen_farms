@@ -1,0 +1,34 @@
+import prisma from "@/lib/prismadb";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(req: NextRequest) {
+  try {
+    const categories = await prisma.category.findMany();
+    return NextResponse.json(categories, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { message: "couldnt fetch categories" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const { categoryName, imageUrl, link } = await req.json();
+  try {
+    if (!categoryName) {
+      return NextResponse.json({ message: "category name is required!" });
+    }
+    const newCategory = await prisma.category.create({
+      data: {
+        categoryName,
+        imageUrl,
+        link,
+      },
+      include: { products: true },
+    });
+    return NextResponse.json(newCategory);
+  } catch (error) {
+    return NextResponse.json({ message: "Couldnt create new category" });
+  }
+}
