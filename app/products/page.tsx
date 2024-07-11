@@ -4,11 +4,11 @@ import ProductCard from "@/components/cards/ProductCard";
 import GlobalApi from "@/utils/GlobalApi";
 import React, { useEffect, useState } from "react";
 
-interface ProductProps {
-  data: any;
-}
+// interface ProductProps {
+//   data: any;
+// }
 
-const Products: React.FC<ProductProps> = ({ data }) => {
+const Products = () => {
   const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
@@ -29,12 +29,7 @@ const Products: React.FC<ProductProps> = ({ data }) => {
     getProducts();
   }, []);
 
-  // const getProductList = () => {
-  //   GlobalApi.getProduct().then((res: any) => {
-  //     setAllProducts(res.data.data);
-  //   });
-  // };
-  console.log("this is products list",allProducts)
+  console.log("this is products list", allProducts);
 
   return (
     <main className="container mx-auto py-8 flex-1">
@@ -46,8 +41,8 @@ const Products: React.FC<ProductProps> = ({ data }) => {
           <PaginationButtons />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6 ">
-          {allProducts.map((card, index) => (
-            <ProductCard data={card} key={index} />
+          {allProducts.map((card) => (
+            <ProductCard data={card} key={card.id} />
           ))}
         </div>
       </div>

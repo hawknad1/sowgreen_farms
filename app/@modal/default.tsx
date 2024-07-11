@@ -1,7 +1,7 @@
 import React from "react";
 
 const Default = () => {
-  return null;
+  return <div>Default</div>;
 };
 
 export default Default;
