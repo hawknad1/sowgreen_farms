@@ -1,7 +1,6 @@
 "use client";
 import PaginationButtons from "@/components/PaginationButtons";
 import ProductCard from "@/components/cards/ProductCard";
-import GlobalApi from "@/utils/GlobalApi";
 import React, { useEffect, useState } from "react";
 
 const Products = () => {
@@ -24,8 +23,6 @@ const Products = () => {
     }
     getProducts();
   }, []);
-
-  console.log("this is products list", allProducts);
 
   return (
     <main className="container mx-auto py-8 flex-1">
