@@ -4,10 +4,6 @@ import ProductCard from "@/components/cards/ProductCard";
 import GlobalApi from "@/utils/GlobalApi";
 import React, { useEffect, useState } from "react";
 
-// interface ProductProps {
-//   data: any;
-// }
-
 const Products = () => {
   const [allProducts, setAllProducts] = useState([]);
 
