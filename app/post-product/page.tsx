@@ -61,7 +61,7 @@ const AddProduct = () => {
     resolver: zodResolver(productValidation),
     defaultValues: {
       title: "",
-      price: null,
+      price: 0,
       description: "",
       categoryName: "",
     },

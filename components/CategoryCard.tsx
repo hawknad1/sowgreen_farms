@@ -17,7 +17,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ data }) => {
       }}
     >
       <div className="flex gap-4 w-max">
-        <div className="flex flex-col md:flex gap-2" key={data?.id}>
+        <div className="flex flex-col md:flex gap-2">
           <div className="w-28 h-28 bg-[#F1EEDC] flex justify-center items-center rounded-lg shadow-sm">
             <Image
               src={data?.imageUrl}

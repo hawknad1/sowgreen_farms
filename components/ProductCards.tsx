@@ -2,30 +2,46 @@
 
 import React, { useEffect, useState } from "react";
 import ProductCard from "./cards/ProductCard";
-import { productCard } from "@/constants";
-import GlobalApi from "@/utils/GlobalApi";
+import HomeProductSkeleton from "./skeletons/HomeProductSkeleton";
 
 const ProductCards = () => {
-  const [productList, setproductList] = useState([]);
+  const [productList, setProductList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   console.log(productList);
 
   useEffect(() => {
+    async function getProductList() {
+      try {
+        const res = await fetch("/api/products", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (res.ok) {
+          const products = await res.json();
+          setProductList(products);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
     getProductList();
   }, []);
 
-  const getProductList = () => {
-    GlobalApi.getProduct().then((res: any) => {
-      setproductList(res.data.data);
-    });
-  };
-
   return (
     <div className="overflow-x-auto scrollbar-hide">
-      <div className="flex space-x-4 p-4 w-max ">
-        {productList.map((card, index) => (
-          <ProductCard data={card} key={index} />
-        ))}
-      </div>
+      <>
+        {isLoading ? (
+          <HomeProductSkeleton />
+        ) : (
+          <div className="flex space-x-4 p-4 w-max ">
+            {productList.map((card) => (
+              <ProductCard data={card} key={card.id} />
+            ))}
+          </div>
+        )}
+      </>
     </div>
   );
 };

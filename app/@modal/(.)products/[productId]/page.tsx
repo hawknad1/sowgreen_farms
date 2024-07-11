@@ -25,15 +25,24 @@ const ProductInterception = ({ params }: { params: { productId: string } }) => {
   const router = useRouter();
 
   useEffect(() => {
+    async function getProductDetails() {
+      try {
+        const res = await fetch(`/api/products/${params.productId}`, {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (res.ok) {
+          const product = await res.json();
+          setProduct(product);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
     getProductDetails();
   }, []);
-
-  const getProductDetails = () => {
-    GlobalApi.getProductbyId(params.productId).then((res: any) => {
-      setProduct(res.data.data);
-      setLoading(false);
-    });
-  };
 
   function onDismiss() {
     router.back();

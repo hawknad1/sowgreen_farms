@@ -10,12 +10,14 @@ interface ProductCardProps {
   data: any;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
+const ProductCard: React.FC<ProductCardProps> = ({
+  data,
+}: ProductCardProps) => {
   const router = useRouter();
 
   return (
     <div
-      onClick={() => router.push(`/products/${data.id}`)}
+      onClick={() => router.push(`/products/${data?.id}`)}
       className="cursor-pointer"
     >
       <div className="bg-gray-50 rounded-lg shadow-sm hover:shadow-md h-fit w-48">
@@ -24,18 +26,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
             <p className="text-[10px] text-white tracking-wide">New</p>
           </div>
           <Image
-            src={`http://localhost:1337${data?.attributes?.image?.data[0]?.attributes?.url}`}
+            src={data?.imageUrl}
             alt="Red Capsicum"
             width={100}
             height={100}
             className="h-[120px] w-[120px] object-contain"
           />
           <div className="self-start w-full">
-            <p className="text-[10px] text-blue-400">
-              {data?.attributes?.category?.data?.attributes?.category}
-            </p>
+            <p className="text-[10px] text-blue-400">{data?.categoryName}</p>
             <p className="text-base tracking-wide font-semibold">
-              {data?.attributes?.title}
+              {data?.title}
             </p>
             <div className="flex items-center">
               <StarIcon className="size-3 text-yellow-500" />
@@ -45,7 +45,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
               <p className="text-[10px] text-blue-500 tracking-wide"> · 4.0</p>
             </div>
             <div className="flex items-center justify-between pt-2">
-              <p className="text-sm tracking-wide font-semibold">{`GHC ${data?.attributes?.price}`}</p>
+              <p className="text-sm tracking-wide font-semibold">{`GHC ${data?.price}`}</p>
               <div className="bg-green-300 p-1.5 rounded-full cursor-pointer">
                 <ShoppingBagIcon className="size-4 text-gray-800" />
               </div>

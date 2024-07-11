@@ -12,14 +12,29 @@ const Products: React.FC<ProductProps> = ({ data }) => {
   const [allProducts, setAllProducts] = useState([]);
 
   useEffect(() => {
-    getProductList();
+    async function getProducts() {
+      try {
+        const res = await fetch("/api/products", {
+          method: "GET",
+          cache: "no-store",
+        });
+        if (res.ok) {
+          const products = await res.json();
+          setAllProducts(products);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getProducts();
   }, []);
 
-  const getProductList = () => {
-    GlobalApi.getProduct().then((res: any) => {
-      setAllProducts(res.data.data);
-    });
-  };
+  // const getProductList = () => {
+  //   GlobalApi.getProduct().then((res: any) => {
+  //     setAllProducts(res.data.data);
+  //   });
+  // };
+  console.log("this is products list",allProducts)
 
   return (
     <main className="container mx-auto py-8 flex-1">

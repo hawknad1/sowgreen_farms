@@ -1,35 +1,43 @@
+"use client";
 import CategoryCard from "../CategoryCard";
-import { getCategories } from "@/lib/utils";
-import { TCategory } from "@/types";
+import { useEffect, useState } from "react";
+import HomeCategorySkeleton from "../skeletons/HomeCategorySkeleton";
 
-interface CategoryProps {
-  id: string;
-  categoryName: string;
-  imageUrl: string;
-  link: string;
-}
+const CategoryCards = () => {
+  const [categoryList, setCategoryList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-const CategoryCards: React.FC<CategoryProps> = async () => {
-  // const [categoryList, setcategoryList] = useState([]);
-  const categories = await getCategories();
+  useEffect(() => {
+    async function getCategories() {
+      try {
+        const res = await fetch("/api/categories", {
+          method: "GET",
+          cache: "no-store",
+        });
 
-  // useEffect(() => {
-  //   getCategoryList();
-  // }, []);
-
-  // const getCategoryList = () => {
-  //   GlobalApi.getCategory().then((res: any) => {
-  //     setcategoryList(res.data.data);
-  //   });
-  // };
+        if (res.ok) {
+          const categories = await res.json();
+          setCategoryList(categories);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getCategories();
+  }, []);
 
   return (
     <div className="overflow-x-auto scrollbar-hide">
-      <div className="flex items-center space-x-4 p-4 w-max ">
-        {categories.map((card: CategoryProps) => (
-          <CategoryCard data={card} key={card.id} />
-        ))}
-      </div>
+      {isLoading ? (
+        <HomeCategorySkeleton />
+      ) : (
+        <div className="flex items-center space-x-4 p-4 w-max ">
+          {categoryList.map((card) => (
+            <CategoryCard data={card} key={card.id} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

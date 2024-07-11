@@ -1,7 +1,6 @@
 "use client";
 import ProductDetailCard from "@/components/ProductDetailCard";
 import LoadProductDetail from "@/components/loading/LoadProductDetail";
-import GlobalApi from "@/utils/GlobalApi";
 import { useEffect, useState } from "react";
 
 const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
@@ -9,15 +8,24 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getProductDetails();
-  }, []);
+    async function getProductDetail() {
+      try {
+        const res = await fetch(`/api/products/${params.productId}`, {
+          method: "GET",
+          cache: "no-store",
+        });
 
-  const getProductDetails = () => {
-    GlobalApi.getProductbyId(params.productId).then((res: any) => {
-      setProduct(res.data.data);
-      setLoading(false);
-    });
-  };
+        if (res.ok) {
+          const productDetail = await res.json();
+          setProduct(productDetail);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getProductDetail();
+  }, []);
 
   if (loading) return <LoadProductDetail />;
 

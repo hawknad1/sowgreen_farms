@@ -1,9 +1,8 @@
 "use client";
 
-import { Product } from "@/typings/productTypings";
+// import { Product } from "@/typings/productTypings";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { smallImage } from "@/constants";
 import {
   ShoppingCartIcon,
   HeartIcon,
@@ -25,9 +24,9 @@ const ProductDetailPopUp = ({ product }: Props) => {
       {/* <h3 className="text-xl flex justify-center font-bold mb-4 w-full">{`${product?.attributes?.category?.data?.attributes?.category} / ${product?.attributes?.title}`}</h3> */}
       <div className="">
         <Image
-          src={product?.attributes?.image?.data[0]?.attributes?.url}
+          src={product?.imageUrl}
           unoptimized={true}
-          alt={product?.attributes?.title}
+          alt={product?.title}
           width={400}
           height={400}
           className=" bg-gray-100 object-contain w-[200px] h-[200px] p-2 rounded-2xl"
@@ -35,13 +34,11 @@ const ProductDetailPopUp = ({ product }: Props) => {
       </div>
       <div className="h-[200px] flex flex-col flex-1">
         <p className="text-neutral-400 text-sm">
-          {`Categories -> ${product?.attributes?.category?.data?.attributes?.category}`}
+          {`Categories -> ${product?.categoryName}`}
         </p>
-        <h3 className="text-2xl font-bold mb-3">
-          {product?.attributes?.title}
-        </h3>
+        <h3 className="text-2xl font-bold mb-3">{product?.title}</h3>
         <div className="flex items-center space-x-2">
-          <p className="text-xl font-bold text-black">{`GHC ${product?.attributes?.price}`}</p>
+          <p className="text-xl font-bold text-black">{`GHC ${product?.price}`}</p>
           <p className="bg-black text-white text-[10px] font-medium px-2  p-1 rounded-full w-fit">
             20% Disc
           </p>
