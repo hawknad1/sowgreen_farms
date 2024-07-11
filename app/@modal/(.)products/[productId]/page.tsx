@@ -42,7 +42,7 @@ const ProductInterception = ({ params }: { params: { productId: string } }) => {
       }
     }
     getProductDetails();
-  }, []);
+  }, [params.productId]);
 
   function onDismiss() {
     router.back();

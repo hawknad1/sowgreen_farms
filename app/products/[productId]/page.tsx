@@ -25,7 +25,7 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
       }
     }
     getProductDetail();
-  }, []);
+  }, [params.productId]);
 
   if (loading) return <LoadProductDetail />;
 
