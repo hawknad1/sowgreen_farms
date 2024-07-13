@@ -1,11 +1,7 @@
 "use client";
-
-// import { Product } from "@/typings/productTypings";
 import Image from "next/image";
 import { Button } from "./ui/button";
-import { smallImage } from "@/constants";
 import {
-  ShoppingCartIcon,
   HeartIcon,
   ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
