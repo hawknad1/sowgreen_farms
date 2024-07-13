@@ -1,5 +1,7 @@
 "use client";
 
+import Basket from "@/components/Basket";
+import BasketPopup from "@/components/BasketPopup";
 import {
   Dialog,
   DialogContent,
@@ -25,14 +27,13 @@ const BasketInterception = () => {
         }
       }}
     >
-      <DialogContent className="h-4/5 w-full overflow-scroll max-w-3xl">
+      <DialogContent className="h-4/5 w-full max-w-3xl m-8">
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+          <DialogTitle>Your Shopping Cart</DialogTitle>
         </DialogHeader>
+        <div className="overflow-scroll scrollbar-hide">
+          <BasketPopup />
+        </div>
       </DialogContent>
     </Dialog>
   );

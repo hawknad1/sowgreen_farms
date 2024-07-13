@@ -3,21 +3,21 @@ import { getCartTotal } from "@/lib/getCartTotal";
 import groupById from "@/lib/groupById";
 import { useCartStore } from "@/store";
 import Image from "next/image";
-import React, { useState } from "react";
+import React from "react";
 import AddToCart from "./AddToCart";
 import { Button } from "./ui/button";
+import CheckoutBox from "./CheckoutBox";
 import { ChevronLeftIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 
-const Basket = () => {
-  const [isLoading, setIsLoading] = useState(false);
+const BasketPopup = () => {
   const cart = useCartStore((state) => state.cart);
   const grouped = groupById(cart);
   const basketTotal = getCartTotal(cart);
   const router = useRouter();
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className=" mx-auto">
       <div className="w-fit ">
         <ul className="divide-y-[2px] w-fit">
           {Object.keys(grouped).map((id) => {
@@ -56,25 +56,15 @@ const Basket = () => {
             );
           })}
         </ul>
-        <div className="flex flex-col lg:hidden justify-end p-5">
+        <div className="flex flex-col justify-end p-5">
           <p className="font-bold text-xl lg:text-2xl text-right mb-5">
             Total: {basketTotal}
           </p>
           <Button>Checkout</Button>
-        </div>
-        <div className="hidden lg:inline-flex items-center gap-4 mt-8">
-          <div
-            onClick={() => router.back()}
-            className="flex items-center cursor-pointer"
-          >
-            <ChevronLeftIcon className="h-4 w-4" />
-            <p className="text-sm font-semibold">Back</p>
-          </div>
-          <Button variant="destructive">Cancel Order</Button>
         </div>
       </div>
     </div>
   );
 };
 
-export default Basket;
+export default BasketPopup;

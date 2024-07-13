@@ -12,7 +12,7 @@ const AddToCart = ({ product }: { product: Product }) => {
   }));
 
   console.log(cart);
-   const howManyInCart = cart.filter(
+  const howManyInCart = cart.filter(
     (item: Product) => item.id === product.id
   ).length;
 
