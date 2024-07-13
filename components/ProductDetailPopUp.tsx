@@ -1,10 +1,7 @@
 "use client";
 
-// import { Product } from "@/typings/productTypings";
 import Image from "next/image";
-import { Button } from "./ui/button";
 import {
-  ShoppingCartIcon,
   HeartIcon,
   ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
@@ -24,10 +21,8 @@ const ProductDetailPopUp = ({ product }: Props) => {
   const cart = useCartStore((state) => state.cart);
   const total = getCartTotal(cart);
 
-  console.log(`products popup here--- ${product}`);
   return (
     <div className="flex items-center gap-4">
-      {/* <h3 className="text-xl flex justify-center font-bold mb-4 w-full">{`${product?.attributes?.category?.data?.attributes?.category} / ${product?.attributes?.title}`}</h3> */}
       <div className="">
         <Image
           src={product?.imageUrl}

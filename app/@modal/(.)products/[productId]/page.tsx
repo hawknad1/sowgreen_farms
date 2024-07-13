@@ -1,21 +1,19 @@
 "use client";
 
-import ProductDetailCard from "@/components/ProductDetailCard";
 import ProductDetailPopUp from "@/components/ProductDetailPopUp";
 import LoadPopUpProductDetail from "@/components/loading/LoadPopUpProductDetail";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import { Product } from "@/typings/productTypings";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const ProductInterception = ({ params }: { params: { productId: string } }) => {
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
