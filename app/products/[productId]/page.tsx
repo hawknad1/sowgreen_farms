@@ -1,10 +1,11 @@
 "use client";
 import ProductDetailCard from "@/components/ProductDetailCard";
 import LoadProductDetail from "@/components/loading/LoadProductDetail";
+import { Product } from "@/typings/productTypings";
 import { useEffect, useState } from "react";
 
 const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
-  const [product, setProduct] = useState([]);
+  const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

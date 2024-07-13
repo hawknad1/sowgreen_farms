@@ -29,7 +29,7 @@ export default function Home() {
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
               Shop By Category
             </h2>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-6">
               <div className="bg-slate-100 p-1 rounded-full cursor-pointer">
                 <ChevronLeftIcon className="size-5" />
               </div>
@@ -47,12 +47,17 @@ export default function Home() {
         </section>
 
         <section className="my-8">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
+          <div className="flex items-center justify-between ">
+            <h2 className="text-xl flex items-center self-center sm:text-2xl md:text-3xl font-bold mb-4">
               Farm fresh products
             </h2>
-            <div>
-              <PaginationButtons />
+            <div className="flex items-center space-x-6 ">
+              <div className="bg-slate-100 p-1 rounded-full cursor-pointer">
+                <ChevronLeftIcon className="size-5" />
+              </div>
+              <div className="bg-slate-100 p-1 rounded-full cursor-pointer">
+                <ChevronRightIcon className="size-5" />
+              </div>
             </div>
           </div>
           <ProductCards />

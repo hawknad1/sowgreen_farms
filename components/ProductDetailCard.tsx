@@ -11,15 +11,20 @@ import {
 } from "@heroicons/react/24/outline";
 import Ratings from "./Ratings";
 import { useRouter } from "next/navigation";
+import AddToCart from "./AddToCart";
+import { Product } from "@/typings/productTypings";
+import { useCartStore } from "@/store";
+import { getCartTotal } from "@/lib/getCartTotal";
 
 interface Props {
-  product: any;
+  product: Product;
 }
 
 const ProductDetailCard = ({ product }: Props) => {
   const router = useRouter();
+  const cart = useCartStore((state) => state.cart);
+  const total = getCartTotal(cart);
 
-  console.log(`products here--- ${product}`);
   return (
     <div className="container mx-auto py-8">
       <div className="flex items-center justify-between space-x-16">
@@ -67,19 +72,15 @@ const ProductDetailCard = ({ product }: Props) => {
             </div>
             <div className="flex flex-col max-w-lg">
               <p className="text-sm font-semibold">Descriptions</p>
-              <p className="text-sm text-neutral-600">
-                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                Ducimus qui magni nesciunt. Sit corporis deserunt voluptates
-                porro doloremque aliquid illo magnam, autem consectetur saepe
-                quaerat accusamus totam. Quidem, et suscipit?
-              </p>
+              <p className="text-sm text-neutral-600">{product?.description}</p>
             </div>
 
-            <div className="flex items-stretch gap-3">
-              <Button className="rounded-full p-0 px-6 hover:bg-slate-100 bg-gray-200 text-black">
-                Add To Cart
-              </Button>
+            <div className="flex items-center gap-4">
+              <AddToCart product={product} />
               <Button className="rounded-full p-0 px-4">Checkout Now</Button>
+            </div>
+            <div className="text-2xl font-bold">
+              Order Total <span className="">{total}</span>
             </div>
             <div className="flex items-center gap-5 mt-2">
               <div className="flex items-center gap-1 hover:text-gray-400 cursor-pointer">

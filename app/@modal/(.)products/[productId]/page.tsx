@@ -11,13 +11,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import GlobalApi from "@/utils/GlobalApi";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-
-interface Props {
-  product: any;
-}
 
 const ProductInterception = ({ params }: { params: { productId: string } }) => {
   const [product, setProduct] = useState([]);
@@ -60,10 +55,6 @@ const ProductInterception = ({ params }: { params: { productId: string } }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Add To Basket</DialogTitle>
-          {/* <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription> */}
         </DialogHeader>
         {loading ? (
           <LoadPopUpProductDetail />

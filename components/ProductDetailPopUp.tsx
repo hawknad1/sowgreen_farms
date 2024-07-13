@@ -10,13 +10,19 @@ import {
 } from "@heroicons/react/24/outline";
 import Ratings from "./Ratings";
 import { useRouter } from "next/navigation";
+import AddToCart from "./AddToCart";
+import { Product } from "@/typings/productTypings";
+import { useCartStore } from "@/store";
+import { getCartTotal } from "@/lib/getCartTotal";
 
 interface Props {
-  product: any;
+  product: Product;
 }
 
 const ProductDetailPopUp = ({ product }: Props) => {
   const router = useRouter();
+  const cart = useCartStore((state) => state.cart);
+  const total = getCartTotal(cart);
 
   console.log(`products popup here--- ${product}`);
   return (
@@ -46,9 +52,7 @@ const ProductDetailPopUp = ({ product }: Props) => {
         <p className="text-sm font-medium text-neutral-600">400ml / each</p>
 
         <div className="flex items-center mt-4">
-          <Button className="rounded-full p-0 px-6 font-semibold hover:bg-slate-100 bg-gray-200 text-black">
-            Add to Cart
-          </Button>
+          <AddToCart product={product} />
         </div>
         <div className="flex items-center gap-6 mt-4">
           <div className="flex items-center gap-1 hover:text-gray-400 cursor-pointer">
