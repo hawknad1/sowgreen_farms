@@ -20,4 +20,5 @@ export interface Product {
   title: string;
   description: string;
   inStock: boolean;
+  products: [];
 }

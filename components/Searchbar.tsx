@@ -5,26 +5,28 @@ import { useRouter } from "next/navigation";
 
 const Searchbar = () => {
   const router = useRouter();
+  const [search, setSearch] = useState("");
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    const name = formData.get("search") as string;
+  //   const formData = new FormData(e.currentTarget);
+  //   const name = formData.get("search") as string;
 
-    if (name) {
-      router.push(`/products?name=${name}`);
-    }
-  };
+  //   if (name) {
+  //     router.push(`/products?name=${name}`);
+  //   }
+  // };
+  console.log(search);
 
   return (
     <form
       className="flex items-center justify-between bg-gray-100 p-2 rounded-full pl-3 flex-1 px-2 lg:px-4"
-      onSubmit={handleSearch}
+      // onSubmit={handleSearch}
     >
       <input
         type="text"
-        name="search"
+        onChange={(e) => setSearch(e.target.value)}
         placeholder="search products"
         className="flex-1 bg-transparent outline-none text-sm lg:text-base"
       />

@@ -12,7 +12,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({ data }) => {
   return (
     <Link
       href={{
-        pathname: `/category/${data?.categoryName}`,
+        pathname: "/category",
         query: { q: data?.categoryName },
       }}
     >

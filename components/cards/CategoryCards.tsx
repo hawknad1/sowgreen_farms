@@ -3,9 +3,11 @@ import CategoryCard from "../CategoryCard";
 import { useEffect, useState } from "react";
 import HomeCategorySkeleton from "../skeletons/HomeCategorySkeleton";
 
+
 const CategoryCards = () => {
   const [categoryList, setCategoryList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     async function getCategories() {

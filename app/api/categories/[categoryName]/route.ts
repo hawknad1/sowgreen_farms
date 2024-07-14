@@ -5,10 +5,11 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { categoryName: string } }
 ) {
+  console.log(params.categoryName);
   try {
-    const categoryId = params.categoryName;
-    const category = await prisma.category.findUnique({
-      where: { id: categoryId },
+    const catName = params.categoryName;
+    const category = await prisma.category.findMany({
+      where: { categoryName: catName },
       include: {
         products: true,
       },

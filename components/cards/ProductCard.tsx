@@ -5,12 +5,13 @@ import { ShoppingBagIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
 import React from "react";
 import { useRouter } from "next/navigation";
+import { Product } from "@/typings/productTypings";
 
 interface ProductCardProps {
   data: any;
 }
 
-const ProductCard = ({ data }:ProductCardProps) => {
+const ProductCard = ({ data }: { data: Product }) => {
   const router = useRouter();
 
   return (
