@@ -1,7 +1,7 @@
 "use client";
 
-import Basket from "@/components/Basket";
-import BasketPopup from "@/components/BasketPopup";
+import Basket from "@/components/basket/Basket";
+import BasketPopup from "@/components/basket/BasketPopup";
 import {
   Dialog,
   DialogContent,

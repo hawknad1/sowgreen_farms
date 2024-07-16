@@ -1,5 +1,5 @@
 "use client";
-import ProductDetailCard from "@/components/ProductDetailCard";
+import ProductDetailCard from "@/components/cards/product/ProductDetailCard";
 import LoadProductDetail from "@/components/loading/LoadProductDetail";
 import { Product } from "@/typings/productTypings";
 import { useEffect, useState } from "react";

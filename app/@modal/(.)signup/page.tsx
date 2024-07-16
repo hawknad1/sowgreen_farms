@@ -1,7 +1,7 @@
 "use client";
 
-import SignInForm from "@/components/forms/SignInForm";
-import GoogleSignIn from "@/components/social-auths/GoogleSignIn";
+import SignUpForm from "@/components/forms/SignUpForm";
+import GoogleSignUp from "@/components/social-auths/GoogleSignUp";
 import {
   Dialog,
   DialogContent,
@@ -11,10 +11,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+
 import { useRouter } from "next/navigation";
 import React from "react";
 
-const SingInInterception = () => {
+const SignupInterception = () => {
   const router = useRouter();
 
   function onDismiss() {
@@ -29,25 +30,26 @@ const SingInInterception = () => {
         }
       }}
     >
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[500px] rounded-lg">
         <DialogHeader>
-          <DialogTitle>Sign In</DialogTitle>
+          <DialogTitle>Sign up</DialogTitle>
           <DialogDescription>
-            Sign in to get access to all features
+            Create account now to get 10% discount!
           </DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-2">
-          <SignInForm />
+
+        <div className="flex flex-col gap-4">
+          <SignUpForm />
           <span className="flex items-center">
             <span className="h-px flex-1 bg-black"></span>
-            <span className="shrink-0 px-6 text-gray-600">OR</span>
+            <span className="shrink-0 px-6 text-gray-300">OR</span>
             <span className="h-px flex-1 bg-black"></span>
           </span>
-          <GoogleSignIn />
+          <GoogleSignUp />
         </div>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default SingInInterception;
+export default SignupInterception;

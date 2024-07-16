@@ -1,16 +1,14 @@
-import MiddleCard from "@/components/MiddleCard";
 import Head from "next/head";
-import ProductCards from "@/components/ProductCards";
-import PaginationButtons from "@/components/PaginationButtons";
-import CategoryCards from "@/components/cards/CategoryCards";
+import ProductCards from "@/components/cards/product/ProductCards";
+import CategoryCards from "@/components/cards/category/CategoryCards";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import Testimonials from "@/components/Testimonials";
-import OrganicCard from "@/components/OrganicCard";
-import DeliveryCard from "../components/DeliveryCard";
+
 import Banner from "@/components/Banner";
 import Middle from "@/components/Middle";
-import { Button } from "@/components/ui/button";
 import ViewAll from "@/components/ViewAll";
+import DeliveryCard from "@/components/cards/DeliveryCard";
+import OrganicCard from "@/components/cards/OrganicCard";
 
 export default function Home() {
   return (

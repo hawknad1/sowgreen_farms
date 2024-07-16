@@ -1,5 +1,6 @@
 "use client";
-import ProductCard from "@/components/cards/ProductCard";
+import ProductCard from "@/components/cards/product/ProductCard";
+import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton";
 import { Product } from "@/typings/productTypings";
 import React, { useEffect, useState } from "react";
 
@@ -23,23 +24,30 @@ const Category = ({ searchParams: { q } }: Props) => {
         }
         const data = await res.json();
         setProductsByCategory(data);
+        setIsLoading(false);
       } catch (error) {
         console.error("Failed to fetch products:", error);
       }
     };
     fetchProductsByCategory(q);
-  }, []);
+  }, [q]);
 
   return (
-    <main className="container mx-auto py-8 my-6 flex-1">
-      <div className="flex flex-col items-start gap-3">
-        <h3 className="text-2xl font-bold ml-4">
-          Search results for <span>{q.toLowerCase()}</span>
+    <main className="container mx-auto py-8 flex-1">
+      <div className="flex flex-col items-start gap-5 m-4">
+        <h3 className="text-2xl font-bold ml-4 ">
+          Showing results for <span>{q.toLowerCase()}</span>
         </h3>
-        <div className="flex gap-5 p-4 w-max">
-          {catProducts?.map((product: Product) => (
-            <ProductCard key={product.id} data={product} />
-          ))}
+        <div>
+          {isLoading ? (
+            <ProductsSkeleton />
+          ) : (
+            <div className="flex gap-5 p-4 w-max">
+              {catProducts?.map((product: Product) => (
+                <ProductCard key={product.id} data={product} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </main>

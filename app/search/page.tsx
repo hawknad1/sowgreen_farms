@@ -1,5 +1,5 @@
 "use client";
-import ProductCards from "@/components/ProductCards";
+import ProductCards from "@/components/cards/product/ProductCards";
 import GlobalApi from "@/utils/GlobalApi";
 import React, { useEffect, useState } from "react";
 

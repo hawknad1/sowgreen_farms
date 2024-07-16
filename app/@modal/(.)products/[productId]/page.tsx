@@ -1,6 +1,6 @@
 "use client";
 
-import ProductDetailPopUp from "@/components/ProductDetailPopUp";
+import ProductDetailPopUp from "@/components/modals/ProductDetailPopUp";
 import LoadPopUpProductDetail from "@/components/loading/LoadPopUpProductDetail";
 import {
   Dialog,
