@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/header/Navbar";
 import Footer from "@/components/footer/Footer";
+import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,25 +13,29 @@ export const metadata: Metadata = {
   description: "Get your organic farm produce",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   modal,
 }: Readonly<{
   children: React.ReactNode;
   modal: React.ReactNode;
 }>) {
+  const session = await auth();
+  console.log(session);
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <header className="border-b sticky top-0 z-50 bg-white">
-          <Navbar />
-        </header>
-        <div>
-          {children}
-          {modal}
-        </div>
-        <Footer />
-      </body>
+      <SessionProvider>
+        <body className={inter.className}>
+          <header className="border-b sticky top-0 z-50 bg-white w-full">
+            <Navbar />
+          </header>
+          <div>
+            {children}
+            {modal}
+          </div>
+          <Footer />
+        </body>
+      </SessionProvider>
     </html>
   );
 }

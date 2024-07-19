@@ -1,11 +1,13 @@
+import { login } from "@/actions/auth";
 import Image from "next/image";
 import React from "react";
 
 const GoogleSignIn = () => {
   return (
     <div
-      className="flex items-center gap-3 justify-center border border-slate-300 
-    rounded-md p-1.5 cursor-pointer"
+      onClick={() => login("google")}
+      className="flex items-center gap-3 justify-center border border-slate-300  
+    rounded-md p-1.5 cursor-pointer hover:bg-slate-300"
     >
       <Image
         src="/images/google.png"
@@ -14,7 +16,7 @@ const GoogleSignIn = () => {
         height={25}
         className="object-contain"
       />
-      <p className="font-semibold">Sign In with Google</p>
+      <p className="font-semibold">Continue with Google</p>
     </div>
   );
 };

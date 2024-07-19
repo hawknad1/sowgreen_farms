@@ -17,8 +17,8 @@ const ShopBasketIcon = () => {
       {quantity <= 0 ? (
         ""
       ) : (
-        <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center text-sm bg-red-400 rounded-full text-white">
-          {quantity}
+        <div className="absolute -top-2.5 -right-2 h-5 w-5 p-1 flex items-center justify-center text-xs bg-red-400 rounded-full text-white">
+          <p>{quantity}</p>
         </div>
       )}
     </div>
