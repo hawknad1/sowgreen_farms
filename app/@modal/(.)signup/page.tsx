@@ -1,7 +1,7 @@
 "use client";
 
 import SignUpForm from "@/components/forms/SignUpForm";
-import GoogleSignUp from "@/components/social-auths/GoogleSignUp";
+import { GoogleAuth } from "@/components/social-auths/GoogleAuth";
 import {
   Dialog,
   DialogContent,
@@ -40,13 +40,15 @@ const SignupInterception = () => {
 
         <div className="flex flex-col gap-4">
           <SignUpForm />
-          <span className="flex items-center">
-            <span className="h-px flex-1 bg-black"></span>
-            <span className="shrink-0 px-6 text-gray-300">OR</span>
-            <span className="h-px flex-1 bg-black"></span>
-          </span>
-          <GoogleSignUp />
         </div>
+        <span className="flex items-center">
+          <span className="h-px flex-1 bg-black"></span>
+          <span className="shrink-0 px-6 text-gray-600">OR</span>
+          <span className="h-px flex-1 bg-black"></span>
+        </span>
+        <DialogFooter>
+          <GoogleAuth />
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

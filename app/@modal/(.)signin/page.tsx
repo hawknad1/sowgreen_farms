@@ -1,7 +1,7 @@
 "use client";
 
 import SignInForm from "@/components/forms/SignInForm";
-import GoogleSignIn from "@/components/social-auths/GoogleSignIn";
+import { GoogleAuth } from "@/components/social-auths/GoogleAuth";
 import {
   Dialog,
   DialogContent,
@@ -38,13 +38,15 @@ const SingInInterception = () => {
         </DialogHeader>
         <div className="flex flex-col gap-2">
           <SignInForm />
-          <span className="flex items-center">
-            <span className="h-px flex-1 bg-black"></span>
-            <span className="shrink-0 px-6 text-gray-600">OR</span>
-            <span className="h-px flex-1 bg-black"></span>
-          </span>
-          <GoogleSignIn />
         </div>
+        <span className="flex items-center">
+          <span className="h-px flex-1 bg-black"></span>
+          <span className="shrink-0 px-6 text-gray-600">OR</span>
+          <span className="h-px flex-1 bg-black"></span>
+        </span>
+        <DialogFooter>
+          <GoogleAuth />
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

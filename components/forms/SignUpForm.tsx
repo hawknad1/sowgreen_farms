@@ -15,31 +15,21 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-
-const formSchema = z.object({
-  fullName: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  email: z.string().email(),
-  password: z.string(),
-});
+import { RegisterSchema } from "@/schemas";
 
 function SignUpForm() {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof RegisterSchema>>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
-      fullName: "",
+      name: "",
       email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
+  function onSubmit(values: z.infer<typeof RegisterSchema>) {
     console.log(values);
   }
-  // ...
 
   return (
     <Form {...form}>
@@ -49,13 +39,14 @@ function SignUpForm() {
       >
         <FormField
           control={form.control}
-          name="fullName"
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input type="text" placeholder="Enter your name" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -68,6 +59,7 @@ function SignUpForm() {
               <FormControl>
                 <Input type="email" placeholder="Enter your email" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -78,17 +70,14 @@ function SignUpForm() {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input
-                  type="password"
-                  placeholder="Enter your password"
-                  {...field}
-                />
+                <Input type="password" placeholder="********" {...field} />
               </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
         <Button type="submit" className="w-full">
-          Sign Up
+          Create an account
         </Button>
       </form>
     </Form>
