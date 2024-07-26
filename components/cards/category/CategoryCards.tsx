@@ -28,17 +28,17 @@ const CategoryCards = () => {
   }, []);
 
   return (
-    <div className="overflow-x-auto scrollbar-hide">
+    <>
       {isLoading ? (
         <HomeCategorySkeleton />
       ) : (
-        <div className="flex items-center space-x-4 p-4 w-max ">
+        <div className="flex items-center space-x-4 p-4 w-max">
           {categoryList.map((card) => (
             <CategoryCard data={card} key={card.id} />
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

@@ -30,19 +30,17 @@ const ProductCards = () => {
   }, []);
 
   return (
-    <div className="overflow-x-auto scrollbar-hide">
-      <>
-        {isLoading ? (
-          <HomeProductSkeleton />
-        ) : (
-          <div className="flex space-x-4 p-4 w-max ">
-            {productList.map((card) => (
-              <ProductCard data={card} key={card.id} />
-            ))}
-          </div>
-        )}
-      </>
-    </div>
+    <>
+      {isLoading ? (
+        <HomeProductSkeleton />
+      ) : (
+        <div className="flex space-x-4 p-4 w-max ">
+          {productList.map((card) => (
+            <ProductCard data={card} key={card.id} />
+          ))}
+        </div>
+      )}
+    </>
   );
 };
 

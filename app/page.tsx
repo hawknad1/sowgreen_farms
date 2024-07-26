@@ -1,7 +1,6 @@
 import Head from "next/head";
 import ProductCards from "@/components/cards/product/ProductCards";
 import CategoryCards from "@/components/cards/category/CategoryCards";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/16/solid";
 import Testimonials from "@/components/Testimonials";
 
 import Banner from "@/components/Banner";
@@ -9,6 +8,8 @@ import Middle from "@/components/Middle";
 import ViewAll from "@/components/ViewAll";
 import DeliveryCard from "@/components/cards/DeliveryCard";
 import OrganicCard from "@/components/cards/OrganicCard";
+import CategoryChevrons from "@/components/CategoryChevrons";
+import ProductChevrons from "@/components/ProductChevrons";
 
 export default function Home() {
   return (
@@ -23,21 +24,9 @@ export default function Home() {
         </section>
 
         <section className="my-10">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4">
-              Shop By Category
-            </h2>
-            <div className="flex items-center gap-6">
-              <div className="bg-slate-100 p-1 rounded-full cursor-pointer">
-                <ChevronLeftIcon className="size-5" />
-              </div>
-              <div className="bg-slate-100 p-1 rounded-full cursor-pointer">
-                <ChevronRightIcon className="size-5" />
-              </div>
-            </div>
-          </div>
-
-          <CategoryCards />
+          <CategoryChevrons>
+            <CategoryCards />
+          </CategoryChevrons>
         </section>
 
         <section className="my-8 flex flex-col md:flex-row gap-4">
@@ -45,20 +34,9 @@ export default function Home() {
         </section>
 
         <section className="my-8">
-          <div className="flex items-center justify-between ">
-            <h2 className="text-xl flex items-center self-center sm:text-2xl md:text-3xl font-bold mb-4">
-              Farm fresh products
-            </h2>
-            <div className="flex items-center space-x-6 ">
-              <div className="bg-slate-100 p-1 rounded-full cursor-pointer">
-                <ChevronLeftIcon className="size-5" />
-              </div>
-              <div className="bg-slate-100 p-1 rounded-full cursor-pointer">
-                <ChevronRightIcon className="size-5" />
-              </div>
-            </div>
-          </div>
-          <ProductCards />
+          <ProductChevrons>
+            <ProductCards />
+          </ProductChevrons>
           <ViewAll />
         </section>
 

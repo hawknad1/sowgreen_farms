@@ -16,8 +16,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RegisterSchema } from "@/schemas";
+import { useState } from "react";
+import { FormError } from "../form-error";
+import { FormSuccess } from "../form-success";
+import { useRouter, redirect } from "next/navigation";
 
 function SignUpForm() {
+  const router = useRouter();
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState<string | null>("");
+
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
@@ -27,8 +35,45 @@ function SignUpForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof RegisterSchema>) {
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof RegisterSchema>) {
+    // console.log(values);
+
+    setSuccess("");
+    setError("");
+    // const response = await fetch("/api/auth/register", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(values),
+    // });
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (err) {
+        throw new Error("Failed to parse response as JSON");
+      }
+
+      if (response.status === 201) {
+        setSuccess("User registered successfully!");
+        router.push("/");
+
+        // } else {
+        //   setError(data.error || "An error occurred");
+      }
+    } catch (error) {
+      setError("An error occurred");
+    }
   }
 
   return (
@@ -76,6 +121,9 @@ function SignUpForm() {
             </FormItem>
           )}
         />
+        {success && <FormSuccess message={success} />}
+        {error && <FormError message={error} />}
+
         <Button type="submit" className="w-full">
           Create an account
         </Button>
