@@ -80,7 +80,7 @@ function SignUpForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="flex flex-col gap-4"
+        className="flex flex-col gap-3"
       >
         <FormField
           control={form.control}
@@ -123,6 +123,31 @@ function SignUpForm() {
         />
         {success && <FormSuccess message={success} />}
         {error && <FormError message={error} />}
+
+        <div className="col-span-6">
+          <label htmlFor="MarketingAccept" className="flex gap-4">
+            <input
+              type="checkbox"
+              id="MarketingAccept"
+              name="marketing_accept"
+              className="size-5 rounded-md border-gray-200 bg-white shadow-sm"
+            />
+
+            <p className="text-sm text-gray-500">
+              By creating an account, you agree to our
+              <a href="#" className="text-gray-700 underline">
+                {" "}
+                terms and conditions{" "}
+              </a>
+              and
+              <a href="#" className="text-gray-700 underline">
+                {" "}
+                privacy policy
+              </a>
+              .
+            </p>
+          </label>
+        </div>
 
         <Button type="submit" className="w-full">
           Create an account

@@ -7,7 +7,7 @@ const SignUpButton = () => {
   return (
     <div>
       <Button
-        onClick={() => router.push("/signup")}
+        onClick={() => router.push("/sign-up")}
         className="rounded-full px-6"
       >
         Sign Up

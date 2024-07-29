@@ -3,6 +3,7 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "./lib/prismadb";
 import Google from "next-auth/providers/google";
 import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   theme: {
@@ -10,31 +11,52 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   adapter: PrismaAdapter(prisma),
   session: { strategy: "jwt" },
+  pages: {
+    signIn: "/sign-in",
+  },
   providers: [
     Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
       credentials: {
-        email: {},
-        password: {},
+        name: { label: "Name", type: "text", placeholder: "Kwaku Dankwah" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "kwaku@yahoo.com",
+        },
+        password: {
+          label: "Password",
+          type: "password",
+        },
       },
       authorize: async (credentials) => {
-        let user = null;
-
-        // logic to salt and hash password
-        // const pwHash = saltAndHashPassword(credentials.password);
-
-        // logic to verify if user exists
-        // user = await getUserFromDb(credentials.email, pwHash);
-
-        if (!user) {
-          // No user found, so this is their first attempt to login
-          // meaning this is also the place you could do registration
-          throw new Error("User not found.");
+        if (!credentials?.email || !credentials?.password) {
+          return null;
         }
 
-        // return user object with the their profile data
-        return user;
+        const existingUser = await prisma.user.findUnique({
+          where: {
+            email: credentials?.email as string,
+          },
+        });
+
+        if (!existingUser) {
+          return null;
+        }
+
+        const passwordMatch = await bcrypt.compare(
+          credentials.password as string,
+          existingUser?.hashedPassword
+        );
+
+        if (!passwordMatch) {
+          return null;
+        }
+
+        return {
+          id: existingUser.id,
+          name: existingUser.name,
+          email: existingUser.email,
+        };
       },
     }),
     Google({

@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import Navbar from "@/components/header/Navbar";
 import Footer from "@/components/footer/Footer";
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
+import "../globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,7 +31,7 @@ export default async function RootLayout({
           </header>
           <div>
             {children}
-            {modal}
+            {/* {modal} */}
           </div>
           <Footer />
         </body>
