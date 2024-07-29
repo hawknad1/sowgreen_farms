@@ -52,7 +52,7 @@ function SignInForm() {
       setFormError("Incorrect email or password");
     } else {
       setFormSuccess("Successfully signed in!");
-      router.push("/products");
+      router.push("/");
     }
   }
 

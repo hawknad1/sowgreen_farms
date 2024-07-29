@@ -5,6 +5,7 @@ import Footer from "@/components/footer/Footer";
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 import "../globals.css";
+import { redirect } from "next/navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,7 +22,6 @@ export default async function RootLayout({
   modal: React.ReactNode;
 }>) {
   const session = await auth();
-  console.log(session);
   return (
     <html lang="en">
       <SessionProvider>

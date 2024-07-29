@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -19,12 +18,13 @@ import { RegisterSchema } from "@/schemas";
 import { useState } from "react";
 import { FormError } from "../form-error";
 import { FormSuccess } from "../form-success";
-import { useRouter, redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 function SignUpForm() {
   const router = useRouter();
   const [success, setSuccess] = useState("");
-  const [error, setError] = useState<string | null>("");
+  const [error, setError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -36,20 +36,12 @@ function SignUpForm() {
   });
 
   async function onSubmit(values: z.infer<typeof RegisterSchema>) {
-    // console.log(values);
-
     setSuccess("");
-    setError("");
-    // const response = await fetch("/api/auth/register", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(values),
-    // });
+    setError(null);
 
     try {
-      const response = await fetch("/api/auth/register", {
+      // Register the user
+      const registerResponse = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -57,19 +49,21 @@ function SignUpForm() {
         body: JSON.stringify(values),
       });
 
-      let data;
-      try {
-        data = await response.json();
-      } catch (err) {
-        throw new Error("Failed to parse response as JSON");
-      }
+      const registerData = await registerResponse.json();
 
-      if (response.status === 201) {
+      if (registerResponse.ok) {
+        await signIn("credentials", {
+          email: values.email,
+          password: values.password,
+          redirect: true,
+          callbackUrl: "/",
+        });
+      }
+      if (registerData.error) {
+        setError(registerData.error);
+      } else {
         setSuccess("User registered successfully!");
         router.push("/");
-
-        // } else {
-        //   setError(data.error || "An error occurred");
       }
     } catch (error) {
       setError("An error occurred");
@@ -132,7 +126,6 @@ function SignUpForm() {
               name="marketing_accept"
               className="size-5 rounded-md border-gray-200 bg-white shadow-sm"
             />
-
             <p className="text-sm text-gray-500">
               By creating an account, you agree to our
               <a href="#" className="text-gray-700 underline">
