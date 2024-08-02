@@ -240,7 +240,7 @@ export function CheckoutForm() {
             </div>
           </div>
 
-          <div className="w-full lg:max-w-sm max-w-xs mt-4 md:mt-0 ">
+          <div className="w-full lg:max-w-sm md:max-w-xs mt-4 md:mt-0 ">
             <h2 className="font-bold text-lg mb-4">Order Summary</h2>
 
             <div className="rounded-lg border p-4 border-neutral-400/35">
