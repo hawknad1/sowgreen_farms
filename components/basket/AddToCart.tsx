@@ -11,28 +11,33 @@ const AddToCart = ({ product }: { product: Product }) => {
     addToCart: state.addToCart,
   }));
 
-  console.log(cart);
   const howManyInCart = cart.filter(
     (item: Product) => item.id === product.id
   ).length;
 
-  console.log("how many in the cart", howManyInCart);
-
   const handleAdd = () => {
-    console.log("Adding to cart", product);
     addToCart(product);
   };
 
-  if (howManyInCart > 0) {
-    return (
-      <div className="flex space-x-2 items-center">
-        <RemoveFromCart product={product} />
-        <span>{howManyInCart}</span>
-        <Button onClick={handleAdd}>+</Button>
-      </div>
-    );
-  }
-  return <Button onClick={handleAdd}>Add To Cart</Button>;
+  return (
+    <div className="flex items-center space-x-2">
+      {howManyInCart > 0 ? (
+        <>
+          <RemoveFromCart product={product} />
+          <span className="text-sm md:text-base font-medium">
+            {howManyInCart}
+          </span>
+          <Button onClick={handleAdd} className="h-8 w-8 text-sm md:text-base">
+            +
+          </Button>
+        </>
+      ) : (
+        <Button onClick={handleAdd} className="px-4 py-2 text-sm md:text-base">
+          Add To Cart
+        </Button>
+      )}
+    </div>
+  );
 };
 
 export default AddToCart;

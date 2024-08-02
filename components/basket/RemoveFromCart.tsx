@@ -11,7 +11,11 @@ const RemoveFromCart = ({ product }: { product: Product }) => {
     console.log("removing from cart", product.id);
     removeFromCart(product);
   };
-  return <Button onClick={handleRemove}>-</Button>;
+  return (
+    <Button onClick={handleRemove} className="h-8 w-8">
+      -
+    </Button>
+  );
 };
 
 export default RemoveFromCart;

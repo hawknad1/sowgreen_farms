@@ -6,5 +6,7 @@ export function getCartTotal(products: Product[]): string {
       accumulator + currentProduct.price,
     0
   );
-  return `GHC ${total.toFixed(2)}`;
+  return total.toFixed(2);
 }
+
+// return `GHC ${total.toFixed(2)}`;
