@@ -20,8 +20,8 @@ import { CheckoutSchema } from "@/schemas";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store";
 import { getCartTotal } from "@/lib/getCartTotal";
-import { useRouter } from "next/navigation";
 import OrderSummary from "./OrderSummary";
+import { useRouter } from "next/navigation";
 
 const config = {
   reference: new Date().getTime().toString(),
@@ -31,9 +31,6 @@ const config = {
 };
 
 export function CheckoutForm() {
-  const [inputName, setInputName] = useState("");
-  const [inputEmail, setInputEmail] = useState("");
-  const [inputPhone, setInputPhone] = useState("");
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState("");
 
@@ -58,41 +55,8 @@ export function CheckoutForm() {
   });
 
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
-    setInputEmail("");
-    setInputName("");
-    setInputPhone("");
-
-    setSuccess("");
-    setError(null);
-
-    setInputEmail(values.email);
-    setInputName(values.name);
-    setInputPhone(values.phone);
-
-    console.log(values);
-
-    // try {
-    //   const addressResponse = await fetch("/api/address", {
-    //     method: "POST",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(values),
-    //   });
-
-    //   const addressData = await addressResponse.json();
-
-    //   if (addressResponse.ok) {
-    //     router.push("/comfirm-order");
-    //   }
-
-    //   if (addressData?.error) {
-    //     setError(addressData?.error);
-    //   } else {
-    //     setSuccess("User registered successfully!");
-    //     router.push("/");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    const query = new URLSearchParams(values).toString();
+    router.push(`/confirm-order?${query}`);
   }
   // ...
 
@@ -246,10 +210,7 @@ export function CheckoutForm() {
             <div className="rounded-lg border p-4 border-neutral-400/35">
               <OrderSummary />
 
-              <Button
-                onClick={() => router.push("/confirm-order")}
-                className="w-full"
-              >
+              <Button type="submit" className="w-full">
                 Confirm Order
               </Button>
             </div>

@@ -28,3 +28,28 @@ export default {
   getProduct,
   getProductbyId,
 };
+
+// export const addShippingToDb =()=>{
+//   try {
+//     const addressResponse = await fetch("/api/address", {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify(values),
+//     });
+
+//     const addressData = await addressResponse.json();
+
+//     if (addressResponse.ok) {
+//       router.push("/comfirm-order");
+//     }
+
+//     if (addressData?.error) {
+//       setError(addressData?.error);
+//     } else {
+//       setSuccess("User registered successfully!");
+//       router.push("/");
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
