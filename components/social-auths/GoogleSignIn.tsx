@@ -1,6 +1,6 @@
-import { login } from "@/actions/auth";
-import Image from "next/image";
-import React from "react";
+import { login } from "@/actions/auth"
+import Image from "next/image"
+import React from "react"
 
 const GoogleSignIn = () => {
   return (
@@ -18,7 +18,7 @@ const GoogleSignIn = () => {
       />
       <p className="font-semibold">Continue with Google</p>
     </div>
-  );
-};
+  )
+}
 
-export default GoogleSignIn;
+export default GoogleSignIn

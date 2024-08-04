@@ -1,18 +1,18 @@
-"use client";
-import Basket from "@/components/basket/Basket";
-import CheckoutBox from "@/components/checkout/CheckoutBox";
-import Coupon from "@/components/checkout/Coupon";
-import OrderSummery from "@/components/checkout/OrderSummery";
-import PaymentMethod from "@/components/checkout/PaymentMethod";
-import { ChevronLeftIcon } from "@heroicons/react/24/outline";
-import { Button } from "@/components/ui/button";
+"use client"
+import Basket from "@/components/basket/Basket"
+import CheckoutBox from "@/components/checkout/CheckoutBox"
+import Coupon from "@/components/checkout/Coupon"
+import OrderSummery from "@/components/checkout/OrderSummery"
+import PaymentMethod from "@/components/checkout/PaymentMethod"
+import { ChevronLeftIcon } from "@heroicons/react/24/outline"
+import { Button } from "@/components/ui/button"
 
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline"
+import { useRouter } from "next/navigation"
+import React from "react"
 
 const BasketPage = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <div className="w-full p-10 max-w-7xl mx-auto">
@@ -57,7 +57,7 @@ const BasketPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BasketPage;
+export default BasketPage

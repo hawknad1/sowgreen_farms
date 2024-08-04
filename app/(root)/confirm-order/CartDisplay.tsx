@@ -1,13 +1,13 @@
-"use client";
-import { getCartTotal } from "@/lib/getCartTotal";
-import groupById from "@/lib/groupById";
-import { useCartStore } from "@/store";
-import Image from "next/image";
-import React from "react";
+"use client"
+import { getCartTotal } from "@/lib/getCartTotal"
+import groupById from "@/lib/groupById"
+import { useCartStore } from "@/store"
+import Image from "next/image"
+import React from "react"
 
 const CartDisplay = () => {
-  const cart = useCartStore((state) => state.cart);
-  const grouped = groupById(cart);
+  const cart = useCartStore((state) => state.cart)
+  const grouped = groupById(cart)
 
   return (
     <div className="bg-white rounded-md shadow-sm p-4">
@@ -15,10 +15,10 @@ const CartDisplay = () => {
       <div className="max-h-[400px] overflow-y-auto scrollbar-hide">
         <ul className="divide-y divide-neutral-200">
           {Object.keys(grouped).map((id) => {
-            const items = grouped[id];
-            const item = items[0];
-            const total = getCartTotal(items);
-            const quantity = items.length;
+            const items = grouped[id]
+            const item = items[0]
+            const total = getCartTotal(items)
+            const quantity = items.length
 
             return (
               <li
@@ -53,12 +53,12 @@ const CartDisplay = () => {
                   </div>
                 </div>
               </li>
-            );
+            )
           })}
         </ul>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CartDisplay;
+export default CartDisplay

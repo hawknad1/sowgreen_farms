@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import SignUpForm from "@/components/forms/SignUpForm";
-import { GoogleAuth } from "@/components/social-auths/GoogleAuth";
+import SignUpForm from "@/components/forms/SignUpForm"
+import { GoogleAuth } from "@/components/social-auths/GoogleAuth"
 import {
   Dialog,
   DialogContent,
@@ -10,23 +10,23 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/ui/dialog"
 
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useRouter } from "next/navigation"
+import React from "react"
 
 const SignupInterception = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   function onDismiss() {
-    router.back();
+    router.back()
   }
   return (
     <Dialog
       open
       onOpenChange={(isOpen) => {
         if (!isOpen) {
-          onDismiss();
+          onDismiss()
         }
       }}
     >
@@ -51,7 +51,7 @@ const SignupInterception = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default SignupInterception;
+export default SignupInterception

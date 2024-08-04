@@ -1,9 +1,9 @@
-"use client";
-import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
+"use client"
+import { useRouter } from "next/navigation"
+import { Button } from "../ui/button"
 
 const SignUpButton = () => {
-  const router = useRouter();
+  const router = useRouter()
   return (
     <div>
       <Button
@@ -13,7 +13,7 @@ const SignUpButton = () => {
         Sign Up
       </Button>
     </div>
-  );
-};
+  )
+}
 
-export default SignUpButton;
+export default SignUpButton

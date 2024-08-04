@@ -1,6 +1,6 @@
-import React from "react";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import React from "react"
+import { Label } from "../ui/label"
+import { Input } from "../ui/input"
 import {
   Sheet,
   SheetClose,
@@ -10,12 +10,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet";
-import { Bars3BottomRightIcon } from "@heroicons/react/24/outline";
-import { Button } from "../ui/button";
-import { menuLinks } from "@/constants";
-import Link from "next/link";
-import SideMenu from "../SideMenu";
+} from "../ui/sheet"
+import { Bars3BottomRightIcon } from "@heroicons/react/24/outline"
+import { Button } from "../ui/button"
+import { menuLinks } from "@/constants"
+import Link from "next/link"
+import SideMenu from "../SideMenu"
 
 const SideSheet = () => {
   return (
@@ -34,7 +34,7 @@ const SideSheet = () => {
         </SheetFooter>
       </SheetContent>
     </Sheet>
-  );
-};
+  )
+}
 
-export default SideSheet;
+export default SideSheet

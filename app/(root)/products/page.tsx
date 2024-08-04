@@ -1,15 +1,15 @@
-"use client";
-import ProductCard from "@/components/cards/product/ProductCard";
-import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton";
-import PaginationButtons from "@/components/sort/PaginationButtons";
-import { Button } from "@/components/ui/button";
-import { useCategoryState } from "@/hooks/state";
-import React, { useEffect, useState } from "react";
+"use client"
+import ProductCard from "@/components/cards/product/ProductCard"
+import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
+import PaginationButtons from "@/components/sort/PaginationButtons"
+import { Button } from "@/components/ui/button"
+import { useCategoryState } from "@/hooks/state"
+import React, { useEffect, useState } from "react"
 
 const Products = () => {
-  const [allProducts, setAllProducts] = useState([]);
-  const { selected } = useCategoryState();
-  const [isLoading, setIsLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState([])
+  const { selected } = useCategoryState()
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function getProducts() {
@@ -17,18 +17,18 @@ const Products = () => {
         const res = await fetch("/api/products", {
           method: "GET",
           cache: "no-store",
-        });
+        })
         if (res.ok) {
-          const products = await res.json();
-          setAllProducts(products);
-          setIsLoading(false);
+          const products = await res.json()
+          setAllProducts(products)
+          setIsLoading(false)
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     }
-    getProducts();
-  }, []);
+    getProducts()
+  }, [])
 
   return (
     <main className="container mx-auto py-8 flex-1">
@@ -56,7 +56,7 @@ const Products = () => {
         )}
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Products;
+export default Products

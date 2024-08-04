@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import Basket from "@/components/basket/Basket";
-import BasketPopup from "@/components/basket/BasketPopup";
+import Basket from "@/components/basket/Basket"
+import BasketPopup from "@/components/basket/BasketPopup"
 import {
   Dialog,
   DialogContent,
@@ -9,21 +9,21 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
+} from "@/components/ui/dialog"
+import { useRouter } from "next/navigation"
 
 const BasketInterception = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   function onDismiss() {
-    router.back();
+    router.back()
   }
   return (
     <Dialog
       open
       onOpenChange={(isOpen) => {
         if (!isOpen) {
-          onDismiss();
+          onDismiss()
         }
       }}
     >
@@ -36,7 +36,7 @@ const BasketInterception = () => {
         </div>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default BasketInterception;
+export default BasketInterception

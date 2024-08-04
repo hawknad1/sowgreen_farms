@@ -1,23 +1,23 @@
-"use client";
-import { useCartStore } from "@/store";
-import { Product } from "@/typings/productTypings";
-import React from "react";
-import { Button } from "../ui/button";
-import RemoveFromCart from "./RemoveFromCart";
+"use client"
+import { useCartStore } from "@/store"
+import React from "react"
+import { Button } from "../ui/button"
+import RemoveFromCart from "./RemoveFromCart"
+import { Product } from "@/types"
 
 const AddToCart = ({ product }: { product: Product }) => {
   const { cart, addToCart } = useCartStore((state) => ({
     cart: state.cart,
     addToCart: state.addToCart,
-  }));
+  }))
 
   const howManyInCart = cart.filter(
     (item: Product) => item.id === product.id
-  ).length;
+  ).length
 
   const handleAdd = () => {
-    addToCart(product);
-  };
+    addToCart(product)
+  }
 
   return (
     <div className="flex items-center space-x-2">
@@ -37,7 +37,7 @@ const AddToCart = ({ product }: { product: Product }) => {
         </Button>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default AddToCart;
+export default AddToCart

@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -12,19 +12,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { RegisterSchema } from "@/schemas";
-import { useState } from "react";
-import { FormError } from "../form-error";
-import { FormSuccess } from "../form-success";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { RegisterSchema } from "@/schemas"
+import { useState } from "react"
+import { FormError } from "../form-error"
+import { FormSuccess } from "../form-success"
+import { useRouter } from "next/navigation"
+import { signIn } from "next-auth/react"
 
 function SignUpForm() {
-  const router = useRouter();
-  const [success, setSuccess] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const router = useRouter()
+  const [success, setSuccess] = useState("")
+  const [error, setError] = useState<string | null>(null)
 
   const form = useForm<z.infer<typeof RegisterSchema>>({
     resolver: zodResolver(RegisterSchema),
@@ -33,11 +33,11 @@ function SignUpForm() {
       email: "",
       password: "",
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof RegisterSchema>) {
-    setSuccess("");
-    setError(null);
+    setSuccess("")
+    setError(null)
 
     try {
       // Register the user
@@ -47,9 +47,9 @@ function SignUpForm() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(values),
-      });
+      })
 
-      const registerData = await registerResponse.json();
+      const registerData = await registerResponse.json()
 
       if (registerResponse.ok) {
         await signIn("credentials", {
@@ -57,16 +57,16 @@ function SignUpForm() {
           password: values.password,
           redirect: true,
           callbackUrl: "/",
-        });
+        })
       }
       if (registerData.error) {
-        setError(registerData.error);
+        setError(registerData.error)
       } else {
-        setSuccess("User registered successfully!");
-        router.push("/");
+        setSuccess("User registered successfully!")
+        router.push("/")
       }
     } catch (error) {
-      setError("An error occurred");
+      setError("An error occurred")
     }
   }
 
@@ -147,7 +147,7 @@ function SignUpForm() {
         </Button>
       </form>
     </Form>
-  );
+  )
 }
 
-export default SignUpForm;
+export default SignUpForm

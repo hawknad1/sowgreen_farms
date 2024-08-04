@@ -1,7 +1,7 @@
-import { accountLinks, companyLinks, paymentLinks } from "@/constants";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
+import { accountLinks, companyLinks, paymentLinks } from "@/constants"
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
 
 const Footers = () => {
   return (
@@ -59,7 +59,7 @@ const Footers = () => {
         © 2024. Sowgreen Farms. All rights reserved.
       </p>
     </footer>
-  );
-};
+  )
+}
 
-export default Footers;
+export default Footers

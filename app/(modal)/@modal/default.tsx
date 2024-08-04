@@ -1,7 +1,7 @@
-import { NextPage } from "next";
+import { NextPage } from "next"
 
 const Default: NextPage = () => {
-  return null;
-};
+  return null
+}
 
-export default Default;
+export default Default

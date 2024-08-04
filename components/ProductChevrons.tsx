@@ -1,31 +1,31 @@
-"use client";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
-import React, { useRef, useState } from "react";
+"use client"
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline"
+import React, { useRef, useState } from "react"
 
 interface ChevronProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const ProductChevrons = ({ children }: ChevronProps) => {
-  const containerRef = useRef(null);
+  const containerRef = useRef(null)
 
   const scrollLeft = () => {
     if (containerRef.current) {
       containerRef.current.scrollBy({
         left: -200, // Adjust the scroll amount as needed
         behavior: "smooth",
-      });
+      })
     }
-  };
+  }
 
   const scrollRight = () => {
     if (containerRef.current) {
       containerRef.current.scrollBy({
         left: 200, // Adjust the scroll amount as needed
         behavior: "smooth",
-      });
+      })
     }
-  };
+  }
   return (
     <div className="flex flex-col items-center gap-6">
       <div className="flex items-center justify-between w-full">
@@ -55,7 +55,7 @@ const ProductChevrons = ({ children }: ChevronProps) => {
         {children}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductChevrons;
+export default ProductChevrons

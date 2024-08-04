@@ -1,9 +1,9 @@
-import NextAuth from "next-auth";
-import { PrismaAdapter } from "@auth/prisma-adapter";
-import prisma from "./lib/prismadb";
-import Google from "next-auth/providers/google";
-import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
+import NextAuth from "next-auth"
+import { PrismaAdapter } from "@auth/prisma-adapter"
+import prisma from "./lib/prismadb"
+import Google from "next-auth/providers/google"
+import Credentials from "next-auth/providers/credentials"
+import bcrypt from "bcryptjs"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   theme: {
@@ -30,33 +30,33 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       authorize: async (credentials) => {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          return null
         }
 
         const existingUser = await prisma.user.findUnique({
           where: {
             email: credentials?.email as string,
           },
-        });
+        })
 
         if (!existingUser) {
-          return null;
+          return null
         }
 
         const passwordMatch = await bcrypt.compare(
           credentials.password as string,
           existingUser?.hashedPassword
-        );
+        )
 
         if (!passwordMatch) {
-          return null;
+          return null
         }
 
         return {
           id: existingUser.id,
           name: existingUser.name,
           email: existingUser.email,
-        };
+        }
       },
     }),
     Google({
@@ -64,4 +64,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
-});
+})

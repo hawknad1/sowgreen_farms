@@ -1,15 +1,15 @@
-import Head from "next/head";
-import ProductCards from "@/components/cards/product/ProductCards";
-import CategoryCards from "@/components/cards/category/CategoryCards";
-import Testimonials from "@/components/Testimonials";
+import Head from "next/head"
+import ProductCards from "@/components/cards/product/ProductCards"
+import CategoryCards from "@/components/cards/category/CategoryCards"
+import Testimonials from "@/components/Testimonials"
 
-import Banner from "@/components/Banner";
-import Middle from "@/components/Middle";
-import ViewAll from "@/components/ViewAll";
-import DeliveryCard from "@/components/cards/DeliveryCard";
-import OrganicCard from "@/components/cards/OrganicCard";
-import CategoryChevrons from "@/components/CategoryChevrons";
-import ProductChevrons from "@/components/ProductChevrons";
+import Banner from "@/components/Banner"
+import Middle from "@/components/Middle"
+import ViewAll from "@/components/ViewAll"
+import DeliveryCard from "@/components/cards/DeliveryCard"
+import OrganicCard from "@/components/cards/OrganicCard"
+import CategoryChevrons from "@/components/CategoryChevrons"
+import ProductChevrons from "@/components/ProductChevrons"
 
 export default function Home() {
   return (
@@ -53,5 +53,5 @@ export default function Home() {
         </section>
       </main>
     </div>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+"use client"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -7,26 +7,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { RadioSchema } from "@/schemas";
-import { toast } from "@/components/ui/use-toast";
-import { useState } from "react";
+} from "@/components/ui/form"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { RadioSchema } from "@/schemas"
+import { toast } from "@/components/ui/use-toast"
+import { useState } from "react"
 
 const PaymentMethods = () => {
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("")
 
   const form = useForm<z.infer<typeof RadioSchema>>({
     resolver: zodResolver(RadioSchema),
-  });
+  })
 
   function onSubmit(data: z.infer<typeof RadioSchema>) {
-    console.log(data);
+    console.log(data)
   }
-  console.log(selectedPaymentMethod);
+  console.log(selectedPaymentMethod)
   return (
     <div className="border border-neutral-300 w-full h-fit p-4 rounded-lg">
       <Form {...form}>
@@ -43,8 +43,8 @@ const PaymentMethods = () => {
                 <FormControl>
                   <RadioGroup
                     onValueChange={(value) => {
-                      field.onChange(value);
-                      setSelectedPaymentMethod(value);
+                      field.onChange(value)
+                      setSelectedPaymentMethod(value)
                     }}
                     defaultValue={field.value}
                     className="flex items-center justify-between"
@@ -89,7 +89,7 @@ const PaymentMethods = () => {
         </form>
       </Form>
     </div>
-  );
-};
+  )
+}
 
-export default PaymentMethods;
+export default PaymentMethods

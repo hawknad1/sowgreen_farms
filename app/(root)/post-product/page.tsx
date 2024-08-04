@@ -1,22 +1,22 @@
-"use client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+"use client"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { CldUploadButton } from "next-cloudinary";
-import { PhotoIcon } from "@heroicons/react/24/outline";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { CldUploadButton } from "next-cloudinary"
+import { PhotoIcon } from "@heroicons/react/24/outline"
+import { useEffect, useState } from "react"
+import Image from "next/image"
+import { useRouter } from "next/navigation"
+import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
@@ -25,19 +25,19 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { productValidation } from "@/lib/validations/product";
+} from "@/components/ui/select"
+import { productValidation } from "@/lib/validations/product"
 
 type Category = {
-  id: string;
-  categoryName: string;
-};
+  id: string
+  categoryName: string
+}
 
 const AddProduct = () => {
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
-  const [categories, setCategories] = useState<Category[]>([]);
-  const router = useRouter();
+  const [imageUrl, setImageUrl] = useState("")
+  const [publicId, setPublicId] = useState("")
+  const [categories, setCategories] = useState<Category[]>([])
+  const router = useRouter()
 
   useEffect(() => {
     async function getCategories() {
@@ -45,17 +45,17 @@ const AddProduct = () => {
         const res = await fetch("/api/categories", {
           cache: "no-store",
           method: "GET",
-        });
+        })
         if (res.ok) {
-          const categories = await res.json();
-          setCategories(categories);
+          const categories = await res.json()
+          setCategories(categories)
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     }
-    getCategories();
-  }, []);
+    getCategories()
+  }, [])
 
   const form = useForm<z.infer<typeof productValidation>>({
     resolver: zodResolver(productValidation),
@@ -65,7 +65,7 @@ const AddProduct = () => {
       description: "",
       categoryName: "",
     },
-  });
+  })
 
   const onSubmit = async (data: z.infer<typeof productValidation>) => {
     try {
@@ -76,33 +76,33 @@ const AddProduct = () => {
           ...data,
           imageUrl,
         }),
-      });
+      })
       if (res.ok) {
-        router.push("/products");
+        router.push("/products")
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   const removeImage = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
 
     try {
       const res = await fetch("/api/removeImage", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ publicId }),
-      });
+      })
 
       if (res.ok) {
-        setImageUrl("");
-        setPublicId("");
+        setImageUrl("")
+        setPublicId("")
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-  };
+  }
 
   return (
     <div className="mx-auto p-8 max-w-2xl">
@@ -179,9 +179,9 @@ const AddProduct = () => {
                 uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
                 className="h-44 w-full border-dotted border-2 mt-4 grid place-items-center bg-slate-100 rounded-md relative"
                 onSuccess={(result: any) => {
-                  setImageUrl(result?.info?.url);
-                  setPublicId(result?.info?.public_id);
-                  console.log(result);
+                  setImageUrl(result?.info?.url)
+                  setPublicId(result?.info?.public_id)
+                  console.log(result)
                 }}
               >
                 <PhotoIcon className="h-6 w-6" />
@@ -209,7 +209,7 @@ const AddProduct = () => {
         </form>
       </Form>
     </div>
-  );
-};
+  )
+}
 
-export default AddProduct;
+export default AddProduct

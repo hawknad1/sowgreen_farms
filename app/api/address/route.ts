@@ -1,11 +1,11 @@
-import prisma from "@/lib/prismadb";
-import { CheckoutSchema } from "@/schemas";
-import { NextResponse } from "next/server";
+import prisma from "@/lib/prismadb"
+import { CheckoutSchema } from "@/schemas"
+import { NextResponse } from "next/server"
 
 export async function POST(req: Request) {
   try {
     const { name, address, email, city, region, country, phone } =
-      await req.json();
+      await req.json()
     const validation = CheckoutSchema.safeParse({
       name,
       address,
@@ -14,10 +14,10 @@ export async function POST(req: Request) {
       region,
       country,
       phone,
-    });
+    })
 
     if (!validation.success) {
-      return NextResponse.json(validation.error.errors, { status: 400 });
+      return NextResponse.json(validation.error.errors, { status: 400 })
     }
 
     const customerAddress = await prisma.shippingAddress.create({
@@ -30,10 +30,10 @@ export async function POST(req: Request) {
         country,
         phone,
       },
-    });
-    return NextResponse.json(customerAddress, { status: 201 });
+    })
+    return NextResponse.json(customerAddress, { status: 201 })
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    console.log(error)
+    return NextResponse.json({ error: "Server error" }, { status: 500 })
   }
 }

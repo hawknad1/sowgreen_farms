@@ -1,10 +1,10 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -13,19 +13,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { LoginSchema } from "@/schemas";
-import { FormError } from "@/components/form-error";
-import { FormSuccess } from "@/components/form-success";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { LoginSchema } from "@/schemas"
+import { FormError } from "@/components/form-error"
+import { FormSuccess } from "@/components/form-success"
+import { signIn } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 function SignInForm() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [formError, setFormError] = useState<string | null>(null);
-  const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  const router = useRouter()
+  const [loading, setLoading] = useState(false)
+  const [formError, setFormError] = useState<string | null>(null)
+  const [formSuccess, setFormSuccess] = useState<string | null>(null)
 
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
@@ -33,26 +33,26 @@ function SignInForm() {
       email: "",
       password: "",
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof LoginSchema>) {
-    setLoading(true);
-    setFormError(null);
-    setFormSuccess(null);
+    setLoading(true)
+    setFormError(null)
+    setFormSuccess(null)
 
     const signInData = await signIn("credentials", {
       email: values.email,
       password: values.password,
       redirect: false,
-    });
+    })
 
-    setLoading(false);
+    setLoading(false)
 
     if (signInData?.error) {
-      setFormError("Incorrect email or password");
+      setFormError("Incorrect email or password")
     } else {
-      setFormSuccess("Successfully signed in!");
-      router.push("/");
+      setFormSuccess("Successfully signed in!")
+      router.push("/")
     }
   }
 
@@ -108,7 +108,7 @@ function SignInForm() {
         </Button>
       </form>
     </Form>
-  );
+  )
 }
 
-export default SignInForm;
+export default SignInForm

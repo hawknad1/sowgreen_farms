@@ -1,11 +1,11 @@
-"use client";
-import CategoryCard from "./CategoryCard";
-import { useEffect, useState } from "react";
-import HomeCategorySkeleton from "../../skeletons/HomeCategorySkeleton";
+"use client"
+import CategoryCard from "./CategoryCard"
+import { useEffect, useState } from "react"
+import HomeCategorySkeleton from "../../skeletons/HomeCategorySkeleton"
 
 const CategoryCards = () => {
-  const [categoryList, setCategoryList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [categoryList, setCategoryList] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function getCategories() {
@@ -13,19 +13,19 @@ const CategoryCards = () => {
         const res = await fetch("/api/categories", {
           method: "GET",
           cache: "no-store",
-        });
+        })
 
         if (res.ok) {
-          const categories = await res.json();
-          setCategoryList(categories);
-          setIsLoading(false);
+          const categories = await res.json()
+          setCategoryList(categories)
+          setIsLoading(false)
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     }
-    getCategories();
-  }, []);
+    getCategories()
+  }, [])
 
   return (
     <>
@@ -39,7 +39,7 @@ const CategoryCards = () => {
         </div>
       )}
     </>
-  );
-};
+  )
+}
 
-export default CategoryCards;
+export default CategoryCards

@@ -1,36 +1,36 @@
-"use client";
-import ProductCard from "@/components/cards/product/ProductCard";
-import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton";
-import { Product } from "@/typings/productTypings";
-import React, { useEffect, useState } from "react";
+"use client"
+import ProductCard from "@/components/cards/product/ProductCard"
+import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
+import { Product } from "@/types"
+import React, { useEffect, useState } from "react"
 
 type Props = {
   searchParams: {
-    q: string;
-  };
-};
+    q: string
+  }
+}
 
 const Category = ({ searchParams: { q } }: Props) => {
-  const [productsByCategory, setProductsByCategory] = useState<Product[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [productsByCategory, setProductsByCategory] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const catProducts = productsByCategory[0]?.products;
+  const catProducts = productsByCategory[0]?.products
   useEffect(() => {
     const fetchProductsByCategory = async (catName: string) => {
       try {
-        const res = await fetch(`/api/categories/${catName}`);
+        const res = await fetch(`/api/categories/${catName}`)
         if (!res.ok) {
-          throw new Error(`Error: ${res.status}`);
+          throw new Error(`Error: ${res.status}`)
         }
-        const data = await res.json();
-        setProductsByCategory(data);
-        setIsLoading(false);
+        const data = await res.json()
+        setProductsByCategory(data)
+        setIsLoading(false)
       } catch (error) {
-        console.error("Failed to fetch products:", error);
+        console.error("Failed to fetch products:", error)
       }
-    };
-    fetchProductsByCategory(q);
-  }, [q]);
+    }
+    fetchProductsByCategory(q)
+  }, [q])
 
   return (
     <main className="container mx-auto py-8 flex-1">
@@ -51,7 +51,7 @@ const Category = ({ searchParams: { q } }: Props) => {
         </div>
       </div>
     </main>
-  );
-};
+  )
+}
 
-export default Category;
+export default Category

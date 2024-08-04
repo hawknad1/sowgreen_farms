@@ -1,12 +1,12 @@
 export default function getInitials(name: string) {
   // Split the name by spaces
-  const nameParts = name.split(" ");
+  const nameParts = name.split(" ")
 
   // Map through each part and take the first letter
-  const initials = nameParts.map((part) => part.charAt(0).toUpperCase());
+  const initials = nameParts.map((part) => part.charAt(0).toUpperCase())
 
   // Join the initials together
-  return initials.join("");
+  return initials.join("")
 }
 
 // Example usage

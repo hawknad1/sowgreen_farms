@@ -1,38 +1,38 @@
-"use client";
-import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
-import { useCartStore } from "@/store";
-import { getCartTotal } from "@/lib/getCartTotal";
-import { Separator } from "@/components/ui/separator";
-import Card from "./Card";
-import CartDisplay from "./CartDisplay";
-import { Button } from "@/components/ui/button";
+"use client"
+import { useRouter, useSearchParams } from "next/navigation"
+import React from "react"
+import { useCartStore } from "@/store"
+import { getCartTotal } from "@/lib/getCartTotal"
+import { Separator } from "@/components/ui/separator"
+import Card from "./Card"
+import CartDisplay from "./CartDisplay"
+import { Button } from "@/components/ui/button"
 
 const ConfirmOrderPage = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const cart = useCartStore((state) => state.cart);
-  const basketTotal = getCartTotal(cart);
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const cart = useCartStore((state) => state.cart)
+  const basketTotal = getCartTotal(cart)
 
-  const now = new Date();
+  const now = new Date()
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "long",
     day: "numeric",
-  };
-  const date = now.toLocaleDateString("en-US", options);
+  }
+  const date = now.toLocaleDateString("en-US", options)
 
   const timeOptions: Intl.DateTimeFormatOptions = {
     hour: "2-digit",
     minute: "2-digit",
-  };
-  const time = now.toLocaleTimeString("en-US", timeOptions);
+  }
+  const time = now.toLocaleTimeString("en-US", timeOptions)
 
-  const formData = Object.fromEntries(searchParams.entries());
+  const formData = Object.fromEntries(searchParams.entries())
 
   return (
     <div className="container mx-auto min-h-screen p-8 bg-gray-100">
-      <div className="mx-auto bg-white shadow-lg rounded-lg p-6 max-w-4xl">
+      <div className="mx-auto bg-white shadow-md rounded-lg p-6 max-w-4xl">
         <h2 className="text-2xl font-bold mb-6 text-center">
           Confirm Order & Pay
         </h2>
@@ -124,7 +124,7 @@ const ConfirmOrderPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ConfirmOrderPage;
+export default ConfirmOrderPage

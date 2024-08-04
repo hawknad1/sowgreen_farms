@@ -1,3 +1,5 @@
+import { Payment } from "@/types"
+
 export const productCard = [
   {
     id: 1,
@@ -89,7 +91,7 @@ export const productCard = [
     price: 24,
     badge: "red",
   },
-];
+]
 
 export const categoryCard = [
   {
@@ -172,7 +174,7 @@ export const categoryCard = [
     price: 24,
     badge: "red",
   },
-];
+]
 
 export const menuLinks = [
   {
@@ -195,7 +197,7 @@ export const menuLinks = [
     title: "About",
     href: "/about",
   },
-];
+]
 
 export const accordion = [
   {
@@ -237,41 +239,41 @@ export const accordion = [
     description:
       "Leafy greens like spinach, kale, and lettuce are nutrient-dense.",
   },
-];
+]
 
 export const accountLinks = [
   { id: 1, title: "Login", href: "/login" },
   { id: 2, title: "View Cart", href: "/cart" },
   { id: 3, title: "My Order", href: "/orders" },
   { id: 4, title: "Contact Us", href: "/contact" },
-];
+]
 
 export const companyLinks = [
   { id: 1, title: "About Us", href: "/about" },
   { id: 2, title: "Privacy Policy", href: "/privacy" },
   { id: 3, title: "Terms & Conditions", href: "/terms" },
   { id: 4, title: "Careers", href: "/careers" },
-];
+]
 
 export const helpfulLinks = [
   { id: 1, title: "Help", href: "/about" },
   { id: 2, title: "FAQs", href: "/privacy" },
   { id: 3, title: "Live Chat", href: "/terms" },
   { id: 4, title: "Refund Policy", href: "/careers" },
-];
+]
 
 export const footerLeftLinks = [
   { id: 1, title: "Terms & Conditions", href: "/terms" },
   { id: 2, title: "Privacy Policy", href: "/privacy" },
   { id: 3, title: "Cookies", href: "/cookies" },
-];
+]
 
 export const paymentLinks = [
   { id: 1, image: "/images/mtn.png" },
   { id: 2, image: "/images/paypal.png" },
   { id: 3, image: "/images/visa.png" },
   { id: 4, image: "/images/mastercard.png" },
-];
+]
 
 export const socialLinks = [
   {
@@ -289,7 +291,7 @@ export const socialLinks = [
     svg: "",
     href: "",
   },
-];
+]
 
 export const smallImage = [
   {
@@ -308,4 +310,106 @@ export const smallImage = [
     id: 4,
     imageUrl: "/images/meat.png",
   },
-];
+]
+
+export const data: Payment[] = [
+  {
+    id: "m5gr84i9",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 316,
+    payment: "success",
+    email: "ken99@yahoo.com",
+  },
+  {
+    id: "3u1reuv4",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 242,
+    payment: "success",
+    email: "Abe45@gmail.com",
+  },
+  {
+    id: "derv1ws0",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 837,
+    payment: "processing",
+    email: "Monserrat44@gmail.com",
+  },
+  {
+    id: "5kma53ae",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 874,
+    payment: "success",
+    email: "Silas22@gmail.com",
+  },
+  {
+    id: "bhqecj4p",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 721,
+    payment: "failed",
+    email: "carmella@hotmail.com",
+  },
+  {
+    id: "bhqecj4p",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 721,
+    payment: "failed",
+    email: "carmella@hotmail.com",
+  },
+  {
+    id: "bhqecj4p",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 721,
+    payment: "failed",
+    email: "carmella@hotmail.com",
+  },
+  {
+    id: "bhqecj4p",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 721,
+    payment: "failed",
+    email: "carmella@hotmail.com",
+  },
+  {
+    id: "bhqecj4p",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 721,
+    payment: "failed",
+    email: "carmella@hotmail.com",
+  },
+  {
+    id: "bhqecj4p",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 721,
+    payment: "failed",
+    email: "carmella@hotmail.com",
+  },
+  {
+    id: "bhqecj4p",
+    order: "#SG28934",
+    date: "11 Feb,2024",
+    customer: "Kwaku Dankwah",
+    amount: 721,
+    payment: "failed",
+    email: "carmella@hotmail.com",
+  },
+]

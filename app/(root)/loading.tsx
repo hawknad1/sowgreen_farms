@@ -1,5 +1,5 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import React from "react";
+import { Skeleton } from "@/components/ui/skeleton"
+import React from "react"
 
 const Loading = () => {
   return (
@@ -58,7 +58,7 @@ const Loading = () => {
           <Testimonials />
         </section> */}
     </div>
-  );
-};
+  )
+}
 
-export default Loading;
+export default Loading

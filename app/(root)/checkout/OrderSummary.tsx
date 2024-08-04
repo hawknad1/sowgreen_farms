@@ -1,23 +1,23 @@
-"use client";
-import AddToCart from "@/components/basket/AddToCart";
-import { getCartTotal } from "@/lib/getCartTotal";
-import groupById from "@/lib/groupById";
-import { useCartStore } from "@/store";
-import Image from "next/image";
-import React from "react";
+"use client"
+import AddToCart from "@/components/basket/AddToCart"
+import { getCartTotal } from "@/lib/getCartTotal"
+import groupById from "@/lib/groupById"
+import { useCartStore } from "@/store"
+import Image from "next/image"
+import React from "react"
 
 const OrderSummary = () => {
-  const cart = useCartStore((state) => state.cart);
-  const grouped = groupById(cart);
-  const basketTotal = getCartTotal(cart);
+  const cart = useCartStore((state) => state.cart)
+  const grouped = groupById(cart)
+  const basketTotal = getCartTotal(cart)
 
   return (
     <div className="flex flex-col justify-between h-fit rounded-md  ">
       <div className="overflow-y-auto overflow-scroll max-h-[400px] scrollbar-hide">
         <ul className="divide-y divide-neutral-200">
           {Object.keys(grouped).map((id) => {
-            const item = grouped[id][0];
-            const total = getCartTotal(grouped[id]);
+            const item = grouped[id][0]
+            const total = getCartTotal(grouped[id])
 
             return (
               <li
@@ -48,7 +48,7 @@ const OrderSummary = () => {
                   </div>
                 </div>
               </li>
-            );
+            )
           })}
         </ul>
       </div>
@@ -69,7 +69,7 @@ const OrderSummary = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default OrderSummary;
+export default OrderSummary

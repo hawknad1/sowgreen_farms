@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const SideMenu = () => {
   return (
@@ -96,7 +96,7 @@ const SideMenu = () => {
         </li>
       </ul>
     </div>
-  );
-};
+  )
+}
 
-export default SideMenu;
+export default SideMenu

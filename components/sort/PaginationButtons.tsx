@@ -1,5 +1,5 @@
-"use client";
-import React, { useEffect, useState } from "react";
+"use client"
+import React, { useEffect, useState } from "react"
 import {
   Select,
   SelectContent,
@@ -8,23 +8,23 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/select"
 
-import { getCategories } from "@/lib/utils";
-import { Product } from "@/typings/productTypings";
-import { useCategoryState } from "@/hooks/state";
+import { getCategories } from "@/lib/utils"
+import { useCategoryState } from "@/hooks/state"
+import { Product } from "@/types"
 
 const PaginationButtons = () => {
-  const [categories, setCategories] = useState<Product[]>([]);
-  const { setSelected } = useCategoryState();
+  const [categories, setCategories] = useState<Product[]>([])
+  const { setSelected } = useCategoryState()
 
   useEffect(() => {
     const AllCategories = async () => {
-      const categories = await getCategories();
-      setCategories(categories);
-    };
-    AllCategories();
-  }, []);
+      const categories = await getCategories()
+      setCategories(categories)
+    }
+    AllCategories()
+  }, [])
 
   return (
     <div className="flex items-center justify-between w-full">
@@ -91,7 +91,7 @@ const PaginationButtons = () => {
         </SelectContent>
       </Select>
     </div>
-  );
-};
+  )
+}
 
-export default PaginationButtons;
+export default PaginationButtons

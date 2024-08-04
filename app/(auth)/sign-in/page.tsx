@@ -1,7 +1,7 @@
-import SignInForm from "@/components/forms/SignInForm";
-import { GoogleAuth } from "@/components/social-auths/GoogleAuth";
-import Image from "next/image";
-import React from "react";
+import SignInForm from "@/components/forms/SignInForm"
+import { GoogleAuth } from "@/components/social-auths/GoogleAuth"
+import Image from "next/image"
+import React from "react"
 
 const SignIn = () => {
   return (
@@ -41,7 +41,7 @@ const SignIn = () => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SignIn;
+export default SignIn

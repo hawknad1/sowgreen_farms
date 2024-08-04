@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const NotFound = () => {
   return (
@@ -30,7 +30,7 @@ const NotFound = () => {
         <p className="mt-4 text-gray-500">We can't find that page.</p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default NotFound;
+export default NotFound

@@ -1,5 +1,5 @@
-import React from "react";
-import { Input } from "../ui/input";
+import React from "react"
+import { Input } from "../ui/input"
 
 const Subscribe = () => {
   return (
@@ -24,7 +24,7 @@ const Subscribe = () => {
         </div>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Subscribe;
+export default Subscribe

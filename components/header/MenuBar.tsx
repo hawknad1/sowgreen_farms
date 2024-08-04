@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import {
   Menubar,
@@ -14,27 +14,27 @@ import {
   MenubarSubContent,
   MenubarSubTrigger,
   MenubarTrigger,
-} from "@/components/ui/menubar";
-import React, { useEffect, useState } from "react";
+} from "@/components/ui/menubar"
+import React, { useEffect, useState } from "react"
 
 const MenuBar = () => {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([])
 
   useEffect(() => {
     async function getCategories() {
       try {
-        const res = await fetch("/api/categories");
+        const res = await fetch("/api/categories")
 
         if (res.ok) {
-          const categories = await res.json();
-          setCategories(categories);
+          const categories = await res.json()
+          setCategories(categories)
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     }
-    getCategories();
-  }, []);
+    getCategories()
+  }, [])
   return (
     <Menubar>
       <MenubarMenu>
@@ -78,7 +78,7 @@ const MenuBar = () => {
         <MenubarTrigger className="p-2 px-4">Blog</MenubarTrigger>
       </MenubarMenu>
     </Menubar>
-  );
-};
+  )
+}
 
-export default MenuBar;
+export default MenuBar

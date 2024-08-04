@@ -1,25 +1,25 @@
-"use client";
-import Image from "next/image";
-import { Button } from "../../ui/button";
+"use client"
+import Image from "next/image"
+import { Button } from "../../ui/button"
 import {
   HeartIcon,
   ClipboardDocumentListIcon,
-} from "@heroicons/react/24/outline";
-import Ratings from "../../Ratings";
-import { useRouter } from "next/navigation";
-import AddToCart from "../../basket/AddToCart";
-import { Product } from "@/typings/productTypings";
-import { useCartStore } from "@/store";
-import { getCartTotal } from "@/lib/getCartTotal";
+} from "@heroicons/react/24/outline"
+import Ratings from "../../Ratings"
+import { useRouter } from "next/navigation"
+import AddToCart from "../../basket/AddToCart"
+import { useCartStore } from "@/store"
+import { getCartTotal } from "@/lib/getCartTotal"
+import { Product } from "@/types"
 
 interface Props {
-  product: Product;
+  product: Product
 }
 
 const ProductDetailCard = ({ product }: Props) => {
-  const router = useRouter();
-  const cart = useCartStore((state) => state.cart);
-  const total = getCartTotal(cart);
+  const router = useRouter()
+  const cart = useCartStore((state) => state.cart)
+  const total = getCartTotal(cart)
 
   return (
     <div className="container mx-auto py-8">
@@ -92,7 +92,7 @@ const ProductDetailCard = ({ product }: Props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductDetailCard;
+export default ProductDetailCard

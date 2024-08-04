@@ -1,11 +1,10 @@
-"use client";
-import React from "react";
-import { Button } from "../ui/button";
-
-import { useRouter } from "next/navigation";
+"use client"
+import React from "react"
+import { Button } from "../ui/button"
+import { useRouter } from "next/navigation"
 
 const SignInButton = () => {
-  const router = useRouter();
+  const router = useRouter()
   return (
     <Button
       variant="outline"
@@ -14,7 +13,7 @@ const SignInButton = () => {
     >
       Log In
     </Button>
-  );
-};
+  )
+}
 
-export default SignInButton;
+export default SignInButton

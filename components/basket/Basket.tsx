@@ -1,26 +1,26 @@
-"use client";
-import { getCartTotal } from "@/lib/getCartTotal";
-import groupById from "@/lib/groupById";
-import { useCartStore } from "@/store";
-import Image from "next/image";
-import React, { useState } from "react";
-import AddToCart from "./AddToCart";
-import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
+"use client"
+import { getCartTotal } from "@/lib/getCartTotal"
+import groupById from "@/lib/groupById"
+import { useCartStore } from "@/store"
+import Image from "next/image"
+import React, { useState } from "react"
+import AddToCart from "./AddToCart"
+import { Button } from "../ui/button"
+import { useRouter } from "next/navigation"
 
 const Basket = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const cart = useCartStore((state) => state.cart);
-  const grouped = groupById(cart);
-  const basketTotal = getCartTotal(cart);
-  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false)
+  const cart = useCartStore((state) => state.cart)
+  const grouped = groupById(cart)
+  const basketTotal = getCartTotal(cart)
+  const router = useRouter()
 
   return (
     <div className="w-fit">
       <ul className="divide-y-[2px] w-fit">
         {Object.keys(grouped).map((id) => {
-          const item = grouped[id][0];
-          const total = getCartTotal(grouped[id]);
+          const item = grouped[id][0]
+          const total = getCartTotal(grouped[id])
 
           return (
             <li
@@ -51,7 +51,7 @@ const Basket = () => {
                 </div>
               </div>
             </li>
-          );
+          )
         })}
       </ul>
       {cart.length <= 0 ? (
@@ -65,7 +65,7 @@ const Basket = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Basket;
+export default Basket

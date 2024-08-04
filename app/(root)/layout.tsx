@@ -1,27 +1,27 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import Navbar from "@/components/header/Navbar";
-import Footer from "@/components/footer/Footer";
-import { auth } from "@/auth";
-import { SessionProvider } from "next-auth/react";
-import "../globals.css";
-import { redirect } from "next/navigation";
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import Navbar from "@/components/header/Navbar"
+import Footer from "@/components/footer/Footer"
+import { auth } from "@/auth"
+import { SessionProvider } from "next-auth/react"
+import "../globals.css"
+import { redirect } from "next/navigation"
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Sowgreen Farms",
   description: "Get your organic farm produce",
-};
+}
 
 export default async function RootLayout({
   children,
   modal,
 }: Readonly<{
-  children: React.ReactNode;
-  modal: React.ReactNode;
+  children: React.ReactNode
+  modal: React.ReactNode
 }>) {
-  const session = await auth();
+  const session = await auth()
   return (
     <html lang="en">
       <SessionProvider>
@@ -37,5 +37,5 @@ export default async function RootLayout({
         </body>
       </SessionProvider>
     </html>
-  );
+  )
 }

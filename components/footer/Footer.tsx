@@ -4,12 +4,12 @@ import {
   footerLeftLinks,
   helpfulLinks,
   paymentLinks,
-} from "@/constants";
-import Image from "next/image";
-import Link from "next/link";
-import React from "react";
-import Subscribe from "./Subscribe";
-import Socials from "./Socials";
+} from "@/constants"
+import Image from "next/image"
+import Link from "next/link"
+import React from "react"
+import Subscribe from "./Subscribe"
+import Socials from "./Socials"
 
 const Footer = () => {
   return (
@@ -110,7 +110,7 @@ const Footer = () => {
         <div className="mt-4 border-t border-gray-100 pt-4">
           <div className="sm:flex sm:justify-between">
             <p className="text-xs text-gray-500">
-              &copy; 2024. Sowgreen Farms. All rights reserved.
+              &copy 2024. Sowgreen Farms. All rights reserved.
             </p>
 
             <div className="mt-8 flex flex-wrap justify-start gap-4 text-xs sm:mt-0 lg:justify-end">
@@ -128,7 +128,7 @@ const Footer = () => {
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

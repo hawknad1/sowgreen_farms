@@ -1,27 +1,24 @@
-"use client";
-import {
-  CldUploadWidget,
-  CloudinaryUploadWidgetResults,
-} from "next-cloudinary";
-import Image from "next/image";
-import React, { useState } from "react";
+"use client"
+import { CldUploadWidget, CloudinaryUploadWidgetResults } from "next-cloudinary"
+import Image from "next/image"
+import React, { useState } from "react"
 
 const CloudinaryWidget = () => {
-  const [imageUrl, setImageUrl] = useState("");
-  const [publicId, setPublicId] = useState("");
+  const [imageUrl, setImageUrl] = useState("")
+  const [publicId, setPublicId] = useState("")
 
   const handleImageUpload = (result: CloudinaryUploadWidgetResults) => {
-    console.log("result", result);
-    const info = result as object;
+    console.log("result", result)
+    const info = result as object
     if ("secure_url" in info && "public_id" in info) {
-      const url = info.secure_url as string;
-      const public_id = info.public_id as string;
-      setImageUrl(url);
-      setPublicId(public_id);
-      console.log("url:", url);
-      console.log("publicId: ", publicId);
+      const url = info.secure_url as string
+      const public_id = info.public_id as string
+      setImageUrl(url)
+      setPublicId(public_id)
+      console.log("url:", url)
+      console.log("publicId: ", publicId)
     }
-  };
+  }
 
   return (
     <div>
@@ -29,9 +26,9 @@ const CloudinaryWidget = () => {
       <CldUploadWidget
         uploadPreset="sowgreen"
         onSuccess={(result: any) => {
-          setImageUrl(result?.info?.url);
-          setPublicId(result?.info?.public_id);
-          console.log(result);
+          setImageUrl(result?.info?.url)
+          setPublicId(result?.info?.public_id)
+          console.log(result)
         }}
       >
         {({ open }) => {
@@ -47,13 +44,13 @@ const CloudinaryWidget = () => {
                 />
               )}
             </>
-          );
+          )
         }}
       </CldUploadWidget>
       <p>{imageUrl}</p>
       <p>helloo</p>
     </div>
-  );
-};
+  )
+}
 
-export default CloudinaryWidget;
+export default CloudinaryWidget

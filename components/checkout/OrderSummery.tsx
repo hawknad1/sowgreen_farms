@@ -1,12 +1,12 @@
-"use client";
-import { getCartTotal } from "@/lib/getCartTotal";
-import { useCartStore } from "@/store";
-import React from "react";
-import { Separator } from "../ui/separator";
+"use client"
+import { getCartTotal } from "@/lib/getCartTotal"
+import { useCartStore } from "@/store"
+import React from "react"
+import { Separator } from "../ui/separator"
 
 const OrderSummery = () => {
-  const cart = useCartStore((state) => state.cart);
-  const total = getCartTotal(cart);
+  const cart = useCartStore((state) => state.cart)
+  const total = getCartTotal(cart)
   return (
     <div className="">
       <h2 className="text-lg font-semibold divide-y-4 divide-black ">
@@ -32,7 +32,7 @@ const OrderSummery = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default OrderSummery;
+export default OrderSummery

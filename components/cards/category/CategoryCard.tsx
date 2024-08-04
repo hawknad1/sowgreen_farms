@@ -1,8 +1,8 @@
-"use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { Product } from "@/typings/productTypings";
+"use client"
+import React, { useEffect, useState } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { Product } from "@/types"
 
 const CategoryCard = ({ data }: { data: Product }) => {
   return (
@@ -29,7 +29,7 @@ const CategoryCard = ({ data }: { data: Product }) => {
         </div>
       </div>
     </Link>
-  );
-};
+  )
+}
 
-export default CategoryCard;
+export default CategoryCard

@@ -1,5 +1,5 @@
-import Image from "next/image";
-import React from "react";
+import Image from "next/image"
+import React from "react"
 
 const Testimonials = () => {
   return (
@@ -23,7 +23,7 @@ const Testimonials = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Testimonials;
+export default Testimonials

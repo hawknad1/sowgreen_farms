@@ -1,20 +1,18 @@
-"use client";
-import { getCartTotal } from "@/lib/getCartTotal";
-import groupById from "@/lib/groupById";
-import { useCartStore } from "@/store";
-import Image from "next/image";
-import React from "react";
-import AddToCart from "./AddToCart";
-import { Button } from "../ui/button";
-import CheckoutBox from "../checkout/CheckoutBox";
-import { ChevronLeftIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
+"use client"
+import { Button } from "../ui/button"
+import { useRouter } from "next/navigation"
+import { getCartTotal } from "@/lib/getCartTotal"
+import { useCartStore } from "@/store"
+import Image from "next/image"
+import React from "react"
+import AddToCart from "./AddToCart"
+import groupById from "@/lib/groupById"
 
 const BasketPopup = () => {
-  const cart = useCartStore((state) => state.cart);
-  const grouped = groupById(cart);
-  const basketTotal = getCartTotal(cart);
-  const router = useRouter();
+  const cart = useCartStore((state) => state.cart)
+  const grouped = groupById(cart)
+  const basketTotal = getCartTotal(cart)
+  const router = useRouter()
 
   return (
     <div className="">
@@ -24,8 +22,8 @@ const BasketPopup = () => {
         <div className={`w-fit`}>
           <ul className="divide-y-[2px] w-fit">
             {Object.keys(grouped).map((id) => {
-              const item = grouped[id][0];
-              const total = getCartTotal(grouped[id]);
+              const item = grouped[id][0]
+              const total = getCartTotal(grouped[id])
 
               return (
                 <li
@@ -56,7 +54,7 @@ const BasketPopup = () => {
                     </div>
                   </div>
                 </li>
-              );
+              )
             })}
           </ul>
           <div className="flex flex-col justify-end p-5">
@@ -68,7 +66,7 @@ const BasketPopup = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default BasketPopup;
+export default BasketPopup

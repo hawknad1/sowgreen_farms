@@ -1,4 +1,4 @@
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../ui/skeleton"
 
 const LoadProductDetail = () => {
   return (
@@ -50,7 +50,7 @@ const LoadProductDetail = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoadProductDetail;
+export default LoadProductDetail

@@ -1,7 +1,7 @@
-"use client";
+"use client"
 
-import SignInForm from "@/components/forms/SignInForm";
-import { GoogleAuth } from "@/components/social-auths/GoogleAuth";
+import SignInForm from "@/components/forms/SignInForm"
+import { GoogleAuth } from "@/components/social-auths/GoogleAuth"
 import {
   Dialog,
   DialogContent,
@@ -10,22 +10,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { useRouter } from "next/navigation";
-import React from "react";
+} from "@/components/ui/dialog"
+import { useRouter } from "next/navigation"
+import React from "react"
 
 const SingInInterception = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   function onDismiss() {
-    router.back();
+    router.back()
   }
   return (
     <Dialog
       open
       onOpenChange={(isOpen) => {
         if (!isOpen) {
-          onDismiss();
+          onDismiss()
         }
       }}
     >
@@ -49,7 +49,7 @@ const SingInInterception = () => {
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default SingInInterception;
+export default SingInInterception

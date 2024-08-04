@@ -1,7 +1,7 @@
-import React from "react";
-import { CheckoutForm } from "./CheckoutForm";
-import OrderSummary from "./OrderSummary";
-import PaymentMethods from "./PaymentMethods";
+import React from "react"
+import { CheckoutForm } from "./CheckoutForm"
+import OrderSummary from "./OrderSummary"
+import PaymentMethods from "./PaymentMethods"
 
 const CheckoutPage = () => {
   return (
@@ -15,7 +15,7 @@ const CheckoutPage = () => {
         </div> */}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CheckoutPage;
+export default CheckoutPage

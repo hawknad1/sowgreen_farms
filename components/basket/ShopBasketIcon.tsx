@@ -1,13 +1,13 @@
-"use client";
-import { useCartStore } from "@/store";
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
-import React from "react";
+"use client"
+import React from "react"
+import { useCartStore } from "@/store"
+import { ShoppingCartIcon } from "@heroicons/react/24/outline"
+import { useRouter } from "next/navigation"
 
 const ShopBasketIcon = () => {
-  const router = useRouter();
-  const cart = useCartStore((state) => state.cart);
-  const quantity = cart.length;
+  const router = useRouter()
+  const cart = useCartStore((state) => state.cart)
+  const quantity = cart.length
   return (
     <div
       onClick={() => router.push("/basket")}
@@ -22,7 +22,7 @@ const ShopBasketIcon = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default ShopBasketIcon;
+export default ShopBasketIcon

@@ -1,8 +1,8 @@
-import Image from "next/image";
-import React from "react";
+import Image from "next/image"
+import React from "react"
 
 interface Props {
-  product: any;
+  product: any
 }
 
 const SmallDetailImage = ({ product }: Props) => {
@@ -33,7 +33,7 @@ const SmallDetailImage = ({ product }: Props) => {
         height={100}
       />
     </div>
-  );
-};
+  )
+}
 
-export default SmallDetailImage;
+export default SmallDetailImage

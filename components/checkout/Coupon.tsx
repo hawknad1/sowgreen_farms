@@ -1,11 +1,11 @@
-import React from "react";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
+import React from "react"
+import { Button } from "../ui/button"
+import { Separator } from "../ui/separator"
 
 const Coupon = () => {
   // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  // };
+  //   e.preventDefault()
+  // }
   return (
     <div className="flex flex-col gap-2">
       <h2 className="text-lg font-semibold">Coupon Code</h2>
@@ -19,7 +19,7 @@ const Coupon = () => {
         <Button variant="outline">Apply Your Coupon</Button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default Coupon;
+export default Coupon

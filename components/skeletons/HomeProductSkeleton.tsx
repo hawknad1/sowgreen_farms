@@ -1,5 +1,5 @@
-import React from "react";
-import { Skeleton } from "../ui/skeleton";
+import React from "react"
+import { Skeleton } from "../ui/skeleton"
 
 const HomeProductSkeleton = () => {
   return (
@@ -11,7 +11,7 @@ const HomeProductSkeleton = () => {
       <Skeleton className="w-48 h-64 rounded-lg" />
       <Skeleton className="w-48 h-64 rounded-lg" />
     </div>
-  );
-};
+  )
+}
 
-export default HomeProductSkeleton;
+export default HomeProductSkeleton

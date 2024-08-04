@@ -1,5 +1,5 @@
-import { StarIcon } from "@heroicons/react/16/solid";
-import React from "react";
+import { StarIcon } from "@heroicons/react/16/solid"
+import React from "react"
 
 const Ratings = () => {
   return (
@@ -14,7 +14,7 @@ const Ratings = () => {
         Rating 4.5 <span className="text-neutral-500">(1.2K Reviews)</span>
       </p>
     </div>
-  );
-};
+  )
+}
 
-export default Ratings;
+export default Ratings

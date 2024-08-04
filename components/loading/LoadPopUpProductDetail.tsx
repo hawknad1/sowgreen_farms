@@ -1,5 +1,5 @@
-import React from "react";
-import { Skeleton } from "../ui/skeleton";
+import React from "react"
+import { Skeleton } from "../ui/skeleton"
 
 const LoadPopUpProductDetail = () => {
   return (
@@ -24,7 +24,7 @@ const LoadPopUpProductDetail = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoadPopUpProductDetail;
+export default LoadPopUpProductDetail

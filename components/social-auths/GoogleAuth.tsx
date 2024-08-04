@@ -1,8 +1,8 @@
-"use client";
-import React from "react";
-import { Button } from "@/components/ui/button";
-import { FcGoogle } from "react-icons/fc";
-import { login } from "@/actions/auth";
+"use client"
+import React from "react"
+import { Button } from "@/components/ui/button"
+import { FcGoogle } from "react-icons/fc"
+import { login } from "@/actions/auth"
 
 export const GoogleAuth = () => {
   return (
@@ -17,5 +17,5 @@ export const GoogleAuth = () => {
         Continue with Google
       </Button>
     </div>
-  );
-};
+  )
+}

@@ -1,5 +1,5 @@
-import Image from "next/image";
-import React from "react";
+import Image from "next/image"
+import React from "react"
 
 const MiddleCard = () => {
   return (
@@ -49,7 +49,7 @@ const MiddleCard = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default MiddleCard;
+export default MiddleCard

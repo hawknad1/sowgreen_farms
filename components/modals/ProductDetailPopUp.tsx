@@ -1,25 +1,25 @@
-"use client";
+"use client"
 
-import Image from "next/image";
+import Image from "next/image"
 import {
   HeartIcon,
   ClipboardDocumentListIcon,
-} from "@heroicons/react/24/outline";
-import Ratings from "../Ratings";
-import { useRouter } from "next/navigation";
-import AddToCart from "../basket/AddToCart";
-import { Product } from "@/typings/productTypings";
-import { useCartStore } from "@/store";
-import { getCartTotal } from "@/lib/getCartTotal";
+} from "@heroicons/react/24/outline"
+import Ratings from "../Ratings"
+import { useRouter } from "next/navigation"
+import AddToCart from "../basket/AddToCart"
+import { useCartStore } from "@/store"
+import { getCartTotal } from "@/lib/getCartTotal"
+import { Product } from "@/types"
 
 interface Props {
-  product: Product;
+  product: Product
 }
 
 const ProductDetailPopUp = ({ product }: Props) => {
-  const router = useRouter();
-  const cart = useCartStore((state) => state.cart);
-  const total = getCartTotal(cart);
+  const router = useRouter()
+  const cart = useCartStore((state) => state.cart)
+  const total = getCartTotal(cart)
 
   return (
     <div className="flex items-center gap-4">
@@ -61,7 +61,7 @@ const ProductDetailPopUp = ({ product }: Props) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductDetailPopUp;
+export default ProductDetailPopUp

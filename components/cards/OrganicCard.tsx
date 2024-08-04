@@ -1,13 +1,13 @@
-import Image from "next/image";
-import React from "react";
+import Image from "next/image"
+import React from "react"
 
-import { accordion } from "@/constants";
+import { accordion } from "@/constants"
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "../ui/accordion";
+} from "../ui/accordion"
 
 const OrganicCard = () => {
   return (
@@ -46,7 +46,7 @@ const OrganicCard = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default OrganicCard;
+export default OrganicCard

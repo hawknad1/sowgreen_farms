@@ -1,4 +1,4 @@
-"use client";
+"use client"
 import {
   Select,
   SelectContent,
@@ -7,42 +7,42 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { useEffect, useState } from "react";
+} from "@/components/ui/select"
+import { useEffect, useState } from "react"
 
 type Category = {
-  id: string;
-  categoryName: string;
-};
+  id: string
+  categoryName: string
+}
 
 interface DropdownSelectProps {
-  setSelectedCategory: any;
+  setSelectedCategory: any
 }
 
 export default function DropdownSelect({
   setSelectedCategory,
 }: DropdownSelectProps) {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categories, setCategories] = useState<Category[]>([])
   async function getCategories() {
     try {
       const res = await fetch("http://localhost:3000/api/categories", {
         cache: "no-store",
         method: "GET",
-      });
+      })
       if (res.ok) {
-        const categories = await res.json();
-        setCategories(categories);
-        return categories;
+        const categories = await res.json()
+        setCategories(categories)
+        return categories
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
-    return null;
+    return null
   }
 
   useEffect(() => {
-    getCategories();
-  }, []);
+    getCategories()
+  }, [])
 
   return (
     <Select>
@@ -64,5 +64,5 @@ export default function DropdownSelect({
         </SelectGroup>
       </SelectContent>
     </Select>
-  );
+  )
 }

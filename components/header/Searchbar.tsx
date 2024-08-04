@@ -1,23 +1,23 @@
-"use client";
-import React, { FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
-import { MagnifyingGlassIcon } from "@heroicons/react/20/solid";
+"use client"
+import React, { FormEvent, useState } from "react"
+import { useRouter } from "next/navigation"
+import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
 
 const Searchbar = () => {
-  const router = useRouter();
-  const [search, setSearch] = useState("");
+  const router = useRouter()
+  const [search, setSearch] = useState("")
 
   // const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
+  //   e.preventDefault()
 
-  //   const formData = new FormData(e.currentTarget);
-  //   const name = formData.get("search") as string;
+  //   const formData = new FormData(e.currentTarget)
+  //   const name = formData.get("search") as string
 
   //   if (name) {
-  //     router.push(`/products?name=${name}`);
+  //     router.push(`/products?name=${name}`)
   //   }
-  // };
-  console.log(search);
+  // }
+  console.log(search)
 
   return (
     <form
@@ -34,7 +34,7 @@ const Searchbar = () => {
         <MagnifyingGlassIcon className="lg:h-6 lg:w-6 h-5 w-5 cursor-pointer text-white" />
       </div>
     </form>
-  );
-};
+  )
+}
 
-export default Searchbar;
+export default Searchbar

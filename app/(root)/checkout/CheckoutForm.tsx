@@ -1,11 +1,11 @@
-"use client";
+"use client"
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { PaystackButton } from "react-paystack";
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { z } from "zod"
+import { PaystackButton } from "react-paystack"
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -14,32 +14,32 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { CheckoutSchema } from "@/schemas";
-import { useEffect, useState } from "react";
-import { useCartStore } from "@/store";
-import { getCartTotal } from "@/lib/getCartTotal";
-import OrderSummary from "./OrderSummary";
-import { useRouter } from "next/navigation";
+} from "@/components/ui/form"
+import { Input } from "@/components/ui/input"
+import { CheckoutSchema } from "@/schemas"
+import { useEffect, useState } from "react"
+import { useCartStore } from "@/store"
+import { getCartTotal } from "@/lib/getCartTotal"
+import OrderSummary from "./OrderSummary"
+import { useRouter } from "next/navigation"
 
 const config = {
   reference: new Date().getTime().toString(),
   email: "dankwahthomas@yahoo.com",
   amount: 10.0,
   publicKey: "pk_test_4999951f032c0b318c0206a4cfba8b93593997b0",
-};
+}
 
 export function CheckoutForm() {
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState("");
+  const [error, setError] = useState(null)
+  const [success, setSuccess] = useState("")
 
-  const router = useRouter();
+  const router = useRouter()
 
-  const cart = useCartStore((state) => state.cart);
-  const basketTotal = getCartTotal(cart);
-  // const amountNum = Number(basketTotal);
-  // const amount = Math.round(amountNum);
+  const cart = useCartStore((state) => state.cart)
+  const basketTotal = getCartTotal(cart)
+  // const amountNum = Number(basketTotal)
+  // const amount = Math.round(amountNum)
 
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
@@ -52,31 +52,31 @@ export function CheckoutForm() {
       phone: "",
       region: "",
     },
-  });
+  })
 
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
-    const query = new URLSearchParams(values).toString();
-    router.push(`/confirm-order?${query}`);
+    const query = new URLSearchParams(values).toString()
+    router.push(`/confirm-order?${query}`)
   }
   // ...
 
   const handlePaystackSuccessAction = (reference: any) => {
     // Implementation for whatever you want to do with reference and after success call.
-    console.log(reference);
-  };
+    console.log(reference)
+  }
 
   // you can call this function anything
   const handlePaystackCloseAction = () => {
     // implementation for  whatever you want to do when the Paystack dialog closed.
-    console.log("closed");
-  };
+    console.log("closed")
+  }
 
   const componentProps = {
     ...config,
     text: "Pay Now",
     onSuccess: (reference: any) => handlePaystackSuccessAction(reference),
     onClose: handlePaystackCloseAction,
-  };
+  }
 
   return (
     <Form {...form}>
@@ -218,5 +218,5 @@ export function CheckoutForm() {
         </div>
       </form>
     </Form>
-  );
+  )
 }

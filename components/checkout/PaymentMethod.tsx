@@ -1,12 +1,12 @@
-"use client";
-import React from "react";
-import { Separator } from "../ui/separator";
-import Image from "next/image";
-import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
+"use client"
+import React from "react"
+import { Separator } from "../ui/separator"
+import Image from "next/image"
+import { Button } from "../ui/button"
+import { useRouter } from "next/navigation"
 
 const PaymentMethod = () => {
-  const router = useRouter();
+  const router = useRouter()
   return (
     <div className="flex flex-col gap-4">
       <h2 className="text-lg font-semibold divide-y-4 divide-black ">
@@ -53,7 +53,7 @@ const PaymentMethod = () => {
       </div>
       <Button onClick={() => router.push("/checkout")}>Checkout</Button>
     </div>
-  );
-};
+  )
+}
 
-export default PaymentMethod;
+export default PaymentMethod

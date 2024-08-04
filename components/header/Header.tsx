@@ -1,25 +1,25 @@
-"use client";
+"use client"
 
-import { SearchIcon, ShoppingCartIcon } from "lucide-react";
-import Image from "next/image";
-import React from "react";
-import MenuBar from "./MenuBar";
-import SignInPopUp from "../buttons/SignInButton";
-import SideSheet from "./SideSheet";
-import Link from "next/link";
-import UserAvatar from "../UserAvatar";
-import { Input } from "../ui/input";
-import { useRouter } from "next/navigation";
-import { Button } from "../ui/button";
+import { SearchIcon, ShoppingCartIcon } from "lucide-react"
+import Image from "next/image"
+import React from "react"
+import MenuBar from "./MenuBar"
+import SignInPopUp from "../buttons/SignInButton"
+import SideSheet from "./SideSheet"
+import Link from "next/link"
+import UserAvatar from "../UserAvatar"
+import { Input } from "../ui/input"
+import { useRouter } from "next/navigation"
+import { Button } from "../ui/button"
 
 const Header = () => {
-  const router = useRouter();
+  const router = useRouter()
 
   const handlesubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const input = e.currentTarget.input.value;
-    router.push(`/search?q=${input}`);
-  };
+    e.preventDefault()
+    const input = e.currentTarget.input.value
+    router.push(`/search?q=${input}`)
+  }
   return (
     <div className="flex items-center mx-auto p-2 justify-between px-4 gap-2">
       <Link href="/" className="">
@@ -72,7 +72,7 @@ const Header = () => {
       </div>
       <UserAvatar />
     </div>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header

@@ -1,12 +1,12 @@
-import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
-import { Product } from "./typings/productTypings";
-// import type {} from "@redux-devtools/extension"; // required for devtools typing
+import { create } from "zustand"
+import { devtools, persist } from "zustand/middleware"
+import { Product } from "./types"
+// import type {} from "@redux-devtools/extension"  // required for devtools typing
 
 interface CartState {
-  cart: Product[];
-  addToCart: (product: Product) => void;
-  removeFromCart: (product: Product) => void;
+  cart: Product[]
+  addToCart: (product: Product) => void
+  removeFromCart: (product: Product) => void
 }
 
 export const useCartStore = create<CartState>()(
@@ -20,16 +20,16 @@ export const useCartStore = create<CartState>()(
           set((state) => {
             const productToRemoveIndex = state.cart.findIndex(
               (p) => p.id === product.id
-            );
+            )
 
             if (productToRemoveIndex === -1) {
-              return state;
+              return state
             }
 
-            const newCart = [...state.cart];
-            newCart.splice(productToRemoveIndex, 1);
-            return { cart: newCart };
-          });
+            const newCart = [...state.cart]
+            newCart.splice(productToRemoveIndex, 1)
+            return { cart: newCart }
+          })
         },
       }),
       {
@@ -37,4 +37,4 @@ export const useCartStore = create<CartState>()(
       }
     )
   )
-);
+)

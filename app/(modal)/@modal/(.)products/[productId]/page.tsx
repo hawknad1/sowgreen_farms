@@ -1,21 +1,20 @@
-"use client";
-
-import ProductDetailPopUp from "@/components/modals/ProductDetailPopUp";
-import LoadPopUpProductDetail from "@/components/loading/LoadPopUpProductDetail";
+"use client"
+import { useRouter } from "next/navigation"
+import React, { useEffect, useState } from "react"
+import { Product } from "@/types"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Product } from "@/typings/productTypings";
-import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+} from "@/components/ui/dialog"
+import ProductDetailPopUp from "@/components/modals/ProductDetailPopUp"
+import LoadPopUpProductDetail from "@/components/loading/LoadPopUpProductDetail"
 
 const ProductInterception = ({ params }: { params: { productId: string } }) => {
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const router = useRouter();
+  const [product, setProduct] = useState<Product | null>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
 
   useEffect(() => {
     async function getProductDetails() {
@@ -23,22 +22,22 @@ const ProductInterception = ({ params }: { params: { productId: string } }) => {
         const res = await fetch(`/api/products/${params.productId}`, {
           method: "GET",
           cache: "no-store",
-        });
+        })
 
         if (res.ok) {
-          const product = await res.json();
-          setProduct(product);
-          setLoading(false);
+          const product = await res.json()
+          setProduct(product)
+          setLoading(false)
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     }
-    getProductDetails();
-  }, [params.productId]);
+    getProductDetails()
+  }, [params.productId])
 
   function onDismiss() {
-    router.back();
+    router.back()
   }
 
   return (
@@ -46,7 +45,7 @@ const ProductInterception = ({ params }: { params: { productId: string } }) => {
       open
       onOpenChange={(isOpen) => {
         if (!isOpen) {
-          onDismiss();
+          onDismiss()
         }
       }}
     >
@@ -61,7 +60,7 @@ const ProductInterception = ({ params }: { params: { productId: string } }) => {
         )}
       </DialogContent>
     </Dialog>
-  );
-};
+  )
+}
 
-export default ProductInterception;
+export default ProductInterception

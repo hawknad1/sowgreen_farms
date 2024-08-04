@@ -1,18 +1,18 @@
-"use client";
-ShoppingBagIcon;
-import { StarIcon } from "@heroicons/react/16/solid";
-import { ShoppingBagIcon } from "@heroicons/react/20/solid";
-import Image from "next/image";
-import React from "react";
-import { useRouter } from "next/navigation";
-import { Product } from "@/typings/productTypings";
+"use client"
+ShoppingBagIcon
+import { StarIcon } from "@heroicons/react/16/solid"
+import { ShoppingBagIcon } from "@heroicons/react/20/solid"
+import Image from "next/image"
+import React from "react"
+import { useRouter } from "next/navigation"
+import { Product } from "@/types"
 
 interface ProductCardProps {
-  data: any;
+  data: any
 }
 
 const ProductCard = ({ data }: { data: Product }) => {
-  const router = useRouter();
+  const router = useRouter()
 
   return (
     <div
@@ -53,7 +53,7 @@ const ProductCard = ({ data }: { data: Product }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default ProductCard;
+export default ProductCard

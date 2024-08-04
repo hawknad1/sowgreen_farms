@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const Socials = () => {
   return (
@@ -71,7 +71,7 @@ const Socials = () => {
         </a>
       </li>
     </ul>
-  );
-};
+  )
+}
 
-export default Socials;
+export default Socials

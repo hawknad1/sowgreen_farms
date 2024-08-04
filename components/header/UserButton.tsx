@@ -1,7 +1,7 @@
-"use client";
-import React from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import getInitials from "@/lib/getInitials";
+"use client"
+import React from "react"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import getInitials from "@/lib/getInitials"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,18 +9,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
-import { logout } from "@/actions/auth";
+} from "../ui/dropdown-menu"
+import { logout } from "@/actions/auth"
 
 interface UserProps {
-  name?: string;
-  email?: string;
-  emailVerified?: string;
-  image?: string;
+  name?: string
+  email?: string
+  emailVerified?: string
+  image?: string
 }
 
 const UserButton = ({ user }: { user: UserProps }) => {
-  const initials = getInitials(user?.name);
+  const initials = getInitials(user?.name)
   return (
     <div className="cursor-pointer">
       <DropdownMenu>
@@ -41,7 +41,7 @@ const UserButton = ({ user }: { user: UserProps }) => {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  );
-};
+  )
+}
 
-export default UserButton;
+export default UserButton

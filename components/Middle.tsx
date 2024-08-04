@@ -1,6 +1,6 @@
-import { ShoppingBagIcon } from "@heroicons/react/24/outline";
-import Image from "next/image";
-import React from "react";
+import { ShoppingBagIcon } from "@heroicons/react/24/outline"
+import Image from "next/image"
+import React from "react"
 
 const Middle = () => {
   return (
@@ -44,7 +44,7 @@ const Middle = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Middle;
+export default Middle

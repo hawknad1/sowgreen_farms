@@ -1,7 +1,7 @@
-import SignUpForm from "@/components/forms/SignUpForm";
-import { GoogleAuth } from "@/components/social-auths/GoogleAuth";
-import Image from "next/image";
-import React from "react";
+import SignUpForm from "@/components/forms/SignUpForm"
+import { GoogleAuth } from "@/components/social-auths/GoogleAuth"
+import Image from "next/image"
+import React from "react"
 
 const Signup = () => {
   return (
@@ -59,7 +59,7 @@ const Signup = () => {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Signup;
+export default Signup

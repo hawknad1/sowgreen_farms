@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { useRouter } from "next/navigation";
-import { Button } from "./ui/button";
+import { useRouter } from "next/navigation"
+import { Button } from "./ui/button"
 const ViewAll = () => {
-  const router = useRouter();
+  const router = useRouter()
   return (
     <div
       onClick={() => router.push("/products")}
@@ -11,7 +11,7 @@ const ViewAll = () => {
     >
       <Button>View All Products</Button>
     </div>
-  );
-};
+  )
+}
 
-export default ViewAll;
+export default ViewAll

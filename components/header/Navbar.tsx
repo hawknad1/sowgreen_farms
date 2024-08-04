@@ -1,20 +1,20 @@
-"use client";
-import Image from "next/image";
-import React from "react";
-import SideSheet from "./SideSheet";
-import Searchbar from "./Searchbar";
-import MenuBar from "./MenuBar";
-import ShopBasketIcon from "../basket/ShopBasketIcon";
-import SignInButton from "../buttons/SignInButton";
-import SignUpButton from "../buttons/SignUpButton";
-import { auth } from "@/auth";
-import UserButton from "./UserButton";
-import getSession from "@/lib/getSession";
-import { useSession } from "next-auth/react";
+"use client"
+import Image from "next/image"
+import React from "react"
+import SideSheet from "./SideSheet"
+import Searchbar from "./Searchbar"
+import MenuBar from "./MenuBar"
+import ShopBasketIcon from "../basket/ShopBasketIcon"
+import SignInButton from "../buttons/SignInButton"
+import SignUpButton from "../buttons/SignUpButton"
+import { auth } from "@/auth"
+import UserButton from "./UserButton"
+import getSession from "@/lib/getSession"
+import { useSession } from "next-auth/react"
 
 const Navbar = () => {
-  const session = useSession();
-  const user = session.data?.user;
+  const session = useSession()
+  const user = session.data?.user
 
   return (
     <header className="bg-white border shadow-sm py-2 w-full">
@@ -53,7 +53,7 @@ const Navbar = () => {
         </div>
       </div>
     </header>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

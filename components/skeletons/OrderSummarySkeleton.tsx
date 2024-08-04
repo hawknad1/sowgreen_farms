@@ -1,7 +1,7 @@
-import React from "react";
+import React from "react"
 
 const OrderSummarySkeleton = () => {
-  return <div>OrderSummarySkeleton</div>;
-};
+  return <div>OrderSummarySkeleton</div>
+}
 
-export default OrderSummarySkeleton;
+export default OrderSummarySkeleton
