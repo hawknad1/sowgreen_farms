@@ -2,7 +2,7 @@
 import React from "react"
 import { Button } from "@/components/ui/button"
 import { FcGoogle } from "react-icons/fc"
-import { login } from "@/actions/auth"
+import { login } from "@/lib/actions/auth"
 
 export const GoogleAuth = () => {
   return (

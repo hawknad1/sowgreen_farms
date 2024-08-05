@@ -1,9 +1,4 @@
 import React from "react"
-import Sidebar from "./Sidebar"
-import Header from "./Header"
-import OrdersTable from "./DataTable"
-import { Cards } from "./Cards"
-import Table from "./Table"
 
 const AdminPage = () => {
   return (

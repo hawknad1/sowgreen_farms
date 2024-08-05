@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
-import { logout } from "@/actions/auth"
+import { logout } from "@/lib/actions/auth"
 
 interface UserProps {
   name?: string

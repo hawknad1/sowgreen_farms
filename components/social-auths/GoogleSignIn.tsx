@@ -1,4 +1,4 @@
-import { login } from "@/actions/auth"
+import { login } from "@/lib/actions/auth"
 import Image from "next/image"
 import React from "react"
 

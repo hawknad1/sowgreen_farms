@@ -96,6 +96,7 @@ model Product {
   categoryName String
   category     Category? @relation(fields: [categoryName], references: [categoryName])
   isInStock    Boolean   @default(true)
+  quantity     Int
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
 }

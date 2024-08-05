@@ -19,6 +19,17 @@ export type TCategory = {
   link: string
 }
 
+export type Category = {
+  id: string
+  categoryName: string
+  imageUrl: string
+  description: string
+  price: number
+  discount: number
+  isInStock: boolean
+  quantity: number
+}
+
 export type Payment = {
   id: string
   order: string
@@ -29,7 +40,7 @@ export type Payment = {
   email: string
 }
 
-export interface Product {
+export type Product = {
   id: string
   categoryName: string
   imageUrl: string

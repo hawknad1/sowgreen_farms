@@ -3,8 +3,16 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
   try {
-    const { title, price, description, imageUrl, categoryName } =
-      await req.json()
+    const {
+      title,
+      price,
+      description,
+      imageUrl,
+      categoryName,
+      quantity,
+      discount,
+      isInStock,
+    } = await req.json()
 
     if (!title || !description) {
       return NextResponse.json(
@@ -20,10 +28,13 @@ export async function POST(req: NextRequest) {
         description,
         imageUrl,
         categoryName,
+        quantity,
+        discount,
+        isInStock,
       },
     })
 
-    console.log("Product created")
+    // console.log("Product created")
     return NextResponse.json(newProduct, { status: 201 }) // 201 Created
   } catch (error) {
     console.error("Error creating product:", error)

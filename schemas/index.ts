@@ -34,3 +34,14 @@ export const RadioSchema = z.object({
     required_error: "You need to select a payment type.",
   }),
 })
+
+export const AddProductSchema = z.object({
+  title: z.string().min(2, { message: "Title is required!" }),
+  description: z.string().min(5, { message: "Description is required!" }),
+  discount: z.coerce.number(),
+  imageUrl: z.string(),
+  price: z.coerce.number(),
+  categoryName: z.string().min(1, { message: "Category is required!" }),
+  quantity: z.coerce.number(),
+  isInStock: z.boolean(),
+})
