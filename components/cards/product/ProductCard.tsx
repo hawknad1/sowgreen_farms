@@ -1,5 +1,5 @@
 "use client"
-ShoppingBagIcon
+
 import { StarIcon } from "@heroicons/react/16/solid"
 import { ShoppingBagIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"

@@ -17,7 +17,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className={inter.className}>{children}</div>;
+        <div className={inter.className}>{children}</div>
       </body>
     </html>
   )

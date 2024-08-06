@@ -1,4 +1,4 @@
-import "../../globals.css"
+import "@/app/globals.css"
 import Header from "@/components/admin/Header"
 import Sidebar from "@/components/admin/Sidebar"
 

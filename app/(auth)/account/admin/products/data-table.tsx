@@ -13,7 +13,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { ChevronDown } from "lucide-react"
-import { productData } from "@/constants/index"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -37,6 +36,8 @@ import AddProduct from "./AddProduct"
 
 const ProductDataTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const [product, setProduct] = React.useState([])
+  const [loading, setIsLoading] = React.useState(true)
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -46,8 +47,27 @@ const ProductDataTable = () => {
     Record<string, boolean>
   >({})
 
+  React.useEffect(() => {
+    const productData = async () => {
+      try {
+        const res = await fetch("/api/products", {
+          method: "GET",
+          cache: "no-store",
+        })
+        if (res.ok) {
+          const products = await res.json()
+          setProduct(products)
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    productData()
+  }, [])
+
   const table = useReactTable<Product>({
-    data: productData,
+    data: product,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -67,7 +87,7 @@ const ProductDataTable = () => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4 gap-x-5">
+      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm ">
         <Input
           placeholder="Filter products..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}

@@ -34,14 +34,14 @@ const Navbar = () => {
           </div>
 
           <Searchbar />
-          <div className="hidden md:inline-flex">
+          <div className="hidden lg:inline-flex">
             <MenuBar />
           </div>
 
           <div className="flex items-center gap-2 space-x-2 lg:gap-4">
             {user && <UserButton user={user} />}
             {!user && session.status !== "loading" && (
-              <div className="hidden md:flex items-center gap-4">
+              <div className="hidden md:flex items-center md:gap-3 lg:gap-4">
                 <SignInButton />
                 <SignUpButton />
               </div>

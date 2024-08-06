@@ -4,7 +4,7 @@ import ProductDataTable from "./data-table"
 
 const AdminProducts = () => {
   return (
-    <div className="">
+    <div className="h-screen overflow-scroll scrollbar-hide">
       <ProductDataTable />
     </div>
   )

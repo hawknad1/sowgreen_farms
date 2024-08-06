@@ -71,10 +71,10 @@ export const columns: ColumnDef<Product>[] = [
     ),
   },
   {
-    accessorKey: "inStock",
+    accessorKey: "isInStock",
     header: "In Stock",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("inStock")}</div>
+      <div className="capitalize">{row.getValue("isInStock")}</div>
     ),
   },
   {
