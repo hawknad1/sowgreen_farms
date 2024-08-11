@@ -22,13 +22,8 @@ import { useCartStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import OrderSummary from "./OrderSummary"
 import { useRouter } from "next/navigation"
-
-const config = {
-  reference: new Date().getTime().toString(),
-  email: "dankwahthomas@yahoo.com",
-  amount: 10.0,
-  publicKey: "pk_test_4999951f032c0b318c0206a4cfba8b93593997b0",
-}
+import PaymentMethods from "./PaymentMethods"
+import { DeliveryMethod } from "./DeliveryMethod"
 
 export function CheckoutForm() {
   const [error, setError] = useState(null)
@@ -53,29 +48,9 @@ export function CheckoutForm() {
       region: "",
     },
   })
-
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
     const query = new URLSearchParams(values).toString()
     router.push(`/confirm-order?${query}`)
-  }
-  // ...
-
-  const handlePaystackSuccessAction = (reference: any) => {
-    // Implementation for whatever you want to do with reference and after success call.
-    console.log(reference)
-  }
-
-  // you can call this function anything
-  const handlePaystackCloseAction = () => {
-    // implementation for  whatever you want to do when the Paystack dialog closed.
-    console.log("closed")
-  }
-
-  const componentProps = {
-    ...config,
-    text: "Pay Now",
-    onSuccess: (reference: any) => handlePaystackSuccessAction(reference),
-    onClose: handlePaystackCloseAction,
   }
 
   return (
@@ -201,6 +176,7 @@ export function CheckoutForm() {
             </div>
             <div className="mt-4">
               <h2 className="font-bold text-lg mb-4">Schedule Delivery</h2>
+              <DeliveryMethod />
             </div>
           </div>
 
@@ -210,9 +186,8 @@ export function CheckoutForm() {
             <div className="rounded-lg border p-4 border-neutral-400/35">
               <OrderSummary />
 
-              <Button type="submit" className="w-full">
-                Confirm Order
-              </Button>
+              <Button className="w-full">Confirm Order</Button>
+              {/* <PaystackButton {...componentProps} /> */}
             </div>
           </div>
         </div>

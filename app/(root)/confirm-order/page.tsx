@@ -1,34 +1,71 @@
 "use client"
 import { useRouter, useSearchParams } from "next/navigation"
 import React from "react"
-import { useCartStore } from "@/store"
+import { useCartStore, usePaymentStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import { Separator } from "@/components/ui/separator"
 import Card from "./Card"
 import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
+import { PaystackButton } from "react-paystack"
+import { date, time } from "@/lib/utils"
 
 const ConfirmOrderPage = () => {
+  const setReference = usePaymentStore((state) => state.setReference)
+
   const searchParams = useSearchParams()
   const router = useRouter()
   const cart = useCartStore((state) => state.cart)
   const basketTotal = getCartTotal(cart)
 
-  const now = new Date()
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  }
-  const date = now.toLocaleDateString("en-US", options)
-
-  const timeOptions: Intl.DateTimeFormatOptions = {
-    hour: "2-digit",
-    minute: "2-digit",
-  }
-  const time = now.toLocaleTimeString("en-US", timeOptions)
-
   const formData = Object.fromEntries(searchParams.entries())
+
+  const config = {
+    reference: new Date().getTime().toString(),
+    email: formData.email,
+    amount: parseInt(basketTotal) * 100,
+    currency: "GHS",
+    metadata: {
+      custom_fields: [
+        {
+          display_name: "Name",
+          variable_name: "name",
+          value: formData.name,
+        },
+        {
+          display_name: "Phone",
+          variable_name: "phone",
+          value: formData.phone,
+        },
+      ],
+    },
+    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY,
+  }
+
+  const handlePaystackSuccessAction = (reference: any) => {
+    // Implementation for whatever you want to do with reference and after success call.
+    try {
+      if (reference.status === "success") {
+        setReference(reference)
+        router.push("/success/thank-you")
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  // you can call this function anything
+  const handlePaystackCloseAction = () => {
+    // implementation for  whatever you want to do when the Paystack dialog closed.
+    console.log("closed")
+  }
+
+  const componentProps = {
+    ...config,
+    text: "Pay Now",
+    onSuccess: (reference: any) => handlePaystackSuccessAction(reference),
+    onClose: handlePaystackCloseAction,
+  }
 
   return (
     <div className="container mx-auto min-h-screen p-8 bg-gray-100">
@@ -118,9 +155,10 @@ const ConfirmOrderPage = () => {
           >
             Edit Order
           </Button>
-          <Button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
-            Complete Payment
-          </Button>
+          <PaystackButton
+            {...componentProps}
+            className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
+          />
         </div>
       </div>
     </div>

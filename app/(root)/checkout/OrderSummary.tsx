@@ -52,8 +52,8 @@ const OrderSummary = () => {
           })}
         </ul>
       </div>
-      <div className="bg-white p-4 border-t border-neutral-200 rounded-md shadow-sm">
-        <div className="flex flex-col space-y-4">
+      <div className="bg-white flex flex-col py-4 border-t border-neutral-200">
+        <div className="flex flex-col space-y-4 ">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-neutral-500">Subtotal</p>
             <p className="font-semibold text-sm">{basketTotal}</p>

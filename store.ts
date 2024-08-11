@@ -38,3 +38,13 @@ export const useCartStore = create<CartState>()(
     )
   )
 )
+
+interface PaymentStore {
+  reference: any
+  setReference: (reference: any) => void
+}
+
+export const usePaymentStore = create<PaymentStore>((set) => ({
+  reference: null,
+  setReference: (reference) => set({ reference }),
+}))

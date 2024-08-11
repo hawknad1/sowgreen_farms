@@ -42,3 +42,22 @@ export async function getCategory(params: string) {
   }
   return null
 }
+
+export const now = new Date()
+
+export const options: Intl.DateTimeFormatOptions = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+}
+
+export let tomorrow = new Date()
+tomorrow.setDate(now.getDate() + 1)
+
+export const date = now.toLocaleDateString("en-US", options)
+
+export const timeOptions: Intl.DateTimeFormatOptions = {
+  hour: "2-digit",
+  minute: "2-digit",
+}
+export const time = now.toLocaleTimeString("en-US", timeOptions)

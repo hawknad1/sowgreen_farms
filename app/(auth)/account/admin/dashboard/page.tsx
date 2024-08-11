@@ -4,9 +4,11 @@ import Table from "@/components/admin/Table"
 
 const Dashboard = () => {
   return (
-    <div>
+    <div className="">
       <Cards />
-      <Table />
+      <div className="">
+        <Table />
+      </div>
     </div>
   )
 }
