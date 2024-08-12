@@ -1,6 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
+  env: {
+    PAYSTACK_PUBLIC_TEST_KEY: process.env.PAYSTACK_PUBLIC_TEST_KEY,
+    PAYSTACK_SECRET_TEST_KEY: process.env.PAYSTACK_SECRET_TEST_KEY,
+    PAYSTACK_PUBLIC_LIVE_KEY: process.env.PAYSTACK_PUBLIC_LIVE_KEY,
+    PAYSTACK_SECRET_LIVE_KEY: process.env.PAYSTACK_SECRET_LIVE_KEY,
+  },
 
   images: {
     remotePatterns: [
@@ -26,6 +32,6 @@ const nextConfig = {
       },
     ],
   },
-};
+}
 
-export default nextConfig;
+export default nextConfig

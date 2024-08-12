@@ -39,7 +39,7 @@ const ConfirmOrderPage = () => {
         },
       ],
     },
-    publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC,
+    publicKey: process.env.PAYSTACK_PUBLIC_LIVE_KEY as string,
   }
 
   const handlePaystackSuccessAction = (reference: any) => {
