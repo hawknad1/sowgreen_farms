@@ -7,6 +7,7 @@ interface CartState {
   cart: Product[]
   addToCart: (product: Product) => void
   removeFromCart: (product: Product) => void
+  clearCart: () => void
 }
 
 export const useCartStore = create<CartState>()(
@@ -31,6 +32,7 @@ export const useCartStore = create<CartState>()(
             return { cart: newCart }
           })
         },
+        clearCart: () => set({ cart: [] }), // clear the cart
       }),
       {
         name: "shopping-cart-storage",

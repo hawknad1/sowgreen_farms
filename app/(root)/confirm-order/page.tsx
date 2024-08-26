@@ -29,8 +29,12 @@ const ConfirmOrderPage = () => {
   // const setReference = usePaymentStore((state) => state.setReference)
   const [referenceNumber, setReferenceNumber] = useState("")
   const cart = useCartStore((state) => state.cart)
+  const clearCart = useCartStore((state) => state.clearCart)
+
   const grouped = groupById(cart)
   const [orders, setOrders] = useState<CartItem[]>([])
+
+  console.log(cart, "caartttt")
 
   function generateOrderNumber() {
     const prefix = "SG"
@@ -107,8 +111,6 @@ const ConfirmOrderPage = () => {
         })
         if (!shippingResponse.ok) throw new Error("Shipping API failed")
 
-        const shipt = await shippingResponse.json()
-
         // Handle order details
         const ordersResponse = await fetch("/api/orders", {
           method: "POST",
@@ -116,17 +118,13 @@ const ConfirmOrderPage = () => {
           body: ordersData,
         })
 
-        console.log("ordersData", ordersData)
-
         if (!ordersResponse.ok) {
           const errorDetail = await ordersResponse.text() // or `.json()` if the response is in JSON format
           console.error("Orders API detailed error:", errorDetail)
           throw new Error("Orders API failed")
         }
 
-        const orddd = await ordersResponse.json()
-        console.log("Shipping response:", shipt)
-        console.log("Orders response:", orddd)
+        clearCart()
 
         // Redirect after successful API calls
         router.push("/success/thank-you")
