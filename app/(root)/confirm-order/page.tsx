@@ -59,7 +59,7 @@ const ConfirmOrderPage = () => {
       }
     })
     setOrders(result) // Setting the entire orders array at once
-  }, [cart, grouped])
+  }, [cart])
 
   const config = {
     reference: new Date().getTime().toString(),
