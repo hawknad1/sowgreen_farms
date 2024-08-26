@@ -15,7 +15,6 @@ import {
 import { ChevronDown } from "lucide-react"
 import { data } from "@/constants/index"
 import { columns } from "./ColumnDef"
-
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -75,6 +74,7 @@ const DataTable = () => {
           className="max-w-sm"
           aria-label="Filter emails"
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">

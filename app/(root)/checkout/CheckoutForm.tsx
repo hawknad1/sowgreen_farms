@@ -3,7 +3,6 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { PaystackButton } from "react-paystack"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -17,17 +16,17 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { CheckoutSchema } from "@/schemas"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useCartStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import OrderSummary from "./OrderSummary"
 import { useRouter } from "next/navigation"
-import PaymentMethods from "./PaymentMethods"
 import { DeliveryMethod } from "./DeliveryMethod"
 
 export function CheckoutForm() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState("")
+  const [deliveryMethod, setDeliveryMethod] = useState("")
 
   const router = useRouter()
 
@@ -48,8 +47,16 @@ export function CheckoutForm() {
       region: "",
     },
   })
+
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
-    const query = new URLSearchParams(values).toString()
+    // Add delivery method to the form data
+    const formData = {
+      ...values,
+      deliveryMethod,
+    }
+    console.log(formData)
+
+    const query = new URLSearchParams(formData).toString()
     router.push(`/confirm-order?${query}`)
   }
 
@@ -176,7 +183,7 @@ export function CheckoutForm() {
             </div>
             <div className="mt-4">
               <h2 className="font-bold text-lg mb-4">Schedule Delivery</h2>
-              <DeliveryMethod />
+              <DeliveryMethod setDeliveryMethod={setDeliveryMethod} />
             </div>
           </div>
 
@@ -185,9 +192,7 @@ export function CheckoutForm() {
 
             <div className="rounded-lg border p-4 border-neutral-400/35">
               <OrderSummary />
-
               <Button className="w-full">Confirm Order</Button>
-              {/* <PaystackButton {...componentProps} /> */}
             </div>
           </div>
         </div>

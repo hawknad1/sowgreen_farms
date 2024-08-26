@@ -16,7 +16,7 @@ model User {
   image          String?
   accounts       Account[]
   sessions       Session[]
-  Authenticator  Authenticator[]
+  authenticators Authenticator[] // Renamed for consistency
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 }
@@ -27,13 +27,13 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
-  expires_at        Int?
-  token_type        String?
+  refreshToken      String? @db.String // Adjusted for case consistency
+  accessToken       String? @db.String
+  expiresAt         Int? // Adjusted for case consistency
+  tokenType         String? // Adjusted for case consistency
   scope             String?
-  id_token          String? @db.String
-  session_state     String?
+  idToken           String? @db.String
+  sessionState      String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -64,7 +64,7 @@ model VerificationToken {
 }
 
 model Authenticator {
-  credentialID         String  @id @map("_id")
+  credentialId         String  @id @map("_id") // Adjusted for case consistency
   userId               String  @db.ObjectId
   providerAccountId    String
   credentialPublicKey  String
@@ -75,7 +75,7 @@ model Authenticator {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([userId, credentialID])
+  @@unique([userId, credentialId])
 }
 
 model Category {
@@ -84,21 +84,6 @@ model Category {
   imageUrl     String
   link         String
   products     Product[]
-}
-
-model Product {
-  id           String    @id @default(auto()) @map("_id") @db.ObjectId
-  title        String
-  imageUrl     String
-  description  String
-  price        Int
-  discount     Int?
-  categoryName String
-  category     Category? @relation(fields: [categoryName], references: [categoryName])
-  isInStock    Boolean   @default(true)
-  quantity     Int
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
 }
 
 model ShippingAddress {
@@ -110,4 +95,66 @@ model ShippingAddress {
   phone   String
   country String?
   email   String  @unique
+  orders  Order[] // Indicates a one-to-many relationship; can be empty
+}
+
+// model Product {
+//   id            String         @id @default(auto()) @map("_id") @db.ObjectId
+//   title         String
+//   imageUrl      String
+//   description   String
+//   price         Int
+//   discount      Int?
+//   categoryName  String
+//   category      Category?      @relation(fields: [categoryName], references: [categoryName])
+//   isInStock     Boolean        @default(true)
+//   quantity      Int
+//   productOrders ProductOrder[]
+//   createdAt     DateTime       @default(now())
+//   updatedAt     DateTime       @updatedAt
+// }
+
+
+
+
+
+
+model Product {
+  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  imageUrl      String
+  description   String
+  price         Int
+  discount      Int?
+  categoryName  String
+    category      Category?      @relation(fields: [categoryName], references: [categoryName])
+
+  isInStock     Boolean      @default(true)
+  quantity      Int
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  productOrders ProductOrder[]
+}
+
+model Order {
+  id                String           @id @default(auto()) @map("_id") @db.ObjectId
+  referenceNumber   String
+  orderNumber       String           @unique
+  total             Int
+  shippingAddressId String?          @db.ObjectId
+  shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  products          ProductOrder[]
+  deliveryMethod    String
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model ProductOrder {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId     String   @db.ObjectId
+  orderId       String   @db.ObjectId
+  quantity      Int
+  quantityTotal String
+  product       Product  @relation(fields: [productId], references: [id])
+  order         Order    @relation(fields: [orderId], references: [id])
 }

@@ -51,8 +51,25 @@ export const options: Intl.DateTimeFormatOptions = {
   day: "numeric",
 }
 
+const weekday = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+]
+
+const d = new Date()
+let day = weekday[d.getDay() + 1]
+
 export let tomorrow = new Date()
 tomorrow.setDate(now.getDate() + 1)
+export const nextDay = `${day}, ${tomorrow.toLocaleDateString(
+  "en-US",
+  options
+)}`
 
 export const date = now.toLocaleDateString("en-US", options)
 

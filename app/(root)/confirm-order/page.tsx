@@ -1,6 +1,6 @@
 "use client"
 import { useRouter, useSearchParams } from "next/navigation"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useCartStore, usePaymentStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import { Separator } from "@/components/ui/separator"
@@ -9,16 +9,57 @@ import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
 import { date, time } from "@/lib/utils"
+import groupById from "@/lib/groupById"
+
+interface Item {
+  id: string
+  title: string
+  imageUrl: string
+  description: string
+  price: number
+}
+
+interface CartItem {
+  item: Item
+  quantity: number
+  total: string
+}
 
 const ConfirmOrderPage = () => {
-  const setReference = usePaymentStore((state) => state.setReference)
+  // const setReference = usePaymentStore((state) => state.setReference)
+  const [referenceNumber, setReferenceNumber] = useState("")
+  const cart = useCartStore((state) => state.cart)
+  const grouped = groupById(cart)
+  const [orders, setOrders] = useState<CartItem[]>([])
+
+  function generateOrderNumber() {
+    const prefix = "SG"
+    const randomNumber = Math.floor(10000 + Math.random() * 90000)
+    return `${prefix}${randomNumber}`
+  }
+
+  const orderNumber = generateOrderNumber()
 
   const searchParams = useSearchParams()
   const router = useRouter()
-  const cart = useCartStore((state) => state.cart)
   const basketTotal = getCartTotal(cart)
 
   const formData = Object.fromEntries(searchParams.entries())
+  const totalOrder = parseInt(basketTotal)
+
+  const { deliveryMethod, ...newFormData } = formData
+
+  useEffect(() => {
+    const result = Object.keys(grouped).map((id) => {
+      const items = grouped[id]
+      return {
+        item: items[0], // Using the first item as a representative
+        total: getCartTotal(items),
+        quantity: items.length,
+      }
+    })
+    setOrders(result) // Setting the entire orders array at once
+  }, [cart, grouped])
 
   const config = {
     reference: new Date().getTime().toString(),
@@ -39,18 +80,59 @@ const ConfirmOrderPage = () => {
         },
       ],
     },
-    publicKey: process.env.PAYSTACK_PUBLIC_LIVE_KEY as string,
+    publicKey: process.env.PAYSTACK_PUBLIC_TEST_KEY as string,
   }
 
-  const handlePaystackSuccessAction = (reference: any) => {
-    // Implementation for whatever you want to do with reference and after success call.
+  async function handlePaystackSuccessAction(reference: any) {
     try {
       if (reference.status === "success") {
-        setReference(reference)
+        setReferenceNumber(reference.reference) // Setting reference immediately after success
+
+        // Prepare the data for shipping and order processing
+        const shippingData = JSON.stringify({ ...newFormData })
+        const ordersData = JSON.stringify({
+          products: orders,
+          shippingAddress: newFormData, // Use newFormData directly here
+          orderNumber,
+          deliveryMethod: formData.deliveryMethod,
+          referenceNumber: reference.reference, // Use the newly set reference
+          total: totalOrder,
+        })
+
+        // Handle shipping details
+        const shippingResponse = await fetch("/api/address", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: shippingData,
+        })
+        if (!shippingResponse.ok) throw new Error("Shipping API failed")
+
+        const shipt = await shippingResponse.json()
+
+        // Handle order details
+        const ordersResponse = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: ordersData,
+        })
+
+        console.log("ordersData", ordersData)
+
+        if (!ordersResponse.ok) {
+          const errorDetail = await ordersResponse.text() // or `.json()` if the response is in JSON format
+          console.error("Orders API detailed error:", errorDetail)
+          throw new Error("Orders API failed")
+        }
+
+        const orddd = await ordersResponse.json()
+        console.log("Shipping response:", shipt)
+        console.log("Orders response:", orddd)
+
+        // Redirect after successful API calls
         router.push("/success/thank-you")
       }
     } catch (error) {
-      console.log(error)
+      console.error("Payment processing error:", error)
     }
   }
 

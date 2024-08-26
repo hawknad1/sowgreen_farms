@@ -6,6 +6,7 @@ export async function POST(req: Request) {
   try {
     const { name, address, email, city, region, country, phone } =
       await req.json()
+
     const validation = CheckoutSchema.safeParse({
       name,
       address,
@@ -17,7 +18,10 @@ export async function POST(req: Request) {
     })
 
     if (!validation.success) {
-      return NextResponse.json(validation.error.errors, { status: 400 })
+      return new NextResponse(
+        JSON.stringify({ errors: validation.error.errors }),
+        { status: 400 }
+      )
     }
 
     const customerAddress = await prisma.shippingAddress.create({
@@ -31,9 +35,12 @@ export async function POST(req: Request) {
         phone,
       },
     })
-    return NextResponse.json(customerAddress, { status: 201 })
+
+    return new NextResponse(JSON.stringify(customerAddress), { status: 201 })
   } catch (error) {
-    console.log(error)
-    return NextResponse.json({ error: "Server error" }, { status: 500 })
+    console.error(error) // Use console.error for logging errors to stderr
+    return new NextResponse(JSON.stringify({ error: "Server error" }), {
+      status: 500,
+    })
   }
 }
