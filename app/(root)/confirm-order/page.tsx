@@ -124,6 +124,8 @@ const ConfirmOrderPage = () => {
           throw new Error("Orders API failed")
         }
 
+        console.log("orderData---", ordersData)
+
         clearCart()
 
         // Redirect after successful API calls

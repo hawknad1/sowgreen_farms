@@ -1,7 +1,26 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import DataTable from "./DataTable"
+import { Order } from "@/types"
 
-const Table = () => {
+export async function getOrders(): Promise<Order[]> {
+  try {
+    const ordersResponse = await fetch("/api/orders", {
+      method: "GET",
+      cache: "no-store",
+    })
+
+    if (!ordersResponse.ok) {
+      throw new Error(`Error: ${ordersResponse.status}`)
+    }
+
+    return ordersResponse.json()
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export async function Table() {
+  const orders = await getOrders()
   return (
     <div>
       {/* <div className="mt-5">
@@ -24,5 +43,3 @@ const Table = () => {
     </div>
   )
 }
-
-export default Table

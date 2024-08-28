@@ -32,12 +32,35 @@ export type Category = {
 
 export type Payment = {
   id: string
-  order: string
-  date: string
-  amount: number
-  customer: string
+  orderNumber: string
+  referenceNumber: string
+  total: number
   payment: "pending" | "processing" | "success" | "failed"
+  deliveryMethod: string
+  shippingAddress: ShippingAddress
+  products: Product[]
+}
+
+export type ShippingAddress = {
+  id: string
+  name: string
   email: string
+  address: string
+  city: string
+  region: string
+  country: string
+  phone: string
+}
+
+export type Order = {
+  id: string
+  orderNumber: string
+  referenceNumber: string
+  total: number
+  payment: "pending" | "processing" | "success" | "failed"
+  deliveryMethod: string
+  shippingAddress: ShippingAddress
+  products: Product[]
 }
 
 export type Product = {

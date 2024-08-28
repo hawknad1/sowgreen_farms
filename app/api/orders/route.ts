@@ -1,6 +1,23 @@
 import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
 
+export async function GET(req: Request) {
+  try {
+    const orders = await prisma.order.findMany({
+      include: {
+        shippingAddress: true,
+        products: true,
+      },
+    })
+    return NextResponse.json(orders, { status: 200 })
+  } catch (error) {
+    return NextResponse.json(
+      { message: "couldnt fetch orders" },
+      { status: 500 }
+    )
+  }
+}
+
 export async function POST(req: Request) {
   const {
     referenceNumber,

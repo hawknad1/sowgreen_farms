@@ -13,8 +13,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { ChevronDown } from "lucide-react"
-import { data } from "@/constants/index"
-import { columns } from "./ColumnDef"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -31,9 +29,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Payment } from "@/types"
+import { columns } from "./columns" // Corrected import for the columns
+import axios from "axios"
 
 const DataTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const [orders, setOrders] = React.useState<Payment[]>([])
+  const [loading, setLoading] = React.useState(true)
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -43,8 +46,34 @@ const DataTable = () => {
     Record<string, boolean>
   >({})
 
+  React.useEffect(() => {
+    async function getOrders() {
+      try {
+        // Using axios instead of fetch
+        const ordersResponse = await axios.get("/api/orders", {
+          headers: {
+            "Cache-Control": "no-store", // Ensure fresh data
+          },
+        })
+
+        // Check if the response status is not in the 2xx range
+        if (ordersResponse.status < 200 || ordersResponse.status >= 300) {
+          throw new Error(`Error: ${ordersResponse.status}`)
+        }
+
+        setOrders(ordersResponse.data)
+      } catch (error) {
+        console.error("Error fetching orders:", error)
+      } finally {
+        setLoading(false) // Ensure loading state is set to false
+      }
+    }
+
+    getOrders()
+  }, [])
+
   const table = useReactTable({
-    data,
+    data: orders, // Added orders data
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -66,13 +95,15 @@ const DataTable = () => {
     <div className="w-full">
       <div className="flex items-center py-4">
         <Input
-          placeholder="Filter emails..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter order number..."
+          value={
+            (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
+            table.getColumn("orderNumber")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-          aria-label="Filter emails"
+          aria-label="Filter order number"
         />
 
         <DropdownMenu>

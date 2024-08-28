@@ -4,7 +4,7 @@ import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Payment } from "@/types"
+import { Order, Payment } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -14,8 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { options } from "@/lib/utils"
 
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<Order>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -42,56 +43,55 @@ export const columns: ColumnDef<Payment>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "order",
-    header: "Order",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("order")}</div>
-    ),
-  },
-  {
-    accessorKey: "date",
-    header: "Date",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("date")}</div>,
-  },
-  {
-    accessorKey: "customer",
-    header: "Customer",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("customer")}</div>
-    ),
-  },
-  {
-    accessorKey: "payment",
-    header: "Payment",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("payment")}</div>
-    ),
-  },
-  {
-    accessorKey: "email",
+    accessorKey: "orderNumber",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Email
+          Order Number
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "createdAt",
+    header: "Date",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const date = new Date(row.getValue("createdAt"))
+      return <div>{date.toLocaleDateString("en-US", options)}</div>
+    },
+  },
 
-      // Format the amount as a dollar amount
+  {
+    accessorKey: "shippingAddress.name",
+    header: "Customer Name",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.shippingAddress.name}</div>
+    ),
+    enableHiding: false,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("status")}</div>
+    ),
+  },
+
+  {
+    accessorKey: "total",
+    header: () => <div className="text-right">Total</div>,
+    cell: ({ row }) => {
+      const amount = parseFloat(row.getValue("total"))
+
+      // Format the amount as a currency
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "USD",
+        currency: "GHC", // Adjust the currency as needed
       }).format(amount)
 
       return <div className="text-right font-medium">{formatted}</div>
