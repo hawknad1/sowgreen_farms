@@ -43,5 +43,16 @@ export const AddProductSchema = z.object({
   price: z.coerce.number(),
   categoryName: z.string().min(1, { message: "Category is required!" }),
   quantity: z.coerce.number(),
-  isInStock: z.boolean(),
+  isInStock: z.string(),
+})
+
+export const EditProductSchema = z.object({
+  description: z
+    .string()
+    .min(5, { message: "Description is required!" })
+    .optional(),
+  discount: z.coerce.number().optional(),
+  price: z.coerce.number().optional(),
+  quantity: z.coerce.number().optional(),
+  isInStock: z.string().optional(),
 })

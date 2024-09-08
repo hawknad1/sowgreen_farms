@@ -14,6 +14,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { useRouter } from "next/navigation" // Ensure router is imported
+import EditProduct from "@/components/admin/EditProduct"
+import DeleteProductDialog from "@/components/admin/DeleteProductDialog"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -54,7 +57,9 @@ export const columns: ColumnDef<Product>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("title")}</div>,
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("title")}</div>
+    ),
   },
   {
     accessorKey: "categoryName",
@@ -66,17 +71,34 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "price",
     header: "Price",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("price")}</div>
-    ),
+    cell: ({ row }) => {
+      const price = parseFloat(row.getValue("price"))
+      const formattedPrice = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "GHC", // Currency formatted to GHC
+      }).format(price)
+      return <div className="capitalize">{formattedPrice}</div>
+    },
   },
   {
     accessorKey: "isInStock",
     header: "In Stock",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("isInStock")}</div>
-    ),
+    cell: ({ row }) => {
+      const isInStock = row.original.isInStock === "in-stock" // Compare string to string
+      return (
+        <div
+          className={`capitalize w-fit  rounded-full ${
+            isInStock
+              ? "bg-emerald-500/15 text-emerald-500 px-3 py-0.5 font-medium"
+              : "bg-gray-500/15 text-gray-500 px-2 py-0.5 font-medium"
+          }`}
+        >
+          {isInStock ? "In Stock" : "Out of Stock"}
+        </div>
+      )
+    },
   },
+
   {
     accessorKey: "discount",
     header: "Discount",
@@ -87,31 +109,41 @@ export const columns: ColumnDef<Product>[] = [
   {
     accessorKey: "quantity",
     header: "Quantity",
-    cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("quantity")}</div>
-    ),
+    cell: ({ row }) => {
+      const quantity = parseInt(row.getValue("quantity"))
+      return <div className="capitalize">{quantity}</div>
+    },
   },
 
   {
     accessorKey: "total",
     header: () => <div className="text-right">Total</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("total"))
+      const price = parseFloat(row.getValue("price"))
+      const quantity = parseInt(row.getValue("quantity"))
 
-      // Format the amount as a dollar amount
-      const formatted = new Intl.NumberFormat("en-US", {
+      // Ensure both price and quantity are valid numbers before calculation
+      const total = !isNaN(price) && !isNaN(quantity) ? price * quantity : 0
+
+      // Format the amount as a currency amount in GHC
+      const formattedTotal = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "USD",
-      }).format(amount)
+        currency: "GHC", // Currency formatted to GHC
+      }).format(total)
 
-      return <div className="text-right font-medium">{formatted}</div>
+      return <div className="text-right font-medium">{formattedTotal}</div>
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
+      const product = row.original
+      const router = useRouter()
+
+      const handleRoute = () => {
+        router.push(`/account/admin/products/${product.id}`)
+      }
 
       return (
         <DropdownMenu>
@@ -121,16 +153,12 @@ export const columns: ColumnDef<Product>[] = [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="gap-1.5 flex flex-col">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Edit Product
-            </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Delete Product</DropdownMenuItem>
-            <DropdownMenuItem>View Product details</DropdownMenuItem>
+            <Button className="bg-black text-white" onClick={handleRoute}>
+              Product Details
+            </Button>
           </DropdownMenuContent>
         </DropdownMenu>
       )

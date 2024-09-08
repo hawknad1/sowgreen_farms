@@ -1,26 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import DataTable from "./DataTable"
-import { Order } from "@/types"
-
-export async function getOrders(): Promise<Order[]> {
-  try {
-    const ordersResponse = await fetch("/api/orders", {
-      method: "GET",
-      cache: "no-store",
-    })
-
-    if (!ordersResponse.ok) {
-      throw new Error(`Error: ${ordersResponse.status}`)
-    }
-
-    return ordersResponse.json()
-  } catch (error) {
-    console.log(error)
-  }
-}
+import DataTable from "./orders/DataTable"
 
 export async function Table() {
-  const orders = await getOrders()
   return (
     <div>
       {/* <div className="mt-5">

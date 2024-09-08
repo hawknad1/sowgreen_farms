@@ -127,9 +127,8 @@ model Product {
   price         Int
   discount      Int?
   categoryName  String
-    category      Category?      @relation(fields: [categoryName], references: [categoryName])
-
-  isInStock     Boolean      @default(true)
+  category      Category?      @relation(fields: [categoryName], references: [categoryName])
+  isInStock     String     
   quantity      Int
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
@@ -141,6 +140,7 @@ model Order {
   referenceNumber   String
   orderNumber       String           @unique
   total             Int
+  status            String?
   shippingAddressId String?          @db.ObjectId
   shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
   products          ProductOrder[]

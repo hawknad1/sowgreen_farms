@@ -78,3 +78,38 @@ export const timeOptions: Intl.DateTimeFormatOptions = {
   minute: "2-digit",
 }
 export const time = now.toLocaleTimeString("en-US", timeOptions)
+
+export const formatCurrency = (amount: number, currency: string) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+  }).format(amount)
+}
+
+import toast from "react-hot-toast"
+import { Router } from "next/router"
+
+export const handleDelete = async (
+  productId: string,
+  productName: string,
+  router: Router
+) => {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/products/${productId}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+
+    if (!res.ok) throw new Error("Failed to delete product")
+
+    toast.success(`${productName} deleted successfully!`)
+  } catch (error) {
+    toast.error("Error deleting product.")
+    console.error("Delete product error:", error)
+  }
+}

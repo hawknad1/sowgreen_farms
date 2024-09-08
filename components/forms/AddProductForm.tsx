@@ -88,7 +88,7 @@ export function AddProductForm() {
       price: 0,
       categoryName: "",
       quantity: 0,
-      isInStock: true,
+      isInStock: "",
     },
   })
 
@@ -204,8 +204,10 @@ export function AddProductForm() {
               <FormItem>
                 <FormLabel>In Stock</FormLabel>
                 <Select
-                  defaultValue="true"
-                  onValueChange={(value) => field.onChange(value === "true")}
+                  defaultValue=""
+                  onValueChange={(value) =>
+                    field.onChange(value === "in-stock")
+                  }
                 >
                   <SelectTrigger className="w-[180px] mt-2 mb-3">
                     <SelectValue placeholder="Select Status" />
@@ -213,8 +215,8 @@ export function AddProductForm() {
                   <SelectContent>
                     <SelectGroup>
                       <SelectLabel>In Stock</SelectLabel>
-                      <SelectItem value="true">Yes</SelectItem>
-                      <SelectItem value="false">No</SelectItem>
+                      <SelectItem value="in-stock">Yes</SelectItem>
+                      <SelectItem value="out-of-stock">No</SelectItem>
                     </SelectGroup>
                   </SelectContent>
                 </Select>

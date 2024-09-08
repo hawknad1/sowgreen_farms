@@ -18,7 +18,16 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const { title, description, price, imageUrl, categoryName } = await req.json()
+  const {
+    title,
+    description,
+    price,
+    imageUrl,
+    categoryName,
+    quantity,
+    discount,
+    isInStock,
+  } = await req.json()
   const id = params.id
   try {
     const product = await prisma.product.update({
@@ -29,6 +38,9 @@ export async function PUT(
         description,
         imageUrl,
         price,
+        quantity,
+        discount,
+        isInStock,
       },
     })
     return NextResponse.json(product)

@@ -103,6 +103,8 @@ const ConfirmOrderPage = () => {
           total: totalOrder,
         })
 
+        console.log("this is the reference obj----", reference)
+
         // Handle shipping details
         const shippingResponse = await fetch("/api/address", {
           method: "POST",

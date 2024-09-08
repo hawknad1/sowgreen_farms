@@ -33,6 +33,7 @@ import {
 import { columns } from "./columns"
 import { Product } from "@/types"
 import AddProduct from "./AddProduct"
+import DataSkeletons from "@/components/skeletons/DataSkeletons"
 
 const ProductDataTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -140,7 +141,13 @@ const ProductDataTable = () => {
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
+            {loading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className="h-14">
+                  <DataSkeletons />
+                </TableCell>
+              </TableRow>
+            ) : table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

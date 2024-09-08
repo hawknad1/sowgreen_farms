@@ -70,6 +70,8 @@ export type Product = {
   price: number
   title: string
   description: string
-  inStock: boolean
+  isInStock: string
+  quantity: number
+  discount: number
   products: []
 }
