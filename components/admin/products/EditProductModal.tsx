@@ -1,7 +1,7 @@
 import React from "react"
 import { Product } from "@/types"
 import { Dialog, DialogOverlay, DialogContent } from "@/components/ui/dialog"
-import { Button } from "../ui/button"
+import { Button } from "@/components/ui/button"
 
 interface EditProductModalProps {
   open: boolean // Change isOpen to open
@@ -17,7 +17,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
   if (!product) return null
 
   return (
-    <Dialog open={open} onDismiss={onClose}>
+    <Dialog open={open}>
       {" "}
       {/* Change isOpen to open */}
       <DialogOverlay />

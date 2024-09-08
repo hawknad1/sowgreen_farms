@@ -15,7 +15,7 @@ import { Product } from "@/types"
 
 interface Props {
   product: Product
-  children: React.ReactNode
+  children?: React.ReactNode
   className?: string
 }
 

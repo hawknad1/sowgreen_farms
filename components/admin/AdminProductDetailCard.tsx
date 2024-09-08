@@ -15,6 +15,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "../ui/dialog"
+import DeleteProductDialog from "./products/DeleteProductDialog"
 
 interface Props {
   product: Product

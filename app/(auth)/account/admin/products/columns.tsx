@@ -15,8 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation" // Ensure router is imported
-import EditProduct from "@/components/admin/EditProduct"
-import DeleteProductDialog from "@/components/admin/DeleteProductDialog"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -137,13 +135,9 @@ export const columns: ColumnDef<Product>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: function ActionCell({ row }) {
       const product = row.original
       const router = useRouter()
-
-      const handleRoute = () => {
-        router.push(`/account/admin/products/${product.id}`)
-      }
 
       return (
         <DropdownMenu>
@@ -156,7 +150,12 @@ export const columns: ColumnDef<Product>[] = [
           <DropdownMenuContent align="end" className="gap-1.5 flex flex-col">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <Button className="bg-black text-white" onClick={handleRoute}>
+            <Button
+              className="bg-black text-white"
+              onClick={() =>
+                router.push(`/account/admin/products/${product.id}`)
+              }
+            >
               Product Details
             </Button>
           </DropdownMenuContent>
