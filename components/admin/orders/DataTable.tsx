@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Payment } from "@/types"
+import { Order, Payment } from "@/types"
 import { columns } from "./columns" // Corrected import for the columns
 import axios from "axios"
 import { Skeleton } from "../../ui/skeleton"
@@ -37,7 +37,7 @@ import DataSkeletons from "../../skeletons/DataSkeletons"
 
 const OrdersDataTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [orders, setOrders] = React.useState<Payment[]>([])
+  const [orders, setOrders] = React.useState<Order[]>([])
   const [loading, setLoading] = React.useState(true)
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []

@@ -1,14 +1,11 @@
 "use client"
 import AdminProductDetailCard from "@/components/admin/AdminProductDetailCard"
-import ProductDetailCard from "@/components/cards/product/ProductDetailCard"
 import { Product } from "@/types"
 import React, { useEffect, useState } from "react"
 
 const AdminProductDetail = ({ params }: { params: { id: string } }) => {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
-
-  console.log(params.id)
 
   useEffect(() => {
     async function getProductDetail() {

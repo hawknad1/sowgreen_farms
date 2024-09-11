@@ -52,6 +52,17 @@ export type ShippingAddress = {
   phone: string
 }
 
+// export type Order = {
+//   id: string
+//   orderNumber: string
+//   referenceNumber: string
+//   total: number
+//   payment: "pending" | "processing" | "success" | "failed"
+//   deliveryMethod: string
+//   shippingAddress: ShippingAddress
+//   products: Product[]
+// }
+
 export type Order = {
   id: string
   orderNumber: string
@@ -60,7 +71,7 @@ export type Order = {
   payment: "pending" | "processing" | "success" | "failed"
   deliveryMethod: string
   shippingAddress: ShippingAddress
-  products: Product[]
+  products: ProductOrder[] // Change from Product[] to ProductOrder[]
 }
 
 export type Product = {
@@ -73,5 +84,25 @@ export type Product = {
   isInStock: string
   quantity: number
   discount: number
-  products: []
+  productOrders: ProductOrder[]
+}
+
+// export type ProductOrder = {
+//   id: string
+//   productId: string
+//   orderId: string
+//   quantity: number
+//   quantityTotal: string
+//   product: Product
+//   order: Order
+// }
+
+export type ProductOrder = {
+  id: string
+  productId: string
+  orderId: string
+  quantity: number
+  quantityTotal: number // Changed from string to number
+  product: Product
+  order: Order
 }

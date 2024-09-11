@@ -1,4 +1,10 @@
 import { Payment, Product } from "@/types"
+import {
+  BookmarkIcon,
+  CreditCardIcon,
+  TruckIcon,
+} from "@heroicons/react/20/solid"
+import { Package } from "lucide-react"
 
 export const menuLinks = [
   {
@@ -138,6 +144,29 @@ export const smallImage = [
   {
     id: 4,
     imageUrl: "/images/meat.png",
+  },
+]
+
+export const orderStatusCard = [
+  {
+    title: "Order Made",
+    subTitle: "Order Created",
+    icon: BookmarkIcon,
+  },
+  {
+    title: "Order Paid",
+    subTitle: "Customer Payment",
+    icon: CreditCardIcon,
+  },
+  {
+    title: "Order Shipped",
+    subTitle: "On Delivery",
+    icon: TruckIcon,
+  },
+  {
+    title: "Order Completed",
+    subTitle: "Order Delivered",
+    icon: Package,
   },
 ]
 

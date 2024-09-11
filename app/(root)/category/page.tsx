@@ -14,7 +14,6 @@ const Category = ({ searchParams: { q } }: Props) => {
   const [productsByCategory, setProductsByCategory] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
-  const catProducts = productsByCategory[0]?.products
   useEffect(() => {
     const fetchProductsByCategory = async (catName: string) => {
       try {
@@ -43,7 +42,7 @@ const Category = ({ searchParams: { q } }: Props) => {
             <ProductsSkeleton />
           ) : (
             <div className="flex gap-5 p-4 w-max">
-              {catProducts?.map((product: Product) => (
+              {productsByCategory?.map((product: Product) => (
                 <ProductCard key={product.id} data={product} />
               ))}
             </div>

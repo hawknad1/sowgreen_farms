@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { options } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -100,8 +101,9 @@ export const columns: ColumnDef<Order>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const payment = row.original
+    cell: function ActionCell({ row }) {
+      const order = row.original
+      const router = useRouter()
 
       return (
         <DropdownMenu>
@@ -113,14 +115,14 @@ export const columns: ColumnDef<Order>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
-            >
-              Copy payment ID
-            </DropdownMenuItem>
+
             <DropdownMenuSeparator />
             <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push(`/account/admin/orders/${order.id}`)}
+            >
+              View payment details
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
