@@ -82,6 +82,7 @@ export type Product = {
   title: string
   description: string
   isInStock: string
+  products?: []
   quantity: number
   discount: number
   productOrders: ProductOrder[]
