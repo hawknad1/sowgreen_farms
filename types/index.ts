@@ -88,6 +88,20 @@ export type Product = {
   productOrders: ProductOrder[]
 }
 
+export type Item = {
+  id: string
+  title: string
+  imageUrl: string
+  description: string
+  price: number
+}
+
+export type CartItem = {
+  item: Item
+  quantity: number
+  total: string
+}
+
 // export type ProductOrder = {
 //   id: string
 //   productId: string

@@ -1,3 +1,4 @@
+"use client"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -11,6 +12,7 @@ import {
   Bell,
   CircleUser,
   Home,
+  LogOut,
   LineChart,
   Menu,
   Package,
@@ -23,8 +25,11 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 import Link from "next/link"
 import Image from "next/image"
+import { sidebarLinks } from "@/constants"
+import { usePathname } from "next/navigation"
 
 const Sidebar = () => {
+  const pathname = usePathname()
   return (
     <div className="hidden border-r bg-white md:block">
       <div className="flex h-full max-h-screen flex-col gap-2">
@@ -43,48 +48,32 @@ const Sidebar = () => {
           </Button>
         </div>
         <div className="flex-1">
-          <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
-            <Link
-              href="/account/admin/dashboard"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <Home className="h-4 w-4" />
-              Dashboard
-            </Link>
-            <Link
-              href="/account/admin/orders"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <ShoppingCart className="h-4 w-4" />
-              Orders
-              <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                6
-              </Badge>
-            </Link>
-            <Link
-              href="/account/admin/products"
-              className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
-            >
-              <Package className="h-4 w-4" />
-              Products{" "}
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <Users className="h-4 w-4" />
-              Customers
-            </Link>
-            <Link
-              href="#"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-            >
-              <LineChart className="h-4 w-4" />
-              Analytics
-            </Link>
+          <nav className="grid items-start px-2 text-sm font-medium lg:px-4 lg:gap-y-1.5">
+            {sidebarLinks.map(({ label, path, icon: Icon }) => {
+              const isActive =
+                (pathname.includes(path) && path.length > 1) ||
+                pathname === path
+              return (
+                <Link
+                  key={label}
+                  href={path}
+                  className={`${
+                    isActive && "bg-muted"
+                  } flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </Link>
+              )
+            })}
           </nav>
         </div>
-        <div className="mt-auto p-4"></div>
+        <div className="mt-auto p-4">
+          <Button className="w-full flex gap-x-2 font-medium">
+            <LogOut className="h-4 w-4" />
+            Logout
+          </Button>
+        </div>
       </div>
     </div>
   )

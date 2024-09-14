@@ -1,21 +1,14 @@
 "use client"
-import { getCartTotal } from "@/lib/getCartTotal"
-import groupById from "@/lib/groupById"
-import { useCartStore } from "@/store"
 import Image from "next/image"
-import React, { useState, useEffect } from "react"
+import React from "react"
+import groupById from "@/lib/groupById"
 
-interface Product {
-  id: string
-  categoryName: string
-  title: string
-  price: number
-}
+import { getCartTotal } from "@/lib/getCartTotal"
+import { useCartStore } from "@/store"
 
 const CartDisplay = () => {
   const cart = useCartStore((state) => state.cart)
   const grouped = groupById(cart)
-  const [orders, setOrders] = useState({})
 
   return (
     <div className="bg-white rounded-md shadow-sm p-4">
@@ -69,5 +62,4 @@ const CartDisplay = () => {
   )
 }
 
-// Exporting the CartDisplay component
 export default CartDisplay

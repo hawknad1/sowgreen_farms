@@ -101,7 +101,9 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "discount",
     header: "Discount",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("discount")}</div>
+      <div className="capitalize">
+        {row.original.discount <= 0 ? 0 : row.original.discount}
+      </div>
     ),
   },
   {

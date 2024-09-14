@@ -1,7 +1,7 @@
 "use client"
 import { useRouter, useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
-import { useCartStore, usePaymentStore } from "@/store"
+import { useCartStore, useOrdersStore, usePaymentStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import { Separator } from "@/components/ui/separator"
 import Card from "./Card"
@@ -10,59 +10,32 @@ import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
 import { date, time } from "@/lib/utils"
 import groupById from "@/lib/groupById"
+import { CartItem } from "@/types"
+import { processCartItems } from "@/lib/processCartItems"
+import { generateOrderNumber } from "@/lib/generateOrderNumber"
 
-interface Item {
-  id: string
-  title: string
-  imageUrl: string
-  description: string
-  price: number
-}
-
-interface CartItem {
-  item: Item
-  quantity: number
-  total: string
-}
+// Helper function to group cart items
 
 const ConfirmOrderPage = () => {
-  // const setReference = usePaymentStore((state) => state.setReference)
   const [referenceNumber, setReferenceNumber] = useState("")
+  const setOrdersData = useOrdersStore((state) => state.setOrdersData)
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
-
-  const grouped = groupById(cart)
   const [orders, setOrders] = useState<CartItem[]>([])
 
-  console.log(cart, "caartttt")
-
-  function generateOrderNumber() {
-    const prefix = "SG"
-    const randomNumber = Math.floor(10000 + Math.random() * 90000)
-    return `${prefix}${randomNumber}`
-  }
-
-  const orderNumber = generateOrderNumber()
-
-  const searchParams = useSearchParams()
   const router = useRouter()
-  const basketTotal = getCartTotal(cart)
-
+  const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
+  const basketTotal = getCartTotal(cart)
   const totalOrder = parseInt(basketTotal)
 
   const { deliveryMethod, ...newFormData } = formData
 
+  // Order number generator
+  const orderNumber = generateOrderNumber()
+
   useEffect(() => {
-    const result = Object.keys(grouped).map((id) => {
-      const items = grouped[id]
-      return {
-        item: items[0], // Using the first item as a representative
-        total: getCartTotal(items),
-        quantity: items.length,
-      }
-    })
-    setOrders(result) // Setting the entire orders array at once
+    setOrders(processCartItems(cart)) // Using the helper function to set orders
   }, [cart])
 
   const config = {
@@ -90,47 +63,35 @@ const ConfirmOrderPage = () => {
   async function handlePaystackSuccessAction(reference: any) {
     try {
       if (reference.status === "success") {
-        setReferenceNumber(reference.reference) // Setting reference immediately after success
+        setReferenceNumber(reference.reference)
 
-        // Prepare the data for shipping and order processing
-        const shippingData = JSON.stringify({ ...newFormData })
-        const ordersData = JSON.stringify({
+        const ordersData = {
           products: orders,
-          shippingAddress: newFormData, // Use newFormData directly here
+          shippingAddress: newFormData,
           orderNumber,
           deliveryMethod: formData.deliveryMethod,
-          referenceNumber: reference.reference, // Use the newly set reference
+          referenceNumber: reference.reference,
           total: totalOrder,
-        })
+        }
 
-        console.log("this is the reference obj----", reference)
-
-        // Handle shipping details
         const shippingResponse = await fetch("/api/address", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: shippingData,
+          body: JSON.stringify(newFormData),
         })
         if (!shippingResponse.ok) throw new Error("Shipping API failed")
 
-        // Handle order details
         const ordersResponse = await fetch("/api/orders", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: ordersData,
+          body: JSON.stringify(ordersData),
         })
+        if (!ordersResponse.ok) throw new Error("Orders API failed")
 
-        if (!ordersResponse.ok) {
-          const errorDetail = await ordersResponse.text() // or `.json()` if the response is in JSON format
-          console.error("Orders API detailed error:", errorDetail)
-          throw new Error("Orders API failed")
-        }
+        clearCart() // Clear cart after successful API calls
 
-        console.log("orderData---", ordersData)
-
-        clearCart()
-
-        // Redirect after successful API calls
+        // Store ordersData in Zustand and navigate to ThankYouPage
+        setOrdersData(ordersData)
         router.push("/success/thank-you")
       }
     } catch (error) {
@@ -138,9 +99,7 @@ const ConfirmOrderPage = () => {
     }
   }
 
-  // you can call this function anything
   const handlePaystackCloseAction = () => {
-    // implementation for  whatever you want to do when the Paystack dialog closed.
     console.log("closed")
   }
 
@@ -157,7 +116,7 @@ const ConfirmOrderPage = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">
           Confirm Order & Pay
         </h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6 ">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
           <Card>
             <div className="flex flex-col gap-2 lg:gap-4">
               <div>
@@ -178,7 +137,7 @@ const ConfirmOrderPage = () => {
                 <h3 className="text-lg font-semibold text-gray-700">
                   Billing Address
                 </h3>
-                <p className="text-gray-600 flex justify-end md:justify-start ">
+                <p className="text-gray-600 flex justify-end md:justify-start">
                   Same as Delivery Address
                 </p>
               </div>

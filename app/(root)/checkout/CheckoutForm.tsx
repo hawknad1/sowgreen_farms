@@ -54,7 +54,6 @@ export function CheckoutForm() {
       ...values,
       deliveryMethod,
     }
-    console.log(formData)
 
     const query = new URLSearchParams(formData).toString()
     router.push(`/confirm-order?${query}`)

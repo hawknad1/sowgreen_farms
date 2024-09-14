@@ -60,7 +60,7 @@ const AdminProductDetailCard = ({ product }: Props) => {
               <p className="text-2xl font-bold text-black">
                 GHC {product.price}
               </p>
-              {product.discount && (
+              {product.discount > 0 && (
                 <p className="bg-black text-white text-xs font-medium px-2 py-1 rounded-full">
                   {product.discount}% Off
                 </p>

@@ -4,7 +4,20 @@ import {
   CreditCardIcon,
   TruckIcon,
 } from "@heroicons/react/20/solid"
-import { Package } from "lucide-react"
+import {
+  BadgeInfo,
+  Bell,
+  CircleUser,
+  Home,
+  LineChart,
+  Menu,
+  Package,
+  Package2,
+  Search,
+  Settings,
+  ShoppingCart,
+  Users,
+} from "lucide-react"
 
 export const menuLinks = [
   {
@@ -169,6 +182,55 @@ export const orderStatusCard = [
     icon: Package,
   },
 ]
+
+export const sidebarLinks = [
+  {
+    label: "Dashboard",
+    path: "/account/admin/dashboard",
+    icon: Home,
+  },
+  {
+    label: "Orders",
+    path: "/account/admin/orders",
+    icon: ShoppingCart,
+  },
+  {
+    label: "Products",
+    path: "/account/admin/products",
+    icon: Package,
+  },
+  {
+    label: "Customers",
+    path: "/account/admin/customers",
+    icon: Users,
+  },
+  {
+    label: "Management",
+    path: "/account/admin/management",
+    icon: Users,
+  },
+  {
+    label: "Transactions",
+    path: "/account/admin/transactions",
+    icon: LineChart,
+  },
+  {
+    label: "Sales",
+    path: "/account/admin/sales",
+    icon: LineChart,
+  },
+  {
+    label: "Settings",
+    path: "/account/admin/settings",
+    icon: Settings,
+  },
+  {
+    label: "Help",
+    path: "/account/admin/help",
+    icon: BadgeInfo,
+  },
+]
+
 
 // export const productData: Product[] = [
 //   {
