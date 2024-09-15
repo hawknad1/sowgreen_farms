@@ -15,10 +15,12 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar"
+import { useRouter } from "next/navigation"
 import React, { useEffect, useState } from "react"
 
 const MenuBar = () => {
   const [categories, setCategories] = useState([])
+  const router = useRouter()
 
   useEffect(() => {
     async function getCategories() {
@@ -73,6 +75,14 @@ const MenuBar = () => {
             <MenubarItem key={cat.id}>{cat.categoryName}</MenubarItem>
           ))}
         </MenubarContent>
+      </MenubarMenu>
+      <MenubarMenu>
+        <MenubarTrigger
+          onClick={() => router.push("/discount")}
+          className="p-2 px-4 text-red-500"
+        >
+          Sale
+        </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger className="p-2 px-4">Blog</MenubarTrigger>

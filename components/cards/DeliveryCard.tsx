@@ -11,9 +11,6 @@ const DeliveryCard = () => {
             We ship on the following day from 10:00 AM to 08:00 PM
           </h2>
           <p className="mt-4">For purchases over GHC 20.00</p>
-          <Button className="mt-4 bg-white text-neutral-800 rounded-full px-4 py-2 hover:bg-neutral-100">
-            Order Now
-          </Button>
         </div>
         <div className="flex justify-center">
           <Image

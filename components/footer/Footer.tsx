@@ -85,7 +85,7 @@ const Footer = () => {
 
             <div className="col-span-2 sm:col-span-1">
               <p className="font-medium text-gray-900">Payment Methods</p>
-              <div className="gap-3 mt-4 flex flex-col">
+              <div className="gap-2 mt-4 grid grid-cols-2">
                 {paymentLinks.map((pay) => (
                   <div
                     key={pay.id}
@@ -110,7 +110,7 @@ const Footer = () => {
         <div className="mt-4 border-t border-gray-100 pt-4">
           <div className="sm:flex sm:justify-between">
             <p className="text-xs text-gray-500">
-              &copy 2024. Sowgreen Farms. All rights reserved.
+              Copyright © 2024. Zoroastique Limited. All rights reserved.
             </p>
 
             <div className="mt-8 flex flex-wrap justify-start gap-4 text-xs sm:mt-0 lg:justify-end">
