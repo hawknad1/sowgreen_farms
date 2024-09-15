@@ -3,16 +3,15 @@
 import { StarIcon } from "@heroicons/react/16/solid"
 import { ShoppingBagIcon } from "@heroicons/react/20/solid"
 import Image from "next/image"
-import React from "react"
+import React, { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Product } from "@/types"
-
-interface ProductCardProps {
-  data: any
-}
+import { addTax } from "@/lib/addTax"
 
 const ProductCard = ({ data }: { data: Product }) => {
   const router = useRouter()
+
+  const taxedPrice = addTax(data?.price).toFixed(2)
 
   return (
     <div
@@ -44,7 +43,7 @@ const ProductCard = ({ data }: { data: Product }) => {
               <p className="text-[10px] text-blue-500 tracking-wide"> · 4.0</p>
             </div>
             <div className="flex items-center justify-between pt-2">
-              <p className="text-sm tracking-wide font-semibold">{`GHC ${data?.price}`}</p>
+              <p className="text-sm tracking-wide font-semibold">{`GHC ${taxedPrice}`}</p>
               <div className="bg-green-300 p-1.5 rounded-full cursor-pointer">
                 <ShoppingBagIcon className="size-4 text-gray-800" />
               </div>

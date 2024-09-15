@@ -13,8 +13,7 @@ import groupById from "@/lib/groupById"
 import { CartItem } from "@/types"
 import { processCartItems } from "@/lib/processCartItems"
 import { generateOrderNumber } from "@/lib/generateOrderNumber"
-
-// Helper function to group cart items
+import { addTax } from "@/lib/addTax"
 
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
@@ -26,8 +25,12 @@ const ConfirmOrderPage = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
-  const basketTotal = getCartTotal(cart)
-  const totalOrder = parseInt(basketTotal)
+  const cartWithTax = cart.map((product) => ({
+    ...product,
+    price: addTax(product.price),
+  }))
+  const basketTotal = getCartTotal(cartWithTax)
+  const totalOrder = parseFloat(basketTotal)
 
   const { deliveryMethod, ...newFormData } = formData
 
@@ -41,7 +44,7 @@ const ConfirmOrderPage = () => {
   const config = {
     reference: new Date().getTime().toString(),
     email: formData.email,
-    amount: parseInt(basketTotal) * 100,
+    amount: parseFloat(basketTotal) * 100,
     currency: "GHS",
     metadata: {
       custom_fields: [
@@ -92,11 +95,6 @@ const ConfirmOrderPage = () => {
 
         // Store ordersData in Zustand and navigate to ThankYouPage
         setOrdersData(ordersData)
-        // await fetch(`/api/send`, {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(ordersData),
-        // })
 
         const email = await fetch("/api/send", {
           method: "POST",
@@ -190,7 +188,7 @@ const ConfirmOrderPage = () => {
               </div>
               <div className="flex justify-between">
                 <p className="text-gray-600 text-sm font-medium">Taxes:</p>
-                <span className="font-medium">GHC 9.00</span>
+                <span className="font-medium">GHC 0.00</span>
               </div>
               <div className="flex justify-between font-semibold text-lg">
                 <p>Total:</p>

@@ -7,20 +7,25 @@ import React, { useState } from "react"
 import AddToCart from "./AddToCart"
 import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
+import { addTax } from "@/lib/addTax"
 
 const Basket = () => {
   const [isLoading, setIsLoading] = useState(false)
   const cart = useCartStore((state) => state.cart)
   const grouped = groupById(cart)
-  const basketTotal = getCartTotal(cart)
   const router = useRouter()
-
+  const cartWithTax = cart.map((product) => ({
+    ...product,
+    price: addTax(product.price),
+  }))
+  const basketTotal = getCartTotal(cartWithTax)
   return (
     <div className="w-fit">
       <ul className="divide-y-[2px] w-fit">
         {Object.keys(grouped).map((id) => {
           const item = grouped[id][0]
           const total = getCartTotal(grouped[id])
+          const taxedItem = addTax(parseInt(total))
 
           return (
             <li
@@ -47,7 +52,9 @@ const Basket = () => {
                 </div>
                 <div className="flex flex-col border rounded-md p-2 lg:p-5">
                   <AddToCart product={item} />
-                  <p className="mt-4 font-bold text-right">{total}</p>
+                  <p className="mt-4 font-bold text-right">
+                    {taxedItem.toFixed(2)}
+                  </p>
                 </div>
               </div>
             </li>

@@ -3,13 +3,35 @@ import { devtools, persist } from "zustand/middleware"
 import { Product } from "./types"
 import { CartItem } from "@/types"
 
-// import type {} from "@redux-devtools/extension"  // required for devtools typing
+interface PaymentStore {
+  reference: any
+  setReference: (reference: any) => void
+}
 
 interface CartState {
   cart: Product[]
   addToCart: (product: Product) => void
   removeFromCart: (product: Product) => void
   clearCart: () => void
+}
+
+interface TaxState {
+  subtotal: number
+  total: number
+  calculateTax: () => void
+  setSubtotal: (value: number) => void
+}
+
+interface OrderState {
+  ordersData: {
+    products: CartItem[]
+    shippingAddress: Record<string, any>
+    orderNumber: string
+    deliveryMethod: string
+    referenceNumber: string
+    total: number
+  } | null
+  setOrdersData: (data: any) => void
 }
 
 export const useCartStore = create<CartState>()(
@@ -43,27 +65,10 @@ export const useCartStore = create<CartState>()(
   )
 )
 
-interface PaymentStore {
-  reference: any
-  setReference: (reference: any) => void
-}
-
 export const usePaymentStore = create<PaymentStore>((set) => ({
   reference: null,
   setReference: (reference) => set({ reference }),
 }))
-
-interface OrderState {
-  ordersData: {
-    products: CartItem[]
-    shippingAddress: Record<string, any>
-    orderNumber: string
-    deliveryMethod: string
-    referenceNumber: string
-    total: number
-  } | null
-  setOrdersData: (data: any) => void
-}
 
 export const useOrdersStore = create(
   persist<OrderState>(
@@ -77,3 +82,34 @@ export const useOrdersStore = create(
     }
   )
 )
+
+export const useTaxStore = create<TaxState>((set, get) => ({
+  subtotal: 0,
+  total: 0,
+
+  setSubtotal: (value: number) => set({ subtotal: value }),
+
+  calculateTax: () => {
+    const { subtotal } = get()
+
+    const taxRates = {
+      getFund: 2.5 / 100,
+      nhil: 2.5 / 100,
+      covid: 1 / 100,
+      vat: 15 / 100,
+    }
+
+    const calculateTax = (rate: number) => rate * subtotal
+
+    const getFund = calculateTax(taxRates.getFund)
+    const nhil = calculateTax(taxRates.nhil)
+    const covid = calculateTax(taxRates.covid)
+
+    const levies = subtotal + getFund + nhil + covid
+    const vat = levies * taxRates.vat
+
+    const total = subtotal + vat
+
+    set({ total })
+  },
+}))

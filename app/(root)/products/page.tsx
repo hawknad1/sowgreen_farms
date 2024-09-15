@@ -2,7 +2,6 @@
 import ProductCard from "@/components/cards/product/ProductCard"
 import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
 import PaginationButtons from "@/components/sort/PaginationButtons"
-import { Button } from "@/components/ui/button"
 import { useCategoryState } from "@/hooks/state"
 import React, { useEffect, useState } from "react"
 

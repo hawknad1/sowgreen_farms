@@ -5,6 +5,7 @@ import groupById from "@/lib/groupById"
 
 import { getCartTotal } from "@/lib/getCartTotal"
 import { useCartStore } from "@/store"
+import { addTax } from "@/lib/addTax"
 
 const CartDisplay = () => {
   const cart = useCartStore((state) => state.cart)
@@ -18,7 +19,8 @@ const CartDisplay = () => {
           {Object.keys(grouped).map((id) => {
             const items = grouped[id]
             const item = items[0]
-            const total = getCartTotal(items)
+            const total = getCartTotal(grouped[id])
+            const taxedItem = addTax(parseInt(total))
             const quantity = items.length
 
             return (
@@ -49,7 +51,9 @@ const CartDisplay = () => {
                     </div>
                     <div className="flex flex-col items-end">
                       <p className="text-sm text-gray-500">Total</p>
-                      <p className="text-sm font-bold mt-1">GHC {total}</p>
+                      <p className="text-sm font-bold mt-1">
+                        GHC {taxedItem.toFixed(2)}
+                      </p>
                     </div>
                   </div>
                 </div>

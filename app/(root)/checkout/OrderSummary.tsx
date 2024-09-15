@@ -1,5 +1,6 @@
 "use client"
 import AddToCart from "@/components/basket/AddToCart"
+import { addTax } from "@/lib/addTax"
 import { getCartTotal } from "@/lib/getCartTotal"
 import groupById from "@/lib/groupById"
 import { useCartStore } from "@/store"
@@ -9,7 +10,11 @@ import React from "react"
 const OrderSummary = () => {
   const cart = useCartStore((state) => state.cart)
   const grouped = groupById(cart)
-  const basketTotal = getCartTotal(cart)
+  const cartWithTax = cart.map((product) => ({
+    ...product,
+    price: addTax(product.price),
+  }))
+  const basketTotal = getCartTotal(cartWithTax)
 
   return (
     <div className="flex flex-col justify-between h-fit rounded-md  ">
@@ -18,6 +23,7 @@ const OrderSummary = () => {
           {Object.keys(grouped).map((id) => {
             const item = grouped[id][0]
             const total = getCartTotal(grouped[id])
+            const taxedItem = addTax(parseFloat(total))
 
             return (
               <li
@@ -41,7 +47,9 @@ const OrderSummary = () => {
                     <p className="text-sm lg:text-base font-semibold line-clamp-2">
                       {item.title}
                     </p>
-                    <p className="text-sm lg:text-base font-bold">{total}</p>
+                    <p className="text-sm lg:text-base font-bold">
+                      {taxedItem.toFixed(2)}
+                    </p>
                   </div>
                   <div className="flex items-center">
                     <AddToCart product={item} />
