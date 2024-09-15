@@ -92,6 +92,19 @@ const ConfirmOrderPage = () => {
 
         // Store ordersData in Zustand and navigate to ThankYouPage
         setOrdersData(ordersData)
+        // await fetch(`/api/send`, {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify(ordersData),
+        // })
+
+        const email = await fetch("/api/send", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(ordersData),
+        })
+        if (!email.ok) throw new Error("Email API failed")
+
         router.push("/success/thank-you")
       }
     } catch (error) {
