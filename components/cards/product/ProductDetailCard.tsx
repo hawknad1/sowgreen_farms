@@ -12,6 +12,7 @@ import { useCartStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import { Product } from "@/types"
 import { addTax } from "@/lib/addTax"
+import { Badge } from "@/components/ui/badge"
 
 interface Props {
   product: Product
@@ -24,11 +25,8 @@ const ProductDetailCard = ({ product }: Props) => {
     ...product,
     price: addTax(product.price),
   }))
-  const total = getCartTotal(cartWithTax)
 
   const taxedProduct = { ...product, price: addTax(product?.price).toFixed(2) }
-
-  // If you want to ensure the prices are numbers (if they could still be strings):
 
   return (
     <div className="container mx-auto py-8">
@@ -70,9 +68,17 @@ const ProductDetailCard = ({ product }: Props) => {
             <Ratings />
             <div className="flex items-center space-x-2">
               <p className="text-2xl font-bold text-black">{`GHC ${taxedProduct.price}`}</p>
-              <p className="bg-black text-white text-[10px] font-medium px-2  p-1 rounded-full w-fit">
-                20% Disc
-              </p>
+              {product.isInStock === "out-of-stock" ? (
+                <Badge className="bg-gray-500/25 text-gray-500 hover:disabled:pointer-events-none">
+                  Out of stock
+                </Badge>
+              ) : product?.discount ? (
+                <Badge className="bg-red-500/85">
+                  <p className="text-[10px] text-white tracking-wide">
+                    {product?.discount}% OFF
+                  </p>
+                </Badge>
+              ) : null}
               {/* <p className="text-sm font-medium text-neutral-600">400ml/each</p> */}
             </div>
             <div className="flex flex-col max-w-lg">
@@ -83,15 +89,14 @@ const ProductDetailCard = ({ product }: Props) => {
             <div className="flex items-center gap-4">
               <AddToCart product={product} />
               <Button
+                disabled={product?.isInStock === "out-of-stock"}
                 onClick={() => router.push("/checkout")}
                 className="rounded-full p-0 px-4"
               >
                 Checkout Now
               </Button>
             </div>
-            <div className="text-2xl font-bold">
-              Order Total <span className="">{total}</span>
-            </div>
+
             <div className="flex items-center gap-5 mt-2">
               <div className="flex items-center gap-1 hover:text-gray-400 cursor-pointer">
                 <HeartIcon className="h-5 w-5" />

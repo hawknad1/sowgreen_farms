@@ -8,6 +8,11 @@ interface PaymentStore {
   setReference: (reference: any) => void
 }
 
+interface DeliveryStore {
+  deliveryFee: number
+  setDeliveryFee: (fee: number) => void
+}
+
 interface CartState {
   cart: Product[]
   addToCart: (product: Product) => void
@@ -65,6 +70,14 @@ export const useCartStore = create<CartState>()(
   )
 )
 
+export const useCartTotalStore = create<{
+  cart: CartItem[]
+  setCart: (cart: CartItem[]) => void
+}>((set) => ({
+  cart: [],
+  setCart: (cart) => set({ cart }),
+}))
+
 export const usePaymentStore = create<PaymentStore>((set) => ({
   reference: null,
   setReference: (reference) => set({ reference }),
@@ -112,4 +125,9 @@ export const useTaxStore = create<TaxState>((set, get) => ({
 
     set({ total })
   },
+}))
+
+export const useDeliveryStore = create<DeliveryStore>((set) => ({
+  deliveryFee: 30, // Initial delivery fee
+  setDeliveryFee: (fee) => set({ deliveryFee: fee }),
 }))

@@ -1,14 +1,19 @@
 "use client"
 import { useRouter, useSearchParams } from "next/navigation"
 import React, { useEffect, useState } from "react"
-import { useCartStore, useOrdersStore, usePaymentStore } from "@/store"
+import {
+  useCartStore,
+  useDeliveryStore,
+  useOrdersStore,
+  usePaymentStore,
+} from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import { Separator } from "@/components/ui/separator"
 import Card from "./Card"
 import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
-import { date, time } from "@/lib/utils"
+import { date, formatCurrency, time } from "@/lib/utils"
 import groupById from "@/lib/groupById"
 import { CartItem } from "@/types"
 import { processCartItems } from "@/lib/processCartItems"
@@ -17,6 +22,7 @@ import { addTax } from "@/lib/addTax"
 
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
+  const { deliveryFee, setDeliveryFee } = useDeliveryStore()
   const setOrdersData = useOrdersStore((state) => state.setOrdersData)
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
@@ -29,8 +35,16 @@ const ConfirmOrderPage = () => {
     ...product,
     price: addTax(product.price),
   }))
+
+  console.log(cart, "cart")
+  console.log(cartWithTax, "cart")
+
   const basketTotal = getCartTotal(cartWithTax)
-  const totalOrder = parseFloat(basketTotal)
+  const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
+
+  const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHC")
+  const formattedDelivery = formatCurrency(deliveryFee, "GHC")
+  const formattedTotal = formatCurrency(total, "GHC")
 
   const { deliveryMethod, ...newFormData } = formData
 
@@ -44,7 +58,7 @@ const ConfirmOrderPage = () => {
   const config = {
     reference: new Date().getTime().toString(),
     email: formData.email,
-    amount: parseFloat(basketTotal) * 100,
+    amount: total * 100,
     currency: "GHS",
     metadata: {
       custom_fields: [
@@ -74,7 +88,7 @@ const ConfirmOrderPage = () => {
           orderNumber,
           deliveryMethod: formData.deliveryMethod,
           referenceNumber: reference.reference,
-          total: totalOrder,
+          total: total,
         }
 
         const shippingResponse = await fetch("/api/address", {
@@ -91,8 +105,6 @@ const ConfirmOrderPage = () => {
         })
         if (!ordersResponse.ok) throw new Error("Orders API failed")
 
-        clearCart() // Clear cart after successful API calls
-
         // Store ordersData in Zustand and navigate to ThankYouPage
         setOrdersData(ordersData)
 
@@ -102,6 +114,8 @@ const ConfirmOrderPage = () => {
           body: JSON.stringify(ordersData),
         })
         if (!email.ok) throw new Error("Email API failed")
+
+        clearCart() // Clear cart after successful API calls
 
         router.push("/success/thank-you")
       }
@@ -164,21 +178,13 @@ const ConfirmOrderPage = () => {
                 <p className="text-gray-600 text-sm font-medium">
                   Order Created:
                 </p>
-                <span className="font-medium">
-                  {date} <span className="hidden lg:inline">at {time}</span>
-                </span>
+                <span className="font-medium">{date}</span>
               </div>
               <div className="flex justify-between">
                 <p className="text-gray-600 text-sm font-medium">
                   Quantity of Items:
                 </p>
-                <span className="font-medium">{cart.length}</span>
-              </div>
-              <div className="flex justify-between">
-                <p className="text-gray-600 text-sm font-medium">
-                  Delivery Fee:
-                </p>
-                <span className="font-medium">GHC 15.00</span>
+                <span className="font-medium">{cart.length} Items</span>
               </div>
               <div className="flex justify-between">
                 <p className="text-gray-600 text-sm font-medium">
@@ -187,12 +193,19 @@ const ConfirmOrderPage = () => {
                 <span className="font-medium">Same Day</span>
               </div>
               <div className="flex justify-between">
-                <p className="text-gray-600 text-sm font-medium">Taxes:</p>
-                <span className="font-medium">GHC 0.00</span>
+                <p className="text-gray-600 text-sm font-medium">Subtotal:</p>
+                <span className="font-medium">{formattedSubtotal}</span>
+              </div>
+
+              <div className="flex justify-between">
+                <p className="text-gray-600 text-sm font-medium">
+                  Delivery Fee:
+                </p>
+                <span className="font-medium">{formattedDelivery}</span>
               </div>
               <div className="flex justify-between font-semibold text-lg">
                 <p>Total:</p>
-                <span>GHC {basketTotal}</span>
+                <span>{formattedTotal}</span>
               </div>
             </div>
           </Card>

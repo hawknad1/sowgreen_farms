@@ -1,16 +1,18 @@
 "use client"
 import { getCartTotal } from "@/lib/getCartTotal"
 import groupById from "@/lib/groupById"
-import { useCartStore } from "@/store"
+import { useCartStore, useDeliveryStore } from "@/store"
 import Image from "next/image"
 import React, { useState } from "react"
 import AddToCart from "./AddToCart"
 import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
 import { addTax } from "@/lib/addTax"
+import { formatCurrency } from "@/lib/utils"
 
-const Basket = () => {
+const BasketItems = () => {
   const [isLoading, setIsLoading] = useState(false)
+  const { deliveryFee, setDeliveryFee } = useDeliveryStore()
   const cart = useCartStore((state) => state.cart)
   const grouped = groupById(cart)
   const router = useRouter()
@@ -19,6 +21,7 @@ const Basket = () => {
     price: addTax(product.price),
   }))
   const basketTotal = getCartTotal(cartWithTax)
+
   return (
     <div className="w-fit">
       <ul className="divide-y-[2px] w-fit">
@@ -52,8 +55,8 @@ const Basket = () => {
                 </div>
                 <div className="flex flex-col border rounded-md p-2 lg:p-5">
                   <AddToCart product={item} />
-                  <p className="mt-4 font-bold text-right">
-                    {taxedItem.toFixed(2)}
+                  <p className="mt-4 font-bold text-center">
+                    {formatCurrency(taxedItem, "GHC")}
                   </p>
                 </div>
               </div>
@@ -75,4 +78,4 @@ const Basket = () => {
   )
 }
 
-export default Basket
+export default BasketItems

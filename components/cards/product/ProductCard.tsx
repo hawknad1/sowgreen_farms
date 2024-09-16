@@ -1,45 +1,72 @@
 "use client"
 
+import Image from "next/image"
+import React, { useMemo } from "react"
 import { StarIcon } from "@heroicons/react/16/solid"
 import { ShoppingBagIcon } from "@heroicons/react/20/solid"
-import Image from "next/image"
-import React, { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Product } from "@/types"
 import { addTax } from "@/lib/addTax"
+import { Badge } from "@/components/ui/badge"
 
-const ProductCard = ({ data }: { data: Product }) => {
+interface ProductCardProps {
+  data: Product
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   const router = useRouter()
 
-  const taxedPrice = addTax(data?.price).toFixed(2)
+  // Memoized values to avoid recalculating on each render
+  const taxedPrice = useMemo(() => addTax(data.price).toFixed(2), [data.price])
+  const discount = data.isInStock === "out-of-stock" ? null : data.discount
+
+  // Helper function to render stars based on rating
+  const renderStars = (rating: number) => {
+    return [...Array(5)].map((_, i) => (
+      <StarIcon
+        key={i}
+        className={`size-3 ${i < rating ? "text-yellow-500" : "text-gray-300"}`}
+      />
+    ))
+  }
+
+  const handleCardClick = () => {
+    router.push(`/products/${data.id}`)
+  }
 
   return (
-    <div
-      onClick={() => router.push(`/products/${data?.id}`)}
-      className="cursor-pointer"
-    >
-      <div className="bg-gray-50 rounded-lg shadow-sm hover:shadow-md h-fit w-48">
-        <div className="p-4  flex flex-col gap-4 items-center ">
-          <div className="self-start bg-blue-400 px-1.5 py-0.  rounded-full ">
-            <p className="text-[10px] text-white tracking-wide">New</p>
+    <div onClick={handleCardClick} className="cursor-pointer relative">
+      <div className="absolute top-2 left-3">
+        {data.isInStock === "out-of-stock" ? (
+          <Badge className="bg-gray-500/25 text-gray-500">Out of stock</Badge>
+        ) : discount ? (
+          <Badge className="bg-red-500/85">
+            <p className="text-[10px] text-white tracking-wide">
+              {discount}% OFF
+            </p>
+          </Badge>
+        ) : null}
+      </div>
+      <div className="bg-gray-50 rounded-lg shadow-sm hover:shadow-md h-[265px] w-48">
+        <div className="px-3 py-8 flex flex-col gap-4 items-center">
+          <div className="">
+            <Image
+              src={data.imageUrl}
+              alt={data.title}
+              width={100}
+              height={100}
+              className="h-[120px] w-[120px] object-contain"
+            />
           </div>
-          <Image
-            src={data?.imageUrl}
-            alt="Red Capsicum"
-            width={100}
-            height={100}
-            className="h-[120px] w-[120px] object-contain"
-          />
+
+          {/* Product Info */}
           <div className="self-start w-full">
-            <p className="text-[10px] text-blue-400">{data?.categoryName}</p>
+            <p className="text-[10px] text-blue-400">{data.categoryName}</p>
             <p className="text-base tracking-wide font-semibold">
-              {data?.title}
+              {data.title}
             </p>
             <div className="flex items-center">
-              <StarIcon className="size-3 text-yellow-500" />
-              <StarIcon className="size-3 text-yellow-500" />
-              <StarIcon className="size-3 text-yellow-500" />
-              <StarIcon className="size-3 text-yellow-500" />
+              {renderStars(4)}
               <p className="text-[10px] text-blue-500 tracking-wide"> · 4.0</p>
             </div>
             <div className="flex items-center justify-between pt-2">

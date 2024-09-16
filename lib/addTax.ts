@@ -1,16 +1,3 @@
-// const subtotal = 200
-
-// 5 + 5 + 2 + 200
-
-// export const addTax = (subtotal: number) => {
-//   const getFund = (2.5 / 100) * subtotal
-//   const nhil = (2.5 / 100) * subtotal
-//   const covid = (1 / 100) * subtotal
-//   const levies = getFund + nhil + covid + subtotal
-//   const vat = (15 / 100) * levies
-//   return vat
-// }
-
 export const addTax = (subtotal: number) => {
   const taxRates = {
     getFund: 2.5 / 100,

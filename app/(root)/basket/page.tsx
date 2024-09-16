@@ -1,8 +1,6 @@
 "use client"
-import Basket from "@/components/basket/Basket"
 import CheckoutBox from "@/components/checkout/CheckoutBox"
 import Coupon from "@/components/checkout/Coupon"
-import OrderSummery from "@/components/checkout/OrderSummery"
 import PaymentMethod from "@/components/checkout/PaymentMethod"
 import { ChevronLeftIcon } from "@heroicons/react/24/outline"
 import { Button } from "@/components/ui/button"
@@ -10,6 +8,8 @@ import { Button } from "@/components/ui/button"
 import { ShoppingCartIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/navigation"
 import React from "react"
+import BasketItems from "@/components/basket/BasketItems"
+import BasketOrderSummery from "@/components/checkout/BasketOrderSummery"
 
 const BasketPage = () => {
   const router = useRouter()
@@ -28,7 +28,7 @@ const BasketPage = () => {
       <div className="flex items-center justify-between ">
         <div className="mt-8">
           <div className="overflow-scroll scrollbar-hide w-fit h-[600px]">
-            <Basket />
+            <BasketItems />
           </div>
           <div className="hidden lg:inline-flex items-center gap-4 mt-8">
             <div
@@ -48,7 +48,7 @@ const BasketPage = () => {
               <Coupon />
             </CheckoutBox>
             <CheckoutBox>
-              <OrderSummery />
+              <BasketOrderSummery />
             </CheckoutBox>
             <CheckoutBox>
               <PaymentMethod />

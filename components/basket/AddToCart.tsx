@@ -1,6 +1,6 @@
 "use client"
 import { useCartStore } from "@/store"
-import React from "react"
+import React, { useState } from "react"
 import { Button } from "../ui/button"
 import RemoveFromCart from "./RemoveFromCart"
 import { Product } from "@/types"
@@ -32,7 +32,11 @@ const AddToCart = ({ product }: { product: Product }) => {
           </Button>
         </>
       ) : (
-        <Button onClick={handleAdd} className="px-4 py-2 text-sm md:text-base">
+        <Button
+          disabled={product?.isInStock === "out-of-stock"}
+          onClick={handleAdd}
+          className="px-4 py-2 text-sm md:text-base"
+        >
           Add To Cart
         </Button>
       )}

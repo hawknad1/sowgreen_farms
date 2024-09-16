@@ -9,6 +9,7 @@ function groupById(products: Product[]): Record<string, Product[]> {
         accumulator[id] = []
       }
       accumulator[id].push(currentProduct)
+
       return accumulator
     },
     {}

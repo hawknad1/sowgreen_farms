@@ -3,18 +3,25 @@ import AddToCart from "@/components/basket/AddToCart"
 import { addTax } from "@/lib/addTax"
 import { getCartTotal } from "@/lib/getCartTotal"
 import groupById from "@/lib/groupById"
-import { useCartStore } from "@/store"
+import { formatCurrency } from "@/lib/utils"
+import { useCartStore, useDeliveryStore } from "@/store"
 import Image from "next/image"
 import React from "react"
 
 const OrderSummary = () => {
   const cart = useCartStore((state) => state.cart)
+  const { deliveryFee, setDeliveryFee } = useDeliveryStore()
   const grouped = groupById(cart)
   const cartWithTax = cart.map((product) => ({
     ...product,
     price: addTax(product.price),
   }))
   const basketTotal = getCartTotal(cartWithTax)
+
+  const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
+  const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHC")
+  const formattedDelivery = formatCurrency(deliveryFee, "GHC")
+  const formattedTotal = formatCurrency(total, "GHC")
 
   return (
     <div className="flex flex-col justify-between h-fit rounded-md  ">
@@ -64,15 +71,15 @@ const OrderSummary = () => {
         <div className="flex flex-col space-y-4 ">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-neutral-500">Subtotal</p>
-            <p className="font-semibold text-sm">{basketTotal}</p>
+            <p className="font-semibold text-sm">{formattedSubtotal}</p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-neutral-500">Shipping</p>
-            <p className="font-semibold text-sm">GHC 0.00</p>
+            <p className="text-sm font-medium text-neutral-500">Delivery</p>
+            <p className="font-semibold text-sm">{formattedDelivery}</p>
           </div>
           <div className="flex items-center justify-between font-semibold text-lg">
             <p className="text-sm text-neutral-500">Total</p>
-            <p className="text-lg">{basketTotal}</p>
+            <p className="text-lg">{formattedTotal}</p>
           </div>
         </div>
       </div>

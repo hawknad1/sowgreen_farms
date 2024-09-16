@@ -1,22 +1,49 @@
 "use client"
-import { Separator } from "@/components/ui/separator"
-import { useOrdersStore } from "@/store"
 import Image from "next/image"
+import OrderConfirmSkeleton from "@/components/skeletons/OrderConfirmSkeleton"
+import { Separator } from "@/components/ui/separator"
+import { useCartStore, useDeliveryStore, useOrdersStore } from "@/store"
 import { useMemo } from "react"
 import { OrderInfo } from "./OrderInfo"
 import { ShippingAddress } from "./ShippingAddress"
-import OrderConfirmSkeleton from "@/components/skeletons/OrderConfirmSkeleton"
+import { addTax } from "@/lib/addTax"
+import { getCartTotal } from "@/lib/getCartTotal"
+import { formatCurrency } from "@/lib/utils"
 
 const ThankYouPage = () => {
   const ordersData = useOrdersStore((state) => state.ordersData)
+  const cart = useCartStore((state) => state.cart)
 
-  // Move the hook calls outside the condition
-  const deliveryFee = 20
-  const total = ordersData?.total || 0 // Use fallback values in case ordersData is undefined
+  const { orderNumber, shippingAddress, products, total } = ordersData || {}
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+
+  // Calculate cart total with tax
+  const cartWithTax = cart.map((product) => ({
+    ...product,
+    price: addTax(product.price),
+  }))
+
+  console.log(ordersData, "ordersData")
+
+  const basketTotal = getCartTotal(cartWithTax)
+  console.log(basketTotal)
+
+  // Sum the taxed prices for each product
+  const taxedTotal =
+    products?.reduce((acc, order) => {
+      const taxedPrice = addTax(order.item.price) * order.quantity
+      return acc + taxedPrice
+    }, 0) || 0
+
+  const grandTotal = taxedTotal + deliveryFee
+
+  // Format values
+  const formattedDelivery = formatCurrency(deliveryFee, "GHC")
+  const formattedSubTotal = formatCurrency(taxedTotal, "GHC")
+  const formattedTotal = formatCurrency(grandTotal, "GHC")
+
+  // Handle delivery method label
   const deliveryMethod = ordersData?.deliveryMethod || ""
-
-  const allTotal = useMemo(() => total + deliveryFee, [total])
-
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
       case "same-day-delivery":
@@ -32,11 +59,9 @@ const ThankYouPage = () => {
     return <OrderConfirmSkeleton />
   }
 
-  const { orderNumber, shippingAddress, products } = ordersData
-
   return (
     <div className="flex flex-col items-center w-full p-8 bg-gray-100 h-screen">
-      <div className="flex flex-col items-center gap-y-2 mb-3 ">
+      <div className="flex flex-col items-center gap-y-2 mb-3">
         <p className="font-semibold text-sm text-neutral-500/95">THANK YOU</p>
         <h3 className="text-2xl font-bold">Your order is confirmed</h3>
       </div>
@@ -60,36 +85,43 @@ const ThankYouPage = () => {
               <h2 className="text-sm font-bold mb-2">Ordered Items</h2>
               <div className="flex flex-col gap-3 max-h-[290px] overflow-y-auto scrollbar-hide p-2">
                 {products?.length ? (
-                  products.map((order) => (
-                    <div
-                      key={order?.item?.id}
-                      className="flex items-start justify-between"
-                    >
-                      <div className="flex gap-4">
-                        <div className="bg-gray-100 p-1.5 rounded-lg">
-                          <Image
-                            src={order?.item?.imageUrl}
-                            alt={order?.item?.title}
-                            height={50}
-                            width={50}
-                            className="h-14 w-14 object-contain"
-                            priority
-                          />
+                  products.map((order) => {
+                    const taxedPrice = addTax(order.item.price)
+                    const orderTotal = taxedPrice * order.quantity
+
+                    return (
+                      <div
+                        key={order?.item?.id}
+                        className="flex items-start justify-between"
+                      >
+                        <div className="flex gap-4">
+                          <div className="bg-gray-100 p-1.5 rounded-lg">
+                            <Image
+                              src={order?.item?.imageUrl}
+                              alt={order?.item?.title}
+                              height={50}
+                              width={50}
+                              className="h-14 w-14 object-contain"
+                              priority
+                            />
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold">
+                              {order?.item?.title}
+                            </p>
+                            <p className="text-sm text-neutral-500/85">
+                              x {order?.quantity}
+                            </p>
+                          </div>
                         </div>
                         <div>
                           <p className="text-sm font-semibold">
-                            {order?.item?.title}
-                          </p>
-                          <p className="text-sm text-neutral-500/85">
-                            x {order?.quantity}
+                            {taxedPrice.toFixed(2)}
                           </p>
                         </div>
                       </div>
-                      <div>
-                        <p className="text-sm font-semibold">{order?.total}</p>
-                      </div>
-                    </div>
-                  ))
+                    )
+                  })
                 ) : (
                   <p className="text-sm text-neutral-500">
                     No products available.
@@ -106,7 +138,7 @@ const ThankYouPage = () => {
                     Subtotal
                   </p>
                   <p className="text-sm font-semibold text-neutral-500/85">
-                    {total.toFixed(2)}
+                    {formattedSubTotal}
                   </p>
                 </div>
                 <div className="flex justify-between">
@@ -114,12 +146,12 @@ const ThankYouPage = () => {
                     Delivery Fee
                   </p>
                   <p className="text-sm font-semibold text-neutral-500/85">
-                    {deliveryFee.toFixed(2)}
+                    {formattedDelivery}
                   </p>
                 </div>
                 <div className="flex justify-between">
                   <p className="text-sm font-medium text-black">Total</p>
-                  <p className="text-sm font-semibold">{allTotal.toFixed(2)}</p>
+                  <p className="text-sm font-semibold">{formattedTotal}</p>
                 </div>
               </div>
             </div>

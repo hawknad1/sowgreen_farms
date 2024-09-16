@@ -20,7 +20,7 @@ const CartDisplay = () => {
             const items = grouped[id]
             const item = items[0]
             const total = getCartTotal(grouped[id])
-            const taxedItem = addTax(parseInt(total))
+            const taxedItem = addTax(parseFloat(total))
             const quantity = items.length
 
             return (
@@ -50,7 +50,7 @@ const CartDisplay = () => {
                       </p>
                     </div>
                     <div className="flex flex-col items-end">
-                      <p className="text-sm text-gray-500">Total</p>
+                      <p className="text-sm text-gray-500">Subtotal</p>
                       <p className="text-sm font-bold mt-1">
                         GHC {taxedItem.toFixed(2)}
                       </p>
