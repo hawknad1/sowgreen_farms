@@ -19,6 +19,7 @@ import { CartItem } from "@/types"
 import { processCartItems } from "@/lib/processCartItems"
 import { generateOrderNumber } from "@/lib/generateOrderNumber"
 import { addTax } from "@/lib/addTax"
+import InfoCard from "./InfoCard"
 
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
@@ -31,13 +32,11 @@ const ConfirmOrderPage = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
+
   const cartWithTax = cart.map((product) => ({
     ...product,
     price: addTax(product.price),
   }))
-
-  console.log(cart, "cart")
-  console.log(cartWithTax, "cart")
 
   const basketTotal = getCartTotal(cartWithTax)
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
@@ -45,6 +44,23 @@ const ConfirmOrderPage = () => {
   const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHC")
   const formattedDelivery = formatCurrency(deliveryFee, "GHC")
   const formattedTotal = formatCurrency(total, "GHC")
+
+  const dataProps = {
+    formData,
+    formattedDelivery,
+    cart,
+    formattedSubtotal,
+    formattedTotal,
+  }
+
+  const taxedOrders = orders.map((order) => ({
+    ...order, // Spread the existing order object
+    item: {
+      ...order.item,
+      price: addTax(order.item.price),
+    },
+    total: (addTax(order.item.price) * order.quantity).toFixed(2),
+  }))
 
   const { deliveryMethod, ...newFormData } = formData
 
@@ -83,7 +99,7 @@ const ConfirmOrderPage = () => {
         setReferenceNumber(reference.reference)
 
         const ordersData = {
-          products: orders,
+          products: taxedOrders,
           shippingAddress: newFormData,
           orderNumber,
           deliveryMethod: formData.deliveryMethod,
@@ -141,75 +157,7 @@ const ConfirmOrderPage = () => {
         <h2 className="text-2xl font-bold mb-6 text-center">
           Confirm Order & Pay
         </h2>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
-          <Card>
-            <div className="flex flex-col gap-2 lg:gap-4">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-700">
-                  Delivery Address
-                </h3>
-                <div className="flex flex-col items-end md:items-start">
-                  <p className="text-gray-600">{formData.name}</p>
-                  <p className="text-gray-600">{formData.address}</p>
-                  <p className="text-gray-600">{formData.city}</p>
-                  <p className="text-gray-600">{formData.region}</p>
-                  <p className="text-gray-600">{formData.phone}</p>
-                  <p className="text-gray-600">{formData.email}</p>
-                </div>
-              </div>
-              <Separator className="my-2" />
-              <div className="w-full">
-                <h3 className="text-lg font-semibold text-gray-700">
-                  Billing Address
-                </h3>
-                <p className="text-gray-600 flex justify-end md:justify-start">
-                  Same as Delivery Address
-                </p>
-              </div>
-            </div>
-          </Card>
-
-          <Card>
-            <div className="flex flex-col gap-2 lg:gap-4">
-              <h3 className="text-lg font-semibold text-gray-700">
-                Order Summary
-              </h3>
-              <div className="flex justify-between">
-                <p className="text-gray-600 text-sm font-medium">
-                  Order Created:
-                </p>
-                <span className="font-medium">{date}</span>
-              </div>
-              <div className="flex justify-between">
-                <p className="text-gray-600 text-sm font-medium">
-                  Quantity of Items:
-                </p>
-                <span className="font-medium">{cart.length} Items</span>
-              </div>
-              <div className="flex justify-between">
-                <p className="text-gray-600 text-sm font-medium">
-                  Estimated Delivery:
-                </p>
-                <span className="font-medium">Same Day</span>
-              </div>
-              <div className="flex justify-between">
-                <p className="text-gray-600 text-sm font-medium">Subtotal:</p>
-                <span className="font-medium">{formattedSubtotal}</span>
-              </div>
-
-              <div className="flex justify-between">
-                <p className="text-gray-600 text-sm font-medium">
-                  Delivery Fee:
-                </p>
-                <span className="font-medium">{formattedDelivery}</span>
-              </div>
-              <div className="flex justify-between font-semibold text-lg">
-                <p>Total:</p>
-                <span>{formattedTotal}</span>
-              </div>
-            </div>
-          </Card>
-        </div>
+        <InfoCard data={dataProps} />
 
         <div className="mt-8">
           <CartDisplay />

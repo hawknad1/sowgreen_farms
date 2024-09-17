@@ -12,12 +12,13 @@ import { Order } from "@/types"
 import StatusCard from "./StatusCard"
 import { ShippingInfo } from "./ShippingInfo"
 import { OrderInfo } from "./OrderInfo"
+import { useDeliveryStore } from "@/store"
+import { formatCurrency } from "@/lib/utils"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
-  if (!orders) return <p>Loading...</p>
+  const { deliveryFee } = useDeliveryStore()
 
-  const shippingFee = 20
-  const total = shippingFee + (orders?.total || 0)
+  if (!orders) return <p>Loading...</p>
 
   return (
     <div className="">
@@ -73,18 +74,29 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               {/* Order Summary */}
               <div>
                 <h3 className="text-lg font-bold mb-2">Order Summary</h3>
-                <div>
-                  <div className="flex justify-between">
+                <div className="flex justify-between">
+                  <div>
                     <p className="text-sm text-neutral-400">Subtotal</p>
-                    <p className="font-semibold text-sm">{`GHC ${orders?.total}`}</p>
-                  </div>
-                  <div className="flex justify-between">
-                    <p className="text-sm text-neutral-400">Shipping Fee</p>
-                    <p className="font-semibold text-sm">{`GHC ${shippingFee}`}</p>
-                  </div>
-                  <div className="flex justify-between">
+                    <p className="text-sm text-neutral-400">Delivery Fee</p>
                     <p className="text-sm font-semibold">Total</p>
-                    <p className="font-semibold text-sm">{`GHC ${total}`}</p>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <div className="flex justify-between">
+                      <p className="font-semibold text-sm text-neutral-400">
+                        {formatCurrency(orders?.total - deliveryFee, "GHC")}
+                      </p>
+                    </div>
+                    <div className="flex justify-between">
+                      <p className="font-semibold text-sm text-neutral-400">
+                        {formatCurrency(deliveryFee, "GHC")}
+                      </p>
+                    </div>
+                    <div className="flex justify-between">
+                      <p className="font-semibold text-sm">
+                        {formatCurrency(orders?.total, "GHC")}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -23,24 +23,13 @@ const ThankYouPage = () => {
     price: addTax(product.price),
   }))
 
-  console.log(ordersData, "ordersData")
+  console.log(typeof total)
+  console.log(total)
 
   const basketTotal = getCartTotal(cartWithTax)
-  console.log(basketTotal)
-
-  // Sum the taxed prices for each product
-  const taxedTotal =
-    products?.reduce((acc, order) => {
-      const taxedPrice = addTax(order.item.price) * order.quantity
-      return acc + taxedPrice
-    }, 0) || 0
-
-  const grandTotal = taxedTotal + deliveryFee
 
   // Format values
   const formattedDelivery = formatCurrency(deliveryFee, "GHC")
-  const formattedSubTotal = formatCurrency(taxedTotal, "GHC")
-  const formattedTotal = formatCurrency(grandTotal, "GHC")
 
   // Handle delivery method label
   const deliveryMethod = ordersData?.deliveryMethod || ""
@@ -86,9 +75,6 @@ const ThankYouPage = () => {
               <div className="flex flex-col gap-3 max-h-[290px] overflow-y-auto scrollbar-hide p-2">
                 {products?.length ? (
                   products.map((order) => {
-                    const taxedPrice = addTax(order.item.price)
-                    const orderTotal = taxedPrice * order.quantity
-
                     return (
                       <div
                         key={order?.item?.id}
@@ -116,7 +102,7 @@ const ThankYouPage = () => {
                         </div>
                         <div>
                           <p className="text-sm font-semibold">
-                            {taxedPrice.toFixed(2)}
+                            {formatCurrency(order?.item.price, "GHC")}
                           </p>
                         </div>
                       </div>
@@ -138,7 +124,7 @@ const ThankYouPage = () => {
                     Subtotal
                   </p>
                   <p className="text-sm font-semibold text-neutral-500/85">
-                    {formattedSubTotal}
+                    {formatCurrency(parseFloat(basketTotal), "GHC")}
                   </p>
                 </div>
                 <div className="flex justify-between">
@@ -150,8 +136,10 @@ const ThankYouPage = () => {
                   </p>
                 </div>
                 <div className="flex justify-between">
-                  <p className="text-sm font-medium text-black">Total</p>
-                  <p className="text-sm font-semibold">{formattedTotal}</p>
+                  <p className="text-sm font-bold text-black">Total</p>
+                  <p className="text-sm font-bold">
+                    {formatCurrency(total, "GHC")}
+                  </p>
                 </div>
               </div>
             </div>

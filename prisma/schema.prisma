@@ -114,13 +114,8 @@ model ShippingAddress {
 //   updatedAt     DateTime       @updatedAt
 // }
 
-
-
-
-
-
 model Product {
-  id            String       @id @default(auto()) @map("_id") @db.ObjectId
+  id            String         @id @default(auto()) @map("_id") @db.ObjectId
   title         String
   imageUrl      String
   description   String
@@ -128,10 +123,10 @@ model Product {
   discount      Int?
   categoryName  String
   category      Category?      @relation(fields: [categoryName], references: [categoryName])
-  isInStock     String     
+  isInStock     String
   quantity      Int
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   productOrders ProductOrder[]
 }
 
@@ -139,7 +134,7 @@ model Order {
   id                String           @id @default(auto()) @map("_id") @db.ObjectId
   referenceNumber   String
   orderNumber       String           @unique
-  total             Int
+  total             Float?
   status            String?
   shippingAddressId String?          @db.ObjectId
   shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
@@ -150,22 +145,20 @@ model Order {
 }
 
 model ProductOrder {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  productId     String   @db.ObjectId
-  orderId       String   @db.ObjectId
+  id            String  @id @default(auto()) @map("_id") @db.ObjectId
+  productId     String  @db.ObjectId
+  orderId       String  @db.ObjectId
   quantity      Int
   quantityTotal String
-  product       Product  @relation(fields: [productId], references: [id])
-  order         Order    @relation(fields: [orderId], references: [id])
+  product       Product @relation(fields: [productId], references: [id])
+  order         Order   @relation(fields: [orderId], references: [id])
 }
 
-
 model Management {
-    id                String           @id @default(auto()) @map("_id") @db.ObjectId
-    name String
-    email String @unique
-    phone String
-    createdAt         DateTime         @default(now())
-    updatedAt         DateTime         @updatedAt
-
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

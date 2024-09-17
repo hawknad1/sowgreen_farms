@@ -88,7 +88,7 @@ export const columns: ColumnDef<Product>[] = [
           className={`capitalize w-fit  rounded-full ${
             isInStock
               ? "bg-emerald-500/15 text-emerald-500 px-3 py-0.5 font-medium"
-              : "bg-gray-500/15 text-gray-500 px-2 py-0.5 font-medium"
+              : "bg-gray-500/15 text-gray-500 text-sm px-1.5 py-0.5 font-medium"
           }`}
         >
           {isInStock ? "In Stock" : "Out of Stock"}

@@ -8,7 +8,7 @@ import { Button } from "../../ui/button"
 const MiddleCardAds = () => {
   const router = useRouter()
   return (
-    <div className="grid lg:grid-cols-2 gap-3">
+    <div className="grid lg:grid-cols-2 gap-3 w-full">
       <MiddleCard className="bg-orange-100">
         <div>
           <h3 className="text-base sm:text-xl lg:text-2xl font-bold mb-4 max-w-[185px] sm:max-w-68 md:max-w-80">
