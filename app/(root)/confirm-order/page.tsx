@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react"
 import {
   useCartStore,
   useDeliveryStore,
+  useOrderDataStore,
   useOrdersStore,
   usePaymentStore,
 } from "@/store"
@@ -24,7 +25,7 @@ import InfoCard from "./InfoCard"
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
   const { deliveryFee, setDeliveryFee } = useDeliveryStore()
-  const setOrdersData = useOrdersStore((state) => state.setOrdersData)
+  const setOrdersData = useOrderDataStore(state=>state.setOrdersData)
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])

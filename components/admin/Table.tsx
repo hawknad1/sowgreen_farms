@@ -1,7 +1,8 @@
+"use client"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import DataTable from "./orders/DataTable"
+import DataTable from "./orders/OrdersDataTable"
 
-export async function Table() {
+export const Table = () => {
   return (
     <div>
       {/* <div className="mt-5">
@@ -15,7 +16,7 @@ export async function Table() {
           </TabsList>
           <TabsContent value="all">
             <div className=""> */}
-      <DataTable />
+      {/* <DataTable orders={orders} loading={loading} /> */}
       {/* </div>
           </TabsContent>
           <TabsContent value="paid">Change your password here.</TabsContent>

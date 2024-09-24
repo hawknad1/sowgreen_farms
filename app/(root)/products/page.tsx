@@ -3,30 +3,34 @@ import ProductCard from "@/components/cards/product/ProductCard"
 import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
 import PaginationButtons from "@/components/sort/PaginationButtons"
 import { useCategoryState } from "@/hooks/state"
+import { useProductStore } from "@/store"
 import React, { useEffect, useState } from "react"
 
 const Products = () => {
-  const [allProducts, setAllProducts] = useState([])
+  const [products, setProducts] = useState([])
+  const setProductDetails = useProductStore((state) => state.setProductDetails)
+  const [loading, setLoading] = useState(true)
   const { selected } = useCategoryState()
-  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    async function getProducts() {
+    async function getProductList() {
       try {
         const res = await fetch("/api/products", {
           method: "GET",
           cache: "no-store",
         })
+
         if (res.ok) {
           const products = await res.json()
-          setAllProducts(products)
-          setIsLoading(false)
+          setProducts(products)
+          setProductDetails(products)
+          setLoading(false)
         }
       } catch (error) {
         console.log(error)
       }
     }
-    getProducts()
+    getProductList()
   }, [])
 
   return (
@@ -42,12 +46,12 @@ const Products = () => {
           </div>
           <PaginationButtons />
         </div>
-        {isLoading ? (
+        {loading ? (
           <ProductsSkeleton />
         ) : (
           <div className="">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-              {allProducts.map((card) => (
+              {products?.map((card) => (
                 <ProductCard data={card} key={card.id} />
               ))}
             </div>

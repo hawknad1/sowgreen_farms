@@ -13,6 +13,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { ChevronDown } from "lucide-react"
+import { columns } from "./columns"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -29,16 +30,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Order, Payment } from "@/types"
-import { columns } from "./columns" // Corrected import for the columns
-import axios from "axios"
-import { Skeleton } from "../../ui/skeleton"
-import DataSkeletons from "../../skeletons/DataSkeletons"
+import { ShippingAddress } from "@/types"
+import DataSkeletons from "@/components/skeletons/DataSkeletons"
+import Export from "@/components/admin/Export"
+import { useCustomerStore } from "@/store"
 
-const OrdersDataTable = () => {
+const CustomerDataTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [orders, setOrders] = React.useState<Order[]>([])
-  const [loading, setLoading] = React.useState(true)
+  const customerDetails = useCustomerStore((state) => state.customers)
+  const setCustomerDetails = useCustomerStore(
+    (state) => state.setCustomerDetails
+  )
+
+  const [loading, setIsLoading] = React.useState(true)
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -49,33 +53,26 @@ const OrdersDataTable = () => {
   >({})
 
   React.useEffect(() => {
-    async function getOrders() {
+    const customerData = async () => {
       try {
-        // Using axios instead of fetch
-        const ordersResponse = await axios.get("/api/orders", {
-          headers: {
-            "Cache-Control": "no-store", // Ensure fresh data
-          },
+        const res = await fetch("/api/address", {
+          method: "GET",
+          cache: "no-store",
         })
-
-        // Check if the response status is not in the 2xx range
-        if (ordersResponse.status < 200 || ordersResponse.status >= 300) {
-          throw new Error(`Error: ${ordersResponse.status}`)
+        if (res.ok) {
+          const address = await res.json()
+          setCustomerDetails(address) // Set the customer details
+          setIsLoading(false) // Stop loading
         }
-
-        setOrders(ordersResponse.data)
       } catch (error) {
-        console.error("Error fetching orders:", error)
-      } finally {
-        setLoading(false) // Ensure loading state is set to false
+        console.log(error)
       }
     }
+    customerData()
+  }, [setCustomerDetails])
 
-    getOrders()
-  }, [])
-
-  const table = useReactTable({
-    data: orders, // Added orders data
+  const table = useReactTable<ShippingAddress>({
+    data: customerDetails || [], // Ensure data is always an array
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -95,22 +92,19 @@ const OrdersDataTable = () => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">
         <Input
-          placeholder="Filter emails..."
-          value={
-            (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
-          }
+          placeholder="Filter products..."
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("orderNumber")?.setFilterValue(event.target.value)
+            table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-          aria-label="Filter Order number"
+          aria-label="Filter products"
         />
-
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto flex items-center">
+            <Button variant="outline" className="ml-auto">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -130,9 +124,9 @@ const OrdersDataTable = () => {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
+        <Export />
       </div>
-
-      <div className="overflow-hidden rounded-md border">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -186,13 +180,12 @@ const OrdersDataTable = () => {
           </TableBody>
         </Table>
       </div>
-
-      <div className="flex items-center justify-between py-4">
-        <div className="text-sm text-muted-foreground">
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="flex space-x-2">
+        <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"
@@ -215,4 +208,4 @@ const OrdersDataTable = () => {
   )
 }
 
-export default OrdersDataTable
+export default CustomerDataTable

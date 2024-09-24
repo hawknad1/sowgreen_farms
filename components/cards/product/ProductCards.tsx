@@ -7,7 +7,6 @@ import HomeProductSkeleton from "../../skeletons/HomeProductSkeleton"
 const ProductCards = () => {
   const [productList, setProductList] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  console.log(productList)
 
   useEffect(() => {
     async function getProductList() {

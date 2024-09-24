@@ -104,7 +104,7 @@ export function AddProductForm() {
       })
 
       if (res.ok) {
-        router.push("/account/admin/products")
+        router.push("/admin/products")
         toast.success("Product added successfully!")
       }
     } catch (error: any) {
@@ -204,10 +204,8 @@ export function AddProductForm() {
               <FormItem>
                 <FormLabel>In Stock</FormLabel>
                 <Select
-                  defaultValue=""
-                  onValueChange={(value) =>
-                    field.onChange(value === "in-stock")
-                  }
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
                 >
                   <SelectTrigger className="w-[180px] mt-2 mb-3">
                     <SelectValue placeholder="Select Status" />

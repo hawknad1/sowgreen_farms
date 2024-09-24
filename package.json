@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
-    "email": "email dev --dir emails"
+    "email": "email dev"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.4.1",

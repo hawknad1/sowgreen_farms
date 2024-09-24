@@ -2,7 +2,8 @@
 import ProductCard from "@/components/cards/product/ProductCard"
 import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
 import { Product } from "@/types"
-import React, { useEffect, useState } from "react"
+import Image from "next/image"
+import React, { useEffect, useState, useCallback } from "react"
 
 type Props = {
   searchParams: {
@@ -12,46 +13,71 @@ type Props = {
 
 const Category = ({ searchParams: { q } }: Props) => {
   const [productsByCategory, setProductsByCategory] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
 
-  const catProducts = productsByCategory[0]?.products
-  console.log(productsByCategory)
+  const fetchProductsByCategory = useCallback(async (catName: string) => {
+    try {
+      const res = await fetch(`/api/categories/${catName}`)
+      if (!res.ok) throw new Error(`Failed to load products: ${res.statusText}`)
+
+      const data = await res.json()
+      setProductsByCategory(data)
+    } catch (err) {
+      setError("Failed to fetch products. Please try again later.")
+      console.error("Fetch error:", err)
+    } finally {
+      setLoading(false)
+    }
+  }, [])
 
   useEffect(() => {
-    const fetchProductsByCategory = async (catName: string) => {
-      try {
-        const res = await fetch(`/api/categories/${catName}`)
-        if (!res.ok) {
-          throw new Error(`Error: ${res.status}`)
-        }
-        const data = await res.json()
-        setProductsByCategory(data)
-        setIsLoading(false)
-      } catch (error) {
-        console.error("Failed to fetch products:", error)
-      }
+    if (q) {
+      fetchProductsByCategory(q)
     }
-    fetchProductsByCategory(q)
-  }, [q])
+  }, [q, fetchProductsByCategory])
+
+  const catProducts = productsByCategory[0]?.products || []
+
+  if (error) {
+    return <div className="text-red-500 text-center">Error: {error}</div>
+  }
 
   return (
     <main className="container mx-auto py-8 flex-1">
-      <div className="flex flex-col items-start gap-5 m-4">
-        <h3 className="text-2xl font-bold ml-4 ">
-          Showing results for <span>{q.toLowerCase()}</span>
-        </h3>
-        <div>
-          {isLoading ? (
-            <ProductsSkeleton />
-          ) : (
-            <div className="flex gap-5 p-4 w-max">
-              {catProducts?.map((product: Product) => (
-                <ProductCard key={product.id} data={product} />
-              ))}
-            </div>
-          )}
+      {catProducts.length > 0 && (
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold text-center w-full">
+            Showing results for <span>{q.toLowerCase()}</span>
+          </h3>
         </div>
-      </div>
+      )}
+
+      {loading ? (
+        <ProductsSkeleton />
+      ) : catProducts.length ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+          {catProducts.map((product: Product) => (
+            <ProductCard key={product.id} data={product} />
+          ))}
+        </div>
+      ) : (
+        <div className="container mx-auto py-8 flex-1 h-screen w-full">
+          <div className="flex flex-col items-center mt-4 ">
+            <p className="text-3xl font-bold">No available products for {q}</p>
+            <p className="text-gray-500">
+              We didn’t find what you need, but our farmers are on it!{" "}
+            </p>
+            <Image
+              src="/images/harvester.png"
+              alt={q}
+              height={600}
+              width={700}
+              className="h-[500px] w-[500px] object-contain"
+            />
+          </div>
+        </div>
+      )}
     </main>
   )
 }

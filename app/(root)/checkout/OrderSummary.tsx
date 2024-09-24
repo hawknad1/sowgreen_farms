@@ -6,6 +6,7 @@ import groupById from "@/lib/groupById"
 import { formatCurrency } from "@/lib/utils"
 import { useCartStore, useDeliveryStore } from "@/store"
 import Image from "next/image"
+import { redirect } from "next/navigation"
 import React from "react"
 
 const OrderSummary = () => {
@@ -16,12 +17,17 @@ const OrderSummary = () => {
     ...product,
     price: addTax(product.price),
   }))
-  const basketTotal = getCartTotal(cartWithTax)
 
-  const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
-  const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHC")
-  const formattedDelivery = formatCurrency(deliveryFee, "GHC")
-  const formattedTotal = formatCurrency(total, "GHC")
+  const basketTotal = getCartTotal(cartWithTax)
+  const checkDeliveryFee = cart.length <= 0 ? 0 : deliveryFee
+
+
+
+  const total =
+    parseFloat(basketTotal) + parseFloat(checkDeliveryFee.toFixed(2))
+  const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")
+  const formattedDelivery = formatCurrency(checkDeliveryFee, "GHS")
+  const formattedTotal = formatCurrency(total, "GHS")
 
   return (
     <div className="flex flex-col justify-between h-fit rounded-md  ">

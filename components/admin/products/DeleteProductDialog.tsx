@@ -37,7 +37,7 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
       if (!res.ok) throw new Error("Failed to delete product")
 
       toast.success(`${product.title} deleted successfully!`)
-      router.push("account/admin/products")
+      router.push("/admin/products")
     } catch (error) {
       toast.error("Error deleting product.")
       console.error("Delete product error:", error)

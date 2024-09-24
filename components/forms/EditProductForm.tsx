@@ -46,7 +46,7 @@ const EditProductForm = ({ product }: ProductProps) => {
       if (!res.ok) throw new Error("Failed to update product")
 
       toast.success("Product updated successfully!")
-      router.push(`/account/admin/products`)
+      router.push(`/admin/products`)
     } catch (error) {
       toast.error("Error updating product.")
     }

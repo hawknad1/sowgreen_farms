@@ -92,7 +92,7 @@ export const columns: ColumnDef<Order>[] = [
       // Format the amount as a currency
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "GHC", // Adjust the currency as needed
+        currency: "GHS", // Adjust the currency as needed
       }).format(amount)
 
       return <div className="text-right font-medium">{formatted}</div>

@@ -32,7 +32,7 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
               </p>
             </div>
             <div className="flex flex-col items-end">
-              <p className="text-sm text-gray-500">Total</p>
+              <p className="text-sm text-gray-500">Subtotal</p>
               <p className="text-sm font-bold mt-1">GHC {ord.quantityTotal}</p>
             </div>
           </div>

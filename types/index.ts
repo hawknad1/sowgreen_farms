@@ -68,7 +68,7 @@ export type Order = {
   orderNumber: string
   referenceNumber: string
   total: number
-  payment: "pending" | "processing" | "success" | "failed"
+  status: "processing" | "shipped" | "delivered"
   deliveryMethod: string
   shippingAddress: ShippingAddress
   products: ProductOrder[] // Change from Product[] to ProductOrder[]

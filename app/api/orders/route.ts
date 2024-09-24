@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     shippingAddress,
     deliveryMethod,
     products,
+    status,
   } = await req.json()
 
   // Validation for required fields
@@ -111,6 +112,7 @@ export async function POST(req: Request) {
         referenceNumber: referenceNumber,
         total: total,
         deliveryMethod: deliveryMethod,
+        status,
         shippingAddress: {
           connect: { id: shippingAddressRecord.id }, // Connect to the existing or newly created shipping address
         },

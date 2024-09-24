@@ -27,6 +27,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { sidebarLinks } from "@/constants"
 import { usePathname } from "next/navigation"
+import { logout } from "@/lib/actions/auth"
 
 const Sidebar = () => {
   const pathname = usePathname()
@@ -69,7 +70,10 @@ const Sidebar = () => {
           </nav>
         </div>
         <div className="mt-auto p-4">
-          <Button className="w-full flex gap-x-2 font-medium">
+          <Button
+            onClick={() => logout()}
+            className="w-full flex gap-x-2 font-medium"
+          >
             <LogOut className="h-4 w-4" />
             Logout
           </Button>

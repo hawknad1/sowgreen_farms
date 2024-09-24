@@ -2,8 +2,13 @@
 import Image from "next/image"
 import OrderConfirmSkeleton from "@/components/skeletons/OrderConfirmSkeleton"
 import { Separator } from "@/components/ui/separator"
-import { useCartStore, useDeliveryStore, useOrdersStore } from "@/store"
-import { useMemo } from "react"
+import {
+  useCartStore,
+  useDeliveryStore,
+  useOrderDataStore,
+  useOrdersStore,
+} from "@/store"
+import { useEffect, useMemo, useState } from "react"
 import { OrderInfo } from "./OrderInfo"
 import { ShippingAddress } from "./ShippingAddress"
 import { addTax } from "@/lib/addTax"
@@ -11,7 +16,9 @@ import { getCartTotal } from "@/lib/getCartTotal"
 import { formatCurrency } from "@/lib/utils"
 
 const ThankYouPage = () => {
-  const ordersData = useOrdersStore((state) => state.ordersData)
+  const [calculatedTotal, setCalculatedTotal] = useState(0)
+
+  const ordersData = useOrderDataStore((state) => state.ordersData)
   const cart = useCartStore((state) => state.cart)
 
   const { orderNumber, shippingAddress, products, total } = ordersData || {}
@@ -23,13 +30,19 @@ const ThankYouPage = () => {
     price: addTax(product.price),
   }))
 
-  console.log(typeof total)
-  console.log(total)
+  // console.log(orderNumber)
+  // const basketTotal = getCartTotal(cartWithTax)
 
-  const basketTotal = getCartTotal(cartWithTax)
+  useEffect(() => {
+    let tempTotal = 0
+    products?.forEach((order) => {
+      tempTotal += parseFloat(order.total)
+    })
+    setCalculatedTotal(tempTotal)
+  }, [products])
 
   // Format values
-  const formattedDelivery = formatCurrency(deliveryFee, "GHC")
+  const formattedDelivery = formatCurrency(deliveryFee, "GHS")
 
   // Handle delivery method label
   const deliveryMethod = ordersData?.deliveryMethod || ""
@@ -74,40 +87,38 @@ const ThankYouPage = () => {
               <h2 className="text-sm font-bold mb-2">Ordered Items</h2>
               <div className="flex flex-col gap-3 max-h-[290px] overflow-y-auto scrollbar-hide p-2">
                 {products?.length ? (
-                  products.map((order) => {
-                    return (
-                      <div
-                        key={order?.item?.id}
-                        className="flex items-start justify-between"
-                      >
-                        <div className="flex gap-4">
-                          <div className="bg-gray-100 p-1.5 rounded-lg">
-                            <Image
-                              src={order?.item?.imageUrl}
-                              alt={order?.item?.title}
-                              height={50}
-                              width={50}
-                              className="h-14 w-14 object-contain"
-                              priority
-                            />
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold">
-                              {order?.item?.title}
-                            </p>
-                            <p className="text-sm text-neutral-500/85">
-                              x {order?.quantity}
-                            </p>
-                          </div>
+                  products.map((order) => (
+                    <div
+                      key={order?.item?.id}
+                      className="flex items-start justify-between"
+                    >
+                      <div className="flex gap-4">
+                        <div className="bg-gray-100 p-1.5 rounded-lg">
+                          <Image
+                            src={order?.item?.imageUrl}
+                            alt={order?.item?.title}
+                            height={50}
+                            width={50}
+                            className="h-14 w-14 object-contain"
+                            priority
+                          />
                         </div>
                         <div>
                           <p className="text-sm font-semibold">
-                            {formatCurrency(order?.item.price, "GHC")}
+                            {order?.item?.title}
+                          </p>
+                          <p className="text-sm text-neutral-500/85">
+                            x {order?.quantity}
                           </p>
                         </div>
                       </div>
-                    )
-                  })
+                      <div>
+                        <p className="text-sm font-semibold">
+                          {formatCurrency(order?.item.price, "GHS")}
+                        </p>
+                      </div>
+                    </div>
+                  ))
                 ) : (
                   <p className="text-sm text-neutral-500">
                     No products available.
@@ -124,7 +135,7 @@ const ThankYouPage = () => {
                     Subtotal
                   </p>
                   <p className="text-sm font-semibold text-neutral-500/85">
-                    {formatCurrency(parseFloat(basketTotal), "GHC")}
+                    {formatCurrency(calculatedTotal, "GHS")}
                   </p>
                 </div>
                 <div className="flex justify-between">
@@ -138,7 +149,7 @@ const ThankYouPage = () => {
                 <div className="flex justify-between">
                   <p className="text-sm font-bold text-black">Total</p>
                   <p className="text-sm font-bold">
-                    {formatCurrency(total, "GHC")}
+                    {formatCurrency(total, "GHS")}
                   </p>
                 </div>
               </div>

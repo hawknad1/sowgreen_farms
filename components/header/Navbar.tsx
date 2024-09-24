@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image"
-import React from "react"
+import React, { useEffect, useState } from "react"
 import SideSheet from "./SideSheet"
 import Searchbar from "./Searchbar"
 import MenuBar from "./MenuBar"
@@ -13,8 +13,30 @@ import getSession from "@/lib/getSession"
 import { useSession } from "next-auth/react"
 
 const Navbar = () => {
+  const [categoryList, setCategoryList] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const session = useSession()
   const user = session.data?.user
+
+  useEffect(() => {
+    async function getCategories() {
+      try {
+        const res = await fetch("/api/categories", {
+          method: "GET",
+          cache: "no-store",
+        })
+
+        if (res.ok) {
+          const categories = await res.json()
+          setCategoryList(categories)
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getCategories()
+  }, [])
 
   return (
     <header className="bg-white border shadow-sm py-2 w-full">

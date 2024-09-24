@@ -6,6 +6,7 @@ import { auth } from "@/auth"
 import { SessionProvider } from "next-auth/react"
 import "../globals.css"
 import { redirect } from "next/navigation"
+import NewHeader from "@/components/header/NewHeader"
 
 const inter = Inter({ subsets: ["latin"] })
 

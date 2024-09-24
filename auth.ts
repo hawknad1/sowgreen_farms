@@ -4,16 +4,18 @@ import prisma from "./lib/prismadb"
 import Google from "next-auth/providers/google"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
+import authConfig from "./auth.config"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   theme: {
     logo: "/images/sowgreen.png",
   },
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt" }, // Use JWT for session management
   pages: {
     signIn: "/sign-in",
   },
+  ...authConfig,
   providers: [
     Credentials({
       credentials: {
@@ -35,7 +37,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const existingUser = await prisma.user.findUnique({
           where: {
-            email: credentials?.email as string,
+            email: credentials.email as string,
           },
         })
 
@@ -45,17 +47,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         const passwordMatch = await bcrypt.compare(
           credentials.password as string,
-          existingUser?.hashedPassword
+          existingUser.hashedPassword
         )
 
         if (!passwordMatch) {
           return null
         }
 
+        // Return user with role included
         return {
           id: existingUser.id,
           name: existingUser.name,
           email: existingUser.email,
+          role: existingUser.role, // Include role here
         }
       },
     }),
@@ -64,4 +68,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      // When user logs in, add the role to the token
+      if (user) {
+        token.role = user.role as string // Explicitly cast the role to string
+      }
+      return token
+    },
+    async session({ session, token }) {
+      // Add role from the token to the session
+      session.user.role = token.role as string // Explicitly cast the role to string
+      return session
+    },
+  },
 })

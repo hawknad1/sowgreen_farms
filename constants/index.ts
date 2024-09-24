@@ -27,21 +27,21 @@ export const menuLinks = [
   },
   {
     id: 2,
-    title: "Shop",
-    href: "/shop",
-  },
-  {
-    id: 3,
     title: "Category",
     href: "/category",
   },
   {
-    id: 4,
+    id: 3,
     title: "Sale",
     href: "/sale",
   },
   {
-    id: 4,
+    id: 3,
+    title: "About",
+    href: "/about",
+  },
+  {
+    id: 5,
     title: "Blog",
     href: "/blog",
   },
@@ -90,8 +90,8 @@ export const accordion = [
 ]
 
 export const accountLinks = [
-  { id: 1, title: "Login", href: "/login" },
-  { id: 2, title: "View Cart", href: "/cart" },
+  { id: 1, title: "Login", href: "/sign-in" },
+  { id: 2, title: "View Cart", href: "/basket" },
   { id: 3, title: "My Order", href: "/orders" },
   { id: 4, title: "Contact Us", href: "/contact" },
 ]
@@ -186,51 +186,50 @@ export const orderStatusCard = [
 export const sidebarLinks = [
   {
     label: "Dashboard",
-    path: "/account/admin/dashboard",
+    path: "/admin/dashboard",
     icon: Home,
   },
   {
     label: "Orders",
-    path: "/account/admin/orders",
+    path: "/admin/orders",
     icon: ShoppingCart,
   },
   {
     label: "Products",
-    path: "/account/admin/products",
+    path: "/admin/products",
     icon: Package,
   },
   {
     label: "Customers",
-    path: "/account/admin/customers",
+    path: "/admin/customers",
     icon: Users,
   },
   {
     label: "Management",
-    path: "/account/admin/management",
+    path: "/admin/management",
     icon: Users,
   },
   {
     label: "Transactions",
-    path: "/account/admin/transactions",
+    path: "/admin/transactions",
     icon: LineChart,
   },
   {
     label: "Sales",
-    path: "/account/admin/sales",
+    path: "/admin/sales",
     icon: LineChart,
   },
   {
     label: "Settings",
-    path: "/account/admin/settings",
+    path: "/admin/settings",
     icon: Settings,
   },
   {
     label: "Help",
-    path: "/account/admin/help",
+    path: "/admin/help",
     icon: BadgeInfo,
   },
 ]
-
 
 // export const productData: Product[] = [
 //   {

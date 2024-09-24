@@ -2,6 +2,18 @@ import prisma from "@/lib/prismadb"
 import { CheckoutSchema } from "@/schemas"
 import { NextResponse } from "next/server"
 
+export async function GET(req: Request) {
+  try {
+    const address = await prisma.shippingAddress.findMany()
+    return NextResponse.json(address, { status: 200 })
+  } catch (error) {
+    return NextResponse.json(
+      { message: "Couldnt fetch address" },
+      { status: 500 }
+    )
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const { name, address, email, city, region, country, phone } =

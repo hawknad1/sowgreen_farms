@@ -15,7 +15,7 @@ const AddProduct = () => {
   const router = useRouter()
   return (
     <Button
-      onClick={() => router.push("/account/admin/products/post")}
+      onClick={() => router.push("/admin/products/post")}
       className="flex gap-x-1.5"
     >
       Post Product

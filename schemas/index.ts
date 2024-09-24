@@ -52,7 +52,7 @@ export const EditProductSchema = z.object({
     .min(5, { message: "Description is required!" })
     .optional(),
   discount: z.coerce.number().optional(),
-  price: z.coerce.number().optional(),
-  quantity: z.coerce.number().optional(),
+  price: z.coerce.number().positive().optional(),
+  quantity: z.coerce.number().positive().optional(),
   isInStock: z.string().optional(),
 })

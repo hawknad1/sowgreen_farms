@@ -73,7 +73,7 @@ export const columns: ColumnDef<Product>[] = [
       const price = parseFloat(row.getValue("price"))
       const formattedPrice = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "GHC", // Currency formatted to GHC
+        currency: "GHS", // Currency formatted to GHC
       }).format(price)
       return <div className="capitalize">{formattedPrice}</div>
     },
@@ -154,9 +154,7 @@ export const columns: ColumnDef<Product>[] = [
             <DropdownMenuSeparator />
             <Button
               className="bg-black text-white"
-              onClick={() =>
-                router.push(`/account/admin/products/${product.id}`)
-              }
+              onClick={() => router.push(`/admin/products/${product.id}`)}
             >
               Product Details
             </Button>

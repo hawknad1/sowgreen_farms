@@ -13,7 +13,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { ChevronDown } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -30,15 +29,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { columns } from "./columns"
-import { Product } from "@/types"
-import AddProduct from "./AddProduct"
-import DataSkeletons from "@/components/skeletons/DataSkeletons"
+import { columns } from "./columns" // Corrected import for the columns
+import DataSkeletons from "../../skeletons/DataSkeletons"
+import Export from "../Export"
+import { Order } from "@/types"
 
-const ProductDataTable = () => {
+interface OrdersProps {
+  loading: boolean
+  orders: Order[]
+}
+
+const OrdersDataTable = ({ orders, loading }: OrdersProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [product, setProduct] = React.useState([])
-  const [loading, setIsLoading] = React.useState(true)
+
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -48,27 +51,8 @@ const ProductDataTable = () => {
     Record<string, boolean>
   >({})
 
-  React.useEffect(() => {
-    const productData = async () => {
-      try {
-        const res = await fetch("/api/products", {
-          method: "GET",
-          cache: "no-store",
-        })
-        if (res.ok) {
-          const products = await res.json()
-          setProduct(products)
-          setIsLoading(false)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    productData()
-  }, [])
-
-  const table = useReactTable<Product>({
-    data: product,
+  const table = useReactTable({
+    data: orders, // Added orders data
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -88,19 +72,22 @@ const ProductDataTable = () => {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm ">
+      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">
         <Input
-          placeholder="Filter products..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          placeholder="Filter order number..."
+          value={
+            (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("orderNumber")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
-          aria-label="Filter products"
+          aria-label="Filter Order number"
         />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
+            <Button variant="outline" className="ml-auto flex items-center">
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -120,9 +107,10 @@ const ProductDataTable = () => {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <AddProduct />
+        <Export />
       </div>
-      <div className="rounded-md border">
+
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -176,12 +164,13 @@ const ProductDataTable = () => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+
+      <div className="flex items-center justify-between py-4">
+        <div className="text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="space-x-2">
+        <div className="flex space-x-2">
           <Button
             variant="outline"
             size="sm"
@@ -204,4 +193,4 @@ const ProductDataTable = () => {
   )
 }
 
-export default ProductDataTable
+export default OrdersDataTable

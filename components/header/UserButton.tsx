@@ -11,15 +11,19 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { logout } from "@/lib/actions/auth"
+import { LogOut } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 interface UserProps {
   name?: string
   email?: string
+  role?: string
   emailVerified?: string
   image?: string
 }
 
 const UserButton = ({ user }: { user: UserProps }) => {
+  const router = useRouter()
   const initials = getInitials(user?.name)
   return (
     <div className="cursor-pointer">
@@ -30,14 +34,25 @@ const UserButton = ({ user }: { user: UserProps }) => {
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0 w-44">
+          <DropdownMenuLabel>Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Account</DropdownMenuItem>
-          <DropdownMenuItem>Orders</DropdownMenuItem>
-          <DropdownMenuItem>Watchlist</DropdownMenuItem>
-          <DropdownMenuItem>Settings</DropdownMenuItem>
-          <DropdownMenuItem onClick={() => logout()}>Logout</DropdownMenuItem>
+          <DropdownMenuItem className="text-base focus:bg-accent focus:text-accent-foreground">
+            Account
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => router.push("/orders")}
+            className="text-base focus:bg-accent focus:text-accent-foreground"
+          >
+            Orders
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => logout()}
+            className="text-red-500 flex gap-2.5 text-base hover:bg-red-500/10"
+          >
+            <LogOut size={16} />
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

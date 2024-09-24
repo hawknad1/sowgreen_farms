@@ -1,11 +1,43 @@
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
-import { Product } from "./types"
+import { Order, Product, ShippingAddress } from "./types"
 import { CartItem } from "@/types"
 
 interface PaymentStore {
   reference: any
   setReference: (reference: any) => void
+}
+
+interface CustomerState {
+  customerDetails: any //
+  setCustomerDetails: (details: any) => void
+}
+
+interface ProductState {
+  products: Product[]
+  loading: boolean
+  error: string | null
+  setProductDetails: (details: Product[]) => void
+  setLoading: (loading: boolean) => void
+  setError: (error: string | null) => void
+}
+
+interface OrdersStore {
+  orders: Order[]
+  loading: boolean
+  error: string | null
+  setOrderDetails: (details: Order[]) => void
+  setOrderLoading: (loading: boolean) => void
+  setError: (error: string | null) => void
+}
+
+interface AddressStore {
+  customers: ShippingAddress[]
+  loading: boolean
+  error: string | null
+  setCustomerDetails: (details: ShippingAddress[]) => void
+  setCustomerLoading: (loading: boolean) => void
+  setError: (error: string | null) => void
 }
 
 interface DeliveryStore {
@@ -27,7 +59,7 @@ interface TaxState {
   setSubtotal: (value: number) => void
 }
 
-interface OrderState {
+interface OrderDataState {
   ordersData: {
     products: CartItem[]
     shippingAddress: Record<string, any>
@@ -83,8 +115,8 @@ export const usePaymentStore = create<PaymentStore>((set) => ({
   setReference: (reference) => set({ reference }),
 }))
 
-export const useOrdersStore = create(
-  persist<OrderState>(
+export const useOrderDataStore = create(
+  persist<OrderDataState>(
     (set) => ({
       ordersData: null,
       setOrdersData: (data) => set(() => ({ ordersData: data })),
@@ -131,3 +163,51 @@ export const useDeliveryStore = create<DeliveryStore>((set) => ({
   deliveryFee: 30, // Initial delivery fee
   setDeliveryFee: (fee) => set({ deliveryFee: fee }),
 }))
+
+export const useProductStore = create<ProductState>()(
+  persist(
+    (set) => ({
+      products: [],
+      loading: true,
+      error: null,
+      setProductDetails: (details) => set({ products: details }),
+      setLoading: (loading) => set({ loading }),
+      setError: (error) => set({ error }),
+    }),
+    {
+      name: "product-storage", // Name for localStorage key
+    }
+  )
+)
+
+export const useOrdersStore = create<OrdersStore>()(
+  persist(
+    (set) => ({
+      orders: [],
+      loading: true,
+      error: null,
+      setOrderDetails: (details) => set({ orders: details }),
+      setOrderLoading: (loading) => set({ loading }),
+      setError: (error) => set({ error }),
+    }),
+    {
+      name: "order-storage", // Name for localStorage key
+    }
+  )
+)
+
+export const useCustomerStore = create<AddressStore>()(
+  persist(
+    (set) => ({
+      customers: [],
+      loading: true,
+      error: null,
+      setCustomerDetails: (details) => set({ customers: details }),
+      setCustomerLoading: (loading) => set({ loading }),
+      setError: (error) => set({ error }),
+    }),
+    {
+      name: "customer-storage", // Name for localStorage key
+    }
+  )
+)

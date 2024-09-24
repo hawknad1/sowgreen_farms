@@ -28,7 +28,8 @@ const AdminProductDetailCard = ({ product }: Props) => {
   if (!product) return null
 
   const amount = product.price * product.quantity
-  const formattedAmount = formatCurrency(amount, "GHC")
+  const formattedAmount = formatCurrency(amount, "GHS")
+  const formattedPrice = formatCurrency(product?.price, "GHS")
 
   return (
     <div className="container mx-auto py-8">
@@ -57,9 +58,7 @@ const AdminProductDetailCard = ({ product }: Props) => {
             <h3 className="text-3xl font-bold">{product.title}</h3>
 
             <div className="flex items-center space-x-2">
-              <p className="text-2xl font-bold text-black">
-                GHC {product.price}
-              </p>
+              <p className="text-2xl font-bold text-black">{formattedPrice}</p>
               {product.discount > 0 && (
                 <p className="bg-black text-white text-xs font-medium px-2 py-1 rounded-full">
                   {product.discount}% Off
