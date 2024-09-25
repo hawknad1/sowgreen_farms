@@ -10,9 +10,19 @@ import { useRouter } from "next/navigation"
 import React from "react"
 import BasketItems from "@/components/basket/BasketItems"
 import BasketOrderSummery from "@/components/checkout/BasketOrderSummery"
+import { useCartStore, useDeliveryStore } from "@/store"
 
 const BasketPage = () => {
+  const clearCart = useCartStore((state) => state.clearCart)
+  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+
   const router = useRouter()
+
+  const handleClearCart = () => {
+    clearCart()
+    setDeliveryFee(0)
+    router.push("/")
+  }
 
   return (
     <div className="w-full p-10 max-w-7xl mx-auto">
@@ -38,7 +48,9 @@ const BasketPage = () => {
               <ChevronLeftIcon className="h-4 w-4" />
               <p className="text-sm font-semibold">Back</p>
             </div>
-            <Button variant="destructive">Cancel Order</Button>
+            <Button onClick={handleClearCart} variant="destructive">
+              Cancel Order
+            </Button>
           </div>
         </div>
 
