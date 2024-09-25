@@ -11,7 +11,9 @@ import React from "react"
 
 const OrderSummary = () => {
   const cart = useCartStore((state) => state.cart)
-  const { deliveryFee, setDeliveryFee } = useDeliveryStore()
+  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+
   const grouped = groupById(cart)
   const cartWithTax = cart.map((product) => ({
     ...product,
@@ -19,14 +21,13 @@ const OrderSummary = () => {
   }))
 
   const basketTotal = getCartTotal(cartWithTax)
-  const checkDeliveryFee = cart.length <= 0 ? 0 : deliveryFee
+  if (cart.length <= 0) {
+    setDeliveryFee(30)
+  }
 
-
-
-  const total =
-    parseFloat(basketTotal) + parseFloat(checkDeliveryFee.toFixed(2))
+  const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
   const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")
-  const formattedDelivery = formatCurrency(checkDeliveryFee, "GHS")
+  const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
 
   return (

@@ -24,11 +24,19 @@ import InfoCard from "./InfoCard"
 
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
-  const { deliveryFee, setDeliveryFee } = useDeliveryStore()
-  const setOrdersData = useOrderDataStore(state=>state.setOrdersData)
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+
+  const setOrdersData = useOrderDataStore((state) => state.setOrdersData)
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
+
+  if (cart.length > 0) {
+    setDeliveryFee(30)
+  }
+
+  console.log(deliveryFee, "feeee")
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -42,9 +50,9 @@ const ConfirmOrderPage = () => {
   const basketTotal = getCartTotal(cartWithTax)
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
 
-  const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHC")
-  const formattedDelivery = formatCurrency(deliveryFee, "GHC")
-  const formattedTotal = formatCurrency(total, "GHC")
+  const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")
+  const formattedDelivery = formatCurrency(deliveryFee, "GHS")
+  const formattedTotal = formatCurrency(total, "GHS")
 
   const dataProps = {
     formData,
@@ -104,9 +112,12 @@ const ConfirmOrderPage = () => {
           shippingAddress: newFormData,
           orderNumber,
           deliveryMethod: formData.deliveryMethod,
+          deliveryFee: deliveryFee,
           referenceNumber: reference.reference,
           total: total,
         }
+
+        console.log(ordersData)
 
         const shippingResponse = await fetch("/api/address", {
           method: "POST",

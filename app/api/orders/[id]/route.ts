@@ -23,3 +23,22 @@ export async function GET(
     return NextResponse.json({ message: "couldnt fetch order!" })
   }
 }
+
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { status } = await req.json()
+  const id = params.id
+  try {
+    const order = await prisma.order.update({
+      where: { id },
+      data: {
+        status,
+      },
+    })
+    return NextResponse.json(order)
+  } catch (error) {
+    return NextResponse.json({ message: "Error editing status" })
+  }
+}

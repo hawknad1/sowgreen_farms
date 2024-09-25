@@ -56,7 +56,7 @@ const BasketItems = () => {
                 <div className="flex flex-col border rounded-md p-2 lg:p-5">
                   <AddToCart product={item} />
                   <p className="mt-4 font-bold text-center">
-                    {formatCurrency(taxedItem, "GHC")}
+                    {formatCurrency(taxedItem, "GHS")}
                   </p>
                 </div>
               </div>

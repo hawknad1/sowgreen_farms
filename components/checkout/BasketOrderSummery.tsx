@@ -8,19 +8,25 @@ import { addTax } from "@/lib/addTax"
 
 const BasketOrderSummery = () => {
   const cart = useCartStore((state) => state.cart)
-  const { deliveryFee, setDeliveryFee } = useDeliveryStore()
+  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 
   const cartWithTax = cart.map((product) => ({
     ...product,
     price: addTax(product.price),
   }))
+
+  if (cart.length > 0) {
+    setDeliveryFee(30)
+  }
+
   const basketTotal = getCartTotal(cartWithTax)
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
 
   // formatCurrency
-  const formattedDelivery = formatCurrency(deliveryFee, "GHC")
-  const formattedSubTotal = formatCurrency(parseFloat(basketTotal), "GHC")
-  const formattedTotal = formatCurrency(total, "GHC")
+  const formattedDelivery = formatCurrency(deliveryFee, "GHS")
+  const formattedSubTotal = formatCurrency(parseFloat(basketTotal), "GHS")
+  const formattedTotal = formatCurrency(total, "GHS")
 
   return (
     <div className="">

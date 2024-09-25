@@ -32,8 +32,6 @@ export function CheckoutForm() {
 
   const cart = useCartStore((state) => state.cart)
   const basketTotal = getCartTotal(cart)
-  // const amountNum = Number(basketTotal)
-  // const amount = Math.round(amountNum)
 
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),

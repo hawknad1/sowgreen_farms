@@ -9,16 +9,15 @@ import {
 import React from "react"
 import DisplayOrder from "./DisplayOrder"
 import { Order } from "@/types"
-import StatusCard from "./StatusCard"
+import StatusCard from "./StatusCards"
 import { ShippingInfo } from "./ShippingInfo"
 import { OrderInfo } from "./OrderInfo"
-import { useDeliveryStore } from "@/store"
 import { formatCurrency } from "@/lib/utils"
+import StatusPopup from "./StatusPopup"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
-  const { deliveryFee } = useDeliveryStore()
-
   if (!orders) return <p>Loading...</p>
+  console.log(orders, "ddddd")
 
   return (
     <div className="">
@@ -51,7 +50,8 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               <p className="font-semibold">With courier en route</p>
 
               {/* Order status */}
-              <StatusCard orderStatus={orderStatusCard} />
+              {/* <StatusCard orderStatus={orderStatusCard} /> */}
+              <StatusPopup orderStatus={orderStatusCard} orders={orders} />
 
               <Separator className="my-4" />
 
@@ -84,17 +84,20 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                   <div className="flex flex-col">
                     <div className="flex justify-between">
                       <p className="font-semibold text-sm text-neutral-400">
-                        {formatCurrency(orders?.total - deliveryFee, "GHC")}
+                        {formatCurrency(
+                          orders?.total - orders?.deliveryFee,
+                          "GHS"
+                        )}
                       </p>
                     </div>
                     <div className="flex justify-between">
                       <p className="font-semibold text-sm text-neutral-400">
-                        {formatCurrency(deliveryFee, "GHC")}
+                        {formatCurrency(orders?.deliveryFee, "GHS")}
                       </p>
                     </div>
                     <div className="flex justify-between">
                       <p className="font-semibold text-sm">
-                        {formatCurrency(orders?.total, "GHC")}
+                        {formatCurrency(orders?.total, "GHS")}
                       </p>
                     </div>
                   </div>

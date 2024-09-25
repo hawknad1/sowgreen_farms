@@ -70,6 +70,7 @@ export type Order = {
   total: number
   status: "processing" | "shipped" | "delivered"
   deliveryMethod: string
+  deliveryFee: number
   shippingAddress: ShippingAddress
   products: ProductOrder[] // Change from Product[] to ProductOrder[]
 }

@@ -56,3 +56,7 @@ export const EditProductSchema = z.object({
   quantity: z.coerce.number().positive().optional(),
   isInStock: z.string().optional(),
 })
+
+export const UpdateStatusSchema = z.object({
+  status: z.string(),
+})

@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     total,
     shippingAddress,
     deliveryMethod,
+    deliveryFee,
     products,
     status,
   } = await req.json()
@@ -112,6 +113,7 @@ export async function POST(req: Request) {
         referenceNumber: referenceNumber,
         total: total,
         deliveryMethod: deliveryMethod,
+        deliveryFee,
         status,
         shippingAddress: {
           connect: { id: shippingAddressRecord.id }, // Connect to the existing or newly created shipping address

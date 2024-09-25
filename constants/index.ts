@@ -162,22 +162,26 @@ export const smallImage = [
 
 export const orderStatusCard = [
   {
-    title: "Order Made",
-    subTitle: "Order Created",
-    icon: BookmarkIcon,
-  },
-  {
     title: "Order Paid",
+    status: "",
     subTitle: "Customer Payment",
     icon: CreditCardIcon,
   },
   {
+    title: "Order Processing",
+    status: "processing",
+    subTitle: "Processing Order",
+    icon: CreditCardIcon,
+  },
+  {
     title: "Order Shipped",
+    status: "shipped",
     subTitle: "On Delivery",
     icon: TruckIcon,
   },
   {
     title: "Order Completed",
+    status: "delivered",
     subTitle: "Order Delivered",
     icon: Package,
   },

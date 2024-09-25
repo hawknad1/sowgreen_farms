@@ -25,13 +25,24 @@ export default async function middleware(req: NextRequest) {
   // Checkout route
   const checkoutRoute = pathname.startsWith("/checkout")
 
-  // If the user is authenticated and an admin, redirect to /admin
-  if (isAuthenticate && userRole === "admin" && pathname === ROOT) {
-    return NextResponse.redirect(new URL("/admin/dashboard", req.url))
+  // If the user is authenticated and an admin, always redirect them to /admin/dashboard when they hit root
+  if (
+    isAuthenticate &&
+    userRole === "admin" &&
+    pathname === ROOT &&
+    !req.cookies.get("adminRedirected")
+  ) {
+    // Set a cookie to prevent multiple redirects when they want to manually access the root
+    const response = NextResponse.redirect(new URL("/admin/dashboard", req.url))
+    response.cookies.set("adminRedirected", "true", {
+      path: "/",
+      maxAge: 60 * 60,
+    }) // 1 hour
+    return response
   }
 
-  // If the user is authenticated but a regular user, redirect to root
-  if (isAuthenticate && userRole === "user" && pathname === "/admin") {
+  // If the user is authenticated but a regular user, redirect from admin routes
+  if (isAuthenticate && userRole === "user" && adminRoute) {
     return NextResponse.redirect(new URL(ROOT, req.url))
   }
 
@@ -45,7 +56,7 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL(ROOT, req.url))
   }
 
-  // Allow the request to proceed
+  // Allow the request to proceed for admins and regular users at root
   return NextResponse.next()
 }
 

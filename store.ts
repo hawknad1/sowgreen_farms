@@ -160,7 +160,7 @@ export const useTaxStore = create<TaxState>((set, get) => ({
 }))
 
 export const useDeliveryStore = create<DeliveryStore>((set) => ({
-  deliveryFee: 30, // Initial delivery fee
+  deliveryFee: 0, // Initial delivery fee
   setDeliveryFee: (fee) => set({ deliveryFee: fee }),
 }))
 

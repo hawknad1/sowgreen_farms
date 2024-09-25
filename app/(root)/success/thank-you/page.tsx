@@ -22,7 +22,7 @@ const ThankYouPage = () => {
   const cart = useCartStore((state) => state.cart)
 
   const { orderNumber, shippingAddress, products, total } = ordersData || {}
-  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+  const {deliveryFee} = useDeliveryStore()
 
   // Calculate cart total with tax
   const cartWithTax = cart.map((product) => ({

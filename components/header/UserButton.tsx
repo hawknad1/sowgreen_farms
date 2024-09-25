@@ -25,6 +25,7 @@ interface UserProps {
 const UserButton = ({ user }: { user: UserProps }) => {
   const router = useRouter()
   const initials = getInitials(user?.name)
+
   return (
     <div className="cursor-pointer">
       <DropdownMenu>
@@ -34,26 +35,47 @@ const UserButton = ({ user }: { user: UserProps }) => {
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0 w-44">
-          <DropdownMenuLabel>Account</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem className="text-base focus:bg-accent focus:text-accent-foreground">
-            Account
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => router.push("/orders")}
-            className="text-base focus:bg-accent focus:text-accent-foreground"
-          >
-            Orders
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => logout()}
-            className="text-red-500 flex gap-2.5 text-base hover:bg-red-500/10"
-          >
-            <LogOut size={16} />
-            Logout
-          </DropdownMenuItem>
-        </DropdownMenuContent>
+        {user.role === "admin" ? (
+          <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0 w-44">
+            <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => router.push("/admin/dashboard")}
+              className="text-base focus:bg-accent focus:text-accent-foreground"
+            >
+              Admin Dashboard
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              onClick={() => logout()}
+              className="text-red-500 flex gap-2.5 text-base hover:bg-red-500/10"
+            >
+              <LogOut size={16} />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        ) : (
+          <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0 w-44">
+            <DropdownMenuLabel>Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem className="text-base focus:bg-accent focus:text-accent-foreground">
+              Account
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push("/orders")}
+              className="text-base focus:bg-accent focus:text-accent-foreground"
+            >
+              Orders
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => logout()}
+              className="text-red-500 flex gap-2.5 text-base hover:bg-red-500/10"
+            >
+              <LogOut size={16} />
+              Logout
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        )}
       </DropdownMenu>
     </div>
   )

@@ -79,7 +79,20 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("status")}</div>
+      <div
+        className={`capitalize px-3 w-fit min-w-16 text-center py-0.5 rounded-3xl ${
+          row.original.status === "processing" &&
+          "text-yellow-500 bg-yellow-400/15 border border-yellow-300 tracking-wide"
+        } ${
+          row.original.status === "shipped" &&
+          "text-cyan-500 bg-cyan-400/15 border border-cyan-300 tracking-wide"
+        } ${
+          row.original.status === "delivered" &&
+          "text-indigo-500 bg-indigo-500/15 border border-indigo-300 tracking-wide"
+        }`}
+      >
+        {row.getValue("status")}
+      </div>
     ),
   },
 
@@ -117,11 +130,10 @@ export const columns: ColumnDef<Order>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => router.push(`/account/admin/orders/${order.id}`)}
+              onClick={() => router.push(`/admin/orders/${order.id}`)}
             >
-              View payment details
+              <Button>View order</Button>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
