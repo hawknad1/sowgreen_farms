@@ -39,7 +39,7 @@ const Products = () => {
         <h4 className="text-3xl font-bold text-center">
           Organic Fresh Farm Produce
         </h4>
-        <div className=" w-full flex flex-col gap-5 max-w-[1080px]">
+        <div className=" flex flex-col gap-5 w-full">
           <div className="flex items-center w-full">
             <h2 className="text-3xl font-bold">Category / </h2>
             <h2 className="text-2xl mt-1 font-bold">{selected}</h2>
@@ -50,7 +50,7 @@ const Products = () => {
           <ProductsSkeleton />
         ) : (
           <div className="">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-8 gap-y-12">
               {products?.map((card) => (
                 <ProductCard data={card} key={card.id} />
               ))}

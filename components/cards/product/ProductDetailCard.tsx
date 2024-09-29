@@ -9,10 +9,10 @@ import Ratings from "../../Ratings"
 import { useRouter } from "next/navigation"
 import AddToCart from "../../basket/AddToCart"
 import { useCartStore } from "@/store"
-import { getCartTotal } from "@/lib/getCartTotal"
 import { Product } from "@/types"
 import { addTax } from "@/lib/addTax"
 import { Badge } from "@/components/ui/badge"
+import { formatCurrency } from "@/lib/utils"
 
 interface Props {
   product: Product
@@ -27,6 +27,7 @@ const ProductDetailCard = ({ product }: Props) => {
   }))
 
   const taxedProduct = { ...product, price: addTax(product?.price).toFixed(2) }
+  const taxedPrice = formatCurrency(parseFloat(taxedProduct.price), "GHS")
 
   return (
     <div className="container mx-auto py-8">
@@ -67,7 +68,7 @@ const ProductDetailCard = ({ product }: Props) => {
             {/* ratings */}
             <Ratings />
             <div className="flex items-center space-x-2">
-              <p className="text-2xl font-bold text-black">{`GHC ${taxedProduct.price}`}</p>
+              <p className="text-2xl font-bold text-black">{taxedPrice}</p>
               {product.isInStock === "out-of-stock" ? (
                 <Badge className="bg-gray-500/25 text-gray-500 hover:disabled:pointer-events-none">
                   Out of stock

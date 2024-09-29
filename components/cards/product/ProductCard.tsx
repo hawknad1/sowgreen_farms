@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   }
 
   return (
-    <div onClick={handleCardClick} className="cursor-pointer relative">
+    <div onClick={handleCardClick} className="relative cursor-pointer">
       <div className="absolute top-2 left-3">
         {data.isInStock === "out-of-stock" ? (
           <Badge className="bg-gray-500/25 text-gray-500">Out of stock</Badge>
@@ -47,22 +47,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           </Badge>
         ) : null}
       </div>
-      <div className="bg-gray-50 rounded-lg shadow-sm hover:shadow-md h-[265px] w-48">
-        <div className="px-3 py-8 flex flex-col gap-4 items-center">
-          <div className="">
-            <Image
-              src={data.imageUrl}
-              alt={data.title}
-              width={100}
-              height={100}
-              className="h-[120px] w-[120px] object-contain"
-            />
-          </div>
+      <div className="flex flex-col h-[260px] w-56">
+        <div className="bg-gray-50 flex justify-center ">
+          <Image
+            src={data.imageUrl}
+            alt={data.title}
+            width={100}
+            height={100}
+            className="h-[170px] w-full object-contain p-2"
+          />
+        </div>
 
+        <div className="border border-neutral-200 rounded-b-md ">
           {/* Product Info */}
-          <div className="self-start w-full">
+          <div className="self-start w-full p-2.5">
             <p className="text-[10px] text-blue-400">{data.categoryName}</p>
-            <p className="text-base tracking-wide font-semibold">
+            <p className="text-base tracking-wide font-semibold line-clamp-1">
               {data.title}
             </p>
             <div className="flex items-center">
