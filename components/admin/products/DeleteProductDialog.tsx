@@ -24,14 +24,7 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
   const router = useRouter()
 
   const handleDelete = async () => {
-    // Removed unused productId param
     try {
-      // const apiUrl = process.env.NEXT_PUBLIC_URL
-
-      // if (!apiUrl) {
-      //   throw new Error("API URL is not set in environment variables")
-      // }
-
       const res = await fetch(`/api/products/${product.id}`, {
         method: "DELETE",
         headers: {

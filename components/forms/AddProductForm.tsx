@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { toast } from "react-hot-toast"
-
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -37,7 +36,6 @@ import { PhotoIcon } from "@heroicons/react/20/solid"
 export function AddProductForm() {
   const router = useRouter()
   const [productImageUrl, setProductImageUrl] = useState("")
-  const [error, setError] = useState("")
   const [publicId, setPublicId] = useState("")
   const [categories, setCategories] = useState<Category[]>([])
 
@@ -106,9 +104,13 @@ export function AddProductForm() {
       if (res.ok) {
         router.push("/admin/products")
         toast.success("Product added successfully!")
+      } else {
+        const errorData = await res.json()
+        toast.error(errorData.message || "Failed to add product")
       }
-    } catch (error: any) {
-      toast.error(error)
+    } catch (error) {
+      toast.error("An error occurred while adding the product")
+      console.error("Error adding product:", error)
     }
   }
 

@@ -5,7 +5,6 @@ export async function GET(
   req: NextRequest,
   { params }: { params: { categoryName: string } }
 ) {
-  console.log(params.categoryName)
   try {
     const catName = params.categoryName
     const category = await prisma.category.findMany({

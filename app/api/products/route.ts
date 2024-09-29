@@ -14,13 +14,32 @@ export async function POST(req: NextRequest) {
       isInStock,
     } = await req.json()
 
-    if (!title || !description) {
+    // Validate required fields
+    if (!title || !description || !price || !categoryName || !quantity) {
       return NextResponse.json(
-        { error: "Title and Description are required!" },
+        {
+          error:
+            "Title, Description, Price, Category, and Quantity are required!",
+        },
         { status: 400 } // 400 Bad Request for missing fields
       )
     }
 
+    // Check for existing product with the same title
+    const existingProduct = await prisma.product.findUnique({
+      where: {
+        title,
+      },
+    })
+
+    if (existingProduct) {
+      return NextResponse.json(
+        { message: "Product already exists!" },
+        { status: 400 } // 400 Bad Request for duplicate entry
+      )
+    }
+
+    // Create new product
     const newProduct = await prisma.product.create({
       data: {
         title,
@@ -34,7 +53,6 @@ export async function POST(req: NextRequest) {
       },
     })
 
-    // console.log("Product created")
     return NextResponse.json(newProduct, { status: 201 }) // 201 Created
   } catch (error) {
     console.error("Error creating product:", error)
