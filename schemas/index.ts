@@ -38,11 +38,11 @@ export const RadioSchema = z.object({
 export const AddProductSchema = z.object({
   title: z.string().min(2, { message: "Title is required!" }),
   description: z.string().min(5, { message: "Description is required!" }),
-  discount: z.coerce.number(),
+  discount: z.coerce.number().positive().optional(),
   imageUrl: z.string(),
-  price: z.coerce.number(),
+  price: z.coerce.number().positive().optional(),
   categoryName: z.string().min(1, { message: "Category is required!" }),
-  quantity: z.coerce.number(),
+  quantity: z.coerce.number().positive().optional(),
   isInStock: z.string(),
 })
 

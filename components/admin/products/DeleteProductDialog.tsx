@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 import {
   Dialog,
@@ -22,22 +23,28 @@ interface Props {
 const DeleteProductDialog = ({ product, children, className }: Props) => {
   const router = useRouter()
 
-  const handleDelete = async (productId: string) => {
+  const handleDelete = async () => {
+    // Removed unused productId param
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_URL}/api/products/${product.id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      // const apiUrl = process.env.NEXT_PUBLIC_URL
 
-      if (!res.ok) throw new Error("Failed to delete product")
+      // if (!apiUrl) {
+      //   throw new Error("API URL is not set in environment variables")
+      // }
+
+      const res = await fetch(`/api/products/${product.id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (!res.ok) {
+        throw new Error(`Failed to delete product. Status: ${res.status}`)
+      }
 
       toast.success(`${product.title} deleted successfully!`)
-      router.push("/admin/products")
+      router.replace("/admin/products") // Optional: Use replace to avoid history back
     } catch (error) {
       toast.error("Error deleting product.")
       console.error("Delete product error:", error)
@@ -72,7 +79,7 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
           </Button>
           <Button
             variant="destructive"
-            onClick={() => handleDelete(product.id)}
+            onClick={handleDelete} // Removed passing product.id, as it's handled internally
           >
             Confirm
           </Button>
