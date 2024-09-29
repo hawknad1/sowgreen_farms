@@ -70,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
               <p className="text-[10px] text-blue-500 tracking-wide"> · 4.0</p>
             </div>
             <div className="flex items-center justify-between pt-2">
-              <p className="text-sm tracking-wide font-semibold">{`GHC ${taxedPrice}`}</p>
+              <p className="text-sm tracking-wide font-semibold">{`GHS ${taxedPrice}`}</p>
               <div className="bg-green-300 p-1.5 rounded-full cursor-pointer">
                 <ShoppingBagIcon className="size-4 text-gray-800" />
               </div>

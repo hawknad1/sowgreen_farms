@@ -124,7 +124,7 @@ const CustomerDataTable = () => {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <Export />
+        <Export action={() => {}} />
       </div>
       <div className="rounded-md border">
         <Table>

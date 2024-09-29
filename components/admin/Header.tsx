@@ -20,18 +20,32 @@ import { logout } from "@/lib/actions/auth"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useSession } from "next-auth/react"
 import UserButton from "../header/UserButton"
+import { formatName } from "@/lib/formatName"
+
+interface UserProps {
+  name?: string
+  email?: string
+  role?: string
+  emailVerified?: string
+  image?: string
+}
 
 const Header = async () => {
   const session = await auth()
-  const user = session?.user
+  const user: UserProps = session?.user
+
+  const firstName = formatName(user?.name)
 
   return (
     <header className="flex h-14 items-center gap-4 bg-white px-4 lg:h-[60px] lg:px-8">
       <SidebarSheet />
 
       <div className="flex items-center justify-between w-full">
-        <DatePickerWithRange />
+        <div>
+          <p className="text-xl font-bold">{`Welcome, ${firstName}!👋🏾`}</p>
+        </div>
         <div className="flex items-center space-x-4">
+          <DatePickerWithRange />
           <UserButton user={user} />
         </div>
       </div>

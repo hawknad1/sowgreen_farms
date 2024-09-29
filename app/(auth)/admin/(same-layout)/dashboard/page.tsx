@@ -78,7 +78,7 @@ const Dashboard = () => {
         loading={loading}
         customers={customers}
       />
-      <OrdersDataTable orders={orders} loading={loading} />
+      <OrdersDataTable order={orders} loading={loading} />
     </div>
   )
 }

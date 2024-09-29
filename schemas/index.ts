@@ -23,8 +23,8 @@ export const CheckoutSchema = z.object({
   name: z.string().min(1, { message: "Name is required!" }),
   email: z.string().email({ message: "Email is required!" }),
   country: z.string({ message: "Country is required" }),
-  region: z.string({ message: "Region is required" }),
-  city: z.string({ message: "City is required" }),
+  region: z.string().min(1, { message: "Region is required!" }),
+  city: z.string().min(1, { message: "City is required!" }),
   address: z.string().min(5, { message: "Address is required!" }),
   phone: z.string().regex(phoneRegex, "Invalid Number!"),
 })
@@ -59,4 +59,8 @@ export const EditProductSchema = z.object({
 
 export const UpdateStatusSchema = z.object({
   status: z.string(),
+})
+
+export const SearchSchema = z.object({
+  search: z.string(),
 })

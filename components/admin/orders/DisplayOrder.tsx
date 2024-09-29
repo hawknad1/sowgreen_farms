@@ -4,6 +4,9 @@ import React from "react"
 
 const DisplayOrder = ({ orders }: { orders: Order }) => {
   const products = orders?.products
+  console.log(products, "ppppppp")
+
+  console.log(orders, "bk order")
 
   if (!products?.length) {
     return <p>No products available in this order.</p>

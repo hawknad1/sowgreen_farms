@@ -36,6 +36,7 @@ import AddProduct from "./AddProduct"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
 import Export from "@/components/admin/Export"
 import { useProductStore } from "@/store"
+import { downloadProducts } from "@/lib/xlsx"
 
 interface ProductProps {
   products: Product[]
@@ -108,7 +109,7 @@ const ProductDataTable = ({ products, loading }: ProductProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
         <AddProduct />
-        <Export />
+        <Export action={() => downloadProducts(products)} />
       </div>
       <div className="rounded-md border">
         <Table>

@@ -33,13 +33,14 @@ import { columns } from "./columns" // Corrected import for the columns
 import DataSkeletons from "../../skeletons/DataSkeletons"
 import Export from "../Export"
 import { Order } from "@/types"
+import { downloadOrders } from "@/lib/xlsx"
 
 interface OrdersProps {
   loading: boolean
-  orders: Order[]
+  order: Order[]
 }
 
-const OrdersDataTable = ({ orders, loading }: OrdersProps) => {
+const OrdersDataTable = ({ order, loading }: OrdersProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
 
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -51,8 +52,10 @@ const OrdersDataTable = ({ orders, loading }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
+  // console.log(orders, "oorddd")
+
   const table = useReactTable({
-    data: orders, // Added orders data
+    data: order, // Added orders data
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -107,7 +110,7 @@ const OrdersDataTable = ({ orders, loading }: OrdersProps) => {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <Export />
+        <Export action={() => downloadOrders(order)} />
       </div>
 
       <div className="overflow-hidden rounded-md border">
