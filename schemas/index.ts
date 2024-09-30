@@ -29,9 +29,15 @@ export const CheckoutSchema = z.object({
   phone: z.string().regex(phoneRegex, "Invalid Number!"),
 })
 
-export const RadioSchema = z.object({
+export const PaymentRadioSchema = z.object({
   type: z.enum(["momo-pay", "credit-debit", "cash-on-delivery"], {
     required_error: "You need to select a payment type.",
+  }),
+})
+
+export const DeliveryRadioSchema = z.object({
+  deliveryMethod: z.enum(["dzorwulu", "dubois"], {
+    required_error: "You need to select a delivery method.",
   }),
 })
 

@@ -26,7 +26,8 @@ import { DeliveryMethod } from "./DeliveryMethod"
 export function CheckoutForm() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState("")
-  const [deliveryMethod, setDeliveryMethod] = useState("")
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(null)
+  const [selectedPickupOption, setSelectedPickupOption] = useState(null)
 
   const router = useRouter()
 
@@ -46,11 +47,16 @@ export function CheckoutForm() {
     },
   })
 
+  const selectedDelivery =
+    selectedDeliveryMethod === "schedule-pickup"
+      ? selectedPickupOption
+      : selectedDeliveryMethod
+
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
     // Add delivery method to the form data
     const formData = {
       ...values,
-      deliveryMethod,
+      deliveryMethod: selectedDelivery,
     }
 
     const query = new URLSearchParams(formData).toString()
@@ -180,7 +186,12 @@ export function CheckoutForm() {
             </div>
             <div className="mt-4">
               <h2 className="font-bold text-lg mb-4">Schedule Delivery</h2>
-              <DeliveryMethod setDeliveryMethod={setDeliveryMethod} />
+              <DeliveryMethod
+                setSelectedDeliveryMethod={setSelectedDeliveryMethod}
+                selectedDeliveryMethod={selectedDeliveryMethod}
+                setSelectedPickupOption={setSelectedPickupOption}
+                selectedPickupOption={selectedPickupOption}
+              />
             </div>
           </div>
 

@@ -12,86 +12,105 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { RadioSchema } from "@/schemas"
 import { useState } from "react"
 import { nextDay } from "@/lib/utils"
+import { deliveryMethods } from "@/constants"
+import { DeliveryRadioSchema } from "@/schemas"
 
 interface DeliveryMethodProps {
-  setDeliveryMethod: (method: string) => void
+  setSelectedDeliveryMethod: (method: string) => void
+  selectedDeliveryMethod: string
+  selectedPickupOption: string
+  setSelectedPickupOption: (method: string) => void
 }
 
 export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
-  setDeliveryMethod,
+  setSelectedDeliveryMethod,
+  selectedDeliveryMethod,
+  selectedPickupOption,
+  setSelectedPickupOption,
 }) => {
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] =
-    useState<string>("")
-
-  const form = useForm<z.infer<typeof RadioSchema>>({
-    resolver: zodResolver(RadioSchema),
+  const form = useForm<z.infer<typeof DeliveryRadioSchema>>({
+    resolver: zodResolver(DeliveryRadioSchema),
   })
 
   return (
     <div className="border border-neutral-300 w-full h-fit p-4 rounded-lg">
       <FormField
         control={form.control}
-        name="type"
+        name="deliveryMethod"
         render={({ field }) => (
           <FormItem className="space-y-3">
             <FormControl>
               <RadioGroup
                 onValueChange={(value) => {
                   field.onChange(value)
-                  setSelectedDeliveryMethod(value)
-                  setDeliveryMethod(value) // Update the parent component's state
+                  setSelectedDeliveryMethod(value) // Update the parent component's state
                 }}
                 defaultValue={field.value}
-                className="flex flex-col "
+                className="flex flex-col"
               >
-                {[
-                  {
-                    label: "Same Day Delivery",
-                    tag: "(Order before 10AM)",
-                    price: `GHC ${20}`,
-                    value: "same-day-delivery",
-                  },
-                  {
-                    label: "Next Day Delivery",
-                    date: nextDay,
-                    price: `GHC ${20}`,
-                    value: "next-day-delivery",
-                  },
+                {deliveryMethods.map((option) => (
+                  <div key={option.label}>
+                    <FormItem
+                      className={`flex items-center space-x-3 space-y-0 p-3 rounded-lg ${
+                        selectedDeliveryMethod === option.value
+                          ? "border border-neutral-400"
+                          : "border border-transparent"
+                      }`}
+                    >
+                      <FormControl>
+                        <RadioGroupItem value={option.value} />
+                      </FormControl>
+                      <FormLabel className="font-semibold flex items-center gap-x-2">
+                        {option.label}
+                        {option.tag && (
+                          <p className="font-medium text-green-600">
+                            {option.tag}
+                          </p>
+                        )}
+                        {option.date && (
+                          <p className="font-medium text-green-600">
+                            {option.date}
+                          </p>
+                        )}
+                      </FormLabel>
+                    </FormItem>
 
-                  {
-                    label: "Schedule a pickup",
-                    price: `GHC ${20}`,
-                    value: "schedule-pickup",
-                  },
-                ].map((option) => (
-                  <FormItem
-                    key={option.value}
-                    className={`flex items-center space-x-3 space-y-0 p-3 rounded-lg ${
-                      selectedDeliveryMethod === option.value
-                        ? "border border-neutral-400"
-                        : "border border-transparent"
-                    }`}
-                  >
-                    <FormControl>
-                      <RadioGroupItem value={option.value} />
-                    </FormControl>
-                    <FormLabel className="font-semibold flex items-center gap-x-2">
-                      {option.label}
-                      {option.tag && (
-                        <p className="font-medium text-green-600">
-                          {option.tag}
-                        </p>
+                    {/* Conditionally render the pickup options below "Schedule a pickup" */}
+                    {option.value === "schedule-pickup" &&
+                      selectedDeliveryMethod === "schedule-pickup" && (
+                        <div className="ml-8 mt-3 space-y-3">
+                          {/* Render additional radio group for pickup options */}
+                          <RadioGroup
+                            onValueChange={(pickupValue) => {
+                              setSelectedPickupOption(pickupValue)
+                              console.log(selectedPickupOption, "heyyy")
+                            }}
+                            value={selectedPickupOption}
+                            className="flex flex-col space-y-2"
+                          >
+                            {option.pickupOptions.map((pickupOption, index) => (
+                              <FormItem
+                                key={`${pickupOption.label}-${index}`}
+                                className={`flex items-center space-x-3 p-2 rounded-lg ${
+                                  selectedPickupOption === pickupOption.label
+                                    ? "border border-neutral-400"
+                                    : "border border-transparent"
+                                }`}
+                              >
+                                <FormControl>
+                                  <RadioGroupItem value={pickupOption.label} />
+                                </FormControl>
+                                <FormLabel className="font-semibold">
+                                  {pickupOption.label}
+                                </FormLabel>
+                              </FormItem>
+                            ))}
+                          </RadioGroup>
+                        </div>
                       )}
-                      {option.date && (
-                        <p className="font-medium text-green-600">
-                          {option.date}
-                        </p>
-                      )}
-                    </FormLabel>
-                  </FormItem>
+                  </div>
                 ))}
               </RadioGroup>
             </FormControl>

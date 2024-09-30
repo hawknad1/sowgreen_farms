@@ -12,18 +12,18 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { RadioSchema } from "@/schemas"
 import { toast } from "@/components/ui/use-toast"
 import { useState } from "react"
+import { PaymentRadioSchema } from "@/schemas"
 
 const PaymentMethods = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("")
 
-  const form = useForm<z.infer<typeof RadioSchema>>({
-    resolver: zodResolver(RadioSchema),
+  const form = useForm<z.infer<typeof PaymentRadioSchema>>({
+    resolver: zodResolver(PaymentRadioSchema),
   })
 
-  function onSubmit(data: z.infer<typeof RadioSchema>) {
+  function onSubmit(data: z.infer<typeof PaymentRadioSchema>) {
     console.log(data)
   }
   console.log(selectedPaymentMethod)
