@@ -32,6 +32,9 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
 }) => {
   const form = useForm<z.infer<typeof DeliveryRadioSchema>>({
     resolver: zodResolver(DeliveryRadioSchema),
+    defaultValues: {
+      deliveryMethod: "next-day-delivery",
+    },
   })
 
   return (

@@ -9,7 +9,13 @@ import Image from "next/image"
 import { redirect } from "next/navigation"
 import React from "react"
 
-const OrderSummary = () => {
+const OrderSummary = ({
+  selectedPickupOption,
+  selectedDeliveryMethod,
+}: {
+  selectedPickupOption: string
+  selectedDeliveryMethod: string
+}) => {
   const cart = useCartStore((state) => state.cart)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
@@ -21,8 +27,14 @@ const OrderSummary = () => {
   }))
 
   const basketTotal = getCartTotal(cartWithTax)
-  if (cart.length <= 0) {
-    setDeliveryFee(30)
+  if (
+    cart.length > 0 &&
+    selectedDeliveryMethod === "schedule-pickup" &&
+    selectedPickupOption
+  ) {
+    setDeliveryFee(0) // No delivery fee for pickup
+  } else if (cart.length > 0) {
+    setDeliveryFee(30) // Delivery fee for other methods
   }
 
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))

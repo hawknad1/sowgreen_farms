@@ -199,7 +199,10 @@ export function CheckoutForm() {
             <h2 className="font-bold text-lg mb-4">Order Summary</h2>
 
             <div className="rounded-lg border p-4 border-neutral-400/35">
-              <OrderSummary />
+              <OrderSummary
+                selectedPickupOption={selectedPickupOption}
+                selectedDeliveryMethod={selectedDeliveryMethod}
+              />
               <Button className="w-full">Confirm Order</Button>
             </div>
           </div>
