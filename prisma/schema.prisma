@@ -106,6 +106,7 @@ model Product {
   description   String
   price         Int
   discount      Int?
+  weight        Float?
   categoryName  String
   category      Category?      @relation(fields: [categoryName], references: [categoryName])
   isInStock     String

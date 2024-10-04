@@ -50,6 +50,7 @@ export const AddProductSchema = z.object({
   discount: z.coerce.number().positive().optional(),
   imageUrl: z.string(),
   price: z.coerce.number().positive().optional(),
+  weight: z.coerce.number().positive().optional(),
   categoryName: z.string().min(1, { message: "Category is required!" }),
   quantity: z.coerce.number().positive().optional(),
   isInStock: z.string(),

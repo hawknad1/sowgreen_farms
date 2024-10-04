@@ -33,7 +33,7 @@ const ProductCards = () => {
       {isLoading ? (
         <HomeProductSkeleton />
       ) : (
-        <div className="flex space-x-4 p-4 w-max ">
+        <div className="flex space-x-4 px-4 py-8 w-max">
           {productList.map((card) => (
             <ProductCard data={card} key={card.id} />
           ))}

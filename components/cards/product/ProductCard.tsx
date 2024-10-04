@@ -48,7 +48,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
         ) : null}
       </div>
       <div className="flex flex-col h-[260px] w-56">
-        <div className="bg-gray-50 flex justify-center ">
+        <div className="bg-gray-50 rounded-t-lg flex justify-center ">
           <Image
             src={data.imageUrl}
             alt={data.title}
@@ -58,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           />
         </div>
 
-        <div className="border border-neutral-200 rounded-b-md ">
+        <div className="border border-neutral-300 rounded-b-md ">
           {/* Product Info */}
           <div className="self-start w-full p-2.5">
             <p className="text-[10px] text-blue-400">{data.categoryName}</p>

@@ -83,7 +83,7 @@ export const columns: ColumnDef<ShippingAddress>[] = [
     id: "actions",
     enableHiding: false,
     cell: function ActionCell({ row }) {
-      const product = row.original
+      const customer = row.original
       const router = useRouter()
 
       return (
@@ -99,9 +99,9 @@ export const columns: ColumnDef<ShippingAddress>[] = [
             <DropdownMenuSeparator />
             <Button
               className="bg-black text-white"
-              onClick={() => router.push(`/admin/products/${product.id}`)}
+              onClick={() => router.push(`/admin/customers/${customer.id}`)}
             >
-              Product Details
+              Customer Details
             </Button>
           </DropdownMenuContent>
         </DropdownMenu>

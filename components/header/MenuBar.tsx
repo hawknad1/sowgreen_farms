@@ -42,7 +42,9 @@ const MenuBar = () => {
   return (
     <Menubar>
       <MenubarMenu>
-        <MenubarTrigger className="p-2 px-4">Home</MenubarTrigger>
+        <MenubarTrigger onClick={() => router.push("/")} className="p-2 px-4">
+          Home
+        </MenubarTrigger>
       </MenubarMenu>
       <MenubarMenu>
         <MenubarTrigger className="p-2 px-4">Category</MenubarTrigger>

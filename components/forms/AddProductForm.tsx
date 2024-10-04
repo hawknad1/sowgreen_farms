@@ -84,6 +84,7 @@ export function AddProductForm() {
       discount: 0,
       imageUrl: "",
       price: 0,
+      weight: 0.0,
       categoryName: "",
       quantity: 0,
       isInStock: "",
@@ -178,7 +179,20 @@ export function AddProductForm() {
             name="quantity"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Quantity Available</FormLabel>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="weight"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Weight(kg) </FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
