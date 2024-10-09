@@ -35,7 +35,6 @@ export function downloadCustomers(data: any) {
 }
 
 export function downloadOrders(orders: Order[]) {
-  console.log(orders, "xlsx")
   // Flatten the data beforehand, including product names
   const flattenedOrders = orders.map((order) => ({
     orderNumber: order.orderNumber,
@@ -45,6 +44,13 @@ export function downloadOrders(orders: Order[]) {
     productQuantities: order.products.map((p) => p.quantity).join(", "),
     productTotals: order.products.map((p) => p.quantityTotal).join(", "),
     customerName: order.shippingAddress.name,
+    orderStatus: order?.status,
+    dispatchRider: order?.dispatchRider,
+    orderDate: new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(order?.createdAt)), // Updated date formatting
     address: order.shippingAddress.address,
     city: order.shippingAddress.city,
     phone: order.shippingAddress.phone,
@@ -56,22 +62,27 @@ export function downloadOrders(orders: Order[]) {
     {
       sheet: "Orders",
       columns: [
+        {
+          label: "Date",
+          value: "orderDate", // Order date now formatted correctly
+        },
         { label: "Order Number", value: "orderNumber" },
         { label: "Product Names", value: "productNames" }, // Added Product Names
         { label: "Product Quantities", value: "productQuantities" },
         { label: "Product Totals", value: "productTotals" },
+        { label: "Order Status", value: "orderStatus" },
         { label: "Customer Name", value: "customerName" },
         { label: "Address", value: "address" },
         { label: "City", value: "city" },
-
         { label: "Phone", value: "phone" },
         { label: "Total", value: "total" },
+        { label: "Dispatch Rider", value: "dispatchRider" },
       ],
       content: flattenedOrders as IContent[], // Ensure the content is correctly typed
     },
   ]
 
-  // Define settings for file
+  // Define settings for the file
   let settings = {
     fileName: "Order_List", // Name of the downloaded file
   }

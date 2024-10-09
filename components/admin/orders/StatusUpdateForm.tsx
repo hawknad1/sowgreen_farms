@@ -22,7 +22,7 @@ import {
 import { Order } from "@/types"
 import { useRouter } from "next/navigation"
 import React from "react"
-import { orderStatusCard } from "@/constants"
+import { dispatchRider, orderStatusCard } from "@/constants"
 
 const StatusUpdateForm = ({
   orders,
@@ -36,7 +36,7 @@ const StatusUpdateForm = ({
     defaultValues: orders,
   })
 
-  const updateProduct = async (values: z.infer<typeof UpdateStatusSchema>) => {
+  const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
     try {
       const res = await fetch(`/api/orders/${orders?.id}`, {
         method: "PUT",
@@ -54,35 +54,65 @@ const StatusUpdateForm = ({
   }
 
   const onSubmit = (values: z.infer<typeof UpdateStatusSchema>) =>
-    updateProduct(values)
+    // console.log(values)
+    updateOrder(values)
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex items-center justify-between gap-x-3">
-          <FormField
-            control={form.control}
-            name="status"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Order Status</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="processing">Processing</SelectItem>
-                    <SelectItem value="shipped">Shipped</SelectItem>
-                    <SelectItem value="delivered">Delivered</SelectItem>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="flex w-full">
+          <div>
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Order Status</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="processing">Processing</SelectItem>
+                      <SelectItem value="shipped">Shipped</SelectItem>
+                      <SelectItem value="delivered">Delivered</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
+              name="dispatchRider"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Dispatch Rider</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Rider" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {dispatchRider.map(({ name, value }, index) => (
+                        <SelectItem key={index} value={value}>
+                          {name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
         <Button type="submit" className="w-full">

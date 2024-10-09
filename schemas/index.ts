@@ -23,8 +23,8 @@ export const CheckoutSchema = z.object({
   name: z.string().min(1, { message: "Name is required!" }),
   email: z.string().email({ message: "Email is required!" }),
   country: z.string({ message: "Country is required" }),
-  region: z.string().min(1, { message: "Region is required!" }),
-  city: z.string().min(1, { message: "City is required!" }),
+  region: z.string().min(2, { message: "Region is required!" }),
+  city: z.string().min(2, { message: "City is required!" }),
   address: z.string().min(5, { message: "Address is required!" }),
   phone: z.string().regex(phoneRegex, "Invalid Number!"),
 })
@@ -40,6 +40,15 @@ export const DeliveryRadioSchema = z.object({
     ["same-day-delivery", "next-day-delivery", "dzorwulu", "dubois"],
     {
       required_error: "You need to select a delivery method.",
+    }
+  ),
+})
+
+export const DriverRadioSchema = z.object({
+  dispatchRider: z.enum(
+    ["pick-up", "Nana Kwame", "John Doe", "Kwaku D", "Julius Oppong"],
+    {
+      required_error: "You need to select a dispatch rider.",
     }
   ),
 })
@@ -69,6 +78,7 @@ export const EditProductSchema = z.object({
 
 export const UpdateStatusSchema = z.object({
   status: z.string(),
+  dispatchRider: z.string(),
 })
 
 export const SearchSchema = z.object({

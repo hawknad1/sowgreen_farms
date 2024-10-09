@@ -69,10 +69,12 @@ export type Order = {
   referenceNumber: string
   total: number
   status: "processing" | "shipped" | "delivered"
+  dispatchRider: string
   deliveryMethod: string
   deliveryFee: number
   shippingAddress: ShippingAddress
   products: ProductOrder[] // Change from Product[] to ProductOrder[]
+  createdAt: string
 }
 
 export type Product = {
@@ -102,16 +104,6 @@ export type CartItem = {
   quantity: number
   total: string
 }
-
-// export type ProductOrder = {
-//   id: string
-//   productId: string
-//   orderId: string
-//   quantity: number
-//   quantityTotal: string
-//   product: Product
-//   order: Order
-// }
 
 export type ProductOrder = {
   id: string

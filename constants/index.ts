@@ -257,3 +257,22 @@ export const deliveryMethods = [
     ],
   },
 ]
+
+export const dispatchRider = [
+  {
+    name: "Julius Oppong",
+    value: "julius",
+  },
+  {
+    name: "Nana Kwame",
+    value: "kwame",
+  },
+  {
+    name: "John Doe",
+    value: "john",
+  },
+  {
+    name: "Kwaku D",
+    value: "kwaku",
+  },
+]

@@ -42,6 +42,7 @@ interface OrdersProps {
 
 const OrdersDataTable = ({ order, loading }: OrdersProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const [filterValue, setFilterValue] = React.useState<Order[]>([])
 
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -52,7 +53,12 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
-  // console.log(orders, "oorddd")
+  const handleExport = () => {
+    const filteredData = table
+      .getFilteredRowModel()
+      .rows.map((row) => row.original)
+    downloadOrders(filteredData)
+  }
 
   const table = useReactTable({
     data: order, // Added orders data
@@ -73,6 +79,8 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
     },
   })
 
+  console.log(filterValue, "gggg")
+
   return (
     <div className="w-full">
       <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">
@@ -86,6 +94,16 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
           }
           className="max-w-sm"
           aria-label="Filter Order number"
+        />
+
+        <Input
+          placeholder="Filter Status..."
+          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
+          onChange={(event) => {
+            table.getColumn("status")?.setFilterValue(event.target.value)
+          }}
+          className="max-w-sm"
+          aria-label="Filter Status"
         />
 
         <DropdownMenu>
@@ -110,7 +128,7 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <Export action={() => downloadOrders(order)} />
+        <Export action={handleExport} />
       </div>
 
       <div className="overflow-hidden rounded-md border">

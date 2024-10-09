@@ -28,13 +28,14 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const { status } = await req.json()
+  const { status, dispatchRider } = await req.json()
   const id = params.id
   try {
     const order = await prisma.order.update({
       where: { id },
       data: {
         status,
+        dispatchRider,
       },
     })
     return NextResponse.json(order)

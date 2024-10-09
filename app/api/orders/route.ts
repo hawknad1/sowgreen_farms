@@ -29,6 +29,7 @@ export async function POST(req: Request) {
     total,
     shippingAddress,
     deliveryMethod,
+    dispatchRider,
     deliveryFee,
     products,
     status,
@@ -119,6 +120,7 @@ export async function POST(req: Request) {
         deliveryMethod: deliveryMethod,
         deliveryFee,
         status,
+        dispatchRider,
         shippingAddress: {
           connect: { id: shippingAddressRecord.id }, // Connect to the existing or newly created shipping address
         },
