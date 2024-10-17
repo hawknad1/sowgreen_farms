@@ -5,9 +5,11 @@ export async function POST(req: NextRequest) {
   try {
     const {
       title,
-      price,
       description,
       imageUrl,
+      price,
+      unit,
+      weight,
       categoryName,
       quantity,
       discount,
@@ -15,11 +17,20 @@ export async function POST(req: NextRequest) {
     } = await req.json()
 
     // Validate required fields
-    if (!title || !description || !price || !categoryName || !quantity) {
+    if (
+      !title ||
+      !description ||
+      !price ||
+      !weight ||
+      !unit ||
+      !categoryName ||
+      typeof quantity !== "number" || // Ensure quantity is a number
+      quantity <= 0 // Ensure quantity is positive
+    ) {
       return NextResponse.json(
         {
           error:
-            "Title, Description, Price, Category, and Quantity are required!",
+            "Title, Description, at least one Weight-Price pair, Category, and Quantity are required!",
         },
         { status: 400 } // 400 Bad Request for missing fields
       )
@@ -43,13 +54,15 @@ export async function POST(req: NextRequest) {
     const newProduct = await prisma.product.create({
       data: {
         title,
-        price,
         description,
         imageUrl,
         categoryName,
         quantity,
-        discount,
-        isInStock,
+        unit,
+        discount: discount ?? null, // Set to null if not provided
+        isInStock: isInStock || "out-of-stock", // Default to "out-of-stock" if not provided
+        price,
+        weight,
       },
     })
 

@@ -36,8 +36,6 @@ const ConfirmOrderPage = () => {
     setDeliveryFee(30)
   }
 
-  console.log(deliveryFee, "feeee")
-
   const router = useRouter()
   const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
@@ -61,6 +59,9 @@ const ConfirmOrderPage = () => {
     formattedSubtotal,
     formattedTotal,
   }
+
+  console.log(dataProps, "data")
+  console.log(dataProps.formData.deliveryMethod, "data")
 
   const taxedOrders = orders.map((order) => ({
     ...order, // Spread the existing order object

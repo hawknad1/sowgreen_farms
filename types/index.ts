@@ -89,6 +89,18 @@ export type Product = {
   quantity: number
   discount: number
   productOrders: ProductOrder[]
+  weight: number
+  unit: string
+
+  // weightsAndPrices: { price: number; weight: number }[]
+}
+
+export type WeightPrice = {
+  id: string
+  weight: number
+  price: number
+  product: Product
+  productId: string
 }
 
 export type Item = {
@@ -99,11 +111,26 @@ export type Item = {
   price: number
 }
 
+// export type CartItem = {
+//   id: string
+//   item: Product // The Product type definition
+//   total: string
+//   quantity: number
+//   weight: number
+//   categoryName: string
+//   imageUrl: string
+//   price: number
+//   // other necessary fields
+// }
+
 export type CartItem = {
   item: Item
   quantity: number
   total: string
 }
+// export interface CartItem extends Product {
+//   weight: number // Assuming weight is not part of Product and is specific to CartItem
+// }
 
 export type ProductOrder = {
   id: string

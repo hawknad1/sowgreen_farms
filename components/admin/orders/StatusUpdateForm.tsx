@@ -47,7 +47,7 @@ const StatusUpdateForm = ({
       if (!res.ok) throw new Error("Failed to update status")
 
       toast.success("Status updated successfully!")
-      router.push(`/admin/orders`)
+      router.refresh()
     } catch (error) {
       toast.error("Error updating orders.")
     }

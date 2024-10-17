@@ -77,10 +77,19 @@ const AdminProductDetailCard = ({ product }: Props) => {
 
             <div className="border border-slate-200 rounded-lg p-2">
               <div className="flex justify-between py-2">
-                <p className="font-semibold">Quantity Available</p>
+                <p className="font-semibold">Quantity</p>
                 <p className="font-bold">{product.quantity}</p>
               </div>
 
+              <Separator />
+
+              <div className="flex justify-between py-2">
+                <p className="font-semibold">Weight</p>
+                <div className="flex items-center">
+                  <p className="font-bold">{product.weight}</p>
+                  <p className="font-bold">{product.unit}</p>
+                </div>
+              </div>
               <Separator />
 
               <div className="flex justify-between py-2">

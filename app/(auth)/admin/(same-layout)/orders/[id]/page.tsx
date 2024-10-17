@@ -29,7 +29,7 @@ const OrderDetailPage = ({ params }: { params: { id: string } }) => {
   }, [params.id])
 
   return (
-    <div>
+    <div className="h-screen">
       <AdminOrderDetailCard orders={order} />
     </div>
   )

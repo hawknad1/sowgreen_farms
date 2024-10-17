@@ -25,8 +25,8 @@ const StatusPopup = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div>
-          <StatusCards orderStatus={orderStatus} />
+        <div className="">
+          <StatusCards orderStatus={orderStatus} orders={orders} />
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

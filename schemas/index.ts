@@ -57,9 +57,20 @@ export const AddProductSchema = z.object({
   title: z.string().min(2, { message: "Title is required!" }),
   description: z.string().min(5, { message: "Description is required!" }),
   discount: z.coerce.number().positive().optional(),
+  // weightsAndPrices: z
+  //   .array(
+  //     z.object({
+  //       weight: z.coerce
+  //         .number()
+  //         .min(0, "Weight must be a non-negative number"),
+  //       price: z.coerce.number().min(0, "Price must be a non-negative number"),
+  //     })
+  //   )
+  //   .min(1, "At least one weight-price pair is required"),
   imageUrl: z.string(),
   price: z.coerce.number().positive().optional(),
   weight: z.coerce.number().positive().optional(),
+  unit: z.string(),
   categoryName: z.string().min(1, { message: "Category is required!" }),
   quantity: z.coerce.number().positive().optional(),
   isInStock: z.string(),

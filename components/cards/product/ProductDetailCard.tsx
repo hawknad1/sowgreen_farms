@@ -13,6 +13,7 @@ import { Product } from "@/types"
 import { addTax } from "@/lib/addTax"
 import { Badge } from "@/components/ui/badge"
 import { formatCurrency } from "@/lib/utils"
+import React, { useState, useEffect } from "react"
 
 interface Props {
   product: Product
@@ -20,30 +21,51 @@ interface Props {
 
 const ProductDetailCard = ({ product }: Props) => {
   const router = useRouter()
-  const cart = useCartStore((state) => state.cart)
-  const cartWithTax = cart.map((product) => ({
-    ...product,
-    price: addTax(product.price),
-  }))
+  const [selectedPrice, setSelectedPrice] = useState<number | null>(null)
+  const [selectedWeight, setSelectedWeight] = useState<number | null>(null)
 
-  const taxedProduct = { ...product, price: addTax(product?.price).toFixed(2) }
-  const taxedPrice = formatCurrency(parseFloat(taxedProduct.price), "GHS")
+  // useEffect(() => {
+  //   if (product?.weightsAndPrices?.length) {
+  //     setSelectedPrice(product.weightsAndPrices[0].price)
+  //     setSelectedWeight(product.weightsAndPrices[0].weight)
+  //   }
+  // }, [product])
+
+  const handleWeightChange = (price: number, weight: number) => {
+    setSelectedPrice(price)
+    setSelectedWeight(weight)
+  }
+
+  const taxedPrice = formatCurrency(addTax(product.price), "GHS")
 
   return (
     <div className="container mx-auto py-8">
       <div className="flex items-center justify-between space-x-16">
-        <div className=" flex flex-col w-full h-screen">
+        <div className="flex flex-col w-full h-screen">
           <h3 className="text-2xl flex justify-center font-bold mb-4 w-full">{`${product?.categoryName} / ${product?.title}`}</h3>
 
           <div className="flex flex-col gap-3">
-            <div className="flex justify-end">
+            <div className="flex justify-end relative">
               <Image
                 src={product?.imageUrl}
                 alt={product?.title}
                 width={400}
                 height={400}
-                className=" bg-gray-100 object-contain w-[400px] h-[400px] p-2 rounded-2xl"
+                className="bg-gray-100 object-contain w-[400px] h-[400px] p-2 rounded-2xl"
               />
+              <div className="absolute right-5 top-3">
+                {product.isInStock === "out-of-stock" ? (
+                  <Badge className="bg-gray-500/25 text-gray-500 hover:disabled:pointer-events-none">
+                    Out of stock
+                  </Badge>
+                ) : product?.discount ? (
+                  <Badge className="bg-red-500/85">
+                    <p className="text-[10px] text-white tracking-wide">
+                      {product?.discount}% OFF
+                    </p>
+                  </Badge>
+                ) : null}
+              </div>
             </div>
 
             <div className="flex gap-2 justify-end items-center">
@@ -59,28 +81,23 @@ const ProductDetailCard = ({ product }: Props) => {
             </div>
           </div>
         </div>
-        <div className=" w-full h-screen">
+
+        <div className="w-full h-screen">
           <div className="flex flex-col gap-4 mt-11">
             <p className="text-neutral-400 text-sm">
               {`Categories -> ${product?.categoryName}`}
             </p>
-            <h3 className="text-3xl font-bold">{product?.title}</h3>
+            <div className="flex items-center">
+              <h3 className="text-3xl font-bold">{product?.title}</h3>
+            </div>
             {/* ratings */}
             <Ratings />
             <div className="flex items-center space-x-2">
-              <p className="text-2xl font-bold text-black">{taxedPrice}</p>
-              {product.isInStock === "out-of-stock" ? (
-                <Badge className="bg-gray-500/25 text-gray-500 hover:disabled:pointer-events-none">
-                  Out of stock
-                </Badge>
-              ) : product?.discount ? (
-                <Badge className="bg-red-500/85">
-                  <p className="text-[10px] text-white tracking-wide">
-                    {product?.discount}% OFF
-                  </p>
-                </Badge>
-              ) : null}
-              {/* <p className="text-sm font-medium text-neutral-600">400ml/each</p> */}
+              {/* Display the selected price */}
+              <div className="flex items-center gap-x-1.5">
+                <h3 className="text-2xl font-bold text-black">{taxedPrice}</h3>
+                <span className="text-neutral-500 text-xl font-semibold">{`/ ${product.weight}${product.unit}`}</span>
+              </div>
             </div>
             <div className="flex flex-col max-w-lg">
               <p className="text-sm font-semibold">Descriptions</p>
@@ -88,7 +105,11 @@ const ProductDetailCard = ({ product }: Props) => {
             </div>
 
             <div className="flex items-center gap-4">
-              <AddToCart product={product} />
+              <AddToCart
+                product={product}
+                selectedPrice={selectedPrice}
+                selectedWeight={selectedWeight}
+              />
               <Button
                 disabled={product?.isInStock === "out-of-stock"}
                 onClick={() => router.push("/checkout")}

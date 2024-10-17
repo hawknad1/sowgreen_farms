@@ -46,6 +46,7 @@ export function downloadOrders(orders: Order[]) {
     customerName: order.shippingAddress.name,
     orderStatus: order?.status,
     dispatchRider: order?.dispatchRider,
+    deliveryMethod: order?.deliveryMethod,
     orderDate: new Intl.DateTimeFormat("en-US", {
       year: "numeric",
       month: "long",
@@ -76,6 +77,7 @@ export function downloadOrders(orders: Order[]) {
         { label: "City", value: "city" },
         { label: "Phone", value: "phone" },
         { label: "Total", value: "total" },
+        { label: "Delivery Method", value: "deliveryMethod" },
         { label: "Dispatch Rider", value: "dispatchRider" },
       ],
       content: flattenedOrders as IContent[], // Ensure the content is correctly typed
@@ -103,6 +105,14 @@ export function downloadProducts(data: any) {
         {
           label: "Price",
           value: "price",
+        },
+        {
+          label: "Weight",
+          value: "weight",
+        },
+        {
+          label: "Unit",
+          value: "unit",
         },
         {
           label: "Quantity",

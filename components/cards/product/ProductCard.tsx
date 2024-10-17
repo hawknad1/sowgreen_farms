@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation"
 import { Product } from "@/types"
 import { addTax } from "@/lib/addTax"
 import { Badge } from "@/components/ui/badge"
+import { formatCurrency } from "@/lib/utils"
 
 interface ProductCardProps {
   data: Product
@@ -17,8 +18,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   const router = useRouter()
 
   // Memoized values to avoid recalculating on each render
-  const taxedPrice = useMemo(() => addTax(data.price).toFixed(2), [data.price])
   const discount = data.isInStock === "out-of-stock" ? null : data.discount
+
+  // const price = data?.weightsAndPrices.map((p) => p.price)
+  // const weight = data?.weightsAndPrices.map((w) => w.weight)
+
+  const taxedPrice = formatCurrency(addTax(data.price), "GHS")
+
+  // const taxedPrice = useMemo(() => addTax(price).toFixed(2), [price])
 
   // Helper function to render stars based on rating
   const renderStars = (rating: number) => {
@@ -38,7 +45,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
     <div onClick={handleCardClick} className="relative cursor-pointer">
       <div className="absolute top-2 left-3">
         {data.isInStock === "out-of-stock" ? (
-          <Badge className="bg-gray-500/25 text-gray-500">Out of stock</Badge>
+          <Badge className="bg-gray-500/40 text-gray-500">Out of stock</Badge>
         ) : discount ? (
           <Badge className="bg-red-500/85">
             <p className="text-[10px] text-white tracking-wide">
@@ -70,7 +77,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
               <p className="text-[10px] text-blue-500 tracking-wide"> · 4.0</p>
             </div>
             <div className="flex items-center justify-between pt-2">
-              <p className="text-sm tracking-wide font-semibold">{`GHS ${taxedPrice}`}</p>
+              <div className="flex">
+                <p className="text-sm tracking-wide font-semibold">
+                  {taxedPrice}
+                </p>
+                {data?.weight && (
+                  <div className="flex items-center text-neutral-400 px-0.5">
+                    <p className="text-sm tracking-wide font-medium">{`/${data?.weight}`}</p>
+                    <p className="text-sm tracking-wide font-medium">{`${data?.unit}`}</p>
+                  </div>
+                )}
+              </div>
               <div className="bg-green-300 p-1.5 rounded-full cursor-pointer">
                 <ShoppingBagIcon className="size-4 text-gray-800" />
               </div>

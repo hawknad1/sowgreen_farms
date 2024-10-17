@@ -17,7 +17,6 @@ import StatusPopup from "./StatusPopup"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   if (!orders) return <p>Loading...</p>
-  console.log(orders, "ddddd")
 
   return (
     <div className="">
@@ -47,7 +46,13 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
         <div className="h-screen overflow-scroll scrollbar-hide py-4">
           <div className="border border-neutral-300 rounded-lg p-4 flex flex-col sm:flex-row gap-4">
             <div className="w-full flex flex-col gap-2">
-              <p className="font-semibold">With courier en route</p>
+              <p className="font-semibold flex items-center gap-x-1">
+                With courier en route
+                <span className="relative flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                </span>
+              </p>
 
               {/* Order status */}
               {/* <StatusCard orderStatus={orderStatusCard} /> */}

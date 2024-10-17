@@ -161,30 +161,36 @@ export const smallImage = [
 ]
 
 export const orderStatusCard = [
+  // {
+  //   title: "Order Paid",
+  //   status: "",
+  //   subTitle: "Customer Payment",
+  //   icon: CreditCardIcon,
+  // },
   {
-    title: "Order Paid",
-    status: "",
-    subTitle: "Customer Payment",
-    icon: CreditCardIcon,
-  },
-  {
-    title: "Order Processing",
+    title: "Processing",
     status: "processing",
     subTitle: "Processing Order",
     icon: CreditCardIcon,
   },
   {
-    title: "Order Shipped",
+    title: "Shipped",
     status: "shipped",
-    subTitle: "On Delivery",
+    subTitle: "Order Shipped",
     icon: TruckIcon,
   },
   {
-    title: "Order Completed",
+    title: "Completed",
     status: "delivered",
     subTitle: "Order Delivered",
     icon: Package,
   },
+  // {
+  //   title: "Delivered By",
+  //   status: "delivered",
+  //   subTitle: "Order Delivered",
+  //   icon: Package,
+  // },
 ]
 
 export const sidebarLinks = [
@@ -261,7 +267,7 @@ export const deliveryMethods = [
 export const dispatchRider = [
   {
     name: "Julius Oppong",
-    value: "julius",
+    value: "Julius",
   },
   {
     name: "Nana Kwame",
@@ -274,5 +280,20 @@ export const dispatchRider = [
   {
     name: "Kwaku D",
     value: "kwaku",
+  },
+]
+
+export const units = [
+  {
+    unitTitle: "Kilogram",
+    unitSign: "kg",
+  },
+  {
+    unitTitle: "Grams",
+    unitSign: "g",
+  },
+  {
+    unitTitle: "Litre",
+    unitSign: "ltr",
   },
 ]

@@ -33,6 +33,8 @@ const Products = () => {
     getProductList()
   }, [])
 
+  console.log(products, "productSsss")
+
   return (
     <main className="container mx-auto py-8 flex-1">
       <div className="flex items-center flex-col gap-8">

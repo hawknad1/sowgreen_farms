@@ -7,7 +7,9 @@ export async function GET(
 ) {
   try {
     const id = params.id
-    const product = await prisma.product.findUnique({ where: { id } })
+    const product = await prisma.product.findUnique({
+      where: { id },
+    })
     return NextResponse.json(product)
   } catch (error) {
     return NextResponse.json({ message: "couldnt fetch product!" })
@@ -22,7 +24,9 @@ export async function PUT(
     title,
     description,
     price,
+    weight,
     imageUrl,
+    unit,
     categoryName,
     quantity,
     discount,
@@ -37,7 +41,9 @@ export async function PUT(
         categoryName,
         description,
         imageUrl,
+        unit,
         price,
+        weight,
         quantity,
         discount,
         isInStock,

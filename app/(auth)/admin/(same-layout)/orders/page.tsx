@@ -28,7 +28,6 @@ const AdminOrders = () => {
 
   const [order, setOrder] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
-  console.log(order, "lets goo")
 
   useEffect(() => {
     async function getOrderDetail() {

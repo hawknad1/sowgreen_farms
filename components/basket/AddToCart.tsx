@@ -1,16 +1,27 @@
 "use client"
 import { useCartStore } from "@/store"
-import React, { useState } from "react"
+import React from "react"
 import { Button } from "../ui/button"
 import RemoveFromCart from "./RemoveFromCart"
 import { Product } from "@/types"
 
-const AddToCart = ({ product }: { product: Product }) => {
+interface AddToCartProps {
+  product: Product
+  selectedPrice?: number // Price passed from outside component
+  selectedWeight?: number // Weight passed from outside component
+}
+
+const AddToCart = ({
+  product,
+  selectedPrice,
+  selectedWeight,
+}: AddToCartProps) => {
   const { cart, addToCart } = useCartStore((state) => ({
     cart: state.cart,
     addToCart: state.addToCart,
   }))
 
+  // Find how many items of the same product and weight are in the cart
   const howManyInCart = cart.filter(
     (item: Product) => item.id === product.id
   ).length
@@ -19,11 +30,17 @@ const AddToCart = ({ product }: { product: Product }) => {
     addToCart(product)
   }
 
+  console.log(product, "add prod")
+
+  // const handleRemove = () => {
+  //   removeFromCart({ ...product, weight: selectedWeight })
+  // }
+
   return (
     <div className="flex items-center space-x-2">
       {howManyInCart > 0 ? (
         <>
-          <RemoveFromCart product={product} />
+          <RemoveFromCart product={product} weight={selectedWeight} />
           <span className="text-sm md:text-base font-medium">
             {howManyInCart}
           </span>

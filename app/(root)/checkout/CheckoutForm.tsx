@@ -26,8 +26,8 @@ import { DeliveryMethod } from "./DeliveryMethod"
 export function CheckoutForm() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState("")
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(null)
-  const [selectedPickupOption, setSelectedPickupOption] = useState(null)
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
+  const [selectedPickupOption, setSelectedPickupOption] = useState("")
 
   const router = useRouter()
 
