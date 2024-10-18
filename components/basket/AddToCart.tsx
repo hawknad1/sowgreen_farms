@@ -30,8 +30,6 @@ const AddToCart = ({
     addToCart(product)
   }
 
-  console.log(product, "add prod")
-
   // const handleRemove = () => {
   //   removeFromCart({ ...product, weight: selectedWeight })
   // }

@@ -26,23 +26,23 @@ const BasketPage = () => {
 
   return (
     <div className="w-full p-10 max-w-7xl mx-auto bg-white">
-      <div className="flex items-start gap-x-3">
+      <div className="flex flex-col">
+        <div className="flex items-center space-x-2 mb-2">
+          <ShoppingCartIcon className="h-10 w-10" />
+          <h1 className="text-3xl font-bold">Your Shopping Cart</h1>
+        </div>
+        <p className="text-neutral-600/75 mb-2">
+          Review the items in your cart and checkout when ready!
+        </p>
+      </div>
+      <div className="flex items-center gap-x-16">
         <div className="flex-1">
-          <div className="flex flex-col">
-            <div className="flex items-center space-x-2">
-              <ShoppingCartIcon className="h-10 w-10" />
-              <h1 className="text-3xl font-bold">Your Shopping Cart</h1>
-            </div>
-            <p className="mt-2">
-              Review the items in your cart and checkout when ready!
-            </p>
-          </div>
           <div className="flex items-center justify-between ">
-            <div className="mt-8 w-full">
+            <div className="w-full">
               <div className="overflow-scroll scrollbar-hide w-full h-[600px]">
                 <BasketItems />
               </div>
-              <div className="hidden lg:inline-flex items-center gap-4 mt-8">
+              <div className="hidden lg:inline-flex items-center gap-4 ">
                 <div
                   onClick={() => router.back()}
                   className="flex items-center cursor-pointer"
@@ -57,19 +57,17 @@ const BasketPage = () => {
             </div>
           </div>
         </div>
-        <div>
-          <div className="lg:flex items-center">
-            <div className="hidden lg:flex flex-col gap-4 mt-5">
-              <CheckoutBox>
-                <Coupon />
-              </CheckoutBox>
-              <CheckoutBox>
-                <BasketOrderSummery />
-              </CheckoutBox>
-              <CheckoutBox>
-                <PaymentMethod />
-              </CheckoutBox>
-            </div>
+        <div className="lg:flex items-center">
+          <div className="hidden lg:flex flex-col gap-4">
+            <CheckoutBox>
+              <Coupon />
+            </CheckoutBox>
+            <CheckoutBox>
+              <BasketOrderSummery />
+            </CheckoutBox>
+            <CheckoutBox>
+              <PaymentMethod />
+            </CheckoutBox>
           </div>
         </div>
       </div>

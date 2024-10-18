@@ -96,7 +96,9 @@ const ProductDetailCard = ({ product }: Props) => {
               {/* Display the selected price */}
               <div className="flex items-center gap-x-1.5">
                 <h3 className="text-2xl font-bold text-black">{taxedPrice}</h3>
-                <span className="text-neutral-500 text-xl font-semibold">{`/ ${product.weight}${product.unit}`}</span>
+                {product?.weight && (
+                  <span className="text-neutral-500 text-xl font-semibold">{`/ ${product?.weight}${product?.unit}`}</span>
+                )}
               </div>
             </div>
             <div className="flex flex-col max-w-lg">

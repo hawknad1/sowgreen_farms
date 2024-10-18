@@ -23,8 +23,8 @@ const BasketItems = () => {
   const basketTotal = getCartTotal(cartWithTax)
 
   return (
-    <div className="w-fit">
-      <ul className="divide-y-[2px] w-fit">
+    <div className="w-full">
+      <ul className="w-full">
         {Object.keys(grouped).map((id) => {
           const item = grouped[id][0]
           const total = getCartTotal(grouped[id])
@@ -33,19 +33,21 @@ const BasketItems = () => {
           return (
             <li
               key={id}
-              className="p-5 my-2 flex items-center justify-between  "
+              className="p-2.5 my-2 flex items-center justify-between border border-neutral-300/55 rounded-lg"
             >
-              {item.imageUrl && (
-                <Image
-                  src={item.imageUrl}
-                  alt={item.title}
-                  width={80}
-                  height={80}
-                  className="h-20 w-20 object-contain"
-                />
-              )}
-
-              <div className="flex items-center space-x-4 pl-4">
+              <div
+                onClick={() => router.push(`/products/${item.id}`)}
+                className="flex items-center space-x-4 cursor-pointer "
+              >
+                {item.imageUrl && (
+                  <Image
+                    src={item.imageUrl}
+                    alt={item.title}
+                    width={80}
+                    height={80}
+                    className="h-20 w-20 object-contain"
+                  />
+                )}
                 <div>
                   <p className="line-clamp-2 font-bold">{item.title}</p>
                   <div
@@ -53,18 +55,19 @@ const BasketItems = () => {
                     className="line-clamp-2 font-light text-sm mt-2 max-w-lg"
                   />
                 </div>
-                <div className="flex flex-col border rounded-md p-2 lg:p-5">
-                  <AddToCart product={item} />
-                  <p className="mt-4 font-bold text-center">
-                    {formatCurrency(taxedItem, "GHS")}
-                  </p>
-                </div>
+              </div>
+
+              <div className="flex flex-col border rounded-md p-2 lg:p-3.5">
+                <AddToCart product={item} />
+                <p className="mt-4 font-bold text-center">
+                  {formatCurrency(taxedItem, "GHS")}
+                </p>
               </div>
             </li>
           )
         })}
       </ul>
-      {cart.length <= 0 ? (
+      {cart?.length <= 0 ? (
         <p>No Items in your cart</p>
       ) : (
         <div className="flex flex-col lg:hidden justify-end p-5">
