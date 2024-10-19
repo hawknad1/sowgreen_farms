@@ -4,28 +4,6 @@ import { Order } from "@/types"
 import React, { useEffect, useState } from "react"
 
 const AdminOrders = () => {
-  // const [orders, setOrders] = useState([])
-  // const [loading, setLoading] = useState(true)
-
-  // useEffect(() => {
-  //   const OrdersData = async () => {
-  //     try {
-  //       const res = await fetch("/api/orders", {
-  //         method: "GET",
-  //         cache: "no-store",
-  //       })
-  //       if (res.ok) {
-  //         const orders = await res.json()
-  //         setOrders(orders)
-  //         setLoading(false)
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  //   OrdersData()
-  // }, [])
-
   const [order, setOrder] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
 

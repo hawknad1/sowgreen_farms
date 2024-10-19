@@ -17,7 +17,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { CheckoutSchema } from "@/schemas"
 import { useState } from "react"
-import { useCartStore } from "@/store"
+import { useCartStore, useDeliveryStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import OrderSummary from "./OrderSummary"
 import { useRouter } from "next/navigation"
@@ -30,6 +30,8 @@ export function CheckoutForm() {
   const [selectedPickupOption, setSelectedPickupOption] = useState("")
 
   const router = useRouter()
+
+  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
 
   const cart = useCartStore((state) => state.cart)
   const basketTotal = getCartTotal(cart)
@@ -51,6 +53,10 @@ export function CheckoutForm() {
     selectedDeliveryMethod === "schedule-pickup"
       ? selectedPickupOption
       : selectedDeliveryMethod
+
+  if (selectedPickupOption) {
+    setDeliveryFee(0)
+  }
 
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
     // Add delivery method to the form data

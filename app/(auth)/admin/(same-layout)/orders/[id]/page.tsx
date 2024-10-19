@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react"
 const OrderDetailPage = ({ params }: { params: { id: string } }) => {
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
-  console.log(params.id)
 
   useEffect(() => {
     async function getOrderDetail() {

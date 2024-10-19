@@ -32,9 +32,9 @@ const ConfirmOrderPage = () => {
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
 
-  if (cart.length > 0) {
-    setDeliveryFee(30)
-  }
+  // if (cart.length > 0) {
+  //   setDeliveryFee(30)
+  // }
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -59,9 +59,6 @@ const ConfirmOrderPage = () => {
     formattedSubtotal,
     formattedTotal,
   }
-
-  console.log(dataProps, "data")
-  console.log(dataProps.formData.deliveryMethod, "data")
 
   const taxedOrders = orders.map((order) => ({
     ...order, // Spread the existing order object
@@ -112,13 +109,11 @@ const ConfirmOrderPage = () => {
           products: taxedOrders,
           shippingAddress: newFormData,
           orderNumber,
-          deliveryMethod: formData.deliveryMethod,
+          deliveryMethod: formData?.deliveryMethod,
           deliveryFee: deliveryFee,
           referenceNumber: reference.reference,
           total: total,
         }
-
-        console.log(ordersData)
 
         const shippingResponse = await fetch("/api/address", {
           method: "POST",

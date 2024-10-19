@@ -161,12 +161,6 @@ export const smallImage = [
 ]
 
 export const orderStatusCard = [
-  // {
-  //   title: "Order Paid",
-  //   status: "",
-  //   subTitle: "Customer Payment",
-  //   icon: CreditCardIcon,
-  // },
   {
     title: "Processing",
     status: "processing",
@@ -185,12 +179,6 @@ export const orderStatusCard = [
     subTitle: "Order Delivered",
     icon: Package,
   },
-  // {
-  //   title: "Delivered By",
-  //   status: "delivered",
-  //   subTitle: "Order Delivered",
-  //   icon: Package,
-  // },
 ]
 
 export const sidebarLinks = [
@@ -259,7 +247,7 @@ export const deliveryMethods = [
     value: "schedule-pickup",
     pickupOptions: [
       { label: "Wednesday - DZORWULU - 11AM-5PM" },
-      { label: "SATURDAY - WEB DuBOIS CENTER - CANTONMENTS - 10AM-3PM" },
+      { label: "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM" },
     ],
   },
 ]

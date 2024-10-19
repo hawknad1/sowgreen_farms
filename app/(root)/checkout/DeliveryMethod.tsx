@@ -63,7 +63,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                       }`}
                     >
                       <FormControl>
-                        <RadioGroupItem value={option.value} />
+                        <RadioGroupItem value={option.label} />
                       </FormControl>
                       <FormLabel className="font-semibold flex items-center gap-x-2">
                         {option.label}
@@ -88,7 +88,6 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                           <RadioGroup
                             onValueChange={(pickupValue) => {
                               setSelectedPickupOption(pickupValue)
-                              console.log(selectedPickupOption, "heyyy")
                             }}
                             value={selectedPickupOption}
                             className="flex flex-col space-y-2"
