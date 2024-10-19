@@ -43,6 +43,12 @@ export function downloadOrders(orders: Order[]) {
       .join(", "), // Safely access product title
     productQuantities: order.products.map((p) => p.quantity).join(", "),
     productTotals: order.products.map((p) => p.quantityTotal).join(", "),
+    orderWeight: order.products
+      .map((p: ProductOrder) => {
+        const totalWeight = p.product.weight * p.quantity // Multiply weight by quantity
+        return `${totalWeight} ${p.product.unit}` // Append unit to weight
+      })
+      .join(", "), // Convert array to string
     customerName: order.shippingAddress.name,
     orderStatus: order?.status,
     dispatchRider: order?.dispatchRider,
@@ -70,6 +76,7 @@ export function downloadOrders(orders: Order[]) {
         { label: "Order Number", value: "orderNumber" },
         { label: "Product Names", value: "productNames" }, // Added Product Names
         { label: "Product Quantities", value: "productQuantities" },
+        { label: "Order Weight", value: "orderWeight" }, // Fixed Product Weight
         { label: "Product Totals", value: "productTotals" },
         { label: "Order Status", value: "orderStatus" },
         { label: "Customer Name", value: "customerName" },
@@ -86,7 +93,7 @@ export function downloadOrders(orders: Order[]) {
 
   // Define settings for the file
   let settings = {
-    fileName: "Order_List", // Name of the downloaded file
+    fileName: "Order List", // Name of the downloaded file
   }
 
   // Call xlsx function to generate the file

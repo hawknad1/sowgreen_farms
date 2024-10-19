@@ -83,7 +83,6 @@ export function AddProductForm() {
       description: "",
       discount: 0,
       imageUrl: "",
-      // weightsAndPrices: [{ weight: 0.0, price: 0 }],
       price: 0,
       unit: "",
       weight: 0.0,
@@ -92,11 +91,6 @@ export function AddProductForm() {
       isInStock: "",
     },
   })
-
-  // const { fields, append, remove } = useFieldArray({
-  //   control: form.control,
-  //   name: "weightsAndPrices",
-  // })
 
   async function onSubmit(values: z.infer<typeof AddProductSchema>) {
     try {

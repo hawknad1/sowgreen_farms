@@ -139,5 +139,6 @@ export type ProductOrder = {
   quantity: number
   quantityTotal: number // Changed from string to number
   product: Product
+  weight?: number
   order: Order
 }

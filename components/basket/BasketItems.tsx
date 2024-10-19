@@ -67,16 +67,12 @@ const BasketItems = () => {
           )
         })}
       </ul>
-      {cart?.length <= 0 ? (
-        <p>No Items in your cart</p>
-      ) : (
-        <div className="flex flex-col lg:hidden justify-end p-5">
-          <p className="font-bold text-xl lg:text-2xl text-right mb-5">
-            Total: {basketTotal}
-          </p>
-          <Button onClick={() => router.push("/checkout")}>Checkout</Button>
-        </div>
-      )}
+      <div className="flex flex-col lg:hidden justify-end p-5">
+        <p className="font-bold text-xl lg:text-2xl text-right mb-5">
+          Total: {basketTotal}
+        </p>
+        <Button onClick={() => router.push("/checkout")}>Checkout</Button>
+      </div>
     </div>
   )
 }

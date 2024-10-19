@@ -14,6 +14,8 @@ import { useCartStore, useDeliveryStore } from "@/store"
 
 const BasketPage = () => {
   const clearCart = useCartStore((state) => state.clearCart)
+  const cart = useCartStore((state) => state.cart)
+
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
 
   const router = useRouter()
@@ -31,10 +33,17 @@ const BasketPage = () => {
           <ShoppingCartIcon className="h-10 w-10" />
           <h1 className="text-3xl font-bold">Your Shopping Cart</h1>
         </div>
-        <p className="text-neutral-600/75 mb-2">
-          Review the items in your cart and checkout when ready!
-        </p>
+        {cart.length > 0 ? (
+          <p className="text-neutral-600/75 mb-2">
+            Review the items in your cart and checkout when ready!
+          </p>
+        ) : (
+          <p className="text-neutral-600/75 mb-2">
+            You have no items in your basket!
+          </p>
+        )}
       </div>
+
       <div className="flex items-center gap-x-16">
         <div className="flex-1">
           <div className="flex items-center justify-between ">
