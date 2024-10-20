@@ -16,8 +16,15 @@ import { Button } from "../ui/button"
 import { menuLinks } from "@/constants"
 import Link from "next/link"
 import SideMenu from "../SideMenu"
+import { logout } from "@/lib/actions/auth"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 
 const SideSheet = () => {
+  const session = useSession()
+  const router = useRouter()
+  const user = session?.data?.user
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -27,9 +34,13 @@ const SideSheet = () => {
       </SheetTrigger>
       <SheetContent>
         <SideMenu />
-        <SheetFooter>
+        <SheetFooter className="mt-8">
           <SheetClose asChild>
-            <Button type="submit">Sign Out</Button>
+            {user ? (
+              <Button onClick={() => logout()}>Sign Out</Button>
+            ) : (
+              <Button onClick={() => router.push("/sign-in")}>Log In</Button>
+            )}
           </SheetClose>
         </SheetFooter>
       </SheetContent>

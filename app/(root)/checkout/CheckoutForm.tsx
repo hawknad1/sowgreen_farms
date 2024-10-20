@@ -3,12 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -16,12 +14,19 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { CheckoutSchema } from "@/schemas"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useCartStore, useDeliveryStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
 import OrderSummary from "./OrderSummary"
 import { useRouter } from "next/navigation"
 import { DeliveryMethod } from "./DeliveryMethod"
+import { useSession } from "next-auth/react"
+
+interface ExtendedUser {
+  email: string
+  name: string
+  role: string
+}
 
 export function CheckoutForm() {
   const [error, setError] = useState(null)
@@ -29,18 +34,21 @@ export function CheckoutForm() {
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
   const [selectedPickupOption, setSelectedPickupOption] = useState("")
 
+  const session = useSession()
   const router = useRouter()
 
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
-
   const cart = useCartStore((state) => state.cart)
   const basketTotal = getCartTotal(cart)
 
+  const user = session?.data?.user as ExtendedUser
+
+  // Initialize form with empty email, and later update email using useEffect
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
     defaultValues: {
       name: "",
-      email: "",
+      email: "", // Initially empty, updated once session is available
       address: "",
       city: "",
       country: "",
@@ -48,6 +56,13 @@ export function CheckoutForm() {
       region: "",
     },
   })
+
+  // Update form email when session is available
+  useEffect(() => {
+    if (user?.email) {
+      form.setValue("email", user?.email) // Set the session email
+    }
+  }, [session, form])
 
   const selectedDelivery =
     selectedDeliveryMethod === "schedule-pickup"
@@ -76,7 +91,7 @@ export function CheckoutForm() {
         className="space-y-4 p-4 w-full  min-h-fit"
       >
         <div className="flex flex-col md:flex-row gap-6 justify-between">
-          <div className="w-full ">
+          <div className="w-full">
             <h2 className="font-bold text-lg mb-4">Delivery Information</h2>
             <div className="rounded-lg border p-4 border-neutral-400/35">
               <div className="flex flex-col space-y-4">
@@ -201,7 +216,7 @@ export function CheckoutForm() {
             </div>
           </div>
 
-          <div className="w-full lg:max-w-sm md:max-w-xs mt-4 md:mt-0 ">
+          <div className="w-full lg:max-w-sm md:max-w-xs mt-4 md:mt-0">
             <h2 className="font-bold text-lg mb-4">Order Summary</h2>
 
             <div className="rounded-lg border p-4 border-neutral-400/35">

@@ -1,7 +1,7 @@
 import React from "react"
 
 const OrdersPage = () => {
-  return <div className="h-screen">OrdersPage</div>
+  return <div>OrdersPage</div>
 }
 
 export default OrdersPage

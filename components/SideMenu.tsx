@@ -1,98 +1,63 @@
+"use client"
+import { adminSideMenuLinks, sideMenuLinks } from "@/constants"
+import { CircleHelp, Heart, Settings } from "lucide-react"
+import { useSession } from "next-auth/react"
+import Link from "next/link"
 import React from "react"
 
 const SideMenu = () => {
+  const session = useSession()
+  const user = session?.data?.user
   return (
     <div className="flow-root">
       <ul className="-my-2 divide-y divide-gray-100">
         <li className="py-2">
-          <ul className="space-y-1">
-            <li>
-              <a
-                href="#"
-                className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
-              >
-                Profile
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="#"
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Team
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="#"
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Projects
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="#"
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Meetings
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="#"
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Calendar
-              </a>
-            </li>
-          </ul>
+          {user.role === "admin" ? (
+            <ul className="space-y-1 mt-4">
+              {adminSideMenuLinks.map(({ label, href, icon: Icon }, index) => (
+                <Link
+                  key={index}
+                  href={href}
+                  className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </Link>
+              ))}
+            </ul>
+          ) : (
+            <ul className="space-y-1 mt-4">
+              {sideMenuLinks.map(({ label, href, icon: Icon }, index) => (
+                <Link
+                  key={index}
+                  href={href}
+                  className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                >
+                  <Icon className="h-4 w-4" />
+                  {label}
+                </Link>
+              ))}
+            </ul>
+          )}
         </li>
 
         <li className="py-2">
           <ul className="space-y-1">
-            <li>
-              <a
-                href="#"
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Update
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="#"
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Help
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="#"
-                className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-              >
-                Settings
-              </a>
-            </li>
-          </ul>
-        </li>
-
-        <li className="py-2">
-          <form action="#">
-            <button
-              type="submit"
-              className="block w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 [text-align:_inherit] hover:bg-gray-100 hover:text-gray-700"
+            <Link
+              href="/help"
+              className="flex items-center gap-x-2  rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
             >
-              Logout
-            </button>
-          </form>
+              <CircleHelp className="h-4 w-4" />
+              Help
+            </Link>
+            <Link
+              href="/settings"
+              className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            >
+              <Settings className="h-4 w-4" />
+              Settings
+            </Link>
+          </ul>
         </li>
       </ul>
     </div>

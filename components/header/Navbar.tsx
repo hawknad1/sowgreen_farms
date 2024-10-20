@@ -18,25 +18,25 @@ const Navbar = () => {
   const session = useSession()
   const user = session.data?.user
 
-  useEffect(() => {
-    async function getCategories() {
-      try {
-        const res = await fetch("/api/categories", {
-          method: "GET",
-          cache: "no-store",
-        })
+  // useEffect(() => {
+  //   async function getCategories() {
+  //     try {
+  //       const res = await fetch("/api/categories", {
+  //         method: "GET",
+  //         cache: "no-store",
+  //       })
 
-        if (res.ok) {
-          const categories = await res.json()
-          setCategoryList(categories)
-          setIsLoading(false)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getCategories()
-  }, [])
+  //       if (res.ok) {
+  //         const categories = await res.json()
+  //         setCategoryList(categories)
+  //         setIsLoading(false)
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   getCategories()
+  // }, [])
 
   return (
     <header className="bg-white border shadow-sm py-2 w-full">

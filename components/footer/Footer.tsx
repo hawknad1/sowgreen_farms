@@ -13,10 +13,10 @@ import Socials from "./Socials"
 
 const Footer = () => {
   return (
-    <footer className="bg-green-50">
-      <div className="mx-auto max-w-screen-xl px-4 py-4 sm:px-6 lg:px-8">
+    <footer className="bg-green-50 py-8">
+      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
         <div className="lg:flex lg:items-start lg:gap-8">
-          <div className="">
+          <div>
             <Image
               src="/images/sowgreen.png"
               height={100}
@@ -28,11 +28,9 @@ const Footer = () => {
 
           <div className="mt-8 grid grid-cols-2 gap-8 lg:mt-0 lg:grid-cols-4 lg:gap-y-8 lg:w-full">
             <div className="col-span-2">
-              <div>
-                <p className="mt-4 text-gray-500 max-w-36">
-                  Sowgreen Farms - East Legon - Accra.
-                </p>
-              </div>
+              <p className="mt-4 text-gray-500 max-w-36">
+                Sowgreen Farms - East Legon - Accra.
+              </p>
             </div>
 
             <Subscribe />
@@ -54,7 +52,6 @@ const Footer = () => {
 
             <div className="col-span-2 sm:col-span-1">
               <p className="font-medium text-gray-900">Company</p>
-
               <div className="gap-3 mt-4 flex flex-col">
                 {companyLinks.map((com) => (
                   <Link
@@ -89,7 +86,7 @@ const Footer = () => {
                 {paymentLinks.map((pay) => (
                   <div
                     key={pay.id}
-                    className="border-slate-300 border rounded-md w-20 "
+                    className="border-slate-300 border rounded-md w-20"
                   >
                     <Image
                       src={pay.image}

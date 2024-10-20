@@ -63,7 +63,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                       }`}
                     >
                       <FormControl>
-                        <RadioGroupItem value={option.label} />
+                        <RadioGroupItem value={option.value} />
                       </FormControl>
                       <FormLabel className="font-semibold flex items-center gap-x-2">
                         {option.label}

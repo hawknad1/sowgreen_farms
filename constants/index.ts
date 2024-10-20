@@ -7,7 +7,9 @@ import {
 import {
   BadgeInfo,
   Bell,
+  Carrot,
   CircleUser,
+  Heart,
   Home,
   LineChart,
   Menu,
@@ -15,7 +17,9 @@ import {
   Package2,
   Search,
   Settings,
+  Settings2,
   ShoppingCart,
+  UserRound,
   Users,
 } from "lucide-react"
 
@@ -283,5 +287,41 @@ export const units = [
   {
     unitTitle: "Litre",
     unitSign: "ltr",
+  },
+]
+
+export const sideMenuLinks = [
+  {
+    label: "Account",
+    href: "/account",
+    icon: UserRound,
+  },
+  {
+    label: "Orders",
+    href: "/orders",
+    icon: Carrot,
+  },
+  {
+    label: "Wishlists",
+    href: "/wishlists",
+    icon: Heart,
+  },
+]
+
+export const adminSideMenuLinks = [
+  {
+    label: "Admin Dashboard",
+    href: "/admin/dashboard",
+    icon: UserRound,
+  },
+  {
+    label: "Orders",
+    href: "/orders",
+    icon: Carrot,
+  },
+  {
+    label: "Wishlists",
+    href: "/wishlists",
+    icon: Heart,
   },
 ]

@@ -20,12 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   // Memoized values to avoid recalculating on each render
   const discount = data.isInStock === "out-of-stock" ? null : data.discount
 
-  // const price = data?.weightsAndPrices.map((p) => p.price)
-  // const weight = data?.weightsAndPrices.map((w) => w.weight)
-
   const taxedPrice = formatCurrency(addTax(data.price), "GHS")
-
-  // const taxedPrice = useMemo(() => addTax(price).toFixed(2), [price])
 
   // Helper function to render stars based on rating
   const renderStars = (rating: number) => {
