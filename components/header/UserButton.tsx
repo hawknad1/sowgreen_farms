@@ -58,18 +58,27 @@ const UserButton = ({ user }: { user: UserProps }) => {
           <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0 w-44">
             <DropdownMenuLabel>Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="text-base focus:bg-accent focus:text-accent-foreground">
-              Account
+            <DropdownMenuItem
+              onClick={() => router.push("/account/order-history")}
+              className="text-sm focus:bg-accent focus:text-accent-foreground"
+            >
+              Order History
             </DropdownMenuItem>
             <DropdownMenuItem
-              onClick={() => router.push("/orders")}
-              className="text-base focus:bg-accent focus:text-accent-foreground"
+              onClick={() => router.push("/account/my-profile")}
+              className="text-sm focus:bg-accent focus:text-accent-foreground"
             >
-              Orders
+              My Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => router.push("/account/wish-list")}
+              className="text-sm focus:bg-accent focus:text-accent-foreground"
+            >
+              My Wish List
             </DropdownMenuItem>
             <DropdownMenuItem
               onClick={() => logout()}
-              className="text-red-500 flex gap-2.5 text-base hover:bg-red-500/10"
+              className="text-red-500 flex gap-2.5 text-sm hover:bg-red-500/10"
             >
               <LogOut size={16} />
               Logout

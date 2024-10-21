@@ -36,7 +36,7 @@ const ProductDetailCard = ({ product }: Props) => {
     setSelectedWeight(weight)
   }
 
-  const taxedPrice = formatCurrency(addTax(product.price), "GHS")
+  const taxedPrice = formatCurrency(addTax(product?.price), "GHS")
 
   return (
     <div className="container mx-auto py-8">
@@ -54,7 +54,7 @@ const ProductDetailCard = ({ product }: Props) => {
                 className="bg-gray-100 object-contain w-[400px] h-[400px] p-2 rounded-2xl"
               />
               <div className="absolute right-5 top-3">
-                {product.isInStock === "out-of-stock" ? (
+                {product?.isInStock === "out-of-stock" ? (
                   <Badge className="bg-gray-500/25 text-gray-500 hover:disabled:pointer-events-none">
                     Out of stock
                   </Badge>

@@ -23,7 +23,7 @@ const AddToCart = ({
 
   // Find how many items of the same product and weight are in the cart
   const howManyInCart = cart.filter(
-    (item: Product) => item.id === product.id
+    (item: Product) => item?.id === product?.id
   ).length
 
   const handleAdd = () => {
