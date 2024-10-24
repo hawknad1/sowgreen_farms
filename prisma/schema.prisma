@@ -95,7 +95,7 @@ model ShippingAddress {
   address String
   phone   String
   country String?
-  email   String  @unique
+  email   String?
   orders  Order[] // Indicates a one-to-many relationship; can be empty
 }
 

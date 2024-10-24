@@ -67,27 +67,27 @@ export async function POST(req: Request) {
     }
 
     // Check if the shipping address already exists by email
-    let shippingAddressRecord = await prisma.shippingAddress.findUnique({
-      where: { email: shippingAddress.email },
-    })
+    // let shippingAddressRecord = await prisma.shippingAddress.findUnique({
+    //   where: { email: shippingAddress.email },
+    // })
 
-    if (!shippingAddressRecord) {
-      // Create a new shipping address if it doesn't exist
-      shippingAddressRecord = await prisma.shippingAddress.create({
-        data: {
-          name: shippingAddress.name,
-          email: shippingAddress.email,
-          address: shippingAddress.address,
-          city: shippingAddress.city,
-          region: shippingAddress.region,
-          country: shippingAddress.country,
-          phone: shippingAddress.phone,
-        },
-      })
-    }
+    // if (!shippingAddressRecord) {
+    // Create a new shipping address if it doesn't exist
+    const shippingAddressRecord = await prisma.shippingAddress.create({
+      data: {
+        name: shippingAddress.name,
+        email: shippingAddress.email,
+        address: shippingAddress.address,
+        city: shippingAddress.city,
+        region: shippingAddress.region,
+        country: shippingAddress.country,
+        phone: shippingAddress.phone,
+      },
+    })
+    // }
 
     // Log the products array to debug any undefined entries
-    console.log("Products array received:", products)
+    // console.log("Products array received:", products)
 
     // Validate each product in the products array
     const validProducts = products.filter((productOrder: any) => {

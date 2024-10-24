@@ -50,6 +50,7 @@ export type ShippingAddress = {
   region: string
   country: string
   phone: string
+  orders?: Order[]
 }
 
 // export type Order = {

@@ -4,7 +4,11 @@ import { NextResponse } from "next/server"
 
 export async function GET(req: Request) {
   try {
-    const address = await prisma.shippingAddress.findMany()
+    const address = await prisma.shippingAddress.findMany({
+      include: {
+        orders: true,
+      },
+    })
     return NextResponse.json(address, { status: 200 })
   } catch (error) {
     return NextResponse.json(
