@@ -19,7 +19,28 @@ import { useRouter } from "next/navigation"
 function TheMenu() {
   const [categoryList, setCategoryList] = React.useState<Category[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
+  const [productList, setProductList] = React.useState([])
   const router = useRouter()
+
+  React.useEffect(() => {
+    async function getProductList() {
+      try {
+        const res = await fetch("/api/products", {
+          method: "GET",
+          cache: "no-store",
+        })
+
+        if (res.ok) {
+          const products = await res.json()
+          setProductList(products)
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getProductList()
+  }, [])
 
   React.useEffect(() => {
     async function getCategories() {
@@ -51,13 +72,16 @@ function TheMenu() {
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
-
         <NavigationMenuItem>
           <NavigationMenuTrigger className="p-4">Shop</NavigationMenuTrigger>
           <NavigationMenuContent className="absolute left-0 z-50 w-[400px] transform translate-x-0 md:w-[500px] lg:w-[600px] p-4 border border-gray-200 shadow-lg bg-white rounded-md">
             <ul className="grid gap-3 md:grid-cols-2">
-              {categoryList.map((category) => (
-                <li
+              {productList.slice(0, 6).map((category) => (
+                <Link
+                  href={{
+                    pathname: "/category",
+                    query: { q: category?.categoryName },
+                  }}
                   key={category.id}
                   className="flex items-center cursor-pointer space-x-2 p-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
                 >
@@ -71,7 +95,44 @@ function TheMenu() {
                   <ListItem title={category.categoryName} href={category.href}>
                     {category.categoryName} description or details.
                   </ListItem>
-                </li>
+                </Link>
+              ))}
+              <div
+                onClick={() => router.push(`/products`)}
+                className="cursor-pointer self-center font-medium text-sm flex justify-center text-neutral-600 w-full space-x-2 p-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
+              >
+                Shop All Products
+              </div>
+            </ul>
+          </NavigationMenuContent>
+        </NavigationMenuItem>
+
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className="p-4">
+            Category
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="absolute left-0 z-50 w-[400px] transform translate-x-0 md:w-[500px] lg:w-[600px] p-4 border border-gray-200 shadow-lg bg-white rounded-md">
+            <ul className="grid gap-3 md:grid-cols-2">
+              {categoryList.map((category) => (
+                <Link
+                  href={{
+                    pathname: "/category",
+                    query: { q: category?.categoryName },
+                  }}
+                  key={category.id}
+                  className="flex items-center cursor-pointer space-x-2 p-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
+                >
+                  <Image
+                    src={category.imageUrl}
+                    alt={category.categoryName}
+                    width={50}
+                    height={50}
+                    className="h-12 w-14 object-contain"
+                  />
+                  <ListItem title={category.categoryName} href={category.href}>
+                    {category.categoryName} description or details.
+                  </ListItem>
+                </Link>
               ))}
             </ul>
           </NavigationMenuContent>
