@@ -10,7 +10,7 @@ interface UserProps {
 const MyProfilePage = () => {
   const session = useSession()
   const user = session?.data?.user as UserProps
-  const name = user.name
+  const name = user?.name
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
     .join(" ")

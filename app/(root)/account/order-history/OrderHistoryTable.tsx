@@ -1,3 +1,4 @@
+"use client"
 import {
   Table,
   TableBody,
@@ -9,6 +10,7 @@ import {
 } from "@/components/ui/table"
 import { ShippingAddress } from "@/types"
 import { useSession } from "next-auth/react"
+import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -23,14 +25,17 @@ const OrderHistoryTable = () => {
     ShippingAddress[] | null
   >(null)
   const router = useRouter()
-  const session = useSession()
-  const user = session?.data?.user as UserProps
+  const { data: session, status } = useSession()
+  const user = session?.user as UserProps
 
   useEffect(() => {
+    if (status === "loading") return
+    if (status === "unauthenticated") router.push("/login")
+
     async function getOrderList() {
       if (!user?.email) return
       try {
-        const res = await fetch(`/api/address/${user?.email}`, {
+        const res = await fetch(`/api/address/${user.email}`, {
           method: "GET",
           cache: "no-store",
         })
@@ -38,13 +43,16 @@ const OrderHistoryTable = () => {
         if (res.ok) {
           const data = await res.json()
           setShippingAddresses(data)
+        } else {
+          console.error("Failed to fetch orders: ", res.statusText)
         }
       } catch (error) {
-        console.log(error)
+        console.error("Error fetching orders:", error)
       }
     }
+
     getOrderList()
-  }, [user])
+  }, [user, status, router])
 
   return (
     <Table>
@@ -54,39 +62,46 @@ const OrderHistoryTable = () => {
           <TableHead className="w-[100px]">Order #</TableHead>
           <TableHead>Date Placed</TableHead>
           <TableHead>Shipping Method</TableHead>
-          <TableHead className="text-right">Status</TableHead>
+          <TableHead className="text-center">Status</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {shippingAddresses?.map((address) =>
-          address.orders.map((order, index) => (
-            <TableRow key={order.id || index}>
-              <TableCell
-                onClick={() =>
-                  router.push(`/account/order-history/${order?.orderNumber}`)
-                }
-                className="font-medium cursor-pointer"
-              >
-                {order.orderNumber}
-              </TableCell>
-              <TableCell>
-                {new Date(order.createdAt).toLocaleDateString()}
-              </TableCell>
-              <TableCell>{order.deliveryMethod || "N/A"}</TableCell>
-              <TableCell className="text-center ">
-                <p className="text-emerald-500 bg-emerald-500/25 rounded-full font-semibold p-0.5">
-                  {order.status
-                    .split(" ")
-                    .map(
-                      (stat) =>
-                        stat.charAt(0).toUpperCase() +
-                        stat.slice(1).toLowerCase()
-                    )
-                    .join(" ")}
-                </p>
-              </TableCell>
-            </TableRow>
-          ))
+        {shippingAddresses && shippingAddresses.length > 0 ? (
+          shippingAddresses.map((address) =>
+            address.orders.map((order, index) => (
+              <TableRow key={order.id || index}>
+                <Link
+                  href={{ pathname: `order-history/${order?.orderNumber}` }}
+                >
+                  <TableCell className="cursor-pointer">
+                    {order?.orderNumber}
+                  </TableCell>
+                </Link>
+                <TableCell>
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell>{order.deliveryMethod || "N/A"}</TableCell>
+                <TableCell className="text-center">
+                  <p className="text-emerald-500 bg-emerald-500/15 rounded-full p-0.5">
+                    {order.status
+                      .split(" ")
+                      .map(
+                        (stat) =>
+                          stat.charAt(0).toUpperCase() +
+                          stat.slice(1).toLowerCase()
+                      )
+                      .join(" ")}
+                  </p>
+                </TableCell>
+              </TableRow>
+            ))
+          )
+        ) : (
+          <TableRow>
+            <TableCell colSpan={4} className="text-center">
+              No orders found.
+            </TableCell>
+          </TableRow>
         )}
       </TableBody>
     </Table>
