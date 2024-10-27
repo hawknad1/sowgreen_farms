@@ -24,6 +24,7 @@ export type Category = {
   categoryName: string
   imageUrl: string
   description: string
+  href: string
   price: number
   discount: number
   isInStock: boolean

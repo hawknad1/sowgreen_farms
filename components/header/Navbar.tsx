@@ -11,6 +11,7 @@ import { auth } from "@/auth"
 import UserButton from "./UserButton"
 import getSession from "@/lib/getSession"
 import { useSession } from "next-auth/react"
+import TheMenu from "../TheMenu"
 
 const Navbar = () => {
   const [categoryList, setCategoryList] = useState([])
@@ -57,7 +58,8 @@ const Navbar = () => {
 
           <Searchbar />
           <div className="hidden lg:inline-flex">
-            <MenuBar />
+            {/* <MenuBar /> */}
+            <TheMenu />
           </div>
 
           <div className="flex items-center gap-2 space-x-2 lg:gap-4">

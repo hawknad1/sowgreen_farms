@@ -84,6 +84,7 @@ model Category {
   categoryName String    @unique
   imageUrl     String
   link         String
+  href         String?
   products     Product[]
 }
 
