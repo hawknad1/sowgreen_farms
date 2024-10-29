@@ -17,13 +17,16 @@ import { EditProductSchema } from "@/schemas"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 import { Product } from "@/types"
 import { useRouter } from "next/navigation"
+import { units } from "@/constants"
 
 interface ProductProps {
   product: Product
@@ -60,6 +63,19 @@ const EditProductForm = ({ product }: ProductProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <div className="flex items-center justify-between gap-x-3">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Product Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="Product name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="isInStock"
@@ -99,6 +115,44 @@ const EditProductForm = ({ product }: ProductProps) => {
         </div>
 
         <div className="flex items-center justify-between gap-x-3">
+          <FormField
+            control={form.control}
+            name="weight"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Weight</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="Enter weight" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="unit"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Unit</FormLabel>
+                <Select onValueChange={(value) => field.onChange(value)}>
+                  <SelectTrigger className="mt-2 mb-3">
+                    <SelectValue placeholder="Select Unit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Unit</SelectLabel>
+                      {units.map((u, index) => (
+                        <SelectItem key={index} value={u.unitSign}>
+                          {u.unitTitle}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="quantity"

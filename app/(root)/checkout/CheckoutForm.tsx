@@ -31,7 +31,8 @@ interface ExtendedUser {
 export function CheckoutForm() {
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState("")
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] =
+    useState("next-day-delivery")
   const [selectedPickupOption, setSelectedPickupOption] = useState("")
 
   const session = useSession()

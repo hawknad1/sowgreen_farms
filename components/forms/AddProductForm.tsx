@@ -93,6 +93,7 @@ export function AddProductForm() {
   })
 
   async function onSubmit(values: z.infer<typeof AddProductSchema>) {
+    console.log(values, "values")
     try {
       const res = await fetch("/api/products", {
         method: "POST",

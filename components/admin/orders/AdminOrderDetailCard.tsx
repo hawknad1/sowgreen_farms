@@ -16,7 +16,12 @@ import { formatCurrency } from "@/lib/utils"
 import StatusPopup from "./StatusPopup"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
-  if (!orders) return <p>Loading...</p>
+  if (!orders)
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    )
 
   return (
     <div className="">

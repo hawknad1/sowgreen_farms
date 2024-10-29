@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator"
-import React from "react"
+import React, { useMemo } from "react"
 import Card from "./Card"
 import { date } from "@/lib/utils"
 
@@ -29,14 +29,27 @@ const InfoCard = ({ data }: InfoCardProps) => {
   const shipMethod = () => {
     const deliveryMethod = data?.formData?.deliveryMethod?.toLowerCase() || ""
 
-    if (
-      deliveryMethod.includes("saturday") ||
-      deliveryMethod.includes("wednesday")
-    ) {
-      return "Pick up"
+    switch (deliveryMethod) {
+      case "Wednesday - DZORWULU - 11AM-5PM":
+        return "Pick up - Dzorwolu"
+      case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
+        return "Pick up - Dubois Center"
+      case "same-day-delivery":
+        return "Same Day Delivery"
+      case "next-day-delivery":
+        return "Next Day Delivery"
+      default:
+        return deliveryMethod || "Not specified"
     }
 
-    return data?.formData.deliveryMethod || "Not specified"
+    // switch (true) {
+    //   case deliveryMethod.includes("wednesday"):
+    //     return "Pick up - Dzorwolu"
+    //   case deliveryMethod.includes("saturday"):
+    //     return "Pick up - Dubois Center"
+    //   default:
+    //     return data?.formData?.deliveryMethod || "Not specified"
+    // }
   }
 
   return (
@@ -71,49 +84,52 @@ const InfoCard = ({ data }: InfoCardProps) => {
           <Separator className="my-2" />
           <div className="w-full">
             <h3 className="text-lg font-semibold text-gray-700">
-              Billing Address
+              Delivery Method
             </h3>
             <p className="text-gray-600 flex justify-end md:justify-start">
-              Same as Delivery Address
+              {shipMethod()}
             </p>
           </div>
         </div>
       </Card>
-
       <Card>
         <div className="flex flex-col gap-2 lg:gap-4">
-          <h3 className="text-lg font-semibold text-gray-700">Order Summary</h3>
-          <div className="flex justify-between">
-            <p className="text-gray-600 text-sm font-medium">Order Created:</p>
-            <span className="font-medium">{date}</span>
+          <div className="">
+            <h3 className="text-lg font-semibold text-gray-700">
+              Order Summary
+            </h3>
+            <div className="flex flex-col gap-3.5 mt-2 items-start w-full">
+              <div className="flex items-center justify-between w-full">
+                <p className="text-gray-600 font-medium">Order Created:</p>
+                <span className="font-medium">{date}</span>
+              </div>
+
+              <div className="flex items-center justify-between w-full">
+                <p className="text-gray-600 font-medium">Item(s) Ordered:</p>
+                <span className="font-medium">
+                  {data?.cart?.length || 0} Items
+                </span>
+              </div>
+              <div className="flex items-center justify-between w-full">
+                <p className="text-gray-600 font-medium">Delivery Fee:</p>
+                <span className="font-medium">
+                  {data?.formattedDelivery || "No delivery fee"}
+                </span>
+              </div>
+              <div className="flex items-center justify-between w-full">
+                <p className="text-gray-600 font-medium">Subtotal:</p>
+                <span className="font-medium">
+                  {data?.formattedSubtotal || "No subtotal"}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-between">
-            <p className="text-gray-600 text-sm font-medium">
-              Quantity of Items:
+          <Separator className="my-2" />
+          <div className="w-full flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-700">Order Total</h3>
+            <p className="text-gray-600 flex justify-end md:justify-start">
+              {data?.formattedTotal || "No total"}
             </p>
-            <span className="font-medium">{data?.cart?.length || 0} Items</span>
-          </div>
-          <div className="flex justify-between">
-            <p className="text-gray-600 text-sm font-medium">
-              Delivery Method:
-            </p>
-            <span className="font-medium">{shipMethod()}</span>
-          </div>
-          <div className="flex justify-between">
-            <p className="text-gray-600 text-sm font-medium">Subtotal:</p>
-            <span className="font-medium">
-              {data?.formattedSubtotal || "No subtotal"}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <p className="text-gray-600 text-sm font-medium">Delivery Fee:</p>
-            <span className="font-medium">
-              {data?.formattedDelivery || "No delivery fee"}
-            </span>
-          </div>
-          <div className="flex justify-between font-semibold text-lg">
-            <p>Total:</p>
-            <span>{data?.formattedTotal || "No total"}</span>
           </div>
         </div>
       </Card>

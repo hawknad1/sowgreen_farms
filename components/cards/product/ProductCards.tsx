@@ -28,6 +28,8 @@ const ProductCards = () => {
     getProductList()
   }, [])
 
+  console.log(productList, "plist")
+
   return (
     <>
       {isLoading ? (

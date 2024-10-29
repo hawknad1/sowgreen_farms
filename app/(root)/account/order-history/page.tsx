@@ -1,7 +1,5 @@
 "use client"
-import { useSession } from "next-auth/react"
-import React, { useEffect, useState } from "react"
-import { ShippingAddress } from "@/types"
+
 import OrderHistoryTable from "./OrderHistoryTable"
 
 const OrderHistoryPage = () => {

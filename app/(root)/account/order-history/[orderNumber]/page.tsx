@@ -1,6 +1,7 @@
 "use client"
 
 import { Separator } from "@/components/ui/separator"
+import { addTax } from "@/lib/addTax"
 import { Order } from "@/types"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -9,7 +10,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)
 
   const { orderNumber } = params
-
   useEffect(() => {
     if (!orderNumber) return
 
@@ -30,6 +30,13 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
     fetchOrderDetails()
   }, [orderNumber])
 
+  const subtotal = orderDetails?.total - orderDetails?.deliveryFee
+
+  const status = orderDetails?.status
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ")
+
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-50 py-8">
       <div className="w-full max-w-5xl px-4 space-y-6">
@@ -47,7 +54,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
             <p>{new Date(orderDetails.createdAt).toLocaleDateString()}</p>
             <p>{orderDetails.deliveryMethod}</p>
             <p>{`GHS ${orderDetails.total.toFixed(2)}`}</p>
-            <p>{orderDetails.status}</p>
+            <p>{status}</p>
           </div>
         )}
 
@@ -56,31 +63,36 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
             <h2 className="font-bold text-gray-700 mb-3 text-lg">
               Delivery Address
             </h2>
-            <p>{orderDetails?.shippingAddress.name}</p>
-            <p>{`${orderDetails?.shippingAddress.address}, ${orderDetails?.shippingAddress.city}`}</p>
-            <p>{orderDetails?.shippingAddress.phone}</p>
-            <p>{orderDetails?.shippingAddress.email}</p>
+            <div className="flex flex-col gap-1 justify-center">
+              <p>{orderDetails?.shippingAddress.name}</p>
+              <p>{`${orderDetails?.shippingAddress.address}, ${orderDetails?.shippingAddress.city}`}</p>
+              <p>{orderDetails?.shippingAddress.phone}</p>
+              <p>{orderDetails?.shippingAddress.email}</p>
+            </div>
           </div>
 
           <div className="border border-neutral-300 rounded-lg p-6 bg-white h-auto">
             <h2 className="font-bold text-gray-700 mb-3 text-lg">
               Order Details
             </h2>
-            <div className="flex justify-between">
-              <p className="font-medium">Order Number</p>
-              <p>{orderDetails?.orderNumber}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-medium">Delivery Fee</p>
-              <p>{orderDetails?.deliveryFee}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-medium">Products Ordered</p>
-              <p>{`${orderDetails?.products.length} Items`}</p>
-            </div>
-            <div className="flex justify-between">
-              <p className="font-medium">Order Total</p>
-              <p>{orderDetails?.total}</p>
+            <div className="flex flex-col gap-1">
+              <div className="flex justify-between">
+                <p className="font-medium">Item(s) Ordered</p>
+                <p>{`${orderDetails?.products.length} Items`}</p>
+              </div>
+
+              <div className="flex justify-between">
+                <p className="font-medium">Delivery Fee</p>
+                <p className="">{`GHS ${orderDetails?.deliveryFee}`}</p>
+              </div>
+              <div className="flex justify-between">
+                <p className="font-medium">Subtotal</p>
+                <p>{`GHS ${subtotal.toFixed(2)}`}</p>
+              </div>
+              <div className="flex justify-between">
+                <p className="font-medium">Order Total</p>
+                <p>{`GHS ${orderDetails?.total}`}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -116,8 +128,8 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 </div>
 
                 <div className="text-right space-y-1">
-                  <p className="font-medium text-gray-800">{`GHS ${product.product.price.toFixed(
-                    2
+                  <p className="font-medium text-gray-800">{`GHS ${addTax(
+                    product.product.price
                   )}`}</p>
                   <div className="text-sm text-neutral-600 space-x-2">
                     <span className="font-semibold">{`QTY : ${product.quantity}`}</span>
@@ -129,13 +141,14 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
           </div>
           <div>
             <div className="flex justify-between">
-              <p className="text-neutral-600">Subtotal</p>
-              <p>{`GHS ${orderDetails?.total - orderDetails?.deliveryFee}`}</p>
-            </div>
-            <div className="flex justify-between">
               <p className="text-neutral-600">Delivery Fee</p>
               <p>{`GHS ${orderDetails?.deliveryFee}`}</p>
             </div>
+            <div className="flex justify-between">
+              <p className="text-neutral-600">Subtotal</p>
+              <p>{`GHS ${subtotal.toFixed(2)}`}</p>
+            </div>
+
             <div className="flex justify-between">
               <p className="text-neutral-600">Total</p>
               <p>{`GHS ${orderDetails?.total}`}</p>

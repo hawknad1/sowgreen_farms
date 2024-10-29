@@ -37,12 +37,16 @@ const ThankYouPage = () => {
   const deliveryMethod = ordersData?.deliveryMethod || ""
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
+      case "Wednesday - DZORWULU - 11AM-5PM":
+        return "Pick up - Dzorwolu"
+      case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
+        return "Pick up - Dubois Center"
       case "same-day-delivery":
         return "Same Day Delivery"
       case "next-day-delivery":
         return "Next Day Delivery"
       default:
-        return "Pick up"
+        return deliveryMethod || "Not specified"
     }
   }, [deliveryMethod])
 

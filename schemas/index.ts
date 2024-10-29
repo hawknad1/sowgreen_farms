@@ -56,7 +56,7 @@ export const DriverRadioSchema = z.object({
 export const AddProductSchema = z.object({
   title: z.string().min(2, { message: "Title is required!" }),
   description: z.string().min(5, { message: "Description is required!" }),
-  discount: z.coerce.number().positive().optional(),
+  discount: z.coerce.number().optional(),
   imageUrl: z.string(),
   price: z.coerce.number().positive().optional(),
   weight: z.coerce.number().positive().optional(),
@@ -67,12 +67,15 @@ export const AddProductSchema = z.object({
 })
 
 export const EditProductSchema = z.object({
+  title: z.string().optional(),
   description: z
     .string()
     .min(5, { message: "Description is required!" })
     .optional(),
   discount: z.coerce.number().optional(),
   price: z.coerce.number().positive().optional(),
+  weight: z.coerce.number().optional(),
+  unit: z.string(),
   quantity: z.coerce.number().positive().optional(),
   isInStock: z.string().optional(),
 })

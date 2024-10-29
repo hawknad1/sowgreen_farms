@@ -1,6 +1,6 @@
 "use client"
 import { useRouter, useSearchParams } from "next/navigation"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import {
   useCartStore,
   useDeliveryStore,
@@ -31,10 +31,6 @@ const ConfirmOrderPage = () => {
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
-
-  // if (cart.length > 0) {
-  //   setDeliveryFee(30)
-  // }
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -70,6 +66,21 @@ const ConfirmOrderPage = () => {
   }))
 
   const { deliveryMethod, ...newFormData } = formData
+
+  const deliveryMethodLabel = useMemo(() => {
+    switch (deliveryMethod) {
+      case "Wednesday - DZORWULU - 11AM-5PM":
+        return "Pick up - Dzorwolu"
+      case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
+        return "Pick up - Dubois Center"
+      case "same-day-delivery":
+        return "Same Day Delivery"
+      case "next-day-delivery":
+        return "Next Day Delivery"
+      default:
+        return deliveryMethod || "Not specified"
+    }
+  }, [deliveryMethod])
 
   // Order number generator
   const orderNumber = generateOrderNumber()
@@ -109,7 +120,7 @@ const ConfirmOrderPage = () => {
           products: taxedOrders,
           shippingAddress: newFormData,
           orderNumber,
-          deliveryMethod: formData?.deliveryMethod,
+          deliveryMethod: deliveryMethodLabel,
           deliveryFee: deliveryFee,
           referenceNumber: reference.reference,
           total: total,
