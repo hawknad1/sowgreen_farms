@@ -1,5 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { toast } from "react-hot-toast"
 import { Button } from "@/components/ui/button"
@@ -23,12 +21,16 @@ import { Order } from "@/types"
 import { useRouter } from "next/navigation"
 import React from "react"
 import { dispatchRider, orderStatusCard } from "@/constants"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 
 const StatusUpdateForm = ({
   orders,
+  closeModal,
 }: {
   orderStatus?: typeof orderStatusCard
   orders: Order
+  closeModal: () => void
 }) => {
   const router = useRouter()
   const form = useForm<z.infer<typeof UpdateStatusSchema>>({
@@ -47,21 +49,23 @@ const StatusUpdateForm = ({
       if (!res.ok) throw new Error("Failed to update status")
 
       toast.success("Status updated successfully!")
-      router.refresh()
+      closeModal() // Close modal after successful update
+      window.location.reload() // Refresh the page
     } catch (error) {
       toast.error("Error updating orders.")
     }
   }
 
-  const onSubmit = (values: z.infer<typeof UpdateStatusSchema>) =>
-    // console.log(values)
+  const onSubmit = (values: z.infer<typeof UpdateStatusSchema>) => {
     updateOrder(values)
+    router.refresh()
+  }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex w-full">
-          <div>
+        <div className="flex w-full gap-2">
+          <div className="w-full">
             <FormField
               control={form.control}
               name="status"
@@ -86,7 +90,7 @@ const StatusUpdateForm = ({
               )}
             />
           </div>
-          <div>
+          <div className="w-full">
             <FormField
               control={form.control}
               name="dispatchRider"

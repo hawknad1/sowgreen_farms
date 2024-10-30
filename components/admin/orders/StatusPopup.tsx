@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -8,12 +7,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import StatusCards from "./StatusCards"
 import { orderStatusCard } from "@/constants"
 import { Order } from "@/types"
 import StatusUpdateForm from "./StatusUpdateForm"
+import React, { useState } from "react"
 
 const StatusPopup = ({
   orderStatus,
@@ -22,10 +20,14 @@ const StatusPopup = ({
   orderStatus?: typeof orderStatusCard
   orders: Order
 }) => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const closeModal = () => setIsOpen(false)
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <div className="">
+        <div>
           <StatusCards orderStatus={orderStatus} orders={orders} />
         </div>
       </DialogTrigger>
@@ -36,7 +38,11 @@ const StatusPopup = ({
             Modify the order status. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
-        <StatusUpdateForm orderStatus={orderStatus} orders={orders} />
+        <StatusUpdateForm
+          orderStatus={orderStatus}
+          orders={orders}
+          closeModal={closeModal}
+        />
       </DialogContent>
     </Dialog>
   )
