@@ -12,7 +12,6 @@ const Products = () => {
   const [loading, setLoading] = useState(true)
   const { selected } = useCategoryState()
 
-  console.log(selected, "sele")
   useEffect(() => {
     async function getProducts() {
       setLoading(true) // Ensure loading is set before fetching
