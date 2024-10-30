@@ -13,7 +13,13 @@ export async function GET(
         products: true,
       },
     })
-    return NextResponse.json(category)
+    const response = NextResponse.json(category)
+    response.headers.set(
+      "Access-Control-Allow-Origin",
+      "https://sowgreen-farms.vercel.app"
+    )
+    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS")
+    return response
   } catch (error) {
     return NextResponse.json({ message: "couldnt fetch category!" })
   }
