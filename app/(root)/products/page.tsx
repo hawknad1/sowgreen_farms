@@ -12,6 +12,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true)
   const { selected } = useCategoryState()
 
+  console.log(selected, "sele")
   useEffect(() => {
     async function getProducts() {
       setLoading(true) // Ensure loading is set before fetching
@@ -35,10 +36,13 @@ const Products = () => {
         }
       } else if (selected) {
         try {
-          const res = await fetch(`/api/categories/${selected}`, {
-            method: "GET",
-            cache: "no-store",
-          })
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_URL}/api/categories/${selected}`,
+            {
+              method: "GET",
+              cache: "no-store",
+            }
+          )
 
           if (res.ok) {
             const catProducts = await res.json()
