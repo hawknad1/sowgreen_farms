@@ -4,7 +4,14 @@ import { NextRequest, NextResponse } from "next/server"
 export async function GET(req: NextRequest) {
   try {
     const categories = await prisma.category.findMany()
-    return NextResponse.json(categories, { status: 200 })
+    const response = NextResponse.json(categories, { status: 200 })
+    response.headers.set(
+      "Access-Control-Allow-Origin",
+      "https://sowgreen-farms.vercel.app"
+    )
+    response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS")
+
+    return response
   } catch (error) {
     return NextResponse.json(
       { message: "couldnt fetch categories" },
