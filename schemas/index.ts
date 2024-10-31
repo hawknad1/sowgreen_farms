@@ -82,7 +82,7 @@ export const EditProductSchema = z.object({
 
 export const UpdateStatusSchema = z.object({
   status: z.string(),
-  dispatchRider: z.string(),
+  dispatchRider: z.string().optional(),
 })
 
 export const SearchSchema = z.object({

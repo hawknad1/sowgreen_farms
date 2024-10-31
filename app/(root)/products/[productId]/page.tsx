@@ -1,4 +1,5 @@
 "use client"
+import CustomersWants from "@/components/cards/product/CustomersWants"
 import ProductDetailCard from "@/components/cards/product/ProductDetailCard"
 import LoadProductDetail from "@/components/loading/LoadProductDetail"
 import { Product } from "@/types"
@@ -31,8 +32,9 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
   if (loading) return <LoadProductDetail />
 
   return (
-    <div>
+    <div className=" mx-auto max-w-6xl">
       <ProductDetailCard product={product} />
+      <CustomersWants />
     </div>
   )
 }

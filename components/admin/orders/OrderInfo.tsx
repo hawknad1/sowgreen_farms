@@ -1,8 +1,7 @@
 import { Order } from "@/types"
+import { useMemo } from "react"
 
 export const OrderInfo = ({ orders }: { orders: Order }) => {
-  if (!orders) return null
-
   const {
     orderNumber,
     referenceNumber,
@@ -11,6 +10,24 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
     deliveryFee,
     dispatchRider,
   } = orders
+
+  const deliveryMethodLabel = useMemo(() => {
+    switch (deliveryMethod) {
+      case "Wednesday - DZORWULU - 11AM-5PM":
+        return "Pick up - Dzorwolu"
+      case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
+        return "Pick up - Dubois Center"
+      case "same-day-delivery":
+        return "Same Day Delivery"
+      case "next-day-delivery":
+        return "Next Day Delivery"
+      default:
+        return deliveryMethod || "Not specified"
+    }
+  }, [deliveryMethod])
+
+  if (!orders) return null
+
   return (
     <div className="w-full">
       <h3 className="text-lg font-bold mb-2">Order Details</h3>
@@ -32,7 +49,7 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
       </p>
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Delivery Method: </span>{" "}
-        {deliveryMethod}
+        {deliveryMethodLabel}
       </p>
     </div>
   )

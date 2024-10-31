@@ -40,6 +40,12 @@ const UserButton = ({ user }: { user: UserProps }) => {
             <DropdownMenuLabel>Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem
+              onClick={() => router.push("/account/order-history")}
+              className="text-sm focus:bg-accent focus:text-accent-foreground"
+            >
+              Order History
+            </DropdownMenuItem>
+            <DropdownMenuItem
               onClick={() => router.push("/admin/dashboard")}
               className="text-base focus:bg-accent focus:text-accent-foreground"
             >

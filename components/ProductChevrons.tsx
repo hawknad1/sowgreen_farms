@@ -4,9 +4,10 @@ import React, { useRef, useState } from "react"
 
 interface ChevronProps {
   children: React.ReactNode
+  message: string
 }
 
-const ProductChevrons = ({ children }: ChevronProps) => {
+const ProductChevrons = ({ children, message }: ChevronProps) => {
   const containerRef = useRef(null)
 
   const scrollLeft = () => {
@@ -29,8 +30,8 @@ const ProductChevrons = ({ children }: ChevronProps) => {
   return (
     <div className="flex flex-col items-center gap-x-6">
       <div className="flex items-center justify-between w-full">
-        <h2 className="text-xl flex items-center self-center sm:text-2xl md:text-3xl font-bold mb-4">
-          Farm fresh products
+        <h2 className="text-xl flex items-center text-neutral-700 self-center sm:text-2xl md:text-3xl font-bold mb-4">
+          {message}
         </h2>
         <div className="flex items-center gap-x-5">
           <div

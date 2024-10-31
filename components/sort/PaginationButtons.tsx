@@ -27,10 +27,10 @@ const PaginationButtons = () => {
   }, [])
 
   return (
-    <div className="flex items-center justify-between w-full">
-      <div className="space-x-4 hidden md:inline-flex">
+    <div className="flex items-center justify-center lg:justify-between lg:px-10 w-full">
+      <div className="flex items-center gap-x-3">
         <Select onValueChange={(value) => setSelected(value)}>
-          <SelectTrigger className="w-[170px] bg-red-600 rounded-full px-4 font-medium text-white">
+          <SelectTrigger className="lg:w-[170px] w-[145px] bg-red-600 rounded-full lg:px-4 font-medium text-white">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
@@ -46,21 +46,6 @@ const PaginationButtons = () => {
         </Select>
         <Select>
           <SelectTrigger className="w-[120px] font-medium rounded-full px-4">
-            <SelectValue placeholder="Price" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Price</SelectLabel>
-              <SelectItem value="apple">Apple</SelectItem>
-              <SelectItem value="banana">Banana</SelectItem>
-              <SelectItem value="blueberry">Blueberry</SelectItem>
-              <SelectItem value="grapes">Grapes</SelectItem>
-              <SelectItem value="pineapple">Pineapple</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <Select>
-          <SelectTrigger className="w-[140px] font-medium rounded-full px-4">
             <SelectValue placeholder="Discounts" />
           </SelectTrigger>
           <SelectContent>
@@ -76,7 +61,7 @@ const PaginationButtons = () => {
         </Select>
       </div>
       <Select>
-        <SelectTrigger className="w-[120px] font-medium rounded-full">
+        <SelectTrigger className="w-[120px] font-medium rounded-full hidden lg:inline-flex">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
         <SelectContent>

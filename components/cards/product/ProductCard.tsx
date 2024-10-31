@@ -49,14 +49,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           </Badge>
         ) : null}
       </div>
-      <div className="flex flex-col h-[260px] w-56">
-        <div className="bg-gray-50 rounded-t-lg flex justify-center ">
+      <div className="flex flex-col h-[270px] w-64">
+        <div className="bg-gray-50 rounded-t-lg flex justify-center">
           <Image
             src={data.imageUrl}
             alt={data.title}
             width={100}
             height={100}
-            className="h-[170px] w-full object-contain p-2"
+            className="h-[170px] w-full object-contain p-2 hover:scale-110 transition-all ease-in-out"
           />
         </div>
 

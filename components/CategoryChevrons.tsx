@@ -30,7 +30,7 @@ const CategoryChevrons = ({ children }: ChevronProps) => {
     <div className="flex flex-col items-center gap-6">
       <div className="flex items-center justify-between w-full">
         <div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">
+          <h2 className="text-xl sm:text-2xl md:text-3xl text-neutral-700 font-bold">
             Shop By Category
           </h2>
         </div>

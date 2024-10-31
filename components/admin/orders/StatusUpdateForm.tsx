@@ -35,7 +35,10 @@ const StatusUpdateForm = ({
   const router = useRouter()
   const form = useForm<z.infer<typeof UpdateStatusSchema>>({
     resolver: zodResolver(UpdateStatusSchema),
-    defaultValues: orders,
+    defaultValues: {
+      ...orders,
+      dispatchRider: "",
+    },
   })
 
   const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
@@ -57,8 +60,9 @@ const StatusUpdateForm = ({
   }
 
   const onSubmit = (values: z.infer<typeof UpdateStatusSchema>) => {
+    console.log(values, "vvvv")
     updateOrder(values)
-    router.refresh()
+    // router.refresh()
   }
 
   return (
@@ -99,7 +103,7 @@ const StatusUpdateForm = ({
                   <FormLabel>Dispatch Rider</FormLabel>
                   <Select
                     onValueChange={field.onChange}
-                    defaultValue={field.value}
+                    defaultValue={field.value || ""}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Rider" />

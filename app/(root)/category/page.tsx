@@ -56,7 +56,7 @@ const Category = ({ searchParams: { q } }: Props) => {
       {loading ? (
         <ProductsSkeleton />
       ) : catProducts.length ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 gap-y-12 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8 md:gap-x-8">
           {catProducts.map((product: Product) => (
             <ProductCard key={product.id} data={product} />
           ))}

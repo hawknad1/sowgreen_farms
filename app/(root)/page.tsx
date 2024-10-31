@@ -77,7 +77,7 @@ export default function Home() {
         </section>
 
         <section className="my-8">
-          <ProductChevrons>
+          <ProductChevrons message="Farm fresh products">
             <ProductCards />
           </ProductChevrons>
           <ViewAll />
