@@ -21,6 +21,7 @@ import { processCartItems } from "@/lib/processCartItems"
 import { generateOrderNumber } from "@/lib/generateOrderNumber"
 import { addTax } from "@/lib/addTax"
 import InfoCard from "./InfoCard"
+import { updatePurchaseCounts } from "@/lib/actions/updatePurchaseCount"
 
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
@@ -149,6 +150,19 @@ const ConfirmOrderPage = () => {
           body: JSON.stringify(ordersData),
         })
         if (!email.ok) throw new Error("Email API failed")
+
+        // const productIds = taxedOrders?.map((productId) => productId.item?.id)
+        // await updatePurchaseCounts(productIds)
+
+        const productIds = taxedOrders.map((product) => product.item?.id)
+
+        // Call the API route to update purchase counts
+        await fetch("/api/products/updatePurchaseCount", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ productIds }),
+        })
+        console.log(productIds, "---iddd")
 
         clearCart() // Clear cart after successful API calls
 

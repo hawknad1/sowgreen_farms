@@ -26,6 +26,11 @@ const UserButton = ({ user }: { user: UserProps }) => {
   const router = useRouter()
   const initials = getInitials(user?.name)
 
+  // const handleLogout = () => {
+  //   logout()
+  //   router.push("/")
+  // }
+
   return (
     <div className="cursor-pointer">
       <DropdownMenu>

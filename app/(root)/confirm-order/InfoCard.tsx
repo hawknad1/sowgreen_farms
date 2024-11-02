@@ -3,24 +3,6 @@ import React, { useMemo } from "react"
 import Card from "./Card"
 import { date } from "@/lib/utils"
 
-// interface FormData {
-//   name: string
-//   address: string
-//   city: string
-//   region: string
-//   phone: string
-//   email: string
-//   deliveryMethod: string
-// }
-
-// interface Data {
-//   formData: FormData
-//   cart: any[] // You can refine this further based on your cart item structure
-//   formattedSubtotal: string
-//   formattedDelivery: string
-//   formattedTotal: string
-// }
-
 interface InfoCardProps {
   data: any
 }
@@ -41,15 +23,6 @@ const InfoCard = ({ data }: InfoCardProps) => {
       default:
         return deliveryMethod || "Not specified"
     }
-
-    // switch (true) {
-    //   case deliveryMethod.includes("wednesday"):
-    //     return "Pick up - Dzorwolu"
-    //   case deliveryMethod.includes("saturday"):
-    //     return "Pick up - Dubois Center"
-    //   default:
-    //     return data?.formData?.deliveryMethod || "Not specified"
-    // }
   }
 
   return (

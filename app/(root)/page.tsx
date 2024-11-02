@@ -11,12 +11,35 @@ import CategoryChevrons from "@/components/CategoryChevrons"
 import ProductChevrons from "@/components/ProductChevrons"
 import MiddleCardAds from "@/components/cards/middle-cards/MiddleCardAds"
 import { useCustomerStore, useOrdersStore, useProductStore } from "@/store"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 
 export default function Home() {
   const { setProductDetails, products, setLoading } = useProductStore()
   const { setOrderLoading, setOrderDetails } = useOrdersStore()
   const { setCustomerLoading, setCustomerDetails } = useCustomerStore()
+
+  const [productList, setProductList] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    async function getProductList() {
+      try {
+        const res = await fetch("/api/products", {
+          method: "GET",
+          cache: "no-store",
+        })
+
+        if (res.ok) {
+          const products = await res.json()
+          setProductList(products)
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getProductList()
+  }, [])
 
   React.useEffect(() => {
     const OrdersData = async () => {
@@ -78,7 +101,7 @@ export default function Home() {
 
         <section className="my-8">
           <ProductChevrons message="Farm fresh products">
-            <ProductCards />
+            <ProductCards data={productList} isLoading={isLoading} />
           </ProductChevrons>
           <ViewAll />
         </section>

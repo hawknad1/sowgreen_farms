@@ -57,18 +57,17 @@ const Products = () => {
   }, [selected])
 
   return (
-    <main className="container mx-auto py-8 flex-1">
-      <div className="flex items-center flex-col gap-8">
-        <h4 className="lg:text-3xl text-xl font-bold text-center">
+    <main className="container mx-auto py-8 flex-1 min-h-0 px-4 sm:px-6 lg:px-8">
+      <div className="flex flex-col items-center gap-6 sm:gap-8">
+        <h4 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center">
           Organic Fresh Farm Produce
         </h4>
-        <div className="flex flex-col gap-5 w-full">
-          <div className="flex items-center justify-center w-full">
-            <h2 className="lg:text-3xl text-xl font-bold text-neutral-600">
+        <div className="flex flex-col gap-4 w-full">
+          <div className="flex items-center justify-center w-full gap-2">
+            <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-neutral-600">
               Category /
             </h2>
-            <h2 className="lg:text-2xl text-xl mt-1 font-bold text-neutral-600">
-              {" "}
+            <h2 className="text-lg sm:text-xl lg:text-2xl mt-1 font-bold text-neutral-600">
               {selected || "All"}
             </h2>
           </div>
@@ -77,7 +76,7 @@ const Products = () => {
         {loading ? (
           <ProductsSkeleton />
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 sm:gap-x-8 gap-y-12 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8 md:gap-x-8 ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-y-8 gap-x-4 sm:gap-x-6 md:gap-x-8 lg:gap-x-10 ">
             {products.map((product: Product) => (
               <ProductCard data={product} key={product.id} />
             ))}

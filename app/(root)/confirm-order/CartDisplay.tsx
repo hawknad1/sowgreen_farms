@@ -52,7 +52,7 @@ const CartDisplay = () => {
                     <div className="flex flex-col items-end">
                       <p className="text-sm text-gray-500">Subtotal</p>
                       <p className="text-sm font-bold mt-1">
-                        GHC {taxedItem.toFixed(2)}
+                        GHS {taxedItem.toFixed(2)}
                       </p>
                     </div>
                   </div>

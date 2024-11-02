@@ -12,32 +12,13 @@ import UserButton from "./UserButton"
 import getSession from "@/lib/getSession"
 import { useSession } from "next-auth/react"
 import TheMenu from "../TheMenu"
+import { Skeleton } from "../ui/skeleton"
 
 const Navbar = () => {
   const [categoryList, setCategoryList] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const session = useSession()
   const user = session.data?.user
-
-  // useEffect(() => {
-  //   async function getCategories() {
-  //     try {
-  //       const res = await fetch("/api/categories", {
-  //         method: "GET",
-  //         cache: "no-store",
-  //       })
-
-  //       if (res.ok) {
-  //         const categories = await res.json()
-  //         setCategoryList(categories)
-  //         setIsLoading(false)
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  //   getCategories()
-  // }, [])
 
   return (
     <header className="bg-white border shadow-sm py-2 w-full">
@@ -63,8 +44,11 @@ const Navbar = () => {
           </div>
 
           <div className="flex items-center gap-2 space-x-2 lg:gap-4">
-            {user && <UserButton user={user} />}
-            {!user && session.status !== "loading" && (
+            {session?.status === "loading" ? (
+              <Skeleton className="h-8 w-8 rounded-full" />
+            ) : user ? (
+              <UserButton user={user} />
+            ) : (
               <div className="hidden md:flex items-center md:gap-3 lg:gap-4">
                 <SignInButton />
                 <SignUpButton />

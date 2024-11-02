@@ -1,3 +1,4 @@
+"use client"
 import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
 import { Product } from "@/types"
 import React, { useEffect, useState } from "react"
@@ -7,45 +8,33 @@ import ProductCards from "./ProductCards"
 
 const CustomersWants = () => {
   const [productList, setProductList] = useState([])
-
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    async function getProductList() {
+    async function getPopularProductList() {
       try {
-        const res = await fetch("/api/products", {
+        const res = await fetch("/api/products/popular", {
           method: "GET",
           cache: "no-store",
         })
 
         if (res.ok) {
-          const products = await res.json()
-          setProductList(products)
+          const popularProducts = await res.json()
+          setProductList(popularProducts)
           setIsLoading(false)
         }
       } catch (error) {
         console.log(error)
       }
     }
-    getProductList()
+    getPopularProductList()
   }, [])
 
   const message = `Customers also considered`
 
   return (
-    // <div className="overflow-scroll">
-    //   {isLoading ? (
-    //     <ProductsSkeleton />
-    //   ) : (
-    //     <div className="flex space-x-4 px-4 py-8 w-max ">
-    //       {productList.map((product: Product) => (
-    //         <ProductCard data={product} key={product.id} />
-    //       ))}
-    //     </div>
-    //   )}
-    // </div>
     <ProductChevrons message={message}>
-      <ProductCards />
+      <ProductCards data={productList} isLoading={isLoading} />
     </ProductChevrons>
   )
 }
