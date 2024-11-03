@@ -9,19 +9,18 @@ import {
   usePaymentStore,
 } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
-import { Separator } from "@/components/ui/separator"
-import Card from "./Card"
+
 import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
 import { date, formatCurrency, time } from "@/lib/utils"
-import groupById from "@/lib/groupById"
 import { CartItem } from "@/types"
 import { processCartItems } from "@/lib/processCartItems"
 import { generateOrderNumber } from "@/lib/generateOrderNumber"
 import { addTax } from "@/lib/addTax"
 import InfoCard from "./InfoCard"
 import { updatePurchaseCounts } from "@/lib/actions/updatePurchaseCount"
+import { updateProductQuantities } from "@/lib/actions/updateProductQuantity"
 
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
@@ -151,9 +150,6 @@ const ConfirmOrderPage = () => {
         })
         if (!email.ok) throw new Error("Email API failed")
 
-        // const productIds = taxedOrders?.map((productId) => productId.item?.id)
-        // await updatePurchaseCounts(productIds)
-
         const productIds = taxedOrders.map((product) => product.item?.id)
 
         // Call the API route to update purchase counts
@@ -162,11 +158,18 @@ const ConfirmOrderPage = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ productIds }),
         })
-        console.log(productIds, "---iddd")
 
         clearCart() // Clear cart after successful API calls
 
         router.push("/success/thank-you")
+
+        const quantityResponse = await fetch("/api/products/updateQuantity", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ products: ordersData.products }),
+        })
+
+        if (!quantityResponse.ok) throw new Error("Quantity update API failed")
       }
     } catch (error) {
       console.error("Payment processing error:", error)

@@ -25,8 +25,12 @@ const AdminProductDetailCard = ({ product }: Props) => {
   const router = useRouter()
 
   // Ensure product exists before rendering or performing calculations
-  if (!product) return null
-
+  if (!product)
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    )
   const amount = product.price * product.quantity
   const formattedAmount = formatCurrency(amount, "GHS")
   const formattedPrice = formatCurrency(product?.price, "GHS")
