@@ -108,8 +108,9 @@ function TheMenu() {
                       <ListItem
                         title={product.title}
                         href={`/product/${product.id}`}
+                        className=""
                       >
-                        {product.title} description or details.
+                        {`${product.description}`}
                       </ListItem>
                     </Link>
                   ))}

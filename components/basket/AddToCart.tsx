@@ -50,9 +50,10 @@ const AddToCart = ({
         <Button
           disabled={product?.isInStock === "out-of-stock"}
           onClick={handleAdd}
-          className="px-4 py-2 text-sm md:text-base"
+          className="px-4 py-2 text-sm md:text-base border-neutral-200"
+          variant="outline"
         >
-          Add To Cart
+          Add to cart
         </Button>
       )}
     </div>

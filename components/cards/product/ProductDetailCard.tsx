@@ -40,9 +40,9 @@ const ProductDetailCard = ({ product }: Props) => {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="flex items-center justify-between space-x-16">
-        <div className="flex flex-col w-full h-screen">
-          <h3 className="text-2xl flex justify-center font-bold mb-4 w-full">{`${product?.categoryName} / ${product?.title}`}</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2 place-items-center">
+        <div className="flex flex-col ">
+          <h3 className="text-2xl flex justify-start font-bold mb-4 w-full">{`${product?.categoryName} / ${product?.title}`}</h3>
 
           <div className="flex flex-col gap-3">
             <div className="flex justify-end relative">
@@ -51,7 +51,7 @@ const ProductDetailCard = ({ product }: Props) => {
                 alt={product?.title}
                 width={400}
                 height={400}
-                className="bg-gray-100 object-contain w-[400px] h-[400px] p-2 rounded-2xl"
+                className="bg-gray-100 object-contain w-80 h-80 lg:w-[400px] lg:h-[400px] p-2 rounded-2xl"
               />
               <div className="absolute right-5 top-3">
                 {product?.isInStock === "out-of-stock" ? (
@@ -69,7 +69,7 @@ const ProductDetailCard = ({ product }: Props) => {
             </div>
 
             <div className="flex gap-2 justify-end items-center">
-              <div className="bg-slate-100 h-24 w-[95px] flex justify-center rounded-xl p-1.5">
+              <div className="bg-slate-100 h-20 w-20 lg:h-24 lg:w-[95px] flex justify-center rounded-xl p-1.5">
                 <Image
                   src={product?.imageUrl}
                   alt={product?.title}
@@ -82,7 +82,7 @@ const ProductDetailCard = ({ product }: Props) => {
           </div>
         </div>
 
-        <div className="w-full h-screen">
+        <div className="w-full h-screen max-w-sm lg:max-w-3xl">
           <div className="flex flex-col gap-4 mt-11">
             <p className="text-neutral-400 text-sm">
               {`Categories -> ${product?.categoryName}`}
@@ -102,11 +102,13 @@ const ProductDetailCard = ({ product }: Props) => {
               </div>
             </div>
             <div className="flex flex-col max-w-lg">
-              <p className="text-sm font-semibold">Descriptions</p>
-              <p className="text-sm text-neutral-600">{product?.description}</p>
+              <p className="text-sm font-semibold mb-2">Descriptions</p>
+              <p className="text-sm text-neutral-600 tracking-wide">
+                {product?.description}
+              </p>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mt-4">
               <AddToCart
                 product={product}
                 selectedPrice={selectedPrice}

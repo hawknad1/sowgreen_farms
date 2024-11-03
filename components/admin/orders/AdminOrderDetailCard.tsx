@@ -9,7 +9,6 @@ import {
 import React from "react"
 import DisplayOrder from "./DisplayOrder"
 import { Order } from "@/types"
-import StatusCard from "./StatusCards"
 import { ShippingInfo } from "./ShippingInfo"
 import { OrderInfo } from "./OrderInfo"
 import { formatCurrency } from "@/lib/utils"

@@ -32,9 +32,11 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
   if (loading) return <LoadProductDetail />
 
   return (
-    <div className=" mx-auto max-w-6xl">
+    <div className="mx-auto max-w-6xl">
       <ProductDetailCard product={product} />
-      <CustomersWants />
+      <div className="container">
+        <CustomersWants />
+      </div>
     </div>
   )
 }
