@@ -83,6 +83,7 @@ export type Product = {
   id: string
   categoryName: string
   imageUrl: string
+  images: { url: string; publicId: string }[]
   price: number
   title: string
   description: string

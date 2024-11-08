@@ -100,27 +100,11 @@ model ShippingAddress {
   orders  Order[] // Indicates a one-to-many relationship; can be empty
 }
 
-// model Product {
-//   id            String         @id @default(auto()) @map("_id") @db.ObjectId
-//   title         String         @unique
-//   imageUrl      String
-//   description   String
-//   price         Int
-//   discount      Int?
-//   weight        Float?
-//   categoryName  String
-//   category      Category?      @relation(fields: [categoryName], references: [categoryName])
-//   isInStock     String
-//   quantity      Int
-//   createdAt     DateTime       @default(now())
-//   updatedAt     DateTime       @updatedAt
-//   productOrders ProductOrder[]
-// }
-
 model Product {
   id            String         @id @default(auto()) @map("_id") @db.ObjectId
   title         String         @unique
   imageUrl      String
+  images        Json?
   description   String
   discount      Int?
   price         Int?
@@ -134,7 +118,7 @@ model Product {
   updatedAt     DateTime       @updatedAt
   productOrders ProductOrder[]
   purchaseCount Int            @default(0)
-  
+
   // weightsAndPrices WeightPrice[]
 }
 

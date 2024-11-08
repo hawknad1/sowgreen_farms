@@ -26,6 +26,7 @@ export async function PUT(
     price,
     weight,
     imageUrl,
+    images,
     unit,
     categoryName,
     quantity,
@@ -33,6 +34,8 @@ export async function PUT(
     isInStock,
   } = await req.json()
   const id = params.id
+
+  console.log(images, "backend---images")
   try {
     const product = await prisma.product.update({
       where: { id },
@@ -41,6 +44,7 @@ export async function PUT(
         categoryName,
         description,
         imageUrl,
+        images,
         unit,
         price,
         weight,

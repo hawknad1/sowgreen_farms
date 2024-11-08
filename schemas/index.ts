@@ -58,6 +58,12 @@ export const AddProductSchema = z.object({
   description: z.string().min(5, { message: "Description is required!" }),
   discount: z.coerce.number().optional(),
   imageUrl: z.string(),
+  images: z.array(
+    z.object({
+      productImageUrl: z.string(),
+      publicId: z.string(),
+    })
+  ),
   price: z.coerce.number().positive().optional(),
   weight: z.coerce.number().positive().optional(),
   unit: z.string(),
@@ -88,3 +94,26 @@ export const UpdateStatusSchema = z.object({
 export const SearchSchema = z.object({
   search: z.string(),
 })
+
+export const AddImagesSchema = z.object({
+  images: z.array(
+    z.object({
+      url: z.string().url(),
+      publicId: z.string(),
+    })
+  ),
+})
+
+const ProductImageSchema = z.object({
+  productImageUrl: z.string().url(), // URL validation for the image
+  publicId: z.string(), // ID for managing the image
+})
+
+export const ImageSchema = z.object({
+  images: z.string().url(), // URL validation for the image
+})
+
+// // Define the main schema that includes an array of images
+// export const AddImagesSchema = z.object({
+//   images: z.array(ProductImageSchema), // Array of image objects
+// })
