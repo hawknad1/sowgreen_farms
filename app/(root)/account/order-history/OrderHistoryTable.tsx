@@ -13,47 +13,13 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 
-interface UserProps {
-  name: string
-  email: string
-  role: string
+interface Props {
+  shippingAddresses: ShippingAddress[]
 }
 
-const OrderHistoryTable = () => {
-  const [shippingAddresses, setShippingAddresses] = useState<
-    ShippingAddress[] | null
-  >(null)
+const OrderHistoryTable = ({ shippingAddresses }: Props) => {
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
-  const router = useRouter()
-  const { data: session, status } = useSession()
-  const user = session?.user as UserProps
-
-  useEffect(() => {
-    if (status === "loading") return
-    // if (status === "unauthenticated") router.push("/login")
-
-    async function getOrderList() {
-      if (!user?.email) return
-      try {
-        const res = await fetch(`/api/address/${user.email}`, {
-          method: "GET",
-          cache: "no-store",
-        })
-
-        if (res.ok) {
-          const data = await res.json()
-          setShippingAddresses(data)
-        } else {
-          console.error("Failed to fetch orders: ", res.statusText)
-        }
-      } catch (error) {
-        console.error("Error fetching orders:", error)
-      }
-    }
-
-    getOrderList()
-  }, [user, status, router])
+  const [rowsPerPage, setRowsPerPage] = useState(5)
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
@@ -69,7 +35,7 @@ const OrderHistoryTable = () => {
   return (
     <Paper
       sx={{ width: "100%", overflow: "hidden" }}
-      className="shadow-none border border-neutral-200 rounded-md"
+      className="shadow-none lg:w-[900px]"
     >
       <TableContainer sx={{ maxHeight: 440 }}>
         <Table stickyHeader aria-label="order history table">
@@ -137,7 +103,7 @@ const OrderHistoryTable = () => {
         </Table>
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[5, 10, 25, 100]}
         component="div"
         count={
           shippingAddresses

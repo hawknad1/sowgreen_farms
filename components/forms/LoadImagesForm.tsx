@@ -106,65 +106,64 @@ export function LoadImagesForm({ productId }: ProductProps) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 max-w-2xl"
-      >
-        <div>
-          <FormLabel>Product Images</FormLabel>
-          <FormControl>
-            <CldUploadButton
-              uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
-              className="h-44 w-full border-dotted border-2 mt-4 grid place-items-center bg-slate-100 rounded-md relative"
-              onSuccess={(result: any) => {
-                const newImage = {
-                  url: result?.info?.url,
-                  publicId: result?.info?.public_id,
-                }
+      <div className="flex justify-center my-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+          <div className="w-[700px]">
+            <FormLabel>Product Images</FormLabel>
+            <FormControl>
+              <CldUploadButton
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                className="h-44 w-full border-dotted border-2 mt-4 grid place-items-center bg-slate-100 rounded-md relative"
+                onSuccess={(result: any) => {
+                  const newImage = {
+                    url: result?.info?.url,
+                    publicId: result?.info?.public_id,
+                  }
 
-                // Safely update the imageList by ensuring prev is always an array
-                setImageList((prev) => {
-                  // Fallback to an empty array if prev is undefined or not iterable
-                  const updatedList = Array.isArray(prev) ? prev : []
-                  return [...updatedList, newImage]
-                })
+                  // Safely update the imageList by ensuring prev is always an array
+                  setImageList((prev) => {
+                    // Fallback to an empty array if prev is undefined or not iterable
+                    const updatedList = Array.isArray(prev) ? prev : []
+                    return [...updatedList, newImage]
+                  })
 
-                toast.success("Image uploaded successfully!")
-              }}
-              onError={() => toast.error("Image upload failed.")}
-            >
-              <PhotoIcon className="h-6 w-6" />
-              {isLoading && <p>Uploading...</p>}
-            </CldUploadButton>
-          </FormControl>
+                  toast.success("Image uploaded successfully!")
+                }}
+                onError={() => toast.error("Image upload failed.")}
+              >
+                <PhotoIcon className="h-6 w-6" />
+                {isLoading && <p>Uploading...</p>}
+              </CldUploadButton>
+            </FormControl>
 
-          <div className="grid grid-cols-3 gap-4 mt-4">
-            {Array.isArray(imageList) &&
-              imageList.map((image) => (
-                <div key={image.publicId} className="relative">
-                  <Image
-                    src={image.url}
-                    alt="Uploaded Image"
-                    width={100}
-                    height={100}
-                    className="object-cover rounded-md"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => removeImage(image.publicId)}
-                    className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
+            <div className="grid grid-cols-3 gap-4 mt-4">
+              {Array.isArray(imageList) &&
+                imageList.map((image) => (
+                  <div key={image.publicId} className="relative">
+                    <Image
+                      src={image.url}
+                      alt="Uploaded Image"
+                      width={100}
+                      height={100}
+                      className="object-cover rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(image.publicId)}
+                      className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-full"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+            </div>
           </div>
-        </div>
 
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Adding..." : "Add Images"}
-        </Button>
-      </form>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? "Adding..." : "Add Images"}
+          </Button>
+        </form>
+      </div>
     </Form>
   )
 }

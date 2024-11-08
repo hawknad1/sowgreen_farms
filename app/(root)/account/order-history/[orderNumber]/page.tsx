@@ -8,27 +8,32 @@ import { useEffect, useState } from "react"
 
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   const { orderNumber } = params
-  useEffect(() => {
-    if (!orderNumber) return
 
+  useEffect(() => {
     async function fetchOrderDetails() {
       try {
         const res = await fetch(`/api/order-history/${orderNumber}`)
-        if (res.ok) {
-          const data = await res.json()
-          setOrderDetails(data)
-        } else {
-          console.error("Failed to fetch order details:", res.statusText)
-        }
+        if (!res.ok) throw new Error(res.statusText)
+        const data = await res.json()
+        setOrderDetails(data)
       } catch (error) {
         console.error("Error fetching order details:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
-
     fetchOrderDetails()
   }, [orderNumber])
+
+  if (isLoading)
+    return (
+      <div className="w-full h-screen flex justify-center items-center">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    )
 
   const subtotal = orderDetails?.total - orderDetails?.deliveryFee
 
@@ -130,7 +135,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 <div className="text-right space-y-1">
                   <p className="font-medium text-gray-800">{`GHS ${addTax(
                     product.product.price
-                  )}`}</p>
+                  ).toFixed(2)}`}</p>
                   <div className="text-sm text-neutral-600 space-x-2">
                     <span className="font-semibold">{`QTY : ${product.quantity}`}</span>
                     <span>{`Subtotal: GHS ${product?.quantityTotal}`}</span>
