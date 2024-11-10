@@ -85,10 +85,10 @@ export const columns: ColumnDef<Product>[] = [
       const isInStock = row.original.isInStock === "in-stock" // Compare string to string
       return (
         <div
-          className={`capitalize w-fit  rounded-full ${
+          className={`capitalize  text-center rounded-full ${
             isInStock
-              ? "bg-emerald-500/15 text-emerald-500 px-3 py-0.5 font-medium"
-              : "bg-gray-500/15 text-gray-500 text-sm px-1.5 py-0.5 font-medium"
+              ? "bg-emerald-500/15 w-[95px] text-emerald-500 px-3 py-0.5 font-medium"
+              : "bg-gray-500/15 text-gray-500 w-[100px] text-sm px-1.5 py-0.5 font-medium"
           }`}
         >
           {isInStock ? "In Stock" : "Out of Stock"}

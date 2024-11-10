@@ -1,4 +1,5 @@
 "use client"
+
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -12,8 +13,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { useState } from "react"
-import { nextDay } from "@/lib/utils"
+import { useEffect, useState } from "react"
 import { deliveryMethods } from "@/constants"
 import { DeliveryRadioSchema } from "@/schemas"
 
@@ -30,12 +30,32 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
   selectedPickupOption,
   setSelectedPickupOption,
 }) => {
+  const [pickupOptions, setPickupOptions] = useState<string[]>([])
   const form = useForm<z.infer<typeof DeliveryRadioSchema>>({
     resolver: zodResolver(DeliveryRadioSchema),
     defaultValues: {
       deliveryMethod: "next-day-delivery",
     },
   })
+
+  useEffect(() => {
+    async function getPickupOptions() {
+      try {
+        const res = await fetch("/api/pickup-options", {
+          method: "GET",
+          cache: "no-store",
+        })
+
+        if (res.ok) {
+          const pickupOption = await res.json()
+          setPickupOptions(pickupOption)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getPickupOptions()
+  }, [])
 
   return (
     <div className="border border-neutral-300 w-full h-fit p-4 rounded-lg">
@@ -49,6 +69,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                 onValueChange={(value) => {
                   field.onChange(value)
                   setSelectedDeliveryMethod(value) // Update the parent component's state
+                  console.log("Selected Delivery Method:", value)
                 }}
                 defaultValue={field.value}
                 className="flex flex-col"
@@ -84,28 +105,32 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                     {option.value === "schedule-pickup" &&
                       selectedDeliveryMethod === "schedule-pickup" && (
                         <div className="ml-8 mt-3 space-y-3">
-                          {/* Render additional radio group for pickup options */}
+                          <p className="font-semibold">Pickup Options:</p>
                           <RadioGroup
                             onValueChange={(pickupValue) => {
                               setSelectedPickupOption(pickupValue)
+                              console.log(
+                                "Selected Pickup Option:",
+                                pickupValue
+                              )
                             }}
                             value={selectedPickupOption}
                             className="flex flex-col space-y-2"
                           >
-                            {option.pickupOptions.map((pickupOption, index) => (
+                            {pickupOptions.map((pickupOption, index) => (
                               <FormItem
-                                key={`${pickupOption.label}-${index}`}
+                                key={`${pickupOption}-${index}`}
                                 className={`flex items-center space-x-3 p-2 rounded-lg ${
-                                  selectedPickupOption === pickupOption.label
+                                  selectedPickupOption === pickupOption
                                     ? "border border-neutral-400"
                                     : "border border-transparent"
                                 }`}
                               >
                                 <FormControl>
-                                  <RadioGroupItem value={pickupOption.label} />
+                                  <RadioGroupItem value={pickupOption} />
                                 </FormControl>
                                 <FormLabel className="font-semibold">
-                                  {pickupOption.label}
+                                  {pickupOption}
                                 </FormLabel>
                               </FormItem>
                             ))}

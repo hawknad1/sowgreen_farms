@@ -122,6 +122,38 @@ model Product {
   // weightsAndPrices WeightPrice[]
 }
 
+// model DeliveryMethod {
+//   id              String         @id @default(auto()) @map("_id") @db.ObjectId
+//   label           String
+//   tag             String?
+//   price           String?
+//   value           String
+//   pickupOptions   PickupOption[] @relation("DeliveryMethodPickupOptions") // Establishing relation with PickupOption
+// }
+
+
+// model PickupOption {
+//   id               String         @id @default(auto()) @map("_id") @db.ObjectId
+//   label            String
+//   deliveryMethodId String         @db.ObjectId
+//   deliveryMethod   DeliveryMethod @relation("DeliveryMethodPickupOptions", fields: [deliveryMethodId], references: [id]) // Linking back to DeliveryMethod
+// }
+
+
+
+model PickupOptions {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  location String
+}
+
+// model DeliveryMethod {
+//   id                String           @id @default(auto()) @map("_id") @db.ObjectId
+//   label String
+//   tag String
+//   value String
+
+// }
+
 // model WeightPrice {
 //   id        String  @id @default(auto()) @map("_id") @db.ObjectId // MongoDB requires an @id field
 //   weight    Float?

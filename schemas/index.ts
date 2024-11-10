@@ -113,6 +113,14 @@ export const ImageSchema = z.object({
   images: z.string().url(), // URL validation for the image
 })
 
+export const PickupOptionSchema = z.object({
+  pickupOptions: z.array(
+    z.object({
+      location: z.string(),
+    })
+  ),
+})
+
 // // Define the main schema that includes an array of images
 // export const AddImagesSchema = z.object({
 //   images: z.array(ProductImageSchema), // Array of image objects
