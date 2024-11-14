@@ -59,6 +59,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: existingUser.id,
           name: existingUser.name,
           email: existingUser.email,
+          balance: existingUser.balance,
           role: existingUser.role, // Include role here
         }
       },
@@ -73,12 +74,16 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // When user logs in, add the role to the token
       if (user) {
         token.role = user.role as string // Explicitly cast the role to string
+        token.balance = user.balance
       }
       return token
     },
     async session({ session, token }) {
       // Add role from the token to the session
+
       session.user.role = token.role as string // Explicitly cast the role to string
+      session.user.balance = token.balance as number // Explicitly cast the role to string
+
       return session
     },
   },

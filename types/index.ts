@@ -114,6 +114,12 @@ export type Item = {
   price: number
 }
 
+export type CreditRequestBody = {
+  email?: string
+  phone?: string
+  amount: number
+}
+
 // export type CartItem = {
 //   id: string
 //   item: Product // The Product type definition
@@ -144,4 +150,12 @@ export type ProductOrder = {
   product: Product
   weight?: number
   order: Order
+}
+
+export type User = {
+  id: string
+  name: string
+  role: string
+  balance: number
+  email: string
 }

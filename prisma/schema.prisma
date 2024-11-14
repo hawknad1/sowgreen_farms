@@ -15,6 +15,8 @@ model User {
   emailVerified  DateTime?
   image          String?
   role           String?         @default("user")
+  balance        Float?          @default(0.0)
+  phone          String?         
   accounts       Account[]
   sessions       Session[]
   authenticators Authenticator[] // Renamed for consistency
@@ -131,7 +133,6 @@ model Product {
 //   pickupOptions   PickupOption[] @relation("DeliveryMethodPickupOptions") // Establishing relation with PickupOption
 // }
 
-
 // model PickupOption {
 //   id               String         @id @default(auto()) @map("_id") @db.ObjectId
 //   label            String
@@ -139,10 +140,8 @@ model Product {
 //   deliveryMethod   DeliveryMethod @relation("DeliveryMethodPickupOptions", fields: [deliveryMethodId], references: [id]) // Linking back to DeliveryMethod
 // }
 
-
-
 model PickupOptions {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
   location String
 }
 

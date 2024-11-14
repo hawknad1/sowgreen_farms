@@ -113,13 +113,25 @@ export const ImageSchema = z.object({
   images: z.string().url(), // URL validation for the image
 })
 
-export const PickupOptionSchema = z.object({
-  pickupOptions: z.array(
-    z.object({
-      location: z.string(),
-    })
-  ),
-})
+export const CreditSchema = z
+  .object({
+    email: z.string().email("Invalid email address").nullable().optional(), // Allow null or undefined
+    phone: z
+      .string()
+      .regex(/^[0-9]{10,15}$/, "Invalid phone number")
+      .nullable()
+      .optional(), // Allow null or undefined
+    amount: z
+      .string()
+      .transform((val) => parseFloat(val)) // Transform string to a number
+      .refine((val) => !isNaN(val) && val > 0, {
+        message: "Amount must be a valid number greater than 0",
+      }),
+  })
+  .refine((data) => data.email || data.phone, {
+    message: "Either email or phone number must be provided",
+    path: ["email"], // Show the error on the email field
+  })
 
 // // Define the main schema that includes an array of images
 // export const AddImagesSchema = z.object({

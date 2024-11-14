@@ -1,4 +1,4 @@
-"use client"
+import React, { useEffect } from "react"
 import AddToCart from "@/components/basket/AddToCart"
 import { addTax } from "@/lib/addTax"
 import { getCartTotal } from "@/lib/getCartTotal"
@@ -6,8 +6,6 @@ import groupById from "@/lib/groupById"
 import { formatCurrency } from "@/lib/utils"
 import { useCartStore, useDeliveryStore } from "@/store"
 import Image from "next/image"
-import { redirect } from "next/navigation"
-import React from "react"
 
 const OrderSummary = ({
   selectedPickupOption,
@@ -27,15 +25,24 @@ const OrderSummary = ({
   }))
 
   const basketTotal = getCartTotal(cartWithTax)
-  if (
-    cart.length > 0 &&
-    selectedDeliveryMethod === "schedule-pickup" &&
-    selectedPickupOption
-  ) {
-    setDeliveryFee(0) // No delivery fee for pickup
-  } else if (cart.length > 0) {
-    setDeliveryFee(30) // Delivery fee for other methods
-  }
+
+  // Move the delivery fee update logic to useEffect
+  useEffect(() => {
+    if (
+      cart.length > 0 &&
+      selectedDeliveryMethod === "schedule-pickup" &&
+      selectedPickupOption
+    ) {
+      setDeliveryFee(0) // No delivery fee for pickup
+    } else if (cart.length > 0) {
+      setDeliveryFee(30) // Delivery fee for other methods
+    }
+  }, [
+    cart.length,
+    selectedDeliveryMethod,
+    selectedPickupOption,
+    setDeliveryFee,
+  ])
 
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
   const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")
@@ -43,8 +50,8 @@ const OrderSummary = ({
   const formattedTotal = formatCurrency(total, "GHS")
 
   return (
-    <div className="flex flex-col justify-between h-fit rounded-md  ">
-      <div className="overflow-y-auto overflow-scroll max-h-[400px] scrollbar-hide">
+    <div className="flex flex-col justify-between h-fit rounded-md">
+      <div className="overflow-y-auto max-h-[400px] scrollbar-hide">
         <ul className="divide-y divide-neutral-200">
           {Object.keys(grouped).map((id) => {
             const item = grouped[id][0]
@@ -68,7 +75,6 @@ const OrderSummary = ({
                       />
                     )}
                   </div>
-
                   <div className="flex flex-col flex-grow">
                     <p className="text-sm lg:text-base font-semibold line-clamp-2">
                       {item.title}
@@ -87,7 +93,7 @@ const OrderSummary = ({
         </ul>
       </div>
       <div className="bg-white flex flex-col py-4 border-t border-neutral-200">
-        <div className="flex flex-col space-y-4 ">
+        <div className="flex flex-col space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-neutral-500">Subtotal</p>
             <p className="font-semibold text-sm">{formattedSubtotal}</p>

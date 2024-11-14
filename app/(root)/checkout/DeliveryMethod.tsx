@@ -17,6 +17,7 @@ import { useEffect, useState } from "react"
 import { deliveryMethods } from "@/constants"
 import { DeliveryRadioSchema } from "@/schemas"
 
+// Define types for props
 interface DeliveryMethodProps {
   setSelectedDeliveryMethod: (method: string) => void
   selectedDeliveryMethod: string
@@ -31,6 +32,8 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
   setSelectedPickupOption,
 }) => {
   const [pickupOptions, setPickupOptions] = useState<string[]>([])
+
+  // React Hook Form setup
   const form = useForm<z.infer<typeof DeliveryRadioSchema>>({
     resolver: zodResolver(DeliveryRadioSchema),
     defaultValues: {
@@ -38,6 +41,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
     },
   })
 
+  // Fetch available pickup options
   useEffect(() => {
     async function getPickupOptions() {
       try {
@@ -45,13 +49,16 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
           method: "GET",
           cache: "no-store",
         })
-
         if (res.ok) {
-          const pickupOption = await res.json()
-          setPickupOptions(pickupOption)
+          const data = await res.json()
+          setPickupOptions(
+            data.map(
+              (option: { id: string; location: string }) => option.location
+            )
+          )
         }
       } catch (error) {
-        console.log(error)
+        console.log("Error fetching pickup options:", error)
       }
     }
     getPickupOptions()
@@ -68,8 +75,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
               <RadioGroup
                 onValueChange={(value) => {
                   field.onChange(value)
-                  setSelectedDeliveryMethod(value) // Update the parent component's state
-                  console.log("Selected Delivery Method:", value)
+                  setSelectedDeliveryMethod(value)
                 }}
                 defaultValue={field.value}
                 className="flex flex-col"
@@ -89,19 +95,19 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                       <FormLabel className="font-semibold flex items-center gap-x-2">
                         {option.label}
                         {option.tag && (
-                          <p className="font-medium text-green-600">
+                          <span className="font-medium text-green-600">
                             {option.tag}
-                          </p>
+                          </span>
                         )}
                         {option.date && (
-                          <p className="font-medium text-green-600">
+                          <span className="font-medium text-green-600">
                             {option.date}
-                          </p>
+                          </span>
                         )}
                       </FormLabel>
                     </FormItem>
 
-                    {/* Conditionally render the pickup options below "Schedule a pickup" */}
+                    {/* Conditionally render the pickup options if 'Schedule Pickup' is selected */}
                     {option.value === "schedule-pickup" &&
                       selectedDeliveryMethod === "schedule-pickup" && (
                         <div className="ml-8 mt-3 space-y-3">
@@ -109,10 +115,6 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                           <RadioGroup
                             onValueChange={(pickupValue) => {
                               setSelectedPickupOption(pickupValue)
-                              console.log(
-                                "Selected Pickup Option:",
-                                pickupValue
-                              )
                             }}
                             value={selectedPickupOption}
                             className="flex flex-col space-y-2"
@@ -129,9 +131,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                                 <FormControl>
                                   <RadioGroupItem value={pickupOption} />
                                 </FormControl>
-                                <FormLabel className="font-semibold">
-                                  {pickupOption}
-                                </FormLabel>
+                                <FormLabel>{pickupOption}</FormLabel>
                               </FormItem>
                             ))}
                           </RadioGroup>

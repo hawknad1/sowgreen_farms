@@ -20,11 +20,13 @@ interface UserProps {
   role?: string
   emailVerified?: string
   image?: string
+  balance?: number
 }
 
 const UserButton = ({ user }: { user: UserProps }) => {
   const router = useRouter()
   const initials = getInitials(user?.name)
+  console.log(user, "ballaannnce")
 
   // const handleLogout = () => {
   //   logout()
@@ -56,7 +58,12 @@ const UserButton = ({ user }: { user: UserProps }) => {
             >
               Admin Dashboard
             </DropdownMenuItem>
-
+            {user?.balance > 0 && (
+              <DropdownMenuItem className="font-bold flex justify-between text-center bg-emerald-500/15 text-emerald-500 ">
+                Balance
+                <span>{`GHS ${user?.balance}`}</span>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => logout()}
               className="text-red-500 flex gap-2.5 text-base hover:bg-red-500/10"
@@ -87,6 +94,12 @@ const UserButton = ({ user }: { user: UserProps }) => {
             >
               My Wish List
             </DropdownMenuItem>
+            {user?.balance > 0 && (
+              <DropdownMenuItem className="font-bold flex justify-between text-center bg-emerald-500/15 text-emerald-500 ">
+                Balance
+                <span>{`GHS ${user?.balance}`}</span>
+              </DropdownMenuItem>
+            )}
             <DropdownMenuItem
               onClick={() => logout()}
               className="text-red-500 flex gap-2.5 text-sm hover:bg-red-500/10"

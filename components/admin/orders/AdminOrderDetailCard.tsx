@@ -13,6 +13,8 @@ import { ShippingInfo } from "./ShippingInfo"
 import { OrderInfo } from "./OrderInfo"
 import { formatCurrency } from "@/lib/utils"
 import StatusPopup from "./StatusPopup"
+import { DollarSign } from "lucide-react"
+import AddCredit from "./AddCredit"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   if (!orders)
@@ -40,10 +42,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               <DocumentArrowDownIcon className="w-4 h-4" />
               Send Invoice
             </Button>
-            <Button className="bg-lime-600 hover:bg-lime-700 flex gap-x-1">
-              <EnvelopeIcon className="w-4 h-4" />
-              Contact Buyer
-            </Button>
+            <AddCredit />
           </div>
         </div>
 

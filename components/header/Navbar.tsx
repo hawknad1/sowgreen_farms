@@ -13,12 +13,15 @@ import getSession from "@/lib/getSession"
 import { useSession } from "next-auth/react"
 import TheMenu from "../TheMenu"
 import { Skeleton } from "../ui/skeleton"
+import { User } from "@/types"
 
 const Navbar = () => {
   const [categoryList, setCategoryList] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const session = useSession()
   const user = session.data?.user
+
+  console.log(session, "userr")
 
   return (
     <header className="bg-white border shadow-sm py-2 w-full">

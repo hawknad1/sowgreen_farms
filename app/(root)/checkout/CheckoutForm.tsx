@@ -59,20 +59,33 @@ export function CheckoutForm() {
   })
 
   // Update form email when session is available
+
   useEffect(() => {
     if (user?.email) {
-      form.setValue("email", user?.email) // Set the session email
+      form.setValue("email", user.email)
     }
-  }, [session, form])
+  }, [user?.email, form])
+
+  // useEffect(() => {
+  //   if (user?.email) {
+  //     form.setValue("email", user?.email) // Set the session email
+  //   }
+  // }, [session, form])
 
   const selectedDelivery =
     selectedDeliveryMethod === "schedule-pickup"
       ? selectedPickupOption
       : selectedDeliveryMethod
 
-  if (selectedPickupOption) {
-    setDeliveryFee(0)
-  }
+  // if (selectedPickupOption) {
+  //   setDeliveryFee(0)
+  // }
+
+  useEffect(() => {
+    if (selectedPickupOption) {
+      setDeliveryFee(0)
+    }
+  }, [selectedPickupOption, setDeliveryFee])
 
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
     // Add delivery method to the form data

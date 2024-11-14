@@ -14,13 +14,15 @@ import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
 import { date, formatCurrency, time } from "@/lib/utils"
-import { CartItem } from "@/types"
+import { CartItem, User } from "@/types"
 import { processCartItems } from "@/lib/processCartItems"
 import { generateOrderNumber } from "@/lib/generateOrderNumber"
 import { addTax } from "@/lib/addTax"
 import InfoCard from "./InfoCard"
 import { updatePurchaseCounts } from "@/lib/actions/updatePurchaseCount"
 import { updateProductQuantities } from "@/lib/actions/updateProductQuantity"
+import { useSession } from "next-auth/react"
+import { deductBalance } from "@/lib/actions/deductBalance"
 
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
@@ -31,6 +33,12 @@ const ConfirmOrderPage = () => {
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
+
+  const session = useSession()
+  const user = session?.data?.user as User
+
+  const balance = user?.balance
+  console.log(balance)
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -44,9 +52,15 @@ const ConfirmOrderPage = () => {
   const basketTotal = getCartTotal(cartWithTax)
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
 
+  const { updatedBalance, updatedOrderTotal } = deductBalance(balance, total)
+
+  console.log(updatedOrderTotal, "----total")
+
   const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
+
+  console.log(total, "checking")
 
   const dataProps = {
     formData,
@@ -142,11 +156,19 @@ const ConfirmOrderPage = () => {
 
         // Store ordersData in Zustand and navigate to ThankYouPage
         setOrdersData(ordersData)
+        console.log(ordersData, "eee---checkkkiinn")
 
-        const email = await fetch("/api/send", {
+        // const email = await fetch("/api/send", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify(ordersData),
+        // })
+        // if (!email.ok) throw new Error("Email API failed")
+
+        const email = await fetch("/api/send-order-email", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(ordersData),
+          body: JSON.stringify({ order: ordersData }),
         })
         if (!email.ok) throw new Error("Email API failed")
 

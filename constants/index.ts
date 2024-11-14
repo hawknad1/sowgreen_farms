@@ -1,4 +1,5 @@
-import { Payment, Product } from "@/types"
+// import { Order, Payment, Product, ShippingAddress } from "@/types"
+import { ShippingAddress } from "@/types"
 import {
   BookmarkIcon,
   CreditCardIcon,
@@ -325,3 +326,114 @@ export const adminSideMenuLinks = [
     icon: Heart,
   },
 ]
+
+// export type ShippingAddress = {
+//   name: string
+//   address: string
+//   city: string
+//   region: string
+//   country: string
+//   phone: string
+//   email: string
+// }
+
+// export type ProductOrder = {
+//   item: {
+//     id: string
+//     title: string
+//     categoryName: string
+//     description: string
+//     imageUrl: string
+//     price: number
+//     weight: number
+//     unit: string
+//     isInStock: string
+//     discount: number
+//     quantity: number
+//     purchaseCount: number
+//     createdAt: string
+//     updatedAt: string
+//   }
+//   total: number
+//   quantity: number
+// }
+
+export type Order = {
+  id: string
+  orderNumber: string
+  referenceNumber: string
+  total: number
+  status: "processing" | "shipped" | "delivered"
+  dispatchRider?: string
+  deliveryMethod: string
+  deliveryFee: number
+  shippingAddress: ShippingAddress
+  products: ProductOrder[]
+  createdAt: string
+}
+
+export type ProductOrder = {
+  item: {
+    id: string
+    title: string
+    categoryName: string
+    description: string
+    imageUrl: string
+    price: number
+    weight: number
+    unit: string
+    isInStock: string
+    discount: number
+    quantity: number
+    purchaseCount: number
+    createdAt: string
+    updatedAt: string
+  }
+  total: number
+  quantity: number
+}
+// Dummy data response
+export const dummyOrder: Order = {
+  id: "12345",
+  orderNumber: "SG-001234",
+  referenceNumber: "REF-123456",
+  total: 150.5,
+  status: "processing",
+  dispatchRider: "John Doe",
+  deliveryMethod: "Standard Delivery",
+  deliveryFee: 10,
+  shippingAddress: {
+    id: "383837373833",
+    name: "Jane Doe",
+    address: "123 Green St",
+    email: "hdj@yahoo.com",
+    city: "Accra",
+    region: "Greater Accra",
+    phone: "0541234567",
+    country: "Ghana",
+  },
+  products: [
+    {
+      item: {
+        id: "prod-1",
+        title: "Organic Tomato",
+        categoryName: "Vegetables",
+        description: "Fresh organic tomatoes",
+        imageUrl:
+          "http://res.cloudinary.com/dus8qbaae/image/upload/v1730066505/ro8dlaj9tmh49fnnmxaw.png",
+        price: 30,
+        weight: 1,
+        unit: "kg",
+        isInStock: "yes",
+        discount: 0,
+        quantity: 10,
+        purchaseCount: 5,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      total: 30,
+      quantity: 2,
+    },
+  ],
+  createdAt: new Date().toISOString(),
+}
