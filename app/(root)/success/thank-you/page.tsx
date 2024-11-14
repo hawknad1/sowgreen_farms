@@ -55,12 +55,12 @@ const ThankYouPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center w-full p-12 bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center  w-full p-12 bg-gray-100 min-h-screen">
       <div className="flex flex-col items-center gap-y-2 mb-3">
         <p className="font-semibold text-sm text-neutral-500/95">THANK YOU</p>
         <h3 className="text-2xl font-bold">Your order is confirmed</h3>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl w-full">
         <div className="w-full bg-white rounded-l-lg p-4">
           <OrderInfo orderNumber={orderNumber} />
           <Separator className="mt-6 mb-4" />

@@ -66,20 +66,10 @@ export function CheckoutForm() {
     }
   }, [user?.email, form])
 
-  // useEffect(() => {
-  //   if (user?.email) {
-  //     form.setValue("email", user?.email) // Set the session email
-  //   }
-  // }, [session, form])
-
   const selectedDelivery =
     selectedDeliveryMethod === "schedule-pickup"
       ? selectedPickupOption
       : selectedDeliveryMethod
-
-  // if (selectedPickupOption) {
-  //   setDeliveryFee(0)
-  // }
 
   useEffect(() => {
     if (selectedPickupOption) {

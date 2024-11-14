@@ -12,6 +12,7 @@ import {
   Hr,
 } from "@react-email/components"
 import { ShippingAddress } from "@/types"
+import { date } from "@/lib/utils"
 
 interface OrderConfirmationEmailProps {
   order: Order
@@ -28,7 +29,7 @@ export type Order = {
   deliveryFee: number
   shippingAddress: ShippingAddress
   products: ProductOrder[]
-  createdAt: string
+  createdAt: string | Date
 }
 
 export type ProductOrder = {
@@ -55,6 +56,7 @@ export type ProductOrder = {
 const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
   order,
 }) => {
+  console.log(order?.createdAt, "date")
   return (
     <Html>
       <Head />
@@ -84,7 +86,7 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
           <Text style={{ color: "#4b5563", marginBottom: "24px" }}>
             Thank you for your purchase! Your order{" "}
             <strong>#{order?.orderNumber}</strong> has been successfully placed
-            on {new Date(order?.createdAt).toLocaleDateString()}.
+            on {date}.
           </Text>
 
           {/* Order Summary */}
@@ -97,7 +99,10 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
             <Text>
               <strong>Shipping Address:</strong>{" "}
               {order?.shippingAddress.address}, {order?.shippingAddress.city},{" "}
-              {order?.shippingAddress.region}, {order?.shippingAddress.phone}
+              {order?.shippingAddress.region}.
+            </Text>
+            <Text>
+              <strong>Delivery Method:</strong> {order?.deliveryMethod}
             </Text>
           </Section>
 
@@ -130,7 +135,12 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
                             alt={product.item.title || "Product Image"}
                             width="60"
                             height="60"
-                            style={{ display: "block", borderRadius: "8px" }}
+                            style={{
+                              display: "block",
+                              backgroundColor: "#ffffff",
+                              borderRadius: "8px",
+                              objectFit: "contain",
+                            }}
                           />
                         )}
                       </td>

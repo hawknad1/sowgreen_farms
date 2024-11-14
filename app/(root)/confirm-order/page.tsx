@@ -38,7 +38,6 @@ const ConfirmOrderPage = () => {
   const user = session?.data?.user as User
 
   const balance = user?.balance
-  console.log(balance)
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -54,13 +53,9 @@ const ConfirmOrderPage = () => {
 
   const { updatedBalance, updatedOrderTotal } = deductBalance(balance, total)
 
-  console.log(updatedOrderTotal, "----total")
-
   const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
-
-  console.log(total, "checking")
 
   const dataProps = {
     formData,
@@ -80,6 +75,8 @@ const ConfirmOrderPage = () => {
   }))
 
   const { deliveryMethod, ...newFormData } = formData
+
+  console.log(updatedBalance, updatedOrderTotal, "weee deyyy!!1")
 
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
@@ -106,7 +103,7 @@ const ConfirmOrderPage = () => {
   const config = {
     reference: new Date().getTime().toString(),
     email: formData.email,
-    amount: total * 100,
+    amount: Math.round(total * 100), // Ensure amount is an integer
     currency: "GHS",
     metadata: {
       custom_fields: [
@@ -156,14 +153,6 @@ const ConfirmOrderPage = () => {
 
         // Store ordersData in Zustand and navigate to ThankYouPage
         setOrdersData(ordersData)
-        console.log(ordersData, "eee---checkkkiinn")
-
-        // const email = await fetch("/api/send", {
-        //   method: "POST",
-        //   headers: { "Content-Type": "application/json" },
-        //   body: JSON.stringify(ordersData),
-        // })
-        // if (!email.ok) throw new Error("Email API failed")
 
         const email = await fetch("/api/send-order-email", {
           method: "POST",

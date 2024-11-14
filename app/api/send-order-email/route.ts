@@ -13,7 +13,7 @@ export async function POST(request: Request) {
     }
 
     const { data, error } = await resend.emails.send({
-      from: "Acme <onboarding@resend.dev>",
+      from: "Sowgreen Organic <onboarding@resend.dev>",
       to: ["tech@zoroastique.com"],
       subject: "Order Confirmation",
       react: OrderConfirmationEmail({ order }),
