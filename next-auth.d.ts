@@ -21,6 +21,7 @@ declare module "next-auth" {
   }
 
   interface JWT {
+    id: string
     role: string // Add role field to the JWT type
     balance: number // Add balance field to the JWT type
   }

@@ -83,6 +83,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
       session.user.role = token.role as string // Explicitly cast the role to string
       session.user.balance = token.balance as number // Explicitly cast the role to string
+      session.user.id = token.id as string
 
       return session
     },

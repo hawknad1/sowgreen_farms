@@ -44,3 +44,43 @@ export async function POST(req: Request) {
     )
   }
 }
+
+export async function PUT(req: Request) {
+  try {
+    const { updatedBalance, email, phone } = await req.json()
+
+    if ((!email && !phone) || typeof updatedBalance !== "number") {
+      return NextResponse.json({ message: "Invalid input" }, { status: 400 })
+    }
+
+    // Find the user by email or phone
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [{ email: email ?? undefined }, { phone: phone ?? undefined }],
+      },
+    })
+
+    if (!user) {
+      return NextResponse.json({ message: "User not found" }, { status: 404 })
+    }
+
+    // Update the user's balance
+    const updatedUser = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        balance: parseFloat(updatedBalance.toFixed(2)),
+      },
+    })
+
+    return NextResponse.json(
+      { message: "Balance updated successfully", user: updatedUser },
+      { status: 200 }
+    )
+  } catch (error) {
+    console.error("Error updating balance:", error)
+    return NextResponse.json(
+      { message: "Internal server error" },
+      { status: 500 }
+    )
+  }
+}

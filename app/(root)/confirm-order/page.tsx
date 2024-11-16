@@ -14,7 +14,7 @@ import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
 import { date, formatCurrency, time } from "@/lib/utils"
-import { CartItem, User } from "@/types"
+import { CartItem } from "@/types"
 import { processCartItems } from "@/lib/processCartItems"
 import { generateOrderNumber } from "@/lib/generateOrderNumber"
 import { addTax } from "@/lib/addTax"
@@ -24,24 +24,56 @@ import { updateProductQuantities } from "@/lib/actions/updateProductQuantity"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
 
+export type User = {
+  user: {
+    id: string
+    name: string
+    role: string
+    balance: number
+    email: string
+  }
+}
+
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
-
+  const [activeUser, setActiveUser] = useState<User | null>(null)
   const setOrdersData = useOrderDataStore((state) => state.setOrdersData)
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
 
   const session = useSession()
-  const user = session?.data?.user as User
-
-  const balance = user?.balance
+  const user = session?.data?.user
+  const balance = activeUser?.user?.balance
 
   const router = useRouter()
   const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
+
+  useEffect(() => {
+    if (!user?.email) return
+
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`/api/user/${user.email}`, {
+          method: "GET",
+          cache: "no-store",
+        })
+        if (!res.ok) {
+          console.error("Failed to fetch user:", res.statusText)
+          return
+        }
+        const userData = await res.json()
+        setActiveUser(userData)
+      } catch (error) {
+        console.error("Error fetching user:", error)
+      }
+    }
+
+    fetchUser()
+  }, [user?.email])
 
   const cartWithTax = cart.map((product) => ({
     ...product,
@@ -51,7 +83,12 @@ const ConfirmOrderPage = () => {
   const basketTotal = getCartTotal(cartWithTax)
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
 
-  const { updatedBalance, updatedOrderTotal } = deductBalance(balance, total)
+  const {
+    updatedBalance,
+    updatedOrderTotal,
+    remainingAmount,
+    proceedToPaystack,
+  } = deductBalance(balance, total)
 
   const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
@@ -75,8 +112,6 @@ const ConfirmOrderPage = () => {
   }))
 
   const { deliveryMethod, ...newFormData } = formData
-
-  console.log(updatedBalance, updatedOrderTotal, "weee deyyy!!1")
 
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
@@ -103,7 +138,7 @@ const ConfirmOrderPage = () => {
   const config = {
     reference: new Date().getTime().toString(),
     email: formData.email,
-    amount: Math.round(total * 100), // Ensure amount is an integer
+    amount: Math.round(remainingAmount * 100), // Ensure amount is an integer
     currency: "GHS",
     metadata: {
       custom_fields: [
@@ -174,6 +209,16 @@ const ConfirmOrderPage = () => {
 
         router.push("/success/thank-you")
 
+        await fetch("/api/balance", {
+          method: "PUT",
+          headers: { "Content-type": "application/json" },
+          body: JSON.stringify({
+            email: user?.email,
+            updatedBalance,
+            phone: ordersData?.shippingAddress?.phone,
+          }),
+        })
+
         const quantityResponse = await fetch("/api/products/updateQuantity", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -217,10 +262,24 @@ const ConfirmOrderPage = () => {
           >
             Edit Order
           </Button>
-          <PaystackButton
-            {...componentProps}
-            className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
-          />
+          {proceedToPaystack ? (
+            <PaystackButton
+              {...componentProps}
+              className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
+            />
+          ) : (
+            <Button
+              onClick={() =>
+                handlePaystackSuccessAction({
+                  status: "success",
+                  reference: "balance-only",
+                })
+              }
+              className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
+            >
+              Pay with Balance
+            </Button>
+          )}
         </div>
       </div>
     </div>
