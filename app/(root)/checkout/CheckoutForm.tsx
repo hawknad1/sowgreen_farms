@@ -37,7 +37,7 @@ export function CheckoutForm() {
 
   const session = useSession()
   const router = useRouter()
-
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
   const cart = useCartStore((state) => state.cart)
   const basketTotal = getCartTotal(cart)
@@ -71,11 +71,30 @@ export function CheckoutForm() {
       ? selectedPickupOption
       : selectedDeliveryMethod
 
+  // useEffect(() => {
+  //   if (selectedPickupOption) {
+  //     setDeliveryFee(0)
+  //   }
+  // }, [selectedPickupOption, setDeliveryFee])
+
   useEffect(() => {
-    if (selectedPickupOption) {
-      setDeliveryFee(0)
+    if (
+      cart.length > 0 &&
+      selectedDeliveryMethod === "schedule-pickup" &&
+      selectedPickupOption
+    ) {
+      setDeliveryFee(0) // No delivery fee for pickup
+    } else if (cart.length > 0) {
+      setDeliveryFee(30) // Delivery fee for other methods
     }
-  }, [selectedPickupOption, setDeliveryFee])
+  }, [
+    cart.length,
+    selectedDeliveryMethod,
+    selectedPickupOption,
+    setDeliveryFee,
+  ])
+
+  console.log(deliveryFee, "seeccoonddd")
 
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
     // Add delivery method to the form data

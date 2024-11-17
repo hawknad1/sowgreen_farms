@@ -159,10 +159,20 @@ export const useTaxStore = create<TaxState>((set, get) => ({
   },
 }))
 
-export const useDeliveryStore = create<DeliveryStore>((set) => ({
-  deliveryFee: 0, // Initial delivery fee
-  setDeliveryFee: (fee) => set({ deliveryFee: fee }),
-}))
+// export const useDeliveryStore = create<DeliveryStore>((set) => ({
+//   deliveryFee: 0, // Initial delivery fee
+//   setDeliveryFee: (fee) => set({ deliveryFee: fee }),
+// }))
+
+export const useDeliveryStore = create<DeliveryStore>()(
+  persist(
+    (set) => ({
+      deliveryFee: 0,
+      setDeliveryFee: (fee) => set({ deliveryFee: fee }),
+    }),
+    { name: "delivery-fee-storage" }
+  )
+)
 
 export const useProductStore = create<ProductState>()(
   persist(

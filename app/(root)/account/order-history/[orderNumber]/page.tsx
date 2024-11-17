@@ -28,6 +28,8 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
     fetchOrderDetails()
   }, [orderNumber])
 
+  console.log(orderDetails, "order details")
+
   if (isLoading)
     return (
       <div className="w-full h-screen flex justify-center items-center">
@@ -88,7 +90,9 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
 
               <div className="flex justify-between">
                 <p className="font-medium">Delivery Fee</p>
-                <p className="">{`GHS ${orderDetails?.deliveryFee}`}</p>
+                <p className="">{`GHS ${orderDetails?.deliveryFee.toFixed(
+                  2
+                )}`}</p>
               </div>
               <div className="flex justify-between">
                 <p className="font-medium">Subtotal</p>
@@ -147,7 +151,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
           <div>
             <div className="flex justify-between">
               <p className="text-neutral-600">Delivery Fee</p>
-              <p>{`GHS ${orderDetails?.deliveryFee}`}</p>
+              <p>{`GHS ${orderDetails?.deliveryFee.toFixed(2)}`}</p>
             </div>
             <div className="flex justify-between">
               <p className="text-neutral-600">Subtotal</p>

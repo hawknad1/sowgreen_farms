@@ -36,13 +36,14 @@ export type User = {
 
 const ConfirmOrderPage = () => {
   const [referenceNumber, setReferenceNumber] = useState("")
-  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
   const [activeUser, setActiveUser] = useState<User | null>(null)
   const setOrdersData = useOrderDataStore((state) => state.setOrdersData)
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
+
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 
   const session = useSession()
   const user = session?.data?.user
@@ -188,6 +189,7 @@ const ConfirmOrderPage = () => {
 
         // Store ordersData in Zustand and navigate to ThankYouPage
         setOrdersData(ordersData)
+        console.log(ordersData, "orddrrrssss")
 
         const email = await fetch("/api/send-order-email", {
           method: "POST",
