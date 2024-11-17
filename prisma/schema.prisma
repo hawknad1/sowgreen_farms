@@ -16,7 +16,7 @@ model User {
   image          String?
   role           String?         @default("user")
   balance        Float?          @default(0.0)
-  phone          String?         
+  phone          String?
   accounts       Account[]
   sessions       Session[]
   authenticators Authenticator[] // Renamed for consistency
@@ -173,6 +173,9 @@ model Order {
   products          ProductOrder[]
   deliveryMethod    String
   deliveryFee       Int?
+  cardType          String?
+  last4Digits       String?
+  paymentMode       String?
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 }

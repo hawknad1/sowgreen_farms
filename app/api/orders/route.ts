@@ -33,6 +33,9 @@ export async function POST(req: Request) {
     deliveryFee,
     products,
     status,
+    cardType,
+    last4Digits,
+    paymentMode,
   } = await req.json()
 
   // Validation for required fields
@@ -116,6 +119,9 @@ export async function POST(req: Request) {
       data: {
         orderNumber: orderNumber,
         referenceNumber: referenceNumber,
+        cardType,
+        last4Digits,
+        paymentMode,
         total: total,
         deliveryMethod: deliveryMethod,
         deliveryFee,

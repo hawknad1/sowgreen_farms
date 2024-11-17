@@ -14,7 +14,7 @@ import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
 import { date, formatCurrency, time } from "@/lib/utils"
-import { CartItem } from "@/types"
+import { CardInfo, CartItem } from "@/types"
 import { processCartItems } from "@/lib/processCartItems"
 import { generateOrderNumber } from "@/lib/generateOrderNumber"
 import { addTax } from "@/lib/addTax"
@@ -23,6 +23,7 @@ import { updatePurchaseCounts } from "@/lib/actions/updatePurchaseCount"
 import { updateProductQuantities } from "@/lib/actions/updateProductQuantity"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
+import { verifyTransaction } from "@/lib/actions/verifyTransaction"
 
 export type User = {
   user: {
@@ -42,6 +43,7 @@ const ConfirmOrderPage = () => {
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
+  const [result, setResult] = useState<CardInfo>(null)
 
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 
@@ -52,6 +54,10 @@ const ConfirmOrderPage = () => {
   const router = useRouter()
   const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
+
+  console.log(result, "---result")
+  // const { paymentMode, cardType, last4Digits } = result
+  // console.log(paymentMode, cardType, last4Digits, "---datasss")
 
   useEffect(() => {
     if (!user?.email) return
@@ -158,10 +164,27 @@ const ConfirmOrderPage = () => {
     publicKey: process.env.PAYSTACK_PUBLIC_TEST_KEY as string,
   }
 
-  async function handlePaystackSuccessAction(reference: any) {
+  console.log(result?.paymentMode, "mode")
+
+  async function handlePaystackSuccessAction(reference?: any) {
     try {
       if (reference.status === "success") {
         setReferenceNumber(reference.reference)
+
+        // verify -- transactions
+        const verifyTransaction = await fetch("/api/verify-transaction", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ reference: reference.reference }),
+        })
+
+        if (!verifyTransaction.ok)
+          throw new Error("Failed to verify transaction")
+        const verifyData = await verifyTransaction.json()
+        setResult(verifyData)
+        console.log(verifyData, "vvvvvv")
 
         const ordersData = {
           products: taxedOrders,
@@ -170,6 +193,9 @@ const ConfirmOrderPage = () => {
           deliveryMethod: deliveryMethodLabel,
           deliveryFee: deliveryFee,
           referenceNumber: reference.reference,
+          cardType: verifyData?.cardType,
+          last4Digits: verifyData?.last4Digits,
+          paymentMode: verifyData?.paymentMode,
           total: total,
         }
 
@@ -240,7 +266,7 @@ const ConfirmOrderPage = () => {
 
   const componentProps = {
     ...config,
-    text: "Pay Now",
+    text: "Pay with card",
     onSuccess: (reference: any) => handlePaystackSuccessAction(reference),
     onClose: handlePaystackCloseAction,
   }
@@ -263,6 +289,16 @@ const ConfirmOrderPage = () => {
             className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
           >
             Edit Order
+          </Button>
+          <Button
+            onClick={() =>
+              handlePaystackSuccessAction({
+                status: "success",
+                reference: "pay-on-delivery",
+              })
+            }
+          >
+            Pay on delivery
           </Button>
           {proceedToPaystack ? (
             <PaystackButton

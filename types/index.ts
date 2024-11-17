@@ -74,6 +74,9 @@ export type Order = {
   dispatchRider: string
   deliveryMethod: string
   deliveryFee: number
+  cardType?: string
+  last4Digits?: string
+  paymentMode?: string
   shippingAddress: ShippingAddress
   products: ProductOrder[] // Change from Product[] to ProductOrder[]
   createdAt: string
@@ -96,6 +99,12 @@ export type Product = {
   unit: string
 
   // weightsAndPrices: { price: number; weight: number }[]
+}
+
+export type CardInfo = {
+  cardType: string
+  last4Digits: string
+  paymentMode: string
 }
 
 export type WeightPrice = {

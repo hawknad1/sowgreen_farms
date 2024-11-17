@@ -9,6 +9,8 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
     deliveryMethod,
     deliveryFee,
     dispatchRider,
+    paymentMode,
+    cardType,
   } = orders
 
   const deliveryMethodLabel = useMemo(() => {
@@ -39,10 +41,12 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
         <span className="text-sm text-neutral-500">Delivery Fee: </span> GHS{" "}
         {deliveryFee?.toFixed(2)}
       </p>
-      <p className="font-medium">
-        <span className="text-sm text-neutral-500">Dispatch Rider: </span>
-        {dispatchRider}
-      </p>
+      {cardType && (
+        <p className="font-medium">
+          <span className="text-sm text-neutral-500">Payment Method: </span>
+          {cardType}
+        </p>
+      )}
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}
         {total}
