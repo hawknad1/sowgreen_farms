@@ -30,6 +30,10 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
 
   if (!orders) return null
 
+  const typeCard = cardType?.charAt(0).toUpperCase() + cardType?.slice(1)
+  const modeOfPayment =
+    paymentMode?.charAt(0).toUpperCase() + paymentMode?.slice(1)
+
   return (
     <div className="w-full">
       <h3 className="text-lg font-bold mb-2">Order Details</h3>
@@ -41,11 +45,18 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
         <span className="text-sm text-neutral-500">Delivery Fee: </span> GHS{" "}
         {deliveryFee?.toFixed(2)}
       </p>
-      {cardType && (
+      {cardType ? (
         <p className="font-medium">
           <span className="text-sm text-neutral-500">Payment Method: </span>
-          {cardType}
+          {typeCard}
         </p>
+      ) : paymentMode ? (
+        <p className="font-medium">
+          <span className="text-sm text-neutral-500">Payment Method: </span>
+          {modeOfPayment}
+        </p>
+      ) : (
+        "MOMO"
       )}
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}

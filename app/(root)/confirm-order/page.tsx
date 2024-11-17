@@ -55,10 +55,6 @@ const ConfirmOrderPage = () => {
   const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
 
-  console.log(result, "---result")
-  // const { paymentMode, cardType, last4Digits } = result
-  // console.log(paymentMode, cardType, last4Digits, "---datasss")
-
   useEffect(() => {
     if (!user?.email) return
 
@@ -164,97 +160,106 @@ const ConfirmOrderPage = () => {
     publicKey: process.env.PAYSTACK_PUBLIC_TEST_KEY as string,
   }
 
-  console.log(result?.paymentMode, "mode")
-
   async function handlePaystackSuccessAction(reference?: any) {
     try {
-      if (reference.status === "success") {
-        setReferenceNumber(reference.reference)
+      let verifyData = null
 
-        // verify -- transactions
+      if (reference.status === "success") {
+        // Paystack transaction: Verify with Paystack
         const verifyTransaction = await fetch("/api/verify-transaction", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ reference: reference.reference }),
+          body: JSON.stringify({ reference: reference?.reference }),
         })
 
         if (!verifyTransaction.ok)
           throw new Error("Failed to verify transaction")
-        const verifyData = await verifyTransaction.json()
+
+        verifyData = await verifyTransaction.json()
         setResult(verifyData)
-        console.log(verifyData, "vvvvvv")
-
-        const ordersData = {
-          products: taxedOrders,
-          shippingAddress: newFormData,
-          orderNumber,
-          deliveryMethod: deliveryMethodLabel,
-          deliveryFee: deliveryFee,
-          referenceNumber: reference.reference,
-          cardType: verifyData?.cardType,
-          last4Digits: verifyData?.last4Digits,
-          paymentMode: verifyData?.paymentMode,
-          total: total,
+        console.log(verifyData, "Verified Paystack transaction")
+      } else if (reference === "cash-on-delivery") {
+        // Non-Paystack transaction
+        verifyData = {
+          status: "success",
+          paymentMode: "cash",
+          cardType: null,
+          last4Digits: null,
         }
-
-        const shippingResponse = await fetch("/api/address", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newFormData),
-        })
-        if (!shippingResponse.ok) throw new Error("Shipping API failed")
-
-        const ordersResponse = await fetch("/api/orders", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(ordersData),
-        })
-        if (!ordersResponse.ok) throw new Error("Orders API failed")
-
-        // Store ordersData in Zustand and navigate to ThankYouPage
-        setOrdersData(ordersData)
-        console.log(ordersData, "orddrrrssss")
-
-        const email = await fetch("/api/send-order-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ order: ordersData }),
-        })
-        if (!email.ok) throw new Error("Email API failed")
-
-        const productIds = taxedOrders.map((product) => product.item?.id)
-
-        // Call the API route to update purchase counts
-        await fetch("/api/products/updatePurchaseCount", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ productIds }),
-        })
-
-        clearCart() // Clear cart after successful API calls
-
-        router.push("/success/thank-you")
-
-        await fetch("/api/balance", {
-          method: "PUT",
-          headers: { "Content-type": "application/json" },
-          body: JSON.stringify({
-            email: user?.email,
-            updatedBalance,
-            phone: ordersData?.shippingAddress?.phone,
-          }),
-        })
-
-        const quantityResponse = await fetch("/api/products/updateQuantity", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ products: ordersData.products }),
-        })
-
-        if (!quantityResponse.ok) throw new Error("Quantity update API failed")
+        setResult(verifyData)
+        console.log("Processing Cash on Delivery")
+      } else {
+        throw new Error("Invalid payment reference")
       }
+
+      const ordersData = {
+        products: taxedOrders,
+        shippingAddress: newFormData,
+        orderNumber,
+        deliveryMethod: deliveryMethodLabel,
+        deliveryFee: deliveryFee,
+        referenceNumber: reference?.reference || "cash-on-delivery",
+        cardType: verifyData?.cardType,
+        last4Digits: verifyData?.last4Digits,
+        paymentMode: verifyData?.paymentMode,
+        total: total,
+      }
+
+      // Save shipping address
+      const shippingResponse = await fetch("/api/address", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newFormData),
+      })
+      if (!shippingResponse.ok) throw new Error("Shipping API failed")
+
+      // Save order
+      const ordersResponse = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(ordersData),
+      })
+      if (!ordersResponse.ok) throw new Error("Orders API failed")
+
+      // Send order confirmation email
+      const email = await fetch("/api/send-order-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order: ordersData }),
+      })
+      if (!email.ok) throw new Error("Email API failed")
+
+      // Update purchase counts for products
+      const productIds = taxedOrders.map((product) => product.item?.id)
+      await fetch("/api/products/updatePurchaseCount", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productIds }),
+      })
+
+      clearCart() // Clear the cart after successful order processing
+      router.push("/success/thank-you")
+
+      // Update user balance (if applicable)
+      await fetch("/api/balance", {
+        method: "PUT",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          email: user?.email,
+          updatedBalance,
+          phone: ordersData?.shippingAddress?.phone,
+        }),
+      })
+
+      // Update product quantities
+      const quantityResponse = await fetch("/api/products/updateQuantity", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ products: ordersData.products }),
+      })
+      if (!quantityResponse.ok) throw new Error("Quantity update API failed")
     } catch (error) {
       console.error("Payment processing error:", error)
     }
@@ -294,7 +299,7 @@ const ConfirmOrderPage = () => {
             onClick={() =>
               handlePaystackSuccessAction({
                 status: "success",
-                reference: "pay-on-delivery",
+                reference: "cash-on-delivery",
               })
             }
           >

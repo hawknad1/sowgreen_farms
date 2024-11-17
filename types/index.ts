@@ -105,6 +105,7 @@ export type CardInfo = {
   cardType: string
   last4Digits: string
   paymentMode: string
+  status?: string
 }
 
 export type WeightPrice = {

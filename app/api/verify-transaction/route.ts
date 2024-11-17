@@ -12,12 +12,22 @@ export async function POST(request: Request) {
       )
     }
 
+    if (reference === "cash-on-delivery") {
+      // Handle non-Paystack transactions
+      return NextResponse.json({
+        status: "success",
+        paymentMode: "cash",
+        cardType: null,
+        last4Digits: null,
+      })
+    }
+
     const response = await fetch(
       `https://api.paystack.co/transaction/verify/${reference}`,
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST_KEY}`, // Paystack secret key from env
+          Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST_KEY}`,
           "Content-Type": "application/json",
         },
       }
@@ -28,8 +38,8 @@ export async function POST(request: Request) {
     if (data.status) {
       return NextResponse.json({
         status: "success",
-        paymentMode: data.data.channel, // 'card', 'bank', etc.
-        cardType: data.data.authorization.card_type, // 'Visa', 'MasterCard', etc.
+        paymentMode: data.data.channel,
+        cardType: data.data.authorization.card_type,
         last4Digits: data.data.authorization.last4,
       })
     } else {

@@ -24,6 +24,10 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
       </div>
     )
 
+  const rider =
+    orders?.dispatchRider.charAt(0).toUpperCase() +
+    orders?.dispatchRider.slice(1)
+
   return (
     <div className="">
       <div className="flex flex-col">
@@ -59,7 +63,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                 </p>
                 <p className="font-semibold text-neutral-600">
                   Dispatch Rider:{" "}
-                  <span className="text-black">{orders?.dispatchRider}</span>
+                  <span className="text-black">{rider || "Not assigned"}</span>
                 </p>
               </div>
 
