@@ -14,7 +14,7 @@ import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
 import { date, formatCurrency, time } from "@/lib/utils"
-import { CardInfo, CartItem } from "@/types"
+import { CartItem, PaymentInfo } from "@/types"
 import { processCartItems } from "@/lib/processCartItems"
 import { generateOrderNumber } from "@/lib/generateOrderNumber"
 import { addTax } from "@/lib/addTax"
@@ -43,8 +43,8 @@ const ConfirmOrderPage = () => {
   const cart = useCartStore((state) => state.cart)
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
-  const [result, setResult] = useState<CardInfo>(null)
-
+  const [result, setResult] = useState<PaymentInfo>(null)
+  // const [paymentAction, setPaymentAction] = useState<string | null>(null)
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 
   const session = useSession()
@@ -162,9 +162,12 @@ const ConfirmOrderPage = () => {
 
   async function handlePaystackSuccessAction(reference?: any) {
     try {
-      let verifyData = null
+      let verifyData: PaymentInfo = null
 
-      if (reference.status === "success") {
+      if (
+        reference.status === "success" &&
+        reference.reference !== "cash-on-delivery"
+      ) {
         // Paystack transaction: Verify with Paystack
         const verifyTransaction = await fetch("/api/verify-transaction", {
           method: "POST",
@@ -173,26 +176,34 @@ const ConfirmOrderPage = () => {
           },
           body: JSON.stringify({ reference: reference?.reference }),
         })
+        // console.log(paymentAction, "acction-1")
 
         if (!verifyTransaction.ok)
           throw new Error("Failed to verify transaction")
 
-        verifyData = await verifyTransaction.json()
+        const verifiedResponse = await verifyTransaction.json()
+        verifyData = {
+          ...verifiedResponse,
+          paymentAction: "paid",
+        }
         setResult(verifyData)
         console.log(verifyData, "Verified Paystack transaction")
-      } else if (reference === "cash-on-delivery") {
+      } else if (reference.reference === "cash-on-delivery") {
         // Non-Paystack transaction
+
         verifyData = {
           status: "success",
           paymentMode: "cash",
+          paymentAction: "cash-on-delivery",
           cardType: null,
           last4Digits: null,
         }
         setResult(verifyData)
-        console.log("Processing Cash on Delivery")
+        console.log(verifyData, "Cash on delivery transaction")
       } else {
         throw new Error("Invalid payment reference")
       }
+      console.log("Final paymentAction before ordersData:", verifyData)
 
       const ordersData = {
         products: taxedOrders,
@@ -204,8 +215,11 @@ const ConfirmOrderPage = () => {
         cardType: verifyData?.cardType,
         last4Digits: verifyData?.last4Digits,
         paymentMode: verifyData?.paymentMode,
+        paymentAction: verifyData?.paymentAction,
         total: total,
       }
+
+      console.log(ordersData, "ordersss")
 
       // Save shipping address
       const shippingResponse = await fetch("/api/address", {

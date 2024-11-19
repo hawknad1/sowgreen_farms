@@ -28,7 +28,7 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const { status, dispatchRider } = await req.json()
+  const { status, dispatchRider, paymentAction } = await req.json()
   const id = params.id
   try {
     const order = await prisma.order.update({
@@ -36,10 +36,40 @@ export async function PUT(
       data: {
         status,
         dispatchRider,
+        paymentAction,
       },
     })
     return NextResponse.json(order)
   } catch (error) {
     return NextResponse.json({ message: "Error editing status" })
+  }
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params
+
+  try {
+    const deletedOrder = await prisma.order.delete({
+      where: { id },
+    })
+    return NextResponse.json(
+      { message: "Order deleted successfully", deletedOrder },
+      { status: 200 }
+    )
+  } catch (error: any) {
+    console.error("Delete order error:", error)
+
+    if (error.code === "P2025") {
+      // Prisma specific error for "Record not found"
+      return NextResponse.json({ message: "Order not found" }, { status: 404 })
+    }
+
+    return NextResponse.json(
+      { message: "Failed to delete order", error: error.message },
+      { status: 500 }
+    )
   }
 }

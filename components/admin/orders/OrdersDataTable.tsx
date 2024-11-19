@@ -79,8 +79,6 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
     },
   })
 
-  console.log(filterValue, "gggg")
-
   return (
     <div className="w-full">
       <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">

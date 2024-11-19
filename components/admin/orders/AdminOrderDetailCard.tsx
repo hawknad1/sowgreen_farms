@@ -15,6 +15,7 @@ import { formatCurrency } from "@/lib/utils"
 import StatusPopup from "./StatusPopup"
 import { DollarSign } from "lucide-react"
 import AddCredit from "./AddCredit"
+import DeleteOrderDialog from "./DeleteOrderDialog"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   if (!orders)
@@ -25,8 +26,8 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
     )
 
   const rider =
-    orders?.dispatchRider.charAt(0).toUpperCase() +
-    orders?.dispatchRider.slice(1)
+    orders?.dispatchRider?.charAt(0).toUpperCase() +
+    orders?.dispatchRider?.slice(1)
 
   return (
     <div className="">
@@ -34,7 +35,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
         <div className="flex justify-between items-center my-4 z-10">
           <div>
             <h2 className="text-xl font-semibold">
-              Order ID : {orders?.orderNumber}
+              Order No. : {orders?.orderNumber}
             </h2>
             <p className="text-sm text-gray-500">
               Order details of {orders?.shippingAddress?.name}
@@ -42,10 +43,15 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
           </div>
 
           <div className="flex items-center gap-x-3">
-            <Button variant="outline" className="flex gap-x-1">
+            {/* <Button variant="outline" className="flex gap-x-1">
               <DocumentArrowDownIcon className="w-4 h-4" />
               Send Invoice
-            </Button>
+            </Button> */}
+            {/* <Button variant="destructive" className="font-medium">
+              Delete Order
+            </Button> */}
+
+            <DeleteOrderDialog order={orders} />
             <AddCredit />
           </div>
         </div>

@@ -77,6 +77,7 @@ export type Order = {
   cardType?: string
   last4Digits?: string
   paymentMode?: string
+  paymentAction?: string
   shippingAddress: ShippingAddress
   products: ProductOrder[] // Change from Product[] to ProductOrder[]
   createdAt: string
@@ -91,6 +92,7 @@ export type Product = {
   title: string
   description: string
   isInStock: string
+  purchaseCount: number
   products?: []
   quantity: number
   discount: number
@@ -101,10 +103,11 @@ export type Product = {
   // weightsAndPrices: { price: number; weight: number }[]
 }
 
-export type CardInfo = {
+export type PaymentInfo = {
   cardType: string
   last4Digits: string
   paymentMode: string
+  paymentAction: string
   status?: string
 }
 

@@ -50,13 +50,11 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
           <span className="text-sm text-neutral-500">Payment Method: </span>
           {typeCard}
         </p>
-      ) : paymentMode ? (
+      ) : (
         <p className="font-medium">
           <span className="text-sm text-neutral-500">Payment Method: </span>
           {modeOfPayment}
         </p>
-      ) : (
-        "MOMO"
       )}
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}

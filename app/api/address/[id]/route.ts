@@ -15,7 +15,9 @@ export async function GET(
         orders: { some: {} }, // Ensures only addresses with orders are included
       },
       include: {
-        orders: true, // Include orders for the shipping addresses
+        orders: {
+          include: { shippingAddress: true },
+        }, // Include orders for the shipping addresses
       },
     })
 

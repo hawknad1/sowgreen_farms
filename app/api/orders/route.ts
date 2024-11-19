@@ -36,6 +36,7 @@ export async function POST(req: Request) {
     cardType,
     last4Digits,
     paymentMode,
+    paymentAction,
   } = await req.json()
 
   // Validation for required fields
@@ -69,12 +70,6 @@ export async function POST(req: Request) {
       )
     }
 
-    // Check if the shipping address already exists by email
-    // let shippingAddressRecord = await prisma.shippingAddress.findUnique({
-    //   where: { email: shippingAddress.email },
-    // })
-
-    // if (!shippingAddressRecord) {
     // Create a new shipping address if it doesn't exist
     const shippingAddressRecord = await prisma.shippingAddress.create({
       data: {
@@ -88,9 +83,6 @@ export async function POST(req: Request) {
       },
     })
     // }
-
-    // Log the products array to debug any undefined entries
-    // console.log("Products array received:", products)
 
     // Validate each product in the products array
     const validProducts = products.filter((productOrder: any) => {
@@ -122,6 +114,7 @@ export async function POST(req: Request) {
         cardType,
         last4Digits,
         paymentMode,
+        paymentAction,
         total: total,
         deliveryMethod: deliveryMethod,
         deliveryFee,
