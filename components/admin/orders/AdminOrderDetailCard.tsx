@@ -16,6 +16,8 @@ import StatusPopup from "./StatusPopup"
 import { DollarSign } from "lucide-react"
 import AddCredit from "./AddCredit"
 import DeleteOrderDialog from "./DeleteOrderDialog"
+import { PencilSquareIcon } from "@heroicons/react/20/solid"
+import ModifyOrderDialog from "./ModifyOrderDialog"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   if (!orders)
@@ -89,7 +91,10 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
 
               {/* Order Items */}
               <div>
-                <h3 className="text-lg font-bold mb-2">Order Item</h3>
+                <div className="flex justify-between">
+                  <h3 className="text-lg font-bold mb-2">Order Item</h3>
+                  <ModifyOrderDialog order={orders} />
+                </div>
                 <DisplayOrder orders={orders} />
               </div>
 

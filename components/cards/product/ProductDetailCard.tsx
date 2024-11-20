@@ -36,7 +36,8 @@ const ProductDetailCard = ({ product }: Props) => {
     setSelectedWeight(weight)
   }
 
-  const taxedPrice = formatCurrency(addTax(product?.price), "GHS")
+  // const taxedPrice = formatCurrency(addTax(product?.price), "GHS")
+  const taxedPrice = formatCurrency(product?.price, "GHS")
 
   return (
     <div className="container mx-auto py-8">

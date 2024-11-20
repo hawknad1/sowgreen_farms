@@ -173,6 +173,13 @@ export const orderStatusCard = [
     icon: CreditCardIcon,
   },
   {
+    title: "Confirmed",
+    status: "confirmed",
+    subTitle: "Order Confirmed",
+    icon: TruckIcon,
+  },
+
+  {
     title: "Shipped",
     status: "shipped",
     subTitle: "Order Shipped",

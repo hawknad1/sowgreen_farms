@@ -20,7 +20,7 @@ const CartDisplay = () => {
             const items = grouped[id]
             const item = items[0]
             const total = getCartTotal(grouped[id])
-            const taxedItem = addTax(parseFloat(total))
+            const taxedItem = parseFloat(total)
             const quantity = items.length
 
             return (

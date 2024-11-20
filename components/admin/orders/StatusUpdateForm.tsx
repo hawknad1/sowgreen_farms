@@ -85,6 +85,7 @@ const StatusUpdateForm = ({
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="processing">Processing</SelectItem>
+                      <SelectItem value="confirmed">Confirmed</SelectItem>
                       <SelectItem value="shipped">Shipped</SelectItem>
                       <SelectItem value="delivered">Delivered</SelectItem>
                     </SelectContent>

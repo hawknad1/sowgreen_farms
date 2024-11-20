@@ -78,15 +78,43 @@ export async function POST(req: NextRequest) {
   }
 }
 
+// export async function GET(req: NextRequest) {
+//   try {
+//     const products = await prisma.product.findMany()
+//     return NextResponse.json(products, { status: 200 }) // 200 OK for successful response
+//   } catch (error) {
+//     console.error("Error fetching products:", error)
+//     return NextResponse.json(
+//       { error: "Couldn't get all products" },
+//       { status: 500 } // 500 Internal Server Error for any other issues
+//     )
+//   }
+// }
+
 export async function GET(req: NextRequest) {
   try {
-    const products = await prisma.product.findMany()
-    return NextResponse.json(products, { status: 200 }) // 200 OK for successful response
+    // Extract search query from URL
+    const { searchParams } = new URL(req.url)
+    const query = searchParams.get("query")
+
+    // Fetch products based on query or return all products
+    const products = await prisma.product.findMany({
+      where: query
+        ? {
+            title: {
+              contains: query, // Search for partial matches
+              mode: "insensitive", // Case-insensitive search
+            },
+          }
+        : undefined, // If no query, return all products
+    })
+
+    return NextResponse.json(products, { status: 200 })
   } catch (error) {
     console.error("Error fetching products:", error)
     return NextResponse.json(
       { error: "Couldn't get all products" },
-      { status: 500 } // 500 Internal Server Error for any other issues
+      { status: 500 }
     )
   }
 }

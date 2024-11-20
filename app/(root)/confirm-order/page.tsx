@@ -78,9 +78,14 @@ const ConfirmOrderPage = () => {
     fetchUser()
   }, [user?.email])
 
+  // const cartWithTax = cart.map((product) => ({
+  //   ...product,
+  //   price: addTax(product.price),
+  // }))
+
   const cartWithTax = cart.map((product) => ({
     ...product,
-    price: addTax(product.price),
+    price: product.price,
   }))
 
   const basketTotal = getCartTotal(cartWithTax)
@@ -109,10 +114,19 @@ const ConfirmOrderPage = () => {
     ...order, // Spread the existing order object
     item: {
       ...order.item,
-      price: addTax(order.item.price),
+      price: order.item.price,
     },
-    total: (addTax(order.item.price) * order.quantity).toFixed(2),
+    total: (order.item.price * order.quantity).toFixed(2),
   }))
+
+  // const taxedOrders = orders.map((order) => ({
+  //   ...order, // Spread the existing order object
+  //   item: {
+  //     ...order.item,
+  //     price: addTax(order.item.price),
+  //   },
+  //   total: (addTax(order.item.price) * order.quantity).toFixed(2),
+  // }))
 
   const { deliveryMethod, ...newFormData } = formData
 
@@ -219,7 +233,7 @@ const ConfirmOrderPage = () => {
         total: total,
       }
 
-      console.log(ordersData, "ordersss")
+      setOrdersData(ordersData)
 
       // Save shipping address
       const shippingResponse = await fetch("/api/address", {

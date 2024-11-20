@@ -12,29 +12,16 @@ import { formatCurrency } from "@/lib/utils"
 const ThankYouPage = () => {
   const [calculatedTotal, setCalculatedTotal] = useState(0)
 
+  // Fetch state data
   const ordersData = useOrderDataStore((state) => state.ordersData)
   const cart = useCartStore((state) => state.cart)
-
-  const { orderNumber, shippingAddress, products, total } = ordersData || {}
   const { deliveryFee } = useDeliveryStore()
 
-  // Calculate cart total with tax
-  const cartWithTax = cart.map((product) => ({
-    ...product,
-    price: addTax(product.price),
-  }))
+  // Extract order details
+  const { orderNumber, shippingAddress, products, total, deliveryMethod } =
+    ordersData || {}
 
-  useEffect(() => {
-    let tempTotal = 0
-    products?.forEach((order) => {
-      tempTotal += parseFloat(order.total)
-    })
-    setCalculatedTotal(tempTotal)
-  }, [products])
-
-  const formattedDelivery = formatCurrency(deliveryFee, "GHS")
-
-  const deliveryMethod = ordersData?.deliveryMethod || ""
+  // Format delivery method
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
       case "Wednesday - DZORWULU - 11AM-5PM":
@@ -50,17 +37,43 @@ const ThankYouPage = () => {
     }
   }, [deliveryMethod])
 
+  // Calculate subtotal
+  useEffect(() => {
+    if (products?.length) {
+      let tempTotal = products.reduce(
+        (acc, order) =>
+          acc + ((order?.item?.price || 0) as number) * (order?.quantity || 1),
+        0
+      )
+      setCalculatedTotal(tempTotal)
+    } else {
+      setCalculatedTotal(0)
+    }
+  }, [products])
+
+  // Debugging logs
+  useEffect(() => {
+    console.log("Orders Data:", ordersData)
+    console.log("Cart Data:", cart)
+    console.log("Products in Order:", products)
+  }, [ordersData, cart, products])
+
+  // Format delivery fee
+  const formattedDelivery = formatCurrency(deliveryFee || 0, "GHS")
+
+  // Show skeleton if no data
   if (!ordersData) {
     return <OrderConfirmSkeleton />
   }
 
   return (
-    <div className="flex flex-col items-center  w-full p-12 bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center w-full p-12 bg-gray-100 min-h-screen">
       <div className="flex flex-col items-center gap-y-2 mb-3">
         <p className="font-semibold text-sm text-neutral-500/95">THANK YOU</p>
         <h3 className="text-2xl font-bold">Your order is confirmed</h3>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl w-full">
+        {/* Left Section: Order Info */}
         <div className="w-full bg-white rounded-l-lg p-4">
           <OrderInfo orderNumber={orderNumber} />
           <Separator className="mt-6 mb-4" />
@@ -74,6 +87,7 @@ const ThankYouPage = () => {
           </div>
         </div>
 
+        {/* Right Section: Products and Totals */}
         <div className="w-full flex flex-col justify-between bg-white rounded-r-lg p-4">
           <div className="flex flex-col gap-2 flex-grow">
             <h2 className="text-sm font-bold mb-2">Ordered Items</h2>

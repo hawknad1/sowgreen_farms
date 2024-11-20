@@ -19,9 +19,14 @@ const OrderSummary = ({
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 
   const grouped = groupById(cart)
+  // const cartWithTax = cart.map((product) => ({
+  //   ...product,
+  //   price: addTax(product.price),
+  // }))
+
   const cartWithTax = cart.map((product) => ({
     ...product,
-    price: addTax(product.price),
+    price: product.price,
   }))
 
   const basketTotal = getCartTotal(cartWithTax)
