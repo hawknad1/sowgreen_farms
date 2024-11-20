@@ -61,7 +61,7 @@ const OrderSummary = ({
           {Object.keys(grouped).map((id) => {
             const item = grouped[id][0]
             const total = getCartTotal(grouped[id])
-            const taxedItem = addTax(parseFloat(total))
+            const taxedItem = parseFloat(total)
 
             return (
               <li
