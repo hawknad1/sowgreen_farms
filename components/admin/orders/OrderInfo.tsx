@@ -58,7 +58,7 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
       )}
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}
-        {total}
+        {(total + deliveryFee).toFixed(2)}
       </p>
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Delivery Method: </span>{" "}

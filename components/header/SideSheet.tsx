@@ -1,11 +1,9 @@
+"use client"
 import React from "react"
-import { Label } from "../ui/label"
-import { Input } from "../ui/input"
 import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -13,17 +11,20 @@ import {
 } from "../ui/sheet"
 import { Bars3BottomRightIcon } from "@heroicons/react/24/outline"
 import { Button } from "../ui/button"
-import { menuLinks } from "@/constants"
-import Link from "next/link"
 import SideMenu from "../SideMenu"
-import { logout } from "@/lib/actions/auth"
 import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
+import { signOut } from "next-auth/react"
 
 const SideSheet = () => {
-  const session = useSession()
+  const { data: session } = useSession()
   const router = useRouter()
-  const user = session?.data?.user
+  const user = session?.user
+
+  const handleLogout = async () => {
+    await signOut()
+    router.push("/sign-in")
+  }
 
   return (
     <Sheet>
@@ -33,11 +34,14 @@ const SideSheet = () => {
         </button>
       </SheetTrigger>
       <SheetContent>
+        <SheetHeader>
+          <SheetTitle>Menu</SheetTitle>
+        </SheetHeader>
         <SideMenu />
         <SheetFooter className="mt-8">
           <SheetClose asChild>
             {user ? (
-              <Button onClick={() => logout()}>Sign Out</Button>
+              <Button onClick={handleLogout}>Sign Out</Button>
             ) : (
               <Button onClick={() => router.push("/sign-in")}>Log In</Button>
             )}

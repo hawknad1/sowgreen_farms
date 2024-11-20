@@ -27,11 +27,11 @@ const BasketPage = () => {
   }
 
   return (
-    <div className="w-full p-10 max-w-7xl mx-auto bg-white">
+    <div className="w-full p-4 md:p-10 md:max-w-7xl mx-auto bg-white">
       <div className="flex flex-col">
         <div className="flex items-center space-x-2 mb-2">
-          <ShoppingCartIcon className="h-10 w-10" />
-          <h1 className="text-3xl font-bold">Your Shopping Cart</h1>
+          <ShoppingCartIcon className="h-8 w-8 md:h-10 md:w-10" />
+          <h1 className="text-2xl md:text-3xl font-bold">Your Shopping Cart</h1>
         </div>
         {cart.length > 0 ? (
           <p className="text-neutral-600/75 mb-2">
@@ -44,40 +44,41 @@ const BasketPage = () => {
         )}
       </div>
 
-      <div className="flex items-center gap-x-16">
-        <div className="flex-1">
-          <div className="flex items-center justify-between ">
-            <div className="w-full">
-              <div className="overflow-scroll scrollbar-hide w-full h-[600px]">
+      <div className="flex flex-col lg:flex-row lg:h-full gap-y-8 lg:gap-x-16 items-start">
+        {/* Left Section */}
+        <div className="flex-1 lg:flex-[2] p-4 rounded-md h-full">
+          <div className="flex flex-col h-full">
+            <div className="w-full flex-grow">
+              <div className="overflow-y-auto scrollbar-hide w-full h-[400px] md:h-[600px]">
                 <BasketItems />
               </div>
-              <div className="hidden lg:inline-flex items-center gap-4 ">
-                <div
-                  onClick={() => router.back()}
-                  className="flex items-center cursor-pointer"
-                >
-                  <ChevronLeftIcon className="h-4 w-4" />
-                  <p className="text-sm font-semibold">Back</p>
-                </div>
-                <Button onClick={handleClearCart} variant="destructive">
-                  Cancel Order
-                </Button>
-              </div>
             </div>
+            {/* <div className="flex items-center justify-between mt-4">
+              <div
+                onClick={() => router.back()}
+                className="flex items-center cursor-pointer"
+              >
+                <ChevronLeftIcon className="h-4 w-4" />
+                <p className="text-sm font-semibold">Back</p>
+              </div>
+              <Button onClick={handleClearCart} variant="destructive">
+                Cancel Order
+              </Button>
+            </div> */}
           </div>
         </div>
-        <div className="lg:flex items-center">
-          <div className="hidden lg:flex flex-col gap-4">
-            <CheckoutBox>
-              <Coupon />
-            </CheckoutBox>
-            <CheckoutBox>
-              <BasketOrderSummery />
-            </CheckoutBox>
-            <CheckoutBox>
-              <PaymentMethod />
-            </CheckoutBox>
-          </div>
+
+        {/* Right Section */}
+        <div className="hidden lg:block lg:flex-[1] space-y-4 h-full">
+          <CheckoutBox>
+            <Coupon />
+          </CheckoutBox>
+          <CheckoutBox>
+            <BasketOrderSummery />
+          </CheckoutBox>
+          <CheckoutBox>
+            <PaymentMethod />
+          </CheckoutBox>
         </div>
       </div>
     </div>

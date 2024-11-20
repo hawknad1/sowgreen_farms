@@ -1,27 +1,19 @@
 "use client"
 import Image from "next/image"
-import React, { useEffect, useState } from "react"
+import React from "react"
 import SideSheet from "./SideSheet"
 import Searchbar from "./Searchbar"
-import MenuBar from "./MenuBar"
+import TheMenu from "../TheMenu"
 import ShopBasketIcon from "../basket/ShopBasketIcon"
 import SignInButton from "../buttons/SignInButton"
 import SignUpButton from "../buttons/SignUpButton"
-import { auth } from "@/auth"
-import UserButton from "./UserButton"
-import getSession from "@/lib/getSession"
 import { useSession } from "next-auth/react"
-import TheMenu from "../TheMenu"
 import { Skeleton } from "../ui/skeleton"
-import { User } from "@/types"
+import UserButton from "./UserButton"
 
 const Navbar = () => {
-  const [categoryList, setCategoryList] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const session = useSession()
-  const user = session.data?.user
-
-  console.log(session, "userr")
+  const { data: session, status } = useSession()
+  const user = session?.user
 
   return (
     <header className="bg-white border shadow-sm py-2 w-full">
@@ -42,12 +34,11 @@ const Navbar = () => {
 
           <Searchbar />
           <div className="hidden lg:inline-flex">
-            {/* <MenuBar /> */}
             <TheMenu />
           </div>
 
           <div className="flex items-center gap-2 space-x-2 lg:gap-4">
-            {session?.status === "loading" ? (
+            {status === "loading" ? (
               <Skeleton className="h-8 w-8 rounded-full" />
             ) : user ? (
               <UserButton user={user} />
@@ -57,7 +48,6 @@ const Navbar = () => {
                 <SignUpButton />
               </div>
             )}
-
             <ShopBasketIcon />
             <SideSheet />
           </div>

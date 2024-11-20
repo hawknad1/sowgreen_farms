@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Order, Product, ProductOrder } from "@/types"
 import { Input } from "@/components/ui/input"
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/solid"
+import Image from "next/image"
 
 interface EditOrderProps {
   orders: Order
@@ -39,7 +40,6 @@ const EditOrder = ({ orders }: EditOrderProps) => {
     fetchProductSuggestions()
   }, [searchQuery])
 
-  // Handle adding a new item to the order
   const handleAddItem = () => {
     if (selectedProduct) {
       const existingItem = orderItems.find(
@@ -53,22 +53,20 @@ const EditOrder = ({ orders }: EditOrderProps) => {
       setOrderItems((prev) => [
         ...prev,
         {
-          id: `${selectedProduct.id}-${Date.now()}`, // Generate unique ID
+          id: `${selectedProduct.id}-${Date.now()}`,
           productId: selectedProduct.id,
           orderId: orders.id,
           quantity: 1,
-          quantityTotal: selectedProduct.price * 1, // Ensure this is a number
+          quantityTotal: selectedProduct.price * 1,
           product: selectedProduct,
           order: orders,
         },
       ])
 
       setSelectedProduct(null)
-      setSearchQuery("") // Clear the search input
+      setSearchQuery("")
     }
   }
-
-  // Handle changing quantity of an item
 
   const handleQuantityChange = (productId: string, quantity: number) => {
     setOrderItems((prev) =>
@@ -76,20 +74,18 @@ const EditOrder = ({ orders }: EditOrderProps) => {
         item.productId === productId
           ? {
               ...item,
-              quantity, // Update the quantity directly
-              quantityTotal: item.product.price * quantity, // Recalculate the quantityTotal based on the updated quantity
+              quantity,
+              quantityTotal: item.product.price * quantity,
             }
           : item
       )
     )
   }
 
-  // Handle removing an item from the order
   const handleRemoveItem = (productId: string) => {
     setOrderItems((prev) => prev.filter((item) => item.productId !== productId))
   }
 
-  // Save changes made to the order
   const handleSaveChanges = async () => {
     try {
       const response = await fetch(`/api/orders/${orders.id}`, {
@@ -97,8 +93,6 @@ const EditOrder = ({ orders }: EditOrderProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ products: orderItems }),
       })
-
-      console.log(orderItems, "order---items")
 
       if (response.ok) {
         alert("Order updated successfully")
@@ -120,7 +114,16 @@ const EditOrder = ({ orders }: EditOrderProps) => {
             key={item.id}
             className="flex items-center justify-between border-b py-2"
           >
-            <p>{item?.product?.title}</p>
+            <div className="flex gap-x-3">
+              <Image
+                src={item?.product?.imageUrl}
+                alt={item?.product?.title}
+                height={20}
+                width={20}
+                className="object-contain h-6 w-6"
+              />
+              <p className="font-medium">{item?.product?.title}</p>
+            </div>
             <div className="flex items-center gap-2">
               <Input
                 type="number"

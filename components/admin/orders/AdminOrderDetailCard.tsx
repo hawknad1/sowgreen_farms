@@ -113,10 +113,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                   <div className="flex flex-col">
                     <div className="flex justify-between">
                       <p className="font-semibold text-sm text-neutral-400">
-                        {formatCurrency(
-                          orders?.total - orders?.deliveryFee,
-                          "GHS"
-                        )}
+                        {formatCurrency(orders?.total, "GHS")}
                       </p>
                     </div>
                     <div className="flex justify-between">
@@ -126,7 +123,10 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                     </div>
                     <div className="flex justify-between">
                       <p className="font-semibold text-sm">
-                        {formatCurrency(orders?.total, "GHS")}
+                        {formatCurrency(
+                          orders?.total + orders?.deliveryFee,
+                          "GHS"
+                        )}
                       </p>
                     </div>
                   </div>

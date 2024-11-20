@@ -1,20 +1,23 @@
 "use client"
 import { adminSideMenuLinks, sideMenuLinks } from "@/constants"
-import { CircleHelp, Heart, Settings } from "lucide-react"
+import { CircleHelp, Settings } from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
 import React from "react"
 
 const SideMenu = () => {
-  const session = useSession()
-  const user = session?.data?.user
+  const { data: session } = useSession()
+  const user = session?.user
+
+  if (!user) return null // Avoid rendering if user is not available.
+
   return (
     <div className="flow-root">
       <ul className="-my-2 divide-y divide-gray-100">
         <li className="py-2">
-          {user.role === "admin" ? (
-            <ul className="space-y-1 mt-4">
-              {adminSideMenuLinks.map(({ label, href, icon: Icon }, index) => (
+          <ul className="space-y-1 mt-4">
+            {(user.role === "admin" ? adminSideMenuLinks : sideMenuLinks).map(
+              ({ label, href, icon: Icon }, index) => (
                 <Link
                   key={index}
                   href={href}
@@ -23,24 +26,10 @@ const SideMenu = () => {
                   <Icon className="h-4 w-4" />
                   {label}
                 </Link>
-              ))}
-            </ul>
-          ) : (
-            <ul className="space-y-1 mt-4">
-              {sideMenuLinks.map(({ label, href, icon: Icon }, index) => (
-                <Link
-                  key={index}
-                  href={href}
-                  className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </Link>
-              ))}
-            </ul>
-          )}
+              )
+            )}
+          </ul>
         </li>
-
         <li className="py-2">
           <ul className="space-y-1">
             <Link

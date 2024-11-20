@@ -11,7 +11,7 @@ const MiddleCardAds = () => {
     <div className="grid lg:grid-cols-2 gap-3 w-full">
       <MiddleCard className="bg-orange-100">
         <div>
-          <h3 className="text-base sm:text-xl lg:text-2xl font-bold mb-4 max-w-[185px] sm:max-w-68 md:max-w-80">
+          <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-4 max-w-[185px] sm:max-w-68 md:max-w-80">
             Grab up to{" "}
             <span className="bg-black text-white px-2 rounded-lg">20% off</span>{" "}
             on fresh vegetables
@@ -34,7 +34,7 @@ const MiddleCardAds = () => {
         </div>
       </MiddleCard>
       <MiddleCard className="bg-green-100">
-        <h3 className="text-base sm:text-xl lg:text-2xl font-bold max-w-[185px] sm:max-w-68 md:max-w-[255px]">
+        <h3 className="text-lg sm:text-xl lg:text-2xl font-bold max-w-[185px] sm:max-w-68 md:max-w-[255px]">
           Everyday{" "}
           <span className="bg-black text-white px-2 rounded-lg">fresh</span> &{" "}
           <span className="bg-black text-white px-2 rounded-lg">clean</span>{" "}
