@@ -57,7 +57,7 @@ const EditOrder = ({ orders }: EditOrderProps) => {
           productId: selectedProduct.id,
           orderId: orders.id,
           quantity: 1,
-          quantityTotal: selectedProduct.price * 1,
+          quantityTotal: (selectedProduct.price * 1).toString(), // Convert to string
           product: selectedProduct,
           order: orders,
         },
@@ -75,7 +75,7 @@ const EditOrder = ({ orders }: EditOrderProps) => {
           ? {
               ...item,
               quantity,
-              quantityTotal: item.product.price * quantity,
+              quantityTotal: (item.product.price * quantity).toString(), // Convert to string
             }
           : item
       )

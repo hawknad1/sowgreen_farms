@@ -15,6 +15,7 @@ export async function GET(req: Request) {
     })
     return NextResponse.json(orders, { status: 200 })
   } catch (error) {
+    console.log(error)
     return NextResponse.json(
       { message: "couldnt fetch orders" },
       { status: 500 }

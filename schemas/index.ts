@@ -58,12 +58,14 @@ export const AddProductSchema = z.object({
   description: z.string().min(5, { message: "Description is required!" }),
   discount: z.coerce.number().optional(),
   imageUrl: z.string(),
-  images: z.array(
-    z.object({
-      productImageUrl: z.string(),
-      publicId: z.string(),
-    })
-  ),
+  images: z
+    .array(
+      z.object({
+        productImageUrl: z.string(),
+        publicId: z.string(),
+      })
+    )
+    .optional(),
   price: z.coerce.number().positive().optional(),
   weight: z.coerce.number().positive().optional(),
   unit: z.string(),
@@ -86,8 +88,13 @@ export const EditProductSchema = z.object({
   isInStock: z.string().optional(),
 })
 
+// export const UpdateStatusSchema = z.object({
+//   status: z.string(),
+//   dispatchRider: z.string().optional(),
+// })
+
 export const UpdateStatusSchema = z.object({
-  status: z.string(),
+  status: z.enum(["processing", "confirmed", "shipped", "delivered"]),
   dispatchRider: z.string().optional(),
 })
 

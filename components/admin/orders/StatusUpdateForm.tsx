@@ -9,7 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { UpdateStatusSchema } from "@/schemas"
 import {
   Select,
   SelectContent,
@@ -23,6 +22,7 @@ import React from "react"
 import { dispatchRider, orderStatusCard } from "@/constants"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { UpdateStatusSchema } from "@/schemas"
 
 const StatusUpdateForm = ({
   orders,
@@ -42,6 +42,7 @@ const StatusUpdateForm = ({
   })
 
   const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
+    console.log(values, "----vv")
     try {
       const res = await fetch(`/api/orders/${orders?.id}`, {
         method: "PUT",

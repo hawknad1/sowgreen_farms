@@ -159,7 +159,7 @@ export type ProductOrder = {
   productId: string
   orderId: string
   quantity: number
-  quantityTotal: number // Changed from string to number
+  quantityTotal: string // Changed from string to number
   product: Product
   weight?: number
   order: Order
