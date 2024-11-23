@@ -91,25 +91,60 @@ export async function POST(req: NextRequest) {
 //   }
 // }
 
+// export async function GET(req: NextRequest) {
+//   try {
+//     // Extract search query from URL
+//     const { searchParams } = new URL(req.url)
+//     const query = searchParams.get("query")
+
+//     // Fetch products based on query or return all products
+//     const products = await prisma.product.findMany({
+//       where: query
+//         ? {
+//             title: {
+//               contains: query, // Search for partial matches
+//               mode: "insensitive", // Case-insensitive search
+//             },
+//           }
+//         : undefined, // If no query, return all products
+//     })
+
+//     return NextResponse.json(products, { status: 200 })
+//   } catch (error) {
+//     console.error("Error fetching products:", error)
+//     return NextResponse.json(
+//       { error: "Couldn't get all products" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
 export async function GET(req: NextRequest) {
   try {
     // Extract search query from URL
     const { searchParams } = new URL(req.url)
     const query = searchParams.get("query")
 
-    // Fetch products based on query or return all products
+    // If no query, return all products
+    if (!query) {
+      const products = await prisma.product.findMany()
+      return NextResponse.json(products, { status: 200 })
+    }
+
+    // Normalize query (convert to lowercase for case insensitivity)
+    const normalizedQuery = query.toLowerCase()
+
+    // Fetch products based on normalized query (case insensitive search)
     const products = await prisma.product.findMany({
-      where: query
-        ? {
-            title: {
-              contains: query, // Search for partial matches
-              mode: "insensitive", // Case-insensitive search
-            },
-          }
-        : undefined, // If no query, return all products
+      where: {
+        title: {
+          contains: normalizedQuery, // Search for partial matches
+          mode: "insensitive", // Case-insensitive search
+        },
+      },
     })
 
-    return NextResponse.json(products, { status: 200 })
+    return NextResponse.json({ products }, { status: 200 })
   } catch (error) {
     console.error("Error fetching products:", error)
     return NextResponse.json(

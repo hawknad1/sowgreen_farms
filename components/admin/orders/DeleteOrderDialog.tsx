@@ -12,7 +12,7 @@ import {
 } from "../../ui/dialog"
 import { Button } from "../../ui/button"
 import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
+import { toast } from "react-hot-toast"
 import { Order } from "@/types"
 
 interface Props {
@@ -43,8 +43,9 @@ const DeleteOrderDialog = ({ order, children, className }: Props) => {
         )
       }
 
-      toast.success(`Order No ${order.orderNumber} deleted successfully!`)
       setIsOpen(false)
+      toast.success(`Order deleted successfully!`)
+
       router.replace("/admin/orders")
     } catch (error: any) {
       toast.error(error.message || "Error deleting order.")

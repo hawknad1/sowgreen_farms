@@ -96,11 +96,13 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               </div>
               <div className="flex justify-between">
                 <p className="font-medium">Subtotal</p>
-                <p>{`GHS ${subtotal.toFixed(2)}`}</p>
+                <p>{`GHS ${orderDetails?.total.toFixed(2)}`}</p>
               </div>
               <div className="flex justify-between">
                 <p className="font-medium">Order Total</p>
-                <p>{`GHS ${orderDetails?.total}`}</p>
+                <p>{`GHS ${(
+                  orderDetails?.total + orderDetails?.deliveryFee
+                ).toFixed(2)}`}</p>
               </div>
             </div>
           </div>
@@ -137,9 +139,9 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 </div>
 
                 <div className="text-right space-y-1">
-                  <p className="font-medium text-gray-800">{`GHS ${addTax(
-                    product.product.price
-                  ).toFixed(2)}`}</p>
+                  <p className="font-medium text-gray-800">{`GHS ${product.product.price.toFixed(
+                    2
+                  )}`}</p>
                   <div className="text-sm text-neutral-600 space-x-2">
                     <span className="font-semibold">{`QTY : ${product.quantity}`}</span>
                     <span>{`Subtotal: GHS ${product?.quantityTotal}`}</span>
@@ -155,12 +157,14 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
             </div>
             <div className="flex justify-between">
               <p className="text-neutral-600">Subtotal</p>
-              <p>{`GHS ${subtotal.toFixed(2)}`}</p>
+              <p>{`GHS ${orderDetails?.total.toFixed(2)}`}</p>
             </div>
 
             <div className="flex justify-between">
               <p className="text-neutral-600">Total</p>
-              <p>{`GHS ${orderDetails?.total}`}</p>
+              <p>{`GHS ${(
+                orderDetails?.total + orderDetails?.deliveryFee
+              ).toFixed(2)}`}</p>
             </div>
           </div>
         </div>

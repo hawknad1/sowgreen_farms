@@ -75,6 +75,114 @@ export async function DELETE(
   }
 }
 
+// export async function PUT(
+//   req: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   const { status, dispatchRider, paymentAction, products } = await req.json()
+//   const orderId = params.id
+
+//   try {
+//     // Fetch the existing order with related products
+//     const existingOrder = await prisma.order.findUnique({
+//       where: { id: orderId },
+//       include: { products: { include: { product: true } } },
+//     })
+
+//     if (!existingOrder) {
+//       return NextResponse.json({ message: "Order not found" }, { status: 404 })
+//     }
+
+//     // Update products logic if products are provided
+//     if (products?.length) {
+//       const updatedProductsPromises = products.map(
+//         async (product: { productId: string; quantity: number }) => {
+//           const { productId, quantity } = product
+
+//           // Check if product already exists in the order
+//           const existingProductOrder = existingOrder.products.find(
+//             (p) => p.productId === productId
+//           )
+
+//           if (existingProductOrder) {
+//             // Update existing product order
+//             const newQuantityTotal = (
+//               quantity * existingProductOrder.product.price
+//             ).toString()
+
+//             return prisma.productOrder.update({
+//               where: { id: existingProductOrder.id },
+//               data: {
+//                 quantity,
+//                 quantityTotal: newQuantityTotal,
+//               },
+//             })
+//           }
+
+//           // Create a new product order if it doesn't exist
+//           const productDetails = await prisma.product.findUnique({
+//             where: { id: productId },
+//           })
+
+//           if (!productDetails) {
+//             throw new Error(`Product with id ${productId} not found`)
+//           }
+
+//           const quantityTotal = (
+//             quantity * (productDetails.price || 0)
+//           ).toString()
+
+//           return prisma.productOrder.create({
+//             data: {
+//               orderId,
+//               productId,
+//               quantity,
+//               quantityTotal,
+//             },
+//           })
+//         }
+//       )
+
+//       await Promise.all(updatedProductsPromises)
+//     }
+
+//     // Update order fields including status, dispatchRider, and paymentAction
+//     const updatedOrder = await prisma.order.update({
+//       where: { id: orderId },
+//       data: {
+//         status,
+//         dispatchRider,
+//         paymentAction,
+//         total: await getTotalForOrder(orderId), // Recalculate total
+//       },
+//       include: { products: { include: { product: true } } },
+//     })
+
+//     return NextResponse.json(updatedOrder)
+//   } catch (error) {
+//     console.error("Error updating order:", error)
+//     return NextResponse.json(
+//       { message: "Error editing order" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
+// // Helper function to calculate total for the order
+// async function getTotalForOrder(orderId: string) {
+//   const orderWithProducts = await prisma.order.findUnique({
+//     where: { id: orderId },
+//     include: { products: { include: { product: true } } },
+//   })
+
+//   if (!orderWithProducts) return 0
+
+//   return orderWithProducts.products.reduce((sum, productOrder) => {
+//     const price = productOrder.product.price || 0
+//     return sum + price * productOrder.quantity
+//   }, 0)
+// }
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -93,7 +201,25 @@ export async function PUT(
       return NextResponse.json({ message: "Order not found" }, { status: 404 })
     }
 
-    // Update products logic if products are provided
+    // ** Step 1: Identify ProductOrders to delete **
+    if (products?.length) {
+      const incomingProductIds = products.map(
+        (product: { productId: string }) => product.productId
+      )
+
+      const productsToDelete = existingOrder.products.filter(
+        (existingProduct) =>
+          !incomingProductIds.includes(existingProduct.productId)
+      )
+
+      // Delete ProductOrders not present in the incoming data
+      const deletePromises = productsToDelete.map((productOrder) =>
+        prisma.productOrder.delete({ where: { id: productOrder.id } })
+      )
+      await Promise.all(deletePromises)
+    }
+
+    // ** Step 2: Update or create ProductOrders **
     if (products?.length) {
       const updatedProductsPromises = products.map(
         async (product: { productId: string; quantity: number }) => {
@@ -146,7 +272,7 @@ export async function PUT(
       await Promise.all(updatedProductsPromises)
     }
 
-    // Update order fields including status, dispatchRider, and paymentAction
+    // ** Step 3: Update order fields including status, dispatchRider, and paymentAction **
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
       data: {
