@@ -21,6 +21,7 @@ import OrderSummary from "./OrderSummary"
 import { useRouter } from "next/navigation"
 import { DeliveryMethod } from "./DeliveryMethod"
 import { useSession } from "next-auth/react"
+import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
 
 interface ExtendedUser {
   email: string
@@ -93,8 +94,6 @@ export function CheckoutForm() {
     selectedPickupOption,
     setDeliveryFee,
   ])
-
-  console.log(deliveryFee, "seeccoonddd")
 
   async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
     // Add delivery method to the form data

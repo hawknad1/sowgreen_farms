@@ -28,8 +28,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
     fetchOrderDetails()
   }, [orderNumber])
 
-  console.log(orderDetails, "order details")
-
   if (isLoading)
     return (
       <div className="w-full h-screen flex justify-center items-center">

@@ -28,10 +28,10 @@ const ThankYouPage = () => {
         return "Pick up - Dzorwolu"
       case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
         return "Pick up - Dubois Center"
-      case "same-day-delivery":
-        return "Same Day Delivery"
-      case "next-day-delivery":
-        return "Next Day Delivery"
+      case "wednesday-delivery":
+        return "Wednesday Delivery"
+      case "saturday-delivery":
+        return "Saturday Delivery"
       default:
         return deliveryMethod || "Not specified"
     }

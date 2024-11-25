@@ -15,6 +15,7 @@ import {
 import { Category, Product } from "@/types"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import SkeletonItems from "./skeletons/SkeletonItems"
 
 function TheMenu() {
   const [categoryList, setCategoryList] = React.useState<Category[]>([])
@@ -63,15 +64,15 @@ function TheMenu() {
     getCategories()
   }, [])
 
-  const SkeletonItem = () => (
-    <div className="flex items-center space-x-2 p-2 rounded-md bg-gray-200 animate-pulse">
-      <div className="h-12 w-14 bg-gray-300" />
-      <div className="flex-1 space-y-2">
-        <div className="h-4 w-3/4 bg-gray-300" />
-        <div className="h-3 w-1/2 bg-gray-300" />
-      </div>
-    </div>
-  )
+  // const SkeletonItem = () => (
+  //   <div className="flex items-center space-x-2 p-2 rounded-md bg-gray-200 animate-pulse">
+  //     <div className="h-12 w-14 bg-gray-300" />
+  //     <div className="flex-1 space-y-2">
+  //       <div className="h-4 w-3/4 bg-gray-300" />
+  //       <div className="h-3 w-1/2 bg-gray-300" />
+  //     </div>
+  //   </div>
+  // )
 
   return (
     <NavigationMenu>
@@ -90,7 +91,7 @@ function TheMenu() {
             <ul className="grid gap-3 md:grid-cols-2">
               {loading
                 ? Array.from({ length: 6 }).map((_, index) => (
-                    <SkeletonItem key={index} />
+                    <SkeletonItems key={index} />
                   ))
                 : productList.slice(0, 6).map((product: Product) => (
                     <Link
@@ -133,7 +134,7 @@ function TheMenu() {
             <ul className="grid gap-3 md:grid-cols-2">
               {isLoading
                 ? Array.from({ length: 8 }).map((_, index) => (
-                    <SkeletonItem key={index} />
+                    <SkeletonItems key={index} />
                   ))
                 : categoryList.map((category) => (
                     <Link
@@ -183,7 +184,7 @@ function TheMenu() {
   )
 }
 
-const ListItem = React.forwardRef<
+export const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">
 >(({ className, title, children, ...props }, ref) => {

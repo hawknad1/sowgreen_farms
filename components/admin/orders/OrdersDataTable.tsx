@@ -34,6 +34,7 @@ import DataSkeletons from "../../skeletons/DataSkeletons"
 import Export from "../Export"
 import { Order } from "@/types"
 import { downloadOrders } from "@/lib/xlsx"
+import AddCustomerOrderDialog from "./AddCustomerOrderDialog"
 
 interface OrdersProps {
   loading: boolean
@@ -127,6 +128,7 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
         <Export action={handleExport} />
+        <AddCustomerOrderDialog />
       </div>
 
       <div className="overflow-hidden rounded-md border">

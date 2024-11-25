@@ -1,4 +1,5 @@
 // import { Order, Payment, Product, ShippingAddress } from "@/types"
+import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
 import { ShippingAddress } from "@/types"
 import {
   BookmarkIcon,
@@ -241,18 +242,24 @@ export const sidebarLinks = [
   },
 ]
 
+const [wednesday, saturday] = getUpcomingDeliveryDates()
+
+console.log(wednesday, "wednesday---")
+console.log(saturday.toLocaleDateString("en-US"), "saturday---")
+
 export const deliveryMethods = [
   {
-    label: "Same Day Delivery",
-    tag: "(Order before 10AM)",
+    label: "Wednesday Delivery",
+    tag: "",
+    date: wednesday.toLocaleDateString("en-US"),
     price: `GHS ${20}`,
-    value: "same-day-delivery",
+    value: "wednesday-delivery",
   },
   {
-    label: "Next Day Delivery",
-    date: "",
+    label: "Saturday Delivery",
+    date: saturday.toLocaleDateString("en-US"),
     price: `GHS ${20}`,
-    value: "next-day-delivery",
+    value: "saturday-delivery",
   },
   {
     label: "Schedule a pickup",
