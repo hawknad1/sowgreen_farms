@@ -60,12 +60,56 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: "createdAt",
-    header: "Date",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"))
+      const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }
       return <div>{date.toLocaleDateString("en-US", options)}</div>
     },
+    sortingFn: (rowA, rowB) => {
+      const dateA = new Date(rowA.original.createdAt).getTime()
+      const dateB = new Date(rowB.original.createdAt).getTime()
+      return dateA - dateB // Ascending order
+    },
   },
+
+  // {
+  //   accessorKey: "orderNumber",
+  //   header: ({ column }) => {
+  //     return (
+  //       <Button
+  //         variant="ghost"
+  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //       >
+  //         Order Number
+  //         <ArrowUpDown className="ml-2 h-4 w-4" />
+  //       </Button>
+  //     )
+  //   },
+  //   cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
+  // },
+  // {
+  //   accessorKey: "createdAt",
+  //   header: "Date",
+  //   cell: ({ row }) => {
+  //     const date = new Date(row.getValue("createdAt"))
+  //     return <div>{date.toLocaleDateString("en-US", options)}</div>
+  //   },
+  // },
 
   {
     accessorKey: "shippingAddress.name",

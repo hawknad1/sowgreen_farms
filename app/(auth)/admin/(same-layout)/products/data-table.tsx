@@ -55,8 +55,6 @@ const ProductDataTable = ({ products, loading }: ProductProps) => {
     Record<string, boolean>
   >({})
 
-  console.log(products, "data--pro")
-
   const table = useReactTable<Product>({
     data: products,
     columns,
@@ -75,10 +73,6 @@ const ProductDataTable = ({ products, loading }: ProductProps) => {
       rowSelection,
     },
   })
-
-  const check = table
-
-  console.log(check, "table----")
 
   return (
     <div className="w-full">

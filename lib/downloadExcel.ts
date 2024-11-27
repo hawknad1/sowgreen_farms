@@ -33,7 +33,6 @@ async function fetchOrders() {
 
 // Current Date
 const currentDate = formatDate(new Date())
-console.log(currentDate)
 
 export default async function downloadExcel() {
   const products = await fetchProducts() // Fetch products from the API
@@ -100,13 +99,15 @@ export default async function downloadExcel() {
       return null // If no order for that product, return 0
     })
 
-    const totalOrderAmount = orderDetails.reduce(
-      (acc: number, curr: number) => acc + curr,
-      0
-    )
+    const totalOrderAmount = order.total
 
     // Add the row with customer name, their order details, and the total
-    worksheet.addRow([customerName, ...orderDetails, totalOrderAmount])
+    worksheet.addRow([
+      customerName,
+      ...orderDetails,
+      totalOrderAmount,
+      customerName,
+    ])
   })
 
   // Calculate totals dynamically for each product column

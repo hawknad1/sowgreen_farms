@@ -35,6 +35,7 @@ import Export from "../Export"
 import { Order } from "@/types"
 import { downloadOrders } from "@/lib/xlsx"
 import AddCustomerOrderDialog from "./AddCustomerOrderDialog"
+import ExportDialog from "../Export"
 
 interface OrdersProps {
   loading: boolean
@@ -127,7 +128,8 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <Export action={handleExport} />
+        {/* <Export action={handleExport} /> */}
+        <ExportDialog action={handleExport} />
         <AddCustomerOrderDialog />
       </div>
 
