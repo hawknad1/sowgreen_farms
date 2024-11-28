@@ -45,14 +45,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
           </div>
 
           <div className="flex items-center gap-x-3">
-            {/* <Button variant="outline" className="flex gap-x-1">
-              <DocumentArrowDownIcon className="w-4 h-4" />
-              Send Invoice
-            </Button> */}
-            {/* <Button variant="destructive" className="font-medium">
-              Delete Order
-            </Button> */}
-
             <DeleteOrderDialog order={orders} />
             <AddCredit />
           </div>

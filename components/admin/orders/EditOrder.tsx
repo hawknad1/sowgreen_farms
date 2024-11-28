@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Order, ProductOrder } from "@/types"
 import { Input } from "@/components/ui/input"
@@ -15,6 +15,18 @@ const EditOrder = ({ orders }: EditOrderProps) => {
   const [orderItems, setOrderItems] = useState<ProductOrder[]>(
     orders.products || []
   )
+  const [subtotal, setSubtotal] = useState(0)
+  const [total, setTotal] = useState(0)
+
+  // Recalculate subtotal and total whenever order items change
+  useEffect(() => {
+    const newSubtotal = orderItems.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    )
+    setSubtotal(newSubtotal)
+    setTotal(newSubtotal + orders.deliveryFee)
+  }, [orderItems, orders.deliveryFee])
 
   const handleQuantityChange = (productId: string, quantity: number) => {
     setOrderItems((prev) =>
@@ -23,7 +35,7 @@ const EditOrder = ({ orders }: EditOrderProps) => {
           ? {
               ...item,
               quantity,
-              quantityTotal: (item.product.price * quantity).toString(), // Convert to string
+              quantityTotal: (item.product.price * quantity).toString(),
             }
           : item
       )
@@ -35,7 +47,6 @@ const EditOrder = ({ orders }: EditOrderProps) => {
   }
 
   const handleAddProduct = (newProductOrder: ProductOrder) => {
-    // Avoid duplicate products
     const exists = orderItems.some(
       (item) => item.productId === newProductOrder.productId
     )
@@ -43,7 +54,6 @@ const EditOrder = ({ orders }: EditOrderProps) => {
       toast.error("Product already exists in the order!")
       return
     }
-
     setOrderItems((prev) => [...prev, newProductOrder])
   }
 
@@ -52,7 +62,11 @@ const EditOrder = ({ orders }: EditOrderProps) => {
       const response = await fetch(`/api/orders/${orders.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ products: orderItems }),
+        body: JSON.stringify({
+          products: orderItems,
+          subtotal,
+          total,
+        }),
       })
 
       if (response.ok) {
@@ -68,7 +82,7 @@ const EditOrder = ({ orders }: EditOrderProps) => {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-1">
       <h3 className="text-lg font-semibold">Edit Order Items</h3>
       <div className="max-h-[220px] overflow-scroll scrollbar-hide">
         {orderItems.map((item) => (
@@ -107,7 +121,14 @@ const EditOrder = ({ orders }: EditOrderProps) => {
         ))}
       </div>
       <SearchProduct orders={orders} onAddProduct={handleAddProduct} />
-      <Button onClick={handleSaveChanges} className="mt-4">
+      <div className="flex justify-between items-center mt-4">
+        <p className="text-sm font-semibold">Subtotal: {subtotal}</p>
+        <p className="text-sm font-semibold">
+          Delivery Fee: {orders.deliveryFee}
+        </p>
+        <p className="text-lg font-bold">Total: {total}</p>
+      </div>
+      <Button onClick={handleSaveChanges} className="mt-4 w-full">
         Save Changes
       </Button>
     </div>

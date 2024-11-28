@@ -183,6 +183,22 @@ export async function DELETE(
 //   }, 0)
 // }
 
+// Helper function to calculate the total for the order
+async function getTotalForOrder(orderId: string): Promise<number> {
+  const orderWithProducts = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: { products: { include: { product: true } } },
+  })
+
+  if (!orderWithProducts) return 0
+
+  return orderWithProducts.products.reduce((sum, productOrder) => {
+    const price = productOrder.product.price || 0
+    return sum + price * productOrder.quantity
+  }, 0)
+}
+
+// Main API handler for updating an order
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -201,8 +217,9 @@ export async function PUT(
       return NextResponse.json({ message: "Order not found" }, { status: 404 })
     }
 
-    // ** Step 1: Identify ProductOrders to delete **
+    // ** Step 1: Handle ProductOrders only if `products` is provided **
     if (products?.length) {
+      // Identify ProductOrders to delete
       const incomingProductIds = products.map(
         (product: { productId: string }) => product.productId
       )
@@ -217,10 +234,8 @@ export async function PUT(
         prisma.productOrder.delete({ where: { id: productOrder.id } })
       )
       await Promise.all(deletePromises)
-    }
 
-    // ** Step 2: Update or create ProductOrders **
-    if (products?.length) {
+      // Update or create ProductOrders
       const updatedProductsPromises = products.map(
         async (product: { productId: string; quantity: number }) => {
           const { productId, quantity } = product
@@ -272,15 +287,21 @@ export async function PUT(
       await Promise.all(updatedProductsPromises)
     }
 
-    // ** Step 3: Update order fields including status, dispatchRider, and paymentAction **
+    // ** Step 2: Update order fields **
+    const updateData: Record<string, any> = {
+      status,
+      dispatchRider,
+      paymentAction,
+    }
+
+    // Recalculate total only if `products` is provided
+    if (products?.length) {
+      updateData.total = await getTotalForOrder(orderId)
+    }
+
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
-      data: {
-        status,
-        dispatchRider,
-        paymentAction,
-        total: await getTotalForOrder(orderId), // Recalculate total
-      },
+      data: updateData,
       include: { products: { include: { product: true } } },
     })
 
@@ -292,19 +313,4 @@ export async function PUT(
       { status: 500 }
     )
   }
-}
-
-// Helper function to calculate total for the order
-async function getTotalForOrder(orderId: string) {
-  const orderWithProducts = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: { products: { include: { product: true } } },
-  })
-
-  if (!orderWithProducts) return 0
-
-  return orderWithProducts.products.reduce((sum, productOrder) => {
-    const price = productOrder.product.price || 0
-    return sum + price * productOrder.quantity
-  }, 0)
 }

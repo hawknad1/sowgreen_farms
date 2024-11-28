@@ -51,13 +51,6 @@ const ThankYouPage = () => {
     }
   }, [products])
 
-  // Debugging logs
-  useEffect(() => {
-    console.log("Orders Data:", ordersData)
-    console.log("Cart Data:", cart)
-    console.log("Products in Order:", products)
-  }, [ordersData, cart, products])
-
   // Format delivery fee
   const formattedDelivery = formatCurrency(deliveryFee || 0, "GHS")
 
@@ -155,7 +148,7 @@ const ThankYouPage = () => {
               <div className="flex justify-between">
                 <p className="text-sm font-bold text-black">Total</p>
                 <p className="text-sm font-bold">
-                  {formatCurrency(total, "GHS")}
+                  {formatCurrency(total + deliveryFee, "GHS")}
                 </p>
               </div>
             </div>

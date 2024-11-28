@@ -113,7 +113,7 @@ export default async function downloadExcel(from: Date, to: Date) {
       return null // If no order for that product, return 0
     })
 
-    const totalOrderAmount = order.total
+    const totalOrderAmount = order.total + order.deliveryFee
 
     // Add the row with customer name, their order details, and the total
     worksheet.addRow([

@@ -40,8 +40,7 @@ const ModifyOrderDialog = ({ order, children, className }: Props) => {
         <DialogHeader>
           <DialogTitle>{`Modify Order No. ${order.orderNumber}`}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this order? This action cannot be
-            undone.
+            Edit, remove or add new product to existing order.
           </DialogDescription>
           <EditOrder orders={order} />
         </DialogHeader>

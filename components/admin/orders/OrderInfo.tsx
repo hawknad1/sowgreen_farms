@@ -13,6 +13,8 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
     cardType,
   } = orders
 
+  const orderTotal = total + deliveryFee
+
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
       case "Wednesday - DZORWULU - 11AM-5PM":
@@ -58,7 +60,7 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
       )}
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}
-        {(total + deliveryFee).toFixed(2)}
+        {orderTotal.toFixed(2)}
       </p>
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Delivery Method: </span>{" "}

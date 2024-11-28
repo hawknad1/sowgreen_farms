@@ -1,7 +1,7 @@
 import { Separator } from "@/components/ui/separator"
 import React, { useMemo } from "react"
 import Card from "./Card"
-import { date } from "@/lib/utils"
+import { date, formatCurrency } from "@/lib/utils"
 
 interface InfoCardProps {
   data: any
@@ -101,7 +101,8 @@ const InfoCard = ({ data }: InfoCardProps) => {
           <div className="w-full flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-700">Order Total</h3>
             <p className="text-gray-600 flex justify-end md:justify-start">
-              {data?.formattedTotal || "No total"}
+              {formatCurrency(data?.total + data?.deliveryFee, "GHS") ||
+                "No total"}
             </p>
           </div>
         </div>

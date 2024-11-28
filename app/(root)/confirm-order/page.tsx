@@ -89,7 +89,8 @@ const ConfirmOrderPage = () => {
   }))
 
   const basketTotal = getCartTotal(cartWithTax)
-  const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
+  // const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
+  const total = parseFloat(basketTotal)
 
   const {
     updatedBalance,
@@ -108,6 +109,8 @@ const ConfirmOrderPage = () => {
     cart,
     formattedSubtotal,
     formattedTotal,
+    total,
+    deliveryFee,
   }
 
   const taxedOrders = orders.map((order) => ({
@@ -217,7 +220,6 @@ const ConfirmOrderPage = () => {
       } else {
         throw new Error("Invalid payment reference")
       }
-      console.log("Final paymentAction before ordersData:", verifyData)
 
       const ordersData = {
         products: taxedOrders,
@@ -234,6 +236,8 @@ const ConfirmOrderPage = () => {
       }
 
       setOrdersData(ordersData)
+      console.log(ordersData, "orders---data")
+      console.log(total, "total---order")
 
       // Save shipping address
       const shippingResponse = await fetch("/api/address", {

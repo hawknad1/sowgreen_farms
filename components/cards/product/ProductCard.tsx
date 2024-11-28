@@ -9,6 +9,7 @@ import { Product } from "@/types"
 import { addTax } from "@/lib/addTax"
 import { Badge } from "@/components/ui/badge"
 import { formatCurrency } from "@/lib/utils"
+import { formatWeight } from "@/lib/formatWeight"
 
 interface ProductCardProps {
   data: Product
@@ -79,7 +80,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
                 </p>
                 {data?.weight > 0 && (
                   <div className="flex items-center text-neutral-400 px-0.5">
-                    <p className="text-sm tracking-wide font-medium">{`/${data?.weight}`}</p>
+                    <p className="text-sm tracking-wide font-medium">{`/${formatWeight(
+                      data?.weight
+                    )}`}</p>
                     <p className="text-sm tracking-wide font-medium">{`${data?.unit}`}</p>
                   </div>
                 )}
