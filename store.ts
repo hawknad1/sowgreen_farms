@@ -45,6 +45,13 @@ interface DeliveryStore {
   setDeliveryFee: (fee: number) => void
 }
 
+type DateRange = [Date | null, Date | null]
+
+interface DatePickerStore {
+  dateRange: DateRange
+  setDateRange: (range: DateRange) => void
+}
+
 interface CartState {
   cart: Product[]
   addToCart: (product: Product) => void
@@ -221,3 +228,8 @@ export const useCustomerStore = create<AddressStore>()(
     }
   )
 )
+
+export const useDateRangeStore = create<DatePickerStore>((set) => ({
+  dateRange: [null, null], // Default value
+  setDateRange: (range) => set({ dateRange: range }),
+}))

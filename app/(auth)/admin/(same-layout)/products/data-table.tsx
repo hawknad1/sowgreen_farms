@@ -109,7 +109,7 @@ const ProductDataTable = ({ products, loading }: ProductProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
         <AddProduct />
-        <Export action={() => downloadProducts(products)} />
+        <Export />
       </div>
       <div className="rounded-md border">
         <Table>

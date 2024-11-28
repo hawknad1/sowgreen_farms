@@ -1,13 +1,8 @@
 "use client"
-import React, { useState } from "react"
+
+import React from "react"
 import { Button } from "../ui/button"
 import { ArrowDownTrayIcon } from "@heroicons/react/24/outline"
-import { downloadOrders } from "@/lib/xlsx"
-
-import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
-import { Order } from "@/types"
-import { PencilSquareIcon } from "@heroicons/react/20/solid"
 import {
   Dialog,
   DialogContent,
@@ -17,19 +12,19 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
+import ExportButton from "@/app/(auth)/admin/(same-layout)/management/ExportButton"
+import { DatePickerR } from "@/app/(auth)/admin/(same-layout)/management/DatePicker"
 
-const ExportDialog = ({ action }: { action: any }) => {
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
+const ExportDialog = () => {
+  const [isOpen, setIsOpen] = React.useState(false)
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => setIsOpen(open)} // Automatically handles dialog state
+    >
       <DialogTrigger asChild>
-        <Button
-          // onClick={action}
-          className="flex items-center gap-x-1.5 px-4 py-2"
-        >
+        <Button className="flex items-center gap-x-1.5 px-4 py-2">
           <ArrowDownTrayIcon className="h-4 w-4" />
           Export
         </Button>
@@ -37,24 +32,22 @@ const ExportDialog = ({ action }: { action: any }) => {
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{`Export Sheet`}</DialogTitle>
-          <DialogDescription>Download your </DialogDescription>
+          <DialogTitle>Export Sheet</DialogTitle>
+          <DialogDescription>
+            Download your data within a date range.
+          </DialogDescription>
+          {/* Default close button (X) is provided by DialogHeader or DialogContent */}
         </DialogHeader>
-        <DialogFooter></DialogFooter>
+        <div className="flex flex-col items-center gap-y-3 w-full justify-center">
+          {/* Date Picker directly updates store */}
+          <DatePickerR />
+          {/* Export button uses the current date range */}
+          <ExportButton />
+        </div>
+        <DialogFooter />
       </DialogContent>
     </Dialog>
   )
 }
 
 export default ExportDialog
-
-// const Export = ({ action }: { action: any }) => {
-//   return (
-//     <Button onClick={action} className="flex items-center gap-x-1.5 px-4 py-2">
-//       <ArrowDownTrayIcon className="h-4 w-4" />
-//       Export
-//     </Button>
-//   )
-// }
-
-// export default Export

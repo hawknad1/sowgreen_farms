@@ -13,7 +13,7 @@ const BasketOrderSummery = () => {
 
   const cartWithTax = cart.map((product) => ({
     ...product,
-    price: addTax(product.price),
+    price: product.price,
   }))
 
   if (cart.length > 0) {

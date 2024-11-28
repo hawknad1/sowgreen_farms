@@ -3,7 +3,26 @@ import { NextResponse } from "next/server"
 
 export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url)
+    const from = searchParams.get("from")
+    const to = searchParams.get("to")
+
+    // Build the date filter
+    const dateFilter =
+      from || to
+        ? {
+            createdAt: {
+              ...(from ? { gte: new Date(from) } : {}),
+              ...(to
+                ? { lte: new Date(new Date(to).setHours(23, 59, 59, 999)) }
+                : {}),
+            },
+          }
+        : {}
+
+    // Fetch orders with filters
     const orders = await prisma.order.findMany({
+      where: dateFilter,
       include: {
         shippingAddress: true,
         products: {
@@ -13,11 +32,12 @@ export async function GET(req: Request) {
         },
       },
     })
+
     return NextResponse.json(orders, { status: 200 })
   } catch (error) {
-    console.log(error)
+    console.error("Error fetching orders:", error)
     return NextResponse.json(
-      { message: "couldnt fetch orders" },
+      { message: "Couldn't fetch orders" },
       { status: 500 }
     )
   }

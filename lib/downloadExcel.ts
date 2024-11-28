@@ -17,12 +17,20 @@ async function fetchProducts() {
 }
 
 // Fetch orders from the API
-async function fetchOrders() {
+
+async function fetchOrders(from?: Date, to?: Date) {
   try {
-    const response = await fetch("/api/orders")
+    const queryParams = new URLSearchParams()
+
+    if (from) queryParams.append("from", from.toISOString())
+    if (to) queryParams.append("to", to.toISOString())
+
+    const response = await fetch(`/api/orders?${queryParams.toString()}`)
+
     if (!response.ok) {
-      throw new Error("Failed to fetch orders")
+      throw new Error(`Failed to fetch orders: ${response.statusText}`)
     }
+
     const data = await response.json()
     return data // Return full order details
   } catch (error) {
@@ -34,9 +42,9 @@ async function fetchOrders() {
 // Current Date
 const currentDate = formatDate(new Date())
 
-export default async function downloadExcel() {
+export default async function downloadExcel(from: Date, to: Date) {
   const products = await fetchProducts() // Fetch products from the API
-  const orders = await fetchOrders() // Fetch orders from the API
+  const orders = await fetchOrders(from, to) // Fetch orders from the API
 
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet("Report")

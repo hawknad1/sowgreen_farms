@@ -129,7 +129,7 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
         {/* <Export action={handleExport} /> */}
-        <ExportDialog action={handleExport} />
+        <ExportDialog />
         <AddCustomerOrderDialog />
       </div>
 

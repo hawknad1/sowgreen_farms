@@ -40,7 +40,7 @@ const BasketItems = () => {
         {Object.keys(grouped).map((id) => {
           const item = grouped[id][0]
           const total = getCartTotal(grouped[id])
-          const taxedItem = addTax(parseInt(total))
+          const taxedItem = total
 
           return (
             <li
@@ -72,7 +72,7 @@ const BasketItems = () => {
               <div className="flex flex-col border rounded-md p-2 lg:p-3.5">
                 <AddToCart product={item} />
                 <p className="mt-4 font-bold text-center">
-                  {formatCurrency(taxedItem, "GHS")}
+                  {formatCurrency(parseFloat(taxedItem), "GHS")}
                 </p>
               </div>
             </li>
