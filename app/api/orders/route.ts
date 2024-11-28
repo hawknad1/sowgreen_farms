@@ -1,11 +1,54 @@
 import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
 
+// export async function GET(req: Request) {
+//   try {
+//     const { searchParams } = new URL(req.url)
+//     const from = searchParams.get("from")
+//     const to = searchParams.get("to")
+
+//     // Build the date filter
+//     const dateFilter =
+//       from || to
+//         ? {
+//             createdAt: {
+//               ...(from ? { gte: new Date(from) } : {}),
+//               ...(to
+//                 ? { lte: new Date(new Date(to).setHours(23, 59, 59, 999)) }
+//                 : {}),
+//             },
+//           }
+//         : {}
+
+//     // Fetch orders with filters
+//     const orders = await prisma.order.findMany({
+//       where: dateFilter,
+//       include: {
+//         shippingAddress: true,
+//         products: {
+//           include: {
+//             product: true,
+//           },
+//         },
+//       },
+//     })
+
+//     return NextResponse.json(orders, { status: 200 })
+//   } catch (error) {
+//     console.error("Error fetching orders:", error)
+//     return NextResponse.json(
+//       { message: "Couldn't fetch orders" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url)
     const from = searchParams.get("from")
     const to = searchParams.get("to")
+    const status = searchParams.get("status") // Get the status query parameter
 
     // Build the date filter
     const dateFilter =
@@ -20,9 +63,15 @@ export async function GET(req: Request) {
           }
         : {}
 
+    // If status is provided, add it to the filter
+    const statusFilter = status ? { status } : {}
+
     // Fetch orders with filters
     const orders = await prisma.order.findMany({
-      where: dateFilter,
+      where: {
+        ...dateFilter,
+        ...statusFilter, // Apply the status filter if present
+      },
       include: {
         shippingAddress: true,
         products: {
@@ -33,6 +82,15 @@ export async function GET(req: Request) {
       },
     })
 
+    // Check if any orders were fetched
+    if (orders.length === 0) {
+      return NextResponse.json(
+        { message: "You have no orders" },
+        { status: 400 }
+      )
+    }
+
+    // Return fetched orders
     return NextResponse.json(orders, { status: 200 })
   } catch (error) {
     console.error("Error fetching orders:", error)

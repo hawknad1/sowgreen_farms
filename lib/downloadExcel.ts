@@ -17,13 +17,13 @@ async function fetchProducts() {
 }
 
 // Fetch orders from the API
-
-async function fetchOrders(from?: Date, to?: Date) {
+async function fetchOrders(from?: Date, to?: Date, status?: string) {
   try {
     const queryParams = new URLSearchParams()
 
     if (from) queryParams.append("from", from.toISOString())
     if (to) queryParams.append("to", to.toISOString())
+    if (status) queryParams.append("status", status) // Pass the status filter
 
     const response = await fetch(`/api/orders?${queryParams.toString()}`)
 
@@ -44,7 +44,8 @@ const currentDate = formatDate(new Date())
 
 export default async function downloadExcel(from: Date, to: Date) {
   const products = await fetchProducts() // Fetch products from the API
-  const orders = await fetchOrders(from, to) // Fetch orders from the API
+  // const orders = await fetchOrders(from, to) // Fetch orders from the API
+  const orders = await fetchOrders(from, to, "confirmed")
 
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet("Report")
@@ -101,8 +102,13 @@ export default async function downloadExcel(from: Date, to: Date) {
         (o: any) => o.productId === product.id
       )
       if (orderProduct) {
-        // Multiply quantity by product weight to calculate total for that product
-        return orderProduct.quantity * product.weight
+        // Check if the product weight is 0, if so, use quantityTotal instead
+        if (product.weight === 0) {
+          return orderProduct.quantity // Use quantityTotal if weight is 0
+        } else {
+          // Multiply quantity by product weight to calculate total for that product
+          return orderProduct.quantity * product.weight
+        }
       }
       return null // If no order for that product, return 0
     })
