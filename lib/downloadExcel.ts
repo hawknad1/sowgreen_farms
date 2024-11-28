@@ -51,7 +51,11 @@ export default async function downloadExcel(from: Date, to: Date) {
   const worksheet = workbook.addWorksheet("Report")
 
   // Row 1: Date and products (product titles)
-  const row1 = [currentDate, ...products.map((product: any) => product.title)]
+  const row1 = [
+    currentDate,
+    ...products.map((product: any) => product.title),
+    "Total Revenue",
+  ]
   worksheet.addRow(row1)
 
   // Set vertical text for row 1 (product headers)
@@ -75,7 +79,11 @@ export default async function downloadExcel(from: Date, to: Date) {
   }
 
   // Add placeholder "Totals" row
-  const totalsRowData = worksheet.addRow(["Totals", ...products.map(() => 0)])
+  const totalsRowData = worksheet.addRow([
+    "Totals",
+    ...products.map(() => 0),
+    0,
+  ])
 
   // Style the totals row
   totalsRowData.eachCell((cell) => {
@@ -95,6 +103,7 @@ export default async function downloadExcel(from: Date, to: Date) {
   })
 
   // Add customer rows with order details and total calculation
+  let totalRevenue = 0
   orders.forEach((order: any) => {
     const customerName = order.shippingAddress.name
     const orderDetails = products.map((product: any) => {
@@ -114,6 +123,7 @@ export default async function downloadExcel(from: Date, to: Date) {
     })
 
     const totalOrderAmount = order.total + order.deliveryFee
+    totalRevenue += totalOrderAmount // Accumulate the total revenue
 
     // Add the row with customer name, their order details, and the total
     worksheet.addRow([
@@ -136,6 +146,9 @@ export default async function downloadExcel(from: Date, to: Date) {
     }
     worksheet.getCell(2, colIndex).value = total
   }
+
+  // Add total revenue in the "Totals" row
+  worksheet.getCell(2, products.length + 2).value = totalRevenue // Last column for Total Revenue
 
   // Apply gray color to customer name column (A) starting from A3 down
   const grayColor = { argb: "D3D3D3" } // Light gray color

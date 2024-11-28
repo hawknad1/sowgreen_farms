@@ -46,6 +46,7 @@ const ConfirmOrderPage = () => {
   const [result, setResult] = useState<PaymentInfo>(null)
   // const [paymentAction, setPaymentAction] = useState<string | null>(null)
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+  const [isConfirming, setIsConfirming] = useState(false)
 
   const session = useSession()
   const user = session?.data?.user
@@ -178,6 +179,8 @@ const ConfirmOrderPage = () => {
   }
 
   async function handlePaystackSuccessAction(reference?: any) {
+    setIsConfirming(true)
+
     try {
       let verifyData: PaymentInfo = null
 
@@ -216,7 +219,6 @@ const ConfirmOrderPage = () => {
           last4Digits: null,
         }
         setResult(verifyData)
-        console.log(verifyData, "Cash on delivery transaction")
       } else {
         throw new Error("Invalid payment reference")
       }
@@ -236,8 +238,6 @@ const ConfirmOrderPage = () => {
       }
 
       setOrdersData(ordersData)
-      console.log(ordersData, "orders---data")
-      console.log(total, "total---order")
 
       // Save shipping address
       const shippingResponse = await fetch("/api/address", {
@@ -294,6 +294,8 @@ const ConfirmOrderPage = () => {
       if (!quantityResponse.ok) throw new Error("Quantity update API failed")
     } catch (error) {
       console.error("Payment processing error:", error)
+    } finally {
+      setIsConfirming(false)
     }
   }
 
@@ -334,10 +336,17 @@ const ConfirmOrderPage = () => {
                 reference: "cash-on-delivery",
               })
             }
+            disabled={isConfirming}
           >
-            Pay on delivery
+            {isConfirming ? (
+              <span className="loading loading-spinner loading-md">
+                Processing order
+              </span>
+            ) : (
+              "Place Order"
+            )}
           </Button>
-          {proceedToPaystack ? (
+          {/* {proceedToPaystack ? (
             <PaystackButton
               {...componentProps}
               className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
@@ -354,7 +363,7 @@ const ConfirmOrderPage = () => {
             >
               Pay with Balance
             </Button>
-          )}
+          )} */}
         </div>
       </div>
     </div>
