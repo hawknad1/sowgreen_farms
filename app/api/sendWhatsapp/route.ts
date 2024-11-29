@@ -6,6 +6,7 @@ import twilio from "twilio"
 
 export async function POST(req: Request) {
   //   const message = req.json()
+  const { message, customerNumber } = await req.json()
 
   // Twilio credentials
   const accountSid = process.env.TWILIO_ACCOUNT_SID
@@ -15,8 +16,8 @@ export async function POST(req: Request) {
 
   try {
     const response = await client.messages.create({
-      body: "Hellooo", // The message you want to send
-      from: "whatsapp:+13056767226", // Twilio's WhatsApp sandbox number
+      body: message, // The message you want to send
+      from: "whatsapp:+14155238886", // Twilio's WhatsApp sandbox number
       to: "whatsapp:+233204785693", // Replace with your WhatsApp number
     })
 

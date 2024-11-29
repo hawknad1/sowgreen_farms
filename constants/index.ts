@@ -341,37 +341,6 @@ export const adminSideMenuLinks = [
   },
 ]
 
-// export type ShippingAddress = {
-//   name: string
-//   address: string
-//   city: string
-//   region: string
-//   country: string
-//   phone: string
-//   email: string
-// }
-
-// export type ProductOrder = {
-//   item: {
-//     id: string
-//     title: string
-//     categoryName: string
-//     description: string
-//     imageUrl: string
-//     price: number
-//     weight: number
-//     unit: string
-//     isInStock: string
-//     discount: number
-//     quantity: number
-//     purchaseCount: number
-//     createdAt: string
-//     updatedAt: string
-//   }
-//   total: number
-//   quantity: number
-// }
-
 export type Order = {
   id: string
   orderNumber: string
@@ -451,3 +420,14 @@ export const dummyOrder: Order = {
   ],
   createdAt: new Date().toISOString(),
 }
+
+export const sowgreenWorkers = [
+  {
+    name: "Xornam",
+    phone: "0546729407",
+  },
+  {
+    name: "Samira",
+    phone: "0544437775",
+  },
+]

@@ -24,6 +24,7 @@ import { updateProductQuantities } from "@/lib/actions/updateProductQuantity"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
 import { verifyTransaction } from "@/lib/actions/verifyTransaction"
+import { sendWhatsAppMessage } from "@/lib/actions/sendWhatsappMessage"
 
 export type User = {
   user: {
@@ -270,6 +271,8 @@ const ConfirmOrderPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ productIds }),
       })
+
+      sendWhatsAppMessage(ordersData)
 
       clearCart() // Clear the cart after successful order processing
       router.push("/success/thank-you")
