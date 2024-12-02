@@ -51,10 +51,7 @@ interface Contact {
   phone: string
 }
 
-export function generateOrderMessage(order: Order): string {
-  console.log(order, "send--orderr")
-  console.log(order.products, "send--products")
-
+export function generateOrderReceivedMessage(order: Order): string {
   const itemsList = order.products
     .map(({ item, quantity }) => {
       if (!item) {
@@ -70,27 +67,27 @@ export function generateOrderMessage(order: Order): string {
     .join("\n")
 
   return `
-*Order Confirmation: ${order.orderNumber}*
-
-Dear *${order.shippingAddress.name}*,
-
+*Your order has been received: ${order.orderNumber}*
+  
+Hello *${order.shippingAddress.name}*,
+  
 Thank you for your order! Here are the details:
-
-*Delivery Date:* ${order.referenceNumber}
-
+  
+*Delivery Date:* ${order.deliveryMethod}
+  
 *Delivery Address:* ${order.shippingAddress.address}, ${
     order.shippingAddress.city
   }  
 *Contact:* ${order.shippingAddress.phone}
-
+  
 *Order Summary:*  
 ${itemsList}
-
+  
 *Total Amount:* GHS ${(order.total + order.deliveryFee).toFixed(2)}
-
+  
 If you have any questions or need assistance, please contact:  
 ${contactList}
-
+  
 Thank you for choosing SowGreen Organic Farms. We look forward to serving you!
-  `.trim()
+    `.trim()
 }

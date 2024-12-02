@@ -100,6 +100,7 @@ export function CheckoutForm() {
     const formData = {
       ...values,
       deliveryMethod: selectedDelivery,
+      deliveryDate: selectedDelivery,
     }
 
     const query = new URLSearchParams(formData).toString()

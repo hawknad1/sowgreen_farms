@@ -65,15 +65,18 @@ export type ShippingAddress = {
 //   products: Product[]
 // }
 
+export type OrderStatus = "processing" | "confirmed" | "shipped" | "delivered"
+
 export type Order = {
   id: string
   orderNumber: string
   referenceNumber: string
   total: number
-  status: "processing" | "shipped" | "delivered"
+  status: OrderStatus
   dispatchRider: string
   deliveryMethod: string
   deliveryFee: number
+  deliveryDate: string
   cardType?: string
   last4Digits?: string
   paymentMode?: string

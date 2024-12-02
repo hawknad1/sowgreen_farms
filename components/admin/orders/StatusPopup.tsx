@@ -39,7 +39,7 @@ const StatusPopup = ({
           </DialogDescription>
         </DialogHeader>
         <StatusUpdateForm
-          orderStatus={orderStatus}
+          // orderStatus={orderStatus}
           orders={orders}
           closeModal={closeModal}
         />

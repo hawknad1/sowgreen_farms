@@ -24,7 +24,8 @@ import { updateProductQuantities } from "@/lib/actions/updateProductQuantity"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
 import { verifyTransaction } from "@/lib/actions/verifyTransaction"
-import { sendWhatsAppMessage } from "@/lib/actions/sendWhatsappMessage"
+import { generateOrderReceivedMessage } from "@/lib/generateOrderReceivedMessage"
+import { sendOrderReceived } from "@/lib/actions/sendWhatsappMessage"
 
 export type User = {
   user: {
@@ -141,10 +142,10 @@ const ConfirmOrderPage = () => {
         return "Pick up - Dzorwolu"
       case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
         return "Pick up - Dubois Center"
-      case "same-day-delivery":
-        return "Same Day Delivery"
-      case "next-day-delivery":
-        return "Next Day Delivery"
+      case "wednesday-delivery":
+        return `Home Delivery - ${newFormData.deliveryDate}`
+      case "saturday-delivery":
+        return `Home Delivery - ${newFormData.deliveryDate}`
       default:
         return deliveryMethod || "Not specified"
     }
@@ -229,6 +230,7 @@ const ConfirmOrderPage = () => {
         shippingAddress: newFormData,
         orderNumber,
         deliveryMethod: deliveryMethodLabel,
+        deliveryDate: deliveryMethodLabel,
         deliveryFee: deliveryFee,
         referenceNumber: reference?.reference || "cash-on-delivery",
         cardType: verifyData?.cardType,
@@ -272,7 +274,8 @@ const ConfirmOrderPage = () => {
         body: JSON.stringify({ productIds }),
       })
 
-      sendWhatsAppMessage(ordersData)
+      // sendWhatsAppMessage(ordersData)
+      sendOrderReceived(ordersData)
 
       clearCart() // Clear the cart after successful order processing
       router.push("/success/thank-you")

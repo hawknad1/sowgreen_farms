@@ -213,6 +213,7 @@ model Order {
   products          ProductOrder[]
   deliveryMethod    String
   deliveryFee       Int?
+  deliveryDate      String?
   cardType          String?
   last4Digits       String?
   paymentMode       String?

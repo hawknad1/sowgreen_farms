@@ -8,6 +8,7 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
     total,
     deliveryMethod,
     deliveryFee,
+    deliveryDate,
     dispatchRider,
     paymentMode,
     cardType,
@@ -21,10 +22,10 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
         return "Pick up - Dzorwolu"
       case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
         return "Pick up - Dubois Center"
-      case "same-day-delivery":
-        return "Same Day Delivery"
-      case "next-day-delivery":
-        return "Next Day Delivery"
+      case "wednesday-delivery":
+        return `Home Delivery - ${deliveryMethod}`
+      case "saturday-delivery":
+        return `Home Delivery - ${deliveryMethod}`
       default:
         return deliveryMethod || "Not specified"
     }
@@ -44,8 +45,8 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
         {orderNumber}
       </p>
       <p className="font-medium">
-        <span className="text-sm text-neutral-500">Delivery Fee: </span> GHS{" "}
-        {deliveryFee?.toFixed(2)}
+        <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}
+        {orderTotal.toFixed(2)}
       </p>
       {cardType ? (
         <p className="font-medium">
@@ -59,9 +60,10 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
         </p>
       )}
       <p className="font-medium">
-        <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}
-        {orderTotal.toFixed(2)}
+        <span className="text-sm text-neutral-500">Delivery Date: </span>
+        {deliveryDate}
       </p>
+
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Delivery Method: </span>{" "}
         {deliveryMethodLabel}

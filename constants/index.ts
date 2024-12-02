@@ -1,4 +1,5 @@
 // import { Order, Payment, Product, ShippingAddress } from "@/types"
+import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
 import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
 import { ShippingAddress } from "@/types"
 import {
@@ -251,15 +252,15 @@ export const deliveryMethods = [
   {
     label: "Wednesday Delivery",
     tag: "",
-    date: wednesday.toLocaleDateString("en-US"),
+    date: formatDeliveryDate(wednesday),
     price: `GHS ${20}`,
-    value: "wednesday-delivery",
+    value: formatDeliveryDate(wednesday),
   },
   {
     label: "Saturday Delivery",
-    date: saturday.toLocaleDateString("en-US"),
+    date: formatDeliveryDate(saturday),
     price: `GHS ${20}`,
-    value: "saturday-delivery",
+    value: formatDeliveryDate(saturday),
   },
   {
     label: "Schedule a pickup",

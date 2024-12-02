@@ -37,7 +37,7 @@ export const PaymentRadioSchema = z.object({
 
 export const DeliveryRadioSchema = z.object({
   deliveryMethod: z.enum(
-    ["same-day-delivery", "next-day-delivery", "dzorwulu", "dubois"],
+    ["wednesday-delivery", "saturday-delivery", "dzorwulu", "dubois", ""],
     {
       required_error: "You need to select a delivery method.",
     }
