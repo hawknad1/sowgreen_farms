@@ -10,19 +10,15 @@ import Image from "next/image"
 const OrderSummary = ({
   selectedPickupOption,
   selectedDeliveryMethod,
+  deliveryFee,
 }: {
   selectedPickupOption: string
   selectedDeliveryMethod: string
+  deliveryFee: number
 }) => {
   const cart = useCartStore((state) => state.cart)
-  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
-  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 
   const grouped = groupById(cart)
-  // const cartWithTax = cart.map((product) => ({
-  //   ...product,
-  //   price: addTax(product.price),
-  // }))
 
   const cartWithTax = cart.map((product) => ({
     ...product,
@@ -30,24 +26,6 @@ const OrderSummary = ({
   }))
 
   const basketTotal = getCartTotal(cartWithTax)
-
-  // Move the delivery fee update logic to useEffect
-  useEffect(() => {
-    if (
-      cart.length > 0 &&
-      selectedDeliveryMethod === "schedule-pickup" &&
-      selectedPickupOption
-    ) {
-      setDeliveryFee(0) // No delivery fee for pickup
-    } else if (cart.length > 0) {
-      setDeliveryFee(30) // Delivery fee for other methods
-    }
-  }, [
-    cart.length,
-    selectedDeliveryMethod,
-    selectedPickupOption,
-    setDeliveryFee,
-  ])
 
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
   const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")

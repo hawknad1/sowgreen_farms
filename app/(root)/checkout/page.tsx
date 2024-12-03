@@ -5,11 +5,11 @@ import { useCartStore, useDeliveryStore } from "@/store"
 
 const CheckoutPage = () => {
   const cart = useCartStore((state) => state.cart)
-  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+  // const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
 
-  if (cart.length > 0) {
-    setDeliveryFee(30)
-  }
+  // if (cart.length > 0) {
+  //   setDeliveryFee(30)
+  // }
 
   return (
     <div className="container mx-auto min-h-screen px-4 py-8">

@@ -3,6 +3,10 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import { useState, useEffect, useMemo } from "react"
+import { useRouter } from "next/navigation"
+import { useSession } from "next-auth/react"
+
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -13,15 +17,22 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import { CheckoutSchema } from "@/schemas"
-import { useState, useEffect } from "react"
 import { useCartStore, useDeliveryStore } from "@/store"
 import { getCartTotal } from "@/lib/getCartTotal"
-import OrderSummary from "./OrderSummary"
-import { useRouter } from "next/navigation"
+import { cityDeliveryPrices, regions } from "@/constants"
 import { DeliveryMethod } from "./DeliveryMethod"
-import { useSession } from "next-auth/react"
-import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
+import OrderSummary from "./OrderSummary"
 
 interface ExtendedUser {
   email: string
@@ -30,11 +41,12 @@ interface ExtendedUser {
 }
 
 export function CheckoutForm() {
-  const [error, setError] = useState(null)
-  const [success, setSuccess] = useState("")
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string>("")
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] =
     useState("next-day-delivery")
   const [selectedPickupOption, setSelectedPickupOption] = useState("")
+  const [selectedCity, setSelectedCity] = useState("")
 
   const session = useSession()
   const router = useRouter()
@@ -45,12 +57,11 @@ export function CheckoutForm() {
 
   const user = session?.data?.user as ExtendedUser
 
-  // Initialize form with empty email, and later update email using useEffect
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
     defaultValues: {
       name: "",
-      email: "", // Initially empty, updated once session is available
+      email: "",
       address: "",
       city: "",
       country: "",
@@ -59,44 +70,53 @@ export function CheckoutForm() {
     },
   })
 
-  // Update form email when session is available
-
   useEffect(() => {
     if (user?.email) {
       form.setValue("email", user.email)
     }
   }, [user?.email, form])
 
-  const selectedDelivery =
-    selectedDeliveryMethod === "schedule-pickup"
+  // Helper function for delivery selection
+  const selectedDelivery = useMemo(() => {
+    return selectedDeliveryMethod === "schedule-pickup"
       ? selectedPickupOption
       : selectedDeliveryMethod
+  }, [selectedDeliveryMethod, selectedPickupOption])
 
+  // Compute and update the delivery fee based on the selected method
   useEffect(() => {
+    if (cart.length === 0) {
+      return // Skip delivery fee calculation if cart is empty
+    }
+
+    let newDeliveryFee = 0 // Default fee for schedule-pickup
+
     if (
-      cart.length > 0 &&
-      selectedDeliveryMethod === "schedule-pickup" &&
-      selectedPickupOption
+      selectedDeliveryMethod !== "schedule-pickup" &&
+      selectedCity &&
+      cityDeliveryPrices[selectedCity]
     ) {
-      setDeliveryFee(0) // No delivery fee for pickup
-    } else if (cart.length > 0) {
-      setDeliveryFee(30) // Delivery fee for other methods
+      newDeliveryFee = cityDeliveryPrices[selectedCity]
+    }
+
+    if (deliveryFee !== newDeliveryFee) {
+      setDeliveryFee(newDeliveryFee)
     }
   }, [
     cart.length,
     selectedDeliveryMethod,
     selectedPickupOption,
+    selectedCity,
+    deliveryFee,
     setDeliveryFee,
   ])
 
-  async function onSubmit(values: z.infer<typeof CheckoutSchema>) {
-    // Add delivery method to the form data
+  const handleFormSubmit = async (values: z.infer<typeof CheckoutSchema>) => {
     const formData = {
       ...values,
       deliveryMethod: selectedDelivery,
       deliveryDate: selectedDelivery,
     }
-
     const query = new URLSearchParams(formData).toString()
     router.push(`/confirm-order?${query}`)
   }
@@ -104,27 +124,23 @@ export function CheckoutForm() {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-4 p-4 w-full  min-h-fit"
+        onSubmit={form.handleSubmit(handleFormSubmit)}
+        className="space-y-4 p-4 w-full min-h-fit"
       >
         <div className="flex flex-col md:flex-row gap-6 justify-between">
           <div className="w-full">
             <h2 className="font-bold text-lg mb-4">Delivery Information</h2>
             <div className="rounded-lg border p-4 border-neutral-400/35">
-              <div className="flex flex-col space-y-4">
-                <div className="flex flex-col md:flex-row gap-x-3">
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3">
                   <FormField
                     control={form.control}
                     name="name"
                     render={({ field }) => (
-                      <FormItem className="w-full">
+                      <FormItem>
                         <FormLabel>Name</FormLabel>
                         <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="Enter your name"
-                            {...field}
-                          />
+                          <Input placeholder="Enter your name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -134,34 +150,43 @@ export function CheckoutForm() {
                     control={form.control}
                     name="phone"
                     render={({ field }) => (
-                      <FormItem className="w-full">
+                      <FormItem>
                         <FormLabel>Mobile Number</FormLabel>
                         <FormControl>
-                          <Input
-                            type="tel"
-                            placeholder="Enter your phone"
-                            {...field}
-                          />
+                          <Input placeholder="Enter your phone" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
-                <div className="flex flex-col md:flex-row gap-x-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-3">
                   <FormField
                     control={form.control}
                     name="region"
                     render={({ field }) => (
-                      <FormItem className="w-full">
+                      <FormItem>
                         <FormLabel>Region</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="Enter region"
-                            {...field}
-                          />
-                        </FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value)
+                          }}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select region" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-72 py-1.5 overflow-auto">
+                            <SelectGroup>
+                              <SelectLabel>Region</SelectLabel>
+                              {regions.map((reg) => (
+                                <SelectItem key={reg.name} value={reg.name}>
+                                  {reg.name}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -170,34 +195,29 @@ export function CheckoutForm() {
                     control={form.control}
                     name="city"
                     render={({ field }) => (
-                      <FormItem className="w-full">
+                      <FormItem>
                         <FormLabel>City</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="Enter city"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex flex-col">
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem className="w-full">
-                        <FormLabel>Address</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="text"
-                            placeholder="Enter address"
-                            {...field}
-                          />
-                        </FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value)
+                            setSelectedCity(value)
+                          }}
+                          defaultValue={field.value}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select city" />
+                          </SelectTrigger>
+                          <SelectContent className="max-h-72 py-1.5 overflow-auto">
+                            <SelectGroup>
+                              <SelectLabel>City</SelectLabel>
+                              {Object.keys(cityDeliveryPrices).map((city) => (
+                                <SelectItem key={city} value={city}>
+                                  {city}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -205,16 +225,25 @@ export function CheckoutForm() {
                 </div>
                 <FormField
                   control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter address" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="email"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem>
                       <FormLabel>Email</FormLabel>
                       <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="Enter your email"
-                          {...field}
-                        />
+                        <Input placeholder="Enter your email" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -232,16 +261,15 @@ export function CheckoutForm() {
               />
             </div>
           </div>
-
           <div className="w-full lg:max-w-sm md:max-w-xs mt-4 md:mt-0">
             <h2 className="font-bold text-lg mb-4">Order Summary</h2>
-
             <div className="rounded-lg border p-4 border-neutral-400/35">
               <OrderSummary
                 selectedPickupOption={selectedPickupOption}
                 selectedDeliveryMethod={selectedDeliveryMethod}
+                deliveryFee={deliveryFee}
               />
-              <Button className="w-full">Confirm Order</Button>
+              <Button className="w-full mt-4">Confirm Order</Button>
             </div>
           </div>
         </div>
