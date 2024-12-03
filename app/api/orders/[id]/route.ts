@@ -1,4 +1,5 @@
 import prisma from "@/lib/prismadb"
+import { ProductOrder } from "@/types"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(
@@ -184,15 +185,36 @@ export async function DELETE(
 // }
 
 // Helper function to calculate the total for the order
+// async function getTotalForOrder(orderId: string): Promise<number> {
+//   const orderWithProducts = await prisma.order.findUnique({
+//     where: { id: orderId },
+//     include: { products: { include: { product: true } } },
+//   })
+
+//   if (!orderWithProducts) return 0
+
+//   return orderWithProducts.products.reduce((sum, productOrder) => {
+//     const price = productOrder.product.price || 0
+//     return sum + price * productOrder.quantity
+//   }, 0)
+// }
+
 async function getTotalForOrder(orderId: string): Promise<number> {
   const orderWithProducts = await prisma.order.findUnique({
     where: { id: orderId },
-    include: { products: { include: { product: true } } },
+    include: {
+      products: {
+        include: {
+          product: true,
+        },
+      },
+    },
   })
 
   if (!orderWithProducts) return 0
 
   return orderWithProducts.products.reduce((sum, productOrder) => {
+    if (productOrder.available === false) return sum // Skip out-of-stock items
     const price = productOrder.product.price || 0
     return sum + price * productOrder.quantity
   }, 0)
@@ -218,49 +240,98 @@ export async function PUT(
     }
 
     // ** Step 1: Handle ProductOrders only if `products` is provided **
+    // if (products?.length) {
+    //   // Identify ProductOrders to delete
+    //   const incomingProductIds = products.map(
+    //     (product: { productId: string }) => product.productId
+    //   )
+
+    //   const productsToDelete = existingOrder.products.filter(
+    //     (existingProduct) =>
+    //       !incomingProductIds.includes(existingProduct.productId)
+    //   )
+
+    //   // Delete ProductOrders not present in the incoming data
+    //   const deletePromises = productsToDelete.map((productOrder) =>
+    //     prisma.productOrder.delete({ where: { id: productOrder.id } })
+    //   )
+    //   await Promise.all(deletePromises)
+
+    //   // Update or create ProductOrders
+    //   const updatedProductsPromises = products.map(
+    //     async (product: { productId: string; quantity: number }) => {
+    //       const { productId, quantity } = product
+
+    //       // Check if product already exists in the order
+    //       const existingProductOrder = existingOrder.products.find(
+    //         (p) => p.productId === productId
+    //       )
+
+    //       if (existingProductOrder) {
+    //         // Update existing product order
+    //         const newQuantityTotal = (
+    //           quantity * existingProductOrder.product.price
+    //         ).toString()
+
+    //         return prisma.productOrder.update({
+    //           where: { id: existingProductOrder.id },
+    //           data: {
+    //             quantity,
+    //             quantityTotal: newQuantityTotal,
+    //           },
+    //         })
+    //       }
+
+    //       // Create a new product order if it doesn't exist
+    //       const productDetails = await prisma.product.findUnique({
+    //         where: { id: productId },
+    //       })
+
+    //       if (!productDetails) {
+    //         throw new Error(`Product with id ${productId} not found`)
+    //       }
+
+    //       const quantityTotal = (
+    //         quantity * (productDetails.price || 0)
+    //       ).toString()
+
+    //       return prisma.productOrder.create({
+    //         data: {
+    //           orderId,
+    //           productId,
+    //           quantity,
+    //           quantityTotal,
+    //         },
+    //       })
+    //     }
+    //   )
+
+    //   await Promise.all(updatedProductsPromises)
+    // }
+
     if (products?.length) {
-      // Identify ProductOrders to delete
-      const incomingProductIds = products.map(
-        (product: { productId: string }) => product.productId
-      )
-
-      const productsToDelete = existingOrder.products.filter(
-        (existingProduct) =>
-          !incomingProductIds.includes(existingProduct.productId)
-      )
-
-      // Delete ProductOrders not present in the incoming data
-      const deletePromises = productsToDelete.map((productOrder) =>
-        prisma.productOrder.delete({ where: { id: productOrder.id } })
-      )
-      await Promise.all(deletePromises)
-
-      // Update or create ProductOrders
       const updatedProductsPromises = products.map(
-        async (product: { productId: string; quantity: number }) => {
-          const { productId, quantity } = product
+        async (product: ProductOrder) => {
+          const { productId, quantity, available } = product
 
-          // Check if product already exists in the order
           const existingProductOrder = existingOrder.products.find(
             (p) => p.productId === productId
           )
 
           if (existingProductOrder) {
-            // Update existing product order
-            const newQuantityTotal = (
-              quantity * existingProductOrder.product.price
-            ).toString()
-
             return prisma.productOrder.update({
               where: { id: existingProductOrder.id },
               data: {
                 quantity,
-                quantityTotal: newQuantityTotal,
+                quantityTotal:
+                  available !== false
+                    ? (quantity * existingProductOrder.product.price).toString()
+                    : "0",
+                available,
               },
             })
           }
 
-          // Create a new product order if it doesn't exist
           const productDetails = await prisma.product.findUnique({
             where: { id: productId },
           })
@@ -269,16 +340,16 @@ export async function PUT(
             throw new Error(`Product with id ${productId} not found`)
           }
 
-          const quantityTotal = (
-            quantity * (productDetails.price || 0)
-          ).toString()
-
           return prisma.productOrder.create({
             data: {
               orderId,
               productId,
               quantity,
-              quantityTotal,
+              quantityTotal:
+                available !== false
+                  ? (quantity * (productDetails.price || 0)).toString()
+                  : "0",
+              available,
             },
           })
         }

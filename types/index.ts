@@ -162,6 +162,7 @@ export type ProductOrder = {
   productId: string
   orderId: string
   quantity: number
+  available?: boolean
   quantityTotal: string // Changed from string to number
   product: Product
   weight?: number

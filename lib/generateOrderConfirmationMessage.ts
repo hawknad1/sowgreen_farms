@@ -1,44 +1,5 @@
 import { sowgreenWorkers } from "@/constants"
-import { Order, ShippingAddress } from "@/types"
-
-// export type ProductOrder = {
-//   item: {
-//     id: string
-//     title: string
-//     categoryName: string
-//     description: string
-//     imageUrl: string
-//     price: number
-//     weight: number
-//     unit: string
-//     isInStock: string
-//     discount: number
-//     quantity: number
-//     purchaseCount: number
-//     createdAt: string
-//     updatedAt: string
-//   }
-//   total: number
-//   quantity: number
-// }
-
-// export type Order = {
-//   id?: string
-//   orderNumber: string
-//   referenceNumber?: string
-//   total: number
-//   status?: "processing" | "shipped" | "delivered"
-//   dispatchRider?: string
-//   deliveryMethod: string
-//   deliveryFee: number
-//   cardType?: string
-//   last4Digits?: string
-//   paymentMode?: string
-//   paymentAction?: string
-//   shippingAddress: ShippingAddress
-//   products: ProductOrder[] // Change from Product[] to ProductOrder[]
-//   createdAt?: string
-// }
+import { Order } from "@/types"
 
 interface OrderItem {
   product: string
@@ -53,10 +14,15 @@ interface Contact {
 
 export function generateOrderConfirmationMessage(order: Order): string {
   const itemsList = order.products
-    .map(({ product, quantity }) => {
+    .map(({ product, quantity, available }) => {
       if (!product) {
         return "- Product details missing" // Handle missing product details
       }
+
+      if (available === false) {
+        return `- ${product.title}: N/A` // Show product as unavailable
+      }
+
       const weight = product.weight ? `${product.weight}${product.unit}` : "" // Include weight if available
       return `- ${weight} ${product.title}: GHS ${product.price} (Qty: ${quantity})`
     })
@@ -84,6 +50,9 @@ Your order has been confirmed and is now being prepared for delivery.
 ${itemsList}
 
 *Total Amount:* GHS ${(order.total + order.deliveryFee).toFixed(2)}
+
+*Your order is ready!*
+Go to *Order History* in the app and click *Pay*. We accept *Mobile Money* and *Card*.
 
 If you have any questions or need assistance, please contact:  
 ${contactList}

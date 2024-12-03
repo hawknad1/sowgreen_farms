@@ -17,15 +17,19 @@ const EditOrder = ({ orders }: EditOrderProps) => {
   )
   const [subtotal, setSubtotal] = useState(0)
   const [total, setTotal] = useState(0)
+  const [isSaving, setIsSaving] = useState(false) // Disable button while saving
 
-  // Recalculate subtotal and total whenever order items change
+  console.log(orderItems, "orderItems")
   useEffect(() => {
     const newSubtotal = orderItems.reduce(
-      (sum, item) => sum + item.product.price * item.quantity,
+      (sum, item) =>
+        item.available !== false
+          ? sum + item.product.price * item.quantity
+          : sum,
       0
     )
-    setSubtotal(newSubtotal)
-    setTotal(newSubtotal + orders.deliveryFee)
+    setSubtotal(parseFloat(newSubtotal.toFixed(2)))
+    setTotal(parseFloat((newSubtotal + orders.deliveryFee).toFixed(2)))
   }, [orderItems, orders.deliveryFee])
 
   const handleQuantityChange = (productId: string, quantity: number) => {
@@ -42,15 +46,30 @@ const EditOrder = ({ orders }: EditOrderProps) => {
     )
   }
 
+  const handleToggleOutOfStock = (productId: string) => {
+    setOrderItems((prevOrderItems) =>
+      prevOrderItems.map((item) =>
+        item.productId === productId
+          ? {
+              ...item,
+              available: !item.available,
+              quantityTotal: !item.available
+                ? (item.product.price * item.quantity).toString()
+                : "0",
+            }
+          : item
+      )
+    )
+  }
+
   const handleRemoveItem = (productOrderId: string) => {
     setOrderItems((prev) => prev.filter((item) => item.id !== productOrderId))
   }
 
   const handleAddProduct = (newProductOrder: ProductOrder) => {
-    const exists = orderItems.some(
-      (item) => item.productId === newProductOrder.productId
-    )
-    if (exists) {
+    if (
+      orderItems.some((item) => item.productId === newProductOrder.productId)
+    ) {
       toast.error("Product already exists in the order!")
       return
     }
@@ -58,26 +77,36 @@ const EditOrder = ({ orders }: EditOrderProps) => {
   }
 
   const handleSaveChanges = async () => {
+    setIsSaving(true)
     try {
       const response = await fetch(`/api/orders/${orders.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          products: orderItems,
+          products: orderItems.map((item) => ({
+            id: item.id,
+            productId: item.productId,
+            quantity: item.quantity,
+            quantityTotal: item.quantityTotal,
+            available: item.available,
+          })),
           subtotal,
           total,
+          deliveryFee: orders.deliveryFee,
         }),
       })
 
       if (response.ok) {
         toast.success("Order updated successfully!")
-        window.location.reload() // Refresh the page
+        window.location.reload()
       } else {
-        throw new Error("Failed to update order")
+        const { message } = await response.json()
+        toast.error(`Failed to update order: ${message}`)
       }
     } catch (error) {
-      console.error(error)
       toast.error("An error occurred while updating the order!")
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -90,7 +119,7 @@ const EditOrder = ({ orders }: EditOrderProps) => {
             key={item.id}
             className="flex items-center justify-between border-b py-2"
           >
-            <div className="flex gap-x-3">
+            <div className="flex gap-x-3 items-center">
               <Image
                 src={item?.product?.imageUrl}
                 alt={item?.product?.title}
@@ -98,7 +127,13 @@ const EditOrder = ({ orders }: EditOrderProps) => {
                 width={20}
                 className="object-contain h-6 w-6"
               />
-              <p className="font-medium">{item?.product?.title}</p>
+              <p
+                className={`font-medium ${
+                  item.available === false ? "line-through text-red-500" : ""
+                }`}
+              >
+                {item?.product?.title}
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Input
@@ -109,7 +144,14 @@ const EditOrder = ({ orders }: EditOrderProps) => {
                   handleQuantityChange(item.productId, Number(e.target.value))
                 }
                 className="w-16"
+                disabled={item.available === false}
               />
+              <Button
+                onClick={() => handleToggleOutOfStock(item.productId)}
+                variant={item.available === false ? "outline" : "secondary"}
+              >
+                {item.available === false ? "In Stock" : "Out of Stock"}
+              </Button>
               <Button
                 variant="destructive"
                 onClick={() => handleRemoveItem(item.id)}
@@ -128,8 +170,12 @@ const EditOrder = ({ orders }: EditOrderProps) => {
         </p>
         <p className="text-lg font-bold">Total: {total}</p>
       </div>
-      <Button onClick={handleSaveChanges} className="mt-4 w-full">
-        Save Changes
+      <Button
+        onClick={handleSaveChanges}
+        className="mt-4 w-full"
+        disabled={isSaving}
+      >
+        {isSaving ? "Saving..." : "Save Changes"}
       </Button>
     </div>
   )

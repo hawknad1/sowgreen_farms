@@ -72,12 +72,6 @@ export function CheckoutForm() {
       ? selectedPickupOption
       : selectedDeliveryMethod
 
-  // useEffect(() => {
-  //   if (selectedPickupOption) {
-  //     setDeliveryFee(0)
-  //   }
-  // }, [selectedPickupOption, setDeliveryFee])
-
   useEffect(() => {
     if (
       cart.length > 0 &&
