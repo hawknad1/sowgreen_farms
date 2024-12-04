@@ -1,5 +1,6 @@
 import { Order } from "@/types"
 import { useMemo } from "react"
+import ModifyOrderDetailsDialog from "./dialogs/ModifyOrderDetailsDialog"
 
 export const OrderInfo = ({ orders }: { orders: Order }) => {
   const {
@@ -38,8 +39,12 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
     paymentMode?.charAt(0).toUpperCase() + paymentMode?.slice(1)
 
   return (
-    <div className="w-full">
-      <h3 className="text-lg font-bold mb-2">Order Details</h3>
+    <div className="w-full border border-neutral-200 px-6 py-4 rounded-lg">
+      <div className="flex w-full justify-between">
+        <h3 className="text-lg font-bold mb-2">Order Details</h3>
+
+        <ModifyOrderDetailsDialog />
+      </div>
       <p className="font-medium">
         <span className="text-sm text-neutral-500">Order Number: </span>{" "}
         {orderNumber}

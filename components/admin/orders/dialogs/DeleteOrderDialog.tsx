@@ -9,8 +9,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../ui/dialog"
-import { Button } from "../../ui/button"
+} from "../../../ui/dialog"
+import { Button } from "../../../ui/button"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { Order } from "@/types"

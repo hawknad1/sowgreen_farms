@@ -34,7 +34,7 @@ import DataSkeletons from "../../skeletons/DataSkeletons"
 import Export from "../Export"
 import { Order } from "@/types"
 import { downloadOrders } from "@/lib/xlsx"
-import AddCustomerOrderDialog from "./AddCustomerOrderDialog"
+import AddCustomerOrderDialog from "./dialogs/AddCustomerOrderDialog"
 import ExportDialog from "../Export"
 
 interface OrdersProps {

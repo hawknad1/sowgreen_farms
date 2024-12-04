@@ -183,8 +183,7 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
           {/* Pricing Summary */}
           <Section style={{ color: "#4b5563", fontSize: "14px" }}>
             <Text>
-              <strong>Subtotal:</strong>{" "}
-              {`GHS ${(order.total - order.deliveryFee).toFixed(2)}`}
+              <strong>Subtotal:</strong> {`GHS ${order.total.toFixed(2)}`}
             </Text>
             <Text>
               <strong>Shipping Fee:</strong>{" "}
@@ -193,7 +192,7 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
             <Heading
               style={{ fontSize: "20px", color: "#1d4ed8", marginTop: "16px" }}
             >
-              Total: {`GHS ${order.total.toFixed(2)}`}
+              Total: {`GHS ${(order.total + order.deliveryFee).toFixed(2)}`}
             </Heading>
           </Section>
 

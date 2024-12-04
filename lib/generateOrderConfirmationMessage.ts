@@ -23,7 +23,11 @@ export function generateOrderConfirmationMessage(order: Order): string {
         return `- ${product.title}: N/A` // Show product as unavailable
       }
 
-      const weight = product.weight ? `${product.weight}${product.unit}` : "" // Include weight if available
+      const weight = product.weight
+        ? `${product.weight < 1 ? product.weight * 1000 : product.weight}${
+            product.unit
+          }`
+        : "" // Include weight if available
       return `- ${weight} ${product.title}: GHS ${product.price} (Qty: ${quantity})`
     })
     .join("\n")
@@ -48,6 +52,8 @@ Your order has been confirmed and is now being prepared for delivery.
 
 *Order Summary:*  
 ${itemsList}
+
+*Delivery Fee:* ${order.deliveryFee}
 
 *Total Amount:* GHS ${(order.total + order.deliveryFee).toFixed(2)}
 

@@ -9,14 +9,14 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../ui/dialog"
-import { Button } from "../../ui/button"
+} from "../../../ui/dialog"
+import { Button } from "../../../ui/button"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 import { Order } from "@/types"
 import { PencilSquareIcon } from "@heroicons/react/20/solid"
-import EditOrder from "./EditOrder"
-import { SquarePlus } from "lucide-react"
+import EditOrder from "../EditOrder"
+import EditOrderDetails from "../EditOrderDetails"
 
 interface Props {
   order?: Order
@@ -24,7 +24,7 @@ interface Props {
   className?: string
 }
 
-const AddCustomerOrderDialog = ({ order, children, className }: Props) => {
+const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
@@ -32,24 +32,23 @@ const AddCustomerOrderDialog = ({ order, children, className }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-fit h-fit p-2">
-          <SquarePlus className="h-5 w-5" />
+        <Button variant="outline" className="w-fit h-fit p-1.5">
+          <PencilSquareIcon className="h-5 w-5" />
         </Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{`Create an order `}</DialogTitle>
+          <DialogTitle>{`Modify order details.`}</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete this order? This action cannot be
-            undone.
+            Edit, remove or add new product to existing order.
           </DialogDescription>
-          {/* <EditOrder orders={order} /> */}
         </DialogHeader>
+        <EditOrderDetails order={order} />
         <DialogFooter></DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
 
-export default AddCustomerOrderDialog
+export default ModifyOrderDetailsDialog

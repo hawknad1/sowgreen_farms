@@ -1,11 +1,7 @@
 "use client"
-import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { orderStatusCard } from "@/constants"
-import {
-  DocumentArrowDownIcon,
-  EnvelopeIcon,
-} from "@heroicons/react/24/outline"
+
 import React from "react"
 import DisplayOrder from "./DisplayOrder"
 import { Order } from "@/types"
@@ -13,11 +9,9 @@ import { ShippingInfo } from "./ShippingInfo"
 import { OrderInfo } from "./OrderInfo"
 import { formatCurrency } from "@/lib/utils"
 import StatusPopup from "./StatusPopup"
-import { DollarSign } from "lucide-react"
 import AddCredit from "./AddCredit"
-import DeleteOrderDialog from "./DeleteOrderDialog"
-import { PencilSquareIcon } from "@heroicons/react/20/solid"
-import ModifyOrderDialog from "./ModifyOrderDialog"
+import DeleteOrderDialog from "./dialogs/DeleteOrderDialog"
+import ModifyOrderDialog from "./dialogs/ModifyOrderDialog"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   if (!orders)
@@ -74,7 +68,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               <Separator className="my-4" />
 
               {/* Shipping and order details */}
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <ShippingInfo shippingAddress={orders?.shippingAddress} />
                 <OrderInfo orders={orders} />
               </div>

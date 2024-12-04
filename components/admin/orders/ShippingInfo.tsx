@@ -1,4 +1,5 @@
 import { Order } from "@/types"
+import ModifyShippingDialog from "./dialogs/ModifyShippingDialog"
 
 export const ShippingInfo = ({
   shippingAddress,
@@ -9,8 +10,12 @@ export const ShippingInfo = ({
 
   const { name, address, city, region, email, phone } = shippingAddress
   return (
-    <div className="w-full">
-      <h3 className="text-lg font-bold mb-2">Shipping Address</h3>
+    <div className="w-full border border-neutral-200 px-6 py-4 rounded-lg">
+      <div className="flex justify-between">
+        <h3 className="text-lg font-bold mb-2">Shipping Address</h3>
+
+        <ModifyShippingDialog />
+      </div>
       <p>{name}</p>
       <p>{address}</p>
       <div className="flex">

@@ -1,9 +1,11 @@
 import { Order, ProductOrder } from "@/types"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 import React from "react"
 
 const DisplayOrder = ({ orders }: { orders: Order }) => {
   const products = orders?.products
+  const router = useRouter()
 
   if (!products?.length) {
     return <p>No products available in this order.</p>
@@ -20,7 +22,10 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
             ord.available === false ? "opacity-50" : ""
           }`}
         >
-          <div className="bg-gray-50 rounded-md p-2">
+          <div
+            className="bg-gray-50 rounded-md p-2 cursor-pointer"
+            onClick={() => router.push(`/products/${ord.product.id}`)}
+          >
             <Image
               src={ord.product.imageUrl}
               alt={ord.product.title}
@@ -32,7 +37,10 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
             />
           </div>
           <div className="flex justify-between items-center w-full ml-4">
-            <div className="flex flex-col flex-grow">
+            <div
+              className="flex flex-col flex-grow cursor-pointer"
+              onClick={() => router.push(`/products/${ord.product.id}`)}
+            >
               <p
                 className={`text-sm font-semibold line-clamp-2 ${
                   ord.available === false ? "text-gray-500" : ""

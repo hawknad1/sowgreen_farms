@@ -574,3 +574,9 @@ export const regions = [
     name: "Eastern",
   },
 ]
+
+export const newDeliveryMethod = [
+  { value: "Home Delivery" },
+  { value: "Wednesday - DZORWULU - 11AM-5PM" },
+  { value: "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM" },
+]

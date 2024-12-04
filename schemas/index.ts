@@ -144,3 +144,9 @@ export const CreditSchema = z
 // export const AddImagesSchema = z.object({
 //   images: z.array(ProductImageSchema), // Array of image objects
 // })
+
+export const EditOrderDetailSchema = z.object({
+  deliveryMethod: z.string(),
+  // paymentMethod: z.string(),
+  deliveryDate: z.string(),
+})

@@ -9,21 +9,22 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../../ui/dialog"
-import { Button } from "../../ui/button"
+} from "../../../ui/dialog"
+import { Button } from "../../../ui/button"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 import { Order } from "@/types"
 import { PencilSquareIcon } from "@heroicons/react/20/solid"
-import EditOrder from "./EditOrder"
+import EditOrder from "../EditOrder"
+import { SquarePlus } from "lucide-react"
 
 interface Props {
-  order: Order
+  order?: Order
   children?: React.ReactNode
   className?: string
 }
 
-const ModifyOrderDialog = ({ order, children, className }: Props) => {
+const AddCustomerOrderDialog = ({ order, children, className }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
@@ -32,17 +33,18 @@ const ModifyOrderDialog = ({ order, children, className }: Props) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="w-fit h-fit p-2">
-          <PencilSquareIcon className="h-5 w-5" />
+          <SquarePlus className="h-5 w-5" />
         </Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{`Modify Order No. ${order.orderNumber}`}</DialogTitle>
+          <DialogTitle>{`Create an order `}</DialogTitle>
           <DialogDescription>
-            Edit, remove or add new product to existing order.
+            Are you sure you want to delete this order? This action cannot be
+            undone.
           </DialogDescription>
-          <EditOrder orders={order} />
+          {/* <EditOrder orders={order} /> */}
         </DialogHeader>
         <DialogFooter></DialogFooter>
       </DialogContent>
@@ -50,4 +52,4 @@ const ModifyOrderDialog = ({ order, children, className }: Props) => {
   )
 }
 
-export default ModifyOrderDialog
+export default AddCustomerOrderDialog
