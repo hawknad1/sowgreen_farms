@@ -107,9 +107,10 @@ export async function POST(req: Request) {
     orderNumber,
     total,
     shippingAddress,
-    deliveryMethod,
+    // deliveryMethod,
     dispatchRider,
     deliveryFee,
+    deliveryDate,
     products,
     status,
     cardType,
@@ -159,6 +160,7 @@ export async function POST(req: Request) {
         region: shippingAddress.region,
         country: shippingAddress.country,
         phone: shippingAddress.phone,
+        deliveryMethod: shippingAddress.deliveryMethod,
       },
     })
     // }
@@ -195,8 +197,9 @@ export async function POST(req: Request) {
         paymentMode,
         paymentAction,
         total: total,
-        deliveryMethod: deliveryMethod,
+        // deliveryMethod: deliveryMethod,
         deliveryFee,
+        deliveryDate,
         status,
         dispatchRider,
         shippingAddress: {

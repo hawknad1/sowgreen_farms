@@ -12,18 +12,22 @@ export const ShippingInfo = ({
   return (
     <div className="w-full border border-neutral-200 px-6 py-4 rounded-lg">
       <div className="flex justify-between">
-        <h3 className="text-lg font-bold mb-2">Shipping Address</h3>
+        <h3 className="text-base lg:text-lg font-bold mb-2">
+          Shipping Address
+        </h3>
 
-        <ModifyShippingDialog />
+        <ModifyShippingDialog shippingAddress={shippingAddress} />
       </div>
-      <p>{name}</p>
-      <p>{address}</p>
-      <div className="flex">
-        <p>{city}, </p>
-        <p>{region}</p>
+      <div className="flex flex-col gap-y-1">
+        <p>{name}</p>
+        <p>{address}</p>
+        <div className="flex">
+          <p>{city}, </p>
+          <p>{region}</p>
+        </div>
+        <p>{phone}</p>
+        <p>{email}</p>
       </div>
-      <p>{phone}</p>
-      <p>{email}</p>
     </div>
   )
 }

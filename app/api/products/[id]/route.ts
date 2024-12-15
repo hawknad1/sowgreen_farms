@@ -35,7 +35,6 @@ export async function PUT(
   } = await req.json()
   const id = params.id
 
-  console.log(images, "backend---images")
   try {
     const product = await prisma.product.update({
       where: { id },

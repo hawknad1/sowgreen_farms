@@ -1,86 +1,96 @@
 "use client"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  Bell,
-  CircleUser,
-  Home,
-  LogOut,
-  LineChart,
-  Menu,
-  Package,
-  Package2,
-  Search,
-  ShoppingCart,
-  Users,
-} from "lucide-react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
-import Link from "next/link"
-import Image from "next/image"
 import { sidebarLinks } from "@/constants"
 import { usePathname } from "next/navigation"
-import { logout } from "@/lib/actions/auth"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/ui/separator"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
+import { AppSidebar } from "../app-sidebar"
 
-const Sidebar = () => {
+interface SidebarProps {
+  children?: React.ReactNode
+}
+
+const Sidebar = ({ children }: SidebarProps) => {
   const pathname = usePathname()
+
+  // Find active main and sub-navigation items
+  const { activeMain, activeSub } = getActiveNav(pathname)
+
   return (
-    <div className="hidden border-r bg-white md:block">
-      <div className="flex h-full max-h-screen flex-col gap-2">
-        <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Image
-              src="/images/sowgreen.png"
-              alt="logo"
-              height={65}
-              width={65}
-            />
-          </Link>
-          <Button variant="outline" size="icon" className="ml-auto h-8 w-8">
-            <Bell className="h-4 w-4" />
-            <span className="sr-only">Toggle notifications</span>
-          </Button>
-        </div>
-        <div className="flex-1">
-          <nav className="grid items-start px-2 text-sm font-medium lg:px-4 lg:gap-y-1.5">
-            {sidebarLinks.map(({ label, path, icon: Icon }) => {
-              const isActive =
-                (pathname.includes(path) && path.length > 1) ||
-                pathname === path
-              return (
-                <Link
-                  key={label}
-                  href={path}
-                  className={`${
-                    isActive && "bg-muted"
-                  } flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </Link>
-              )
-            })}
-          </nav>
-        </div>
-        <div className="mt-auto p-4">
-          <Button
-            onClick={() => logout()}
-            className="w-full flex gap-x-2 font-medium"
-          >
-            <LogOut className="h-4 w-4" />
-            Logout
-          </Button>
-        </div>
-      </div>
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset className="h-screen overflow-hidden">
+        {/* Sticky Header */}
+        <header className="sticky top-0 z-10 flex h-16 items-center gap-2 bg-white px-4 shadow-sm">
+          <SidebarTrigger className="-ml-1" />
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="hidden md:block">
+                <BreadcrumbLink href="/admin/dashboard">Admin</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator className="hidden md:block" />
+              {activeMain && (
+                <>
+                  <BreadcrumbItem>
+                    <BreadcrumbLink href={activeMain.url}>
+                      {activeMain.title}
+                    </BreadcrumbLink>
+                  </BreadcrumbItem>
+                  {activeSub && (
+                    <>
+                      <BreadcrumbSeparator />
+                      <BreadcrumbItem>
+                        <BreadcrumbPage>{activeSub.title}</BreadcrumbPage>
+                      </BreadcrumbItem>
+                    </>
+                  )}
+                </>
+              )}
+            </BreadcrumbList>
+          </Breadcrumb>
+        </header>
+
+        {/* Scrollable Content */}
+        <main className="h-[calc(100%-4rem)] overflow-y-auto scrollbar-hide">
+          {children}
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   )
+}
+
+// Helper function to find the active navigation item
+const getActiveNav = (pathname: string) => {
+  let activeMain: { title: string; url: string; items?: any[] } | null = null
+  let activeSub: { title: string; url: string } | null = null
+
+  for (const mainItem of sidebarLinks.navMain) {
+    // Check if the main item is active
+    if (pathname.startsWith(mainItem.url)) {
+      activeMain = mainItem
+
+      // Check for active sub-items
+      if (mainItem.items) {
+        activeSub = mainItem.items.find((subItem) => pathname === subItem.url)
+      }
+      break
+    }
+  }
+
+  return { activeMain, activeSub }
 }
 
 export default Sidebar

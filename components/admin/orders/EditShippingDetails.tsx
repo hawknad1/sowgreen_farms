@@ -27,40 +27,46 @@ import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
 import { cityDeliveryPrices, regions } from "@/constants"
 import { useState } from "react"
+import { ShippingAddress } from "@/types"
 
-const EditShippingDetails = () => {
+interface ShippingProps {
+  shippingAddress: ShippingAddress
+}
+
+const EditShippingDetails = ({ shippingAddress }: ShippingProps) => {
   const router = useRouter()
   const [selectedCity, setSelectedCity] = useState("")
+  const [isSaving, setIsSaving] = useState(false)
 
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
-    defaultValues: {
-      address: "",
-      city: "",
-      phone: "",
-      name: "",
-    },
+    defaultValues: shippingAddress,
   })
 
-  const updateProduct = async (values: z.infer<typeof CheckoutSchema>) => {
+  const updateShippingAddress = async (
+    values: z.infer<typeof CheckoutSchema>
+  ) => {
+    setIsSaving(true)
     try {
-      const res = await fetch(``, {
+      const res = await fetch(`/api/shipping-address/${shippingAddress?.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       })
 
-      if (!res.ok) throw new Error("Failed to update product")
+      if (!res.ok) throw new Error("Failed to update shipping address")
 
       toast.success("Product updated successfully!")
-      router.push(`/admin/products`)
+      // router.push(`/admin/products`)
     } catch (error) {
       toast.error("Error updating product.")
+    } finally {
+      setIsSaving(false)
     }
   }
 
   const onSubmit = (values: z.infer<typeof CheckoutSchema>) =>
-    updateProduct(values)
+    updateShippingAddress(values)
 
   return (
     <Form {...form}>
@@ -158,8 +164,12 @@ const EditShippingDetails = () => {
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          Save Changes
+        <Button type="submit" className="w-full" disabled={isSaving}>
+          {isSaving ? (
+            <span className="loading loading-infinity loading-md"></span>
+          ) : (
+            "Save changes"
+          )}
         </Button>
       </form>
     </Form>

@@ -8,22 +8,21 @@ interface InfoCardProps {
 }
 
 const InfoCard = ({ data }: InfoCardProps) => {
-  const shipMethod = () => {
-    const deliveryMethod = data?.formData?.deliveryMethod?.toLowerCase() || ""
+  const deliveryMethod = data?.formData?.deliveryMethod?.trim()?.toUpperCase()
 
+  const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
-      case "Wednesday - DZORWULU - 11AM-5PM":
-        return "Pick up - Dzorwolu"
-      case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
-        return "Pick up - Dubois Center"
-      case "same-day-delivery":
-        return "Same Day Delivery"
-      case "next-day-delivery":
-        return "Next Day Delivery"
+      case "DZORWULU":
+        return "Pick Up - DZORWULU"
+      case "WEB DuBOIS CENTER":
+        return `Pick Up - WEB DuBOIS CENTER`
+      case `Home Delivery - ${deliveryMethod}`:
+        return `Home Delivery - ${deliveryMethod}`
       default:
+        console.warn("Unexpected delivery method:", deliveryMethod) // Debugging line
         return deliveryMethod || "Not specified"
     }
-  }
+  }, [deliveryMethod])
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
@@ -60,7 +59,7 @@ const InfoCard = ({ data }: InfoCardProps) => {
               Delivery Method
             </h3>
             <p className="text-gray-600 flex justify-end md:justify-start">
-              {shipMethod()}
+              {deliveryMethodLabel}
             </p>
           </div>
         </div>

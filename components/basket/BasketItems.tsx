@@ -20,7 +20,7 @@ const BasketItems = () => {
   const router = useRouter()
   const cartWithTax = cart.map((product) => ({
     ...product,
-    price: addTax(product.price),
+    price: product.price,
   }))
   const basketTotal = getCartTotal(cartWithTax)
 

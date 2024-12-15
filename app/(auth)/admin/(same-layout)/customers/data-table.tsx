@@ -91,8 +91,8 @@ const CustomerDataTable = () => {
   })
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">
+    <div className="w-full p-4">
+      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
         <Input
           placeholder="Filter customers..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}

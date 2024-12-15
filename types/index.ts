@@ -51,6 +51,18 @@ export type ShippingAddress = {
   region: string
   country: string
   phone: string
+  deliveryMethod?: string
+  orders?: Order[]
+}
+
+export type CustomerDetailType = {
+  id: string
+  name: string
+  city: string
+  region: string
+  address: string
+  phone: string
+  deliveryMethod: string
   orders?: Order[]
 }
 
@@ -65,7 +77,12 @@ export type ShippingAddress = {
 //   products: Product[]
 // }
 
-export type OrderStatus = "processing" | "confirmed" | "shipped" | "delivered"
+export type OrderStatus =
+  | "processing"
+  | "confirmed"
+  | "in-transit"
+  | "delivered"
+  | "cancelled"
 
 export type Order = {
   id: string
@@ -74,7 +91,7 @@ export type Order = {
   total: number
   status: OrderStatus
   dispatchRider: string
-  deliveryMethod: string
+  deliveryMethod?: string
   deliveryFee: number
   deliveryDate: string
   cardType?: string
@@ -175,4 +192,11 @@ export type User = {
   role: string
   balance: number
   email: string
+}
+
+export type CitiesWithFees = {
+  id: string
+  city: string
+  deliveryFee: number
+  region: string
 }

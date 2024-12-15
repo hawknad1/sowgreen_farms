@@ -14,6 +14,7 @@ import { Button } from "../../../ui/button"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 import { Order } from "@/types"
+import { TrashIcon } from "@heroicons/react/20/solid"
 
 interface Props {
   order: Order
@@ -62,7 +63,7 @@ const DeleteOrderDialog = ({ order, children, className }: Props) => {
           variant="destructive"
           className={`font-semibold w-full ${className}`}
         >
-          Delete Order
+          <TrashIcon className="h-5 w-5" />
         </Button>
       </DialogTrigger>
 

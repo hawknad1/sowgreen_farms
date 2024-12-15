@@ -20,8 +20,16 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   try {
-    const { name, address, email, city, region, country, phone } =
-      await req.json()
+    const {
+      name,
+      address,
+      email,
+      city,
+      region,
+      country,
+      phone,
+      deliveryMethod,
+    } = await req.json()
 
     const validation = CheckoutSchema.safeParse({
       name,
@@ -31,6 +39,7 @@ export async function POST(req: Request) {
       region,
       country,
       phone,
+      deliveryMethod,
     })
 
     if (!validation.success) {
@@ -49,6 +58,7 @@ export async function POST(req: Request) {
         region,
         country,
         phone,
+        deliveryMethod,
       },
     })
 

@@ -12,6 +12,7 @@ import StatusPopup from "./StatusPopup"
 import AddCredit from "./AddCredit"
 import DeleteOrderDialog from "./dialogs/DeleteOrderDialog"
 import ModifyOrderDialog from "./dialogs/ModifyOrderDialog"
+import CancelOrderDialog from "./dialogs/CancelOrderDialog"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   if (!orders)
@@ -26,20 +27,24 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
     orders?.dispatchRider?.slice(1)
 
   return (
-    <div className="">
+    <div className="p-4">
       <div className="flex flex-col">
-        <div className="flex justify-between items-center my-4 z-10">
+        <div className="flex justify-between sticky top-0 z-10  h-16 items-center gap-2 bg-white px-4">
           <div>
-            <h2 className="text-xl font-semibold">
+            <h2 className="lg:text-xl text-sm md:text-base font-semibold">
               Order No. : {orders?.orderNumber}
             </h2>
-            <p className="text-sm text-gray-500">
+            <p className="md:text-sm text-xs text-gray-500">
               Order details of {orders?.shippingAddress?.name}
             </p>
           </div>
 
           <div className="flex items-center gap-x-3">
-            <DeleteOrderDialog order={orders} />
+            <CancelOrderDialog order={orders} className="" />
+            <DeleteOrderDialog
+              order={orders}
+              className="hidden lg:inline-flex"
+            />
             <AddCredit />
           </div>
         </div>
@@ -68,7 +73,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               <Separator className="my-4" />
 
               {/* Shipping and order details */}
-              <div className="flex justify-between gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ShippingInfo shippingAddress={orders?.shippingAddress} />
                 <OrderInfo orders={orders} />
               </div>

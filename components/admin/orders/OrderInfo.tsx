@@ -11,26 +11,44 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
     deliveryFee,
     deliveryDate,
     dispatchRider,
+    shippingAddress,
     paymentMode,
     cardType,
   } = orders
 
   const orderTotal = total + deliveryFee
 
-  const deliveryMethodLabel = useMemo(() => {
-    switch (deliveryMethod) {
-      case "Wednesday - DZORWULU - 11AM-5PM":
-        return "Pick up - Dzorwolu"
-      case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
-        return "Pick up - Dubois Center"
-      case "wednesday-delivery":
-        return `Home Delivery - ${deliveryMethod}`
-      case "saturday-delivery":
-        return `Home Delivery - ${deliveryMethod}`
-      default:
-        return deliveryMethod || "Not specified"
-    }
-  }, [deliveryMethod])
+  console.log(orders, "orderrsss!!!")
+
+  // const deliveryMethodLabel = useMemo(() => {
+  //   switch (deliveryMethod) {
+  //     case "DZORWULU":
+  //       return "Pick up - Dzorwolu"
+  //     case "WEB DuBOIS CENTER":
+  //       return "Pick up - Dubois Center"
+  //     case "wednesday-delivery":
+  //       return `Home Delivery - ${deliveryMethod}`
+  //     case "saturday-delivery":
+  //       return `Home Delivery - ${deliveryMethod}`
+  //     default:
+  //       return deliveryMethod || "Not specified"
+  //   }
+  // }, [deliveryMethod])
+
+  // const deliveryMethodLabel = useMemo(() => {
+  //   switch (deliveryMethod) {
+  //     case "Wednesday - DZORWULU - 11AM-5PM":
+  //       return "Pick up - Dzorwolu"
+  //     case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
+  //       return "Pick up - Dubois Center"
+  //     case "wednesday-delivery":
+  //       return `Home Delivery - ${deliveryMethod}`
+  //     case "saturday-delivery":
+  //       return `Home Delivery - ${deliveryMethod}`
+  //     default:
+  //       return deliveryMethod || "Not specified"
+  //   }
+  // }, [deliveryMethod])
 
   if (!orders) return null
 
@@ -40,39 +58,41 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
 
   return (
     <div className="w-full border border-neutral-200 px-6 py-4 rounded-lg">
-      <div className="flex w-full justify-between">
-        <h3 className="text-lg font-bold mb-2">Order Details</h3>
+      <div className="flex w-full justify-between mb-1 ">
+        <h3 className="text-base lg:text-lg font-bold mb-2">Order Details</h3>
 
-        <ModifyOrderDetailsDialog />
+        <ModifyOrderDetailsDialog order={orders} />
       </div>
-      <p className="font-medium">
-        <span className="text-sm text-neutral-500">Order Number: </span>{" "}
-        {orderNumber}
-      </p>
-      <p className="font-medium">
-        <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}
-        {orderTotal.toFixed(2)}
-      </p>
-      {cardType ? (
-        <p className="font-medium">
-          <span className="text-sm text-neutral-500">Payment Method: </span>
-          {typeCard}
+      <div className="flex flex-col gap-y-1">
+        <p className="font-medium flex justify-between">
+          <span className="text-sm text-neutral-500">Order Number: </span>{" "}
+          {orderNumber}
         </p>
-      ) : (
-        <p className="font-medium">
-          <span className="text-sm text-neutral-500">Payment Method: </span>
-          {modeOfPayment}
+        <p className="font-medium flex justify-between">
+          <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}
+          {orderTotal.toFixed(2)}
         </p>
-      )}
-      <p className="font-medium">
-        <span className="text-sm text-neutral-500">Delivery Date: </span>
-        {deliveryDate}
-      </p>
+        {cardType ? (
+          <p className="font-medium flex justify-between">
+            <span className="text-sm text-neutral-500">Payment Method: </span>
+            {typeCard}
+          </p>
+        ) : (
+          <p className="font-medium flex justify-between">
+            <span className="text-sm text-neutral-500">Payment Method: </span>
+            {modeOfPayment}
+          </p>
+        )}
+        <p className="font-medium flex justify-between">
+          <span className="text-sm text-neutral-500">Delivery Date: </span>
+          {deliveryDate}
+        </p>
 
-      <p className="font-medium">
-        <span className="text-sm text-neutral-500">Delivery Method: </span>{" "}
-        {deliveryMethodLabel}
-      </p>
+        <p className="font-medium flex justify-between">
+          <span className="text-sm text-neutral-500">Delivery Method: </span>{" "}
+          {shippingAddress?.deliveryMethod}
+        </p>
+      </div>
     </div>
   )
 }

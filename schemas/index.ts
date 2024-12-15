@@ -27,6 +27,9 @@ export const CheckoutSchema = z.object({
   city: z.string().min(2, { message: "City is required!" }),
   address: z.string().min(5, { message: "Address is required!" }),
   phone: z.string().regex(phoneRegex, "Invalid Number!"),
+  deliveryMethod: z
+    .string()
+    .min(1, { message: "Delivery method is required!" }),
 })
 
 export const PaymentRadioSchema = z.object({
@@ -42,6 +45,9 @@ export const DeliveryRadioSchema = z.object({
       required_error: "You need to select a delivery method.",
     }
   ),
+
+  // deliveryMethod: z.string().min(1, "You must select a delivery method."),
+  // pickupOption: z.string().optional(),
 })
 
 export const DriverRadioSchema = z.object({
@@ -94,7 +100,13 @@ export const EditProductSchema = z.object({
 // })
 
 export const UpdateStatusSchema = z.object({
-  status: z.enum(["processing", "confirmed", "shipped", "delivered"]),
+  status: z.enum([
+    "processing",
+    "confirmed",
+    "in-transit",
+    "delivered",
+    "cancelled",
+  ]),
   dispatchRider: z.string().optional(),
 })
 
@@ -149,4 +161,28 @@ export const EditOrderDetailSchema = z.object({
   deliveryMethod: z.string(),
   // paymentMethod: z.string(),
   deliveryDate: z.string(),
+})
+
+export const AddCityandFeeSchema = z.object({
+  city: z.string().min(1, { message: "City is required!" }),
+  deliveryFee: z.coerce.number(),
+  region: z.string().min(1, { message: "Region is required!" }),
+})
+
+export const UpdateCityandFeeSchema = z.object({
+  city: z.string().min(1, { message: "City is required!" }),
+  deliveryFee: z.coerce.number(),
+  region: z.string().min(1, { message: "Region is required!" }),
+})
+
+export const AddOrderSchema = z.object({
+  name: z.string().min(1, { message: "Name is required!" }),
+  email: z.string().email({ message: "Email is required!" }),
+  region: z.string().min(2, { message: "Region is required!" }),
+  city: z.string().min(2, { message: "City is required!" }),
+  address: z.string().min(5, { message: "Address is required!" }),
+  phone: z.string().regex(phoneRegex, "Invalid Number!"),
+  deliveryMethod: z
+    .string()
+    .min(1, { message: "Delivery method is required!" }),
 })

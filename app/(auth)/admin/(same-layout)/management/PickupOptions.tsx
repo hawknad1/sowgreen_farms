@@ -10,17 +10,27 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
+import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
+import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
 
 // Updated Zod schema
 export const PickupOptionSchema = z.object({
   pickupOptions: z.array(z.string().nonempty("Location is required")),
 })
 
+const [wednesday, saturday] = getUpcomingDeliveryDates()
+
 const availablePickupOptions = [
-  "Wednesday - DZORWULU - 11AM-5PM",
-  "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM",
-  "SATURDAY - PARKS & GARDENS - 10AM-3PM",
+  `DZORWULU `,
+  `WEB DuBOIS CENTER`,
+  `PARKS & GARDENS`,
 ]
+
+// const availablePickupOptions = [
+//   `DZORWULU - ${formatDeliveryDate(wednesday)} - 11AM-5PM`,
+//   `WEB DuBOIS CENTER - ${formatDeliveryDate(saturday)} - 10AM-3PM`,
+//   `PARKS & GARDENS - ${formatDeliveryDate(saturday)} - 10AM-3PM`,
+// ]
 
 type FormValues = z.infer<typeof PickupOptionSchema>
 
@@ -81,7 +91,8 @@ export function PickupOptions() {
         toast({
           title: "Pickup Options Updated Successfully",
         })
-        router.push("/admin/dashboard")
+        // router.push("/admin/dashboard")
+        window.location.reload()
       } else {
         console.log("Failed to submit data:", await res.json())
       }

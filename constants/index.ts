@@ -10,6 +10,7 @@ import {
 import {
   BadgeInfo,
   Bell,
+  Cherry,
   Carrot,
   CircleUser,
   Heart,
@@ -24,6 +25,17 @@ import {
   ShoppingCart,
   UserRound,
   Users,
+  PackageCheck,
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  LifeBuoy,
+  Contact,
+  Map,
+  PieChart,
+  Send,
+  SquareTerminal,
 } from "lucide-react"
 
 export const menuLinks = [
@@ -178,13 +190,13 @@ export const orderStatusCard = [
     title: "Confirmed",
     status: "confirmed",
     subTitle: "Order Confirmed",
-    icon: TruckIcon,
+    icon: PackageCheck,
   },
 
   {
-    title: "Shipped",
-    status: "shipped",
-    subTitle: "Order Shipped",
+    title: "In Transit",
+    status: "in-transit",
+    subTitle: "On The Way",
     icon: TruckIcon,
   },
   {
@@ -195,72 +207,187 @@ export const orderStatusCard = [
   },
 ]
 
-export const sidebarLinks = [
-  {
-    label: "Dashboard",
-    path: "/admin/dashboard",
-    icon: Home,
+export const sidebarLinks = {
+  user: {
+    name: "shadcn",
+    email: "m@example.com",
+    avatar: "/avatars/shadcn.jpg",
   },
-  {
-    label: "Orders",
-    path: "/admin/orders",
-    icon: ShoppingCart,
-  },
-  {
-    label: "Products",
-    path: "/admin/products",
-    icon: Package,
-  },
-  {
-    label: "Customers",
-    path: "/admin/customers",
-    icon: Users,
-  },
-  {
-    label: "Management",
-    path: "/admin/management",
-    icon: Users,
-  },
-  {
-    label: "Transactions",
-    path: "/admin/transactions",
-    icon: LineChart,
-  },
-  {
-    label: "Sales",
-    path: "/admin/sales",
-    icon: LineChart,
-  },
-  {
-    label: "Settings",
-    path: "/admin/settings",
-    icon: Settings,
-  },
-  {
-    label: "Help",
-    path: "/admin/help",
-    icon: BadgeInfo,
-  },
-]
+  navMain: [
+    {
+      title: "Dashboard",
+      url: "/admin/dashboard",
+      icon: SquareTerminal,
+      isActive: true,
+    },
+    {
+      title: "Orders",
+      url: "/admin/orders",
+      icon: ShoppingCart,
+      items: [
+        {
+          title: "Confirmed",
+          url: "/admin/orders/confirmed",
+        },
+        {
+          title: "In Transit",
+          url: "/admin/orders/in-transit",
+        },
+        {
+          title: "Delivered",
+          url: "/admin/orders/delivered",
+        },
+      ],
+    },
+    {
+      title: "Products",
+      url: "/admin/products",
+      icon: Cherry,
+      items: [
+        {
+          title: "Vegetables",
+          url: "/admin/products/vegetables",
+        },
+        {
+          title: "Fruits",
+          url: "/admin/products/fruits",
+        },
+        {
+          title: "Beverages",
+          url: "/admin/products/beverages",
+        },
+      ],
+    },
+    {
+      title: "Management",
+      url: "/admin/management",
+      icon: Users,
+      items: [
+        {
+          title: "Pickup Locations",
+          url: "/admin/locations",
+        },
+        {
+          title: "Route Sheets",
+          url: "/admin/route-sheets",
+        },
+        {
+          title: "City List",
+          url: "/admin/city-list",
+        },
+      ],
+    },
+    {
+      title: "Customers",
+      url: "/admin/customers",
+      icon: Contact,
+    },
+    {
+      title: "Transactions",
+      url: "/admin/transactions",
+      icon: LineChart,
+    },
+    {
+      title: "Settings",
+      url: "/admin/settings",
+      icon: Settings2,
+      items: [
+        {
+          title: "General",
+          url: "#",
+        },
+        {
+          title: "Team",
+          url: "#",
+        },
+        {
+          title: "Billing",
+          url: "#",
+        },
+        {
+          title: "Limits",
+          url: "#",
+        },
+      ],
+    },
+  ],
+  navSecondary: [
+    {
+      title: "Support",
+      url: "#",
+      icon: LifeBuoy,
+    },
+    {
+      title: "Feedback",
+      url: "#",
+      icon: Send,
+    },
+  ],
+}
+
+// export const sidebarLinks = [
+//   {
+//     label: "Dashboard",
+//     path: "/admin/dashboard",
+//     icon: Home,
+//   },
+//   {
+//     label: "Orders",
+//     path: "/admin/orders",
+//     icon: ShoppingCart,
+//   },
+//   {
+//     label: "Products",
+//     path: "/admin/products",
+//     icon: Package,
+//   },
+//   {
+//     label: "Customers",
+//     path: "/admin/customers",
+//     icon: Users,
+//   },
+//   {
+//     label: "Management",
+//     path: "/admin/management",
+//     icon: Users,
+//   },
+//   {
+//     label: "Transactions",
+//     path: "/admin/transactions",
+//     icon: LineChart,
+//   },
+//   {
+//     label: "Sales",
+//     path: "/admin/sales",
+//     icon: LineChart,
+//   },
+//   {
+//     label: "Settings",
+//     path: "/admin/settings",
+//     icon: Settings,
+//   },
+//   {
+//     label: "Help",
+//     path: "/admin/help",
+//     icon: BadgeInfo,
+//   },
+// ]
 
 const [wednesday, saturday] = getUpcomingDeliveryDates()
 
-console.log(wednesday, "wednesday---")
-console.log(saturday.toLocaleDateString("en-US"), "saturday---")
-
 export const deliveryMethods = [
   {
-    label: "Wednesday Delivery",
+    label: "Home Delivery",
     tag: "",
     date: formatDeliveryDate(wednesday),
     price: `GHS ${20}`,
-    value: formatDeliveryDate(wednesday),
+    value: `Home Delivery - ${formatDeliveryDate(wednesday)}`,
   },
   {
-    label: "Saturday Delivery",
+    label: "Home Delivery",
     date: formatDeliveryDate(saturday),
     price: `GHS ${20}`,
-    value: formatDeliveryDate(saturday),
+    value: `Home Delivery - ${formatDeliveryDate(saturday)}`,
   },
   {
     label: "Schedule a pickup",
@@ -560,6 +687,7 @@ export const cityDeliveryPrices: { [city: string]: number } = {
   Teshie: 45,
   "Teshie Nungua": 45,
   Tesano: 45,
+  Teiman: 55,
   "Tse Addo": 45,
   Villaggio: 45,
   Weija: 55,
@@ -568,15 +696,28 @@ export const cityDeliveryPrices: { [city: string]: number } = {
 
 export const regions = [
   {
-    name: "Accra",
+    name: "Greater Accra",
   },
   {
     name: "Eastern",
+  },
+  {
+    name: "Central",
   },
 ]
 
 export const newDeliveryMethod = [
   { value: "Home Delivery" },
-  { value: "Wednesday - DZORWULU - 11AM-5PM" },
-  { value: "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM" },
+  { value: "DZORWULU" },
+  { value: "WEB DuBOIS CENTER" },
+  { value: "PARKS & GARDENS" },
+]
+
+export const deliveryDates = [
+  {
+    date: formatDeliveryDate(wednesday),
+  },
+  {
+    date: formatDeliveryDate(saturday),
+  },
 ]

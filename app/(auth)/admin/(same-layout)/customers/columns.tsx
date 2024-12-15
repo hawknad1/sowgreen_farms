@@ -99,7 +99,7 @@ export const columns: ColumnDef<ShippingAddress>[] = [
             <DropdownMenuSeparator />
             <Button
               className="bg-black text-white"
-              onClick={() => router.push(`/admin/customers/${customer.id}`)}
+              onClick={() => router.push(`/admin/customers/${customer.email}`)}
             >
               Customer Details
             </Button>

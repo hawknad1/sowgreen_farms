@@ -38,11 +38,12 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 }) => {
   const router = useRouter()
   const [orderStatus, setOrderStatus] = useState(orders.status)
+  const [isSaving, setIsSaving] = useState(false)
+
   const [isMessageSent, setIsMessageSent] = useState(
     orders.status === "confirmed"
   ) // Track if the message was sent
 
-  console.log(orders, "orders---")
   const form = useForm<z.infer<typeof UpdateStatusSchema>>({
     resolver: zodResolver(UpdateStatusSchema),
     defaultValues: {
@@ -53,6 +54,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 
   // API Call to Update Order
   const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
+    setIsSaving(true)
     try {
       const response = await fetch(`/api/orders/${orders.id}`, {
         method: "PUT",
@@ -70,6 +72,8 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       window.location.reload()
     } catch (error: any) {
       toast.error(`Error: ${error.message || "Failed to update order"}`)
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -110,8 +114,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
                   <SelectContent>
                     <SelectItem value="processing">Processing</SelectItem>
                     <SelectItem value="confirmed">Confirmed</SelectItem>
-                    <SelectItem value="shipped">Shipped</SelectItem>
+                    <SelectItem value="in-transit">In Transit</SelectItem>
                     <SelectItem value="delivered">Delivered</SelectItem>
+                    <SelectItem value="cancelled">Cancelled</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage />
@@ -147,8 +152,12 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           />
         </div>
 
-        <Button type="submit" className="w-full">
-          Save Changes
+        <Button type="submit" className="w-full" disabled={isSaving}>
+          {isSaving ? (
+            <span className="loading loading-infinity loading-md"></span>
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </form>
     </Form>

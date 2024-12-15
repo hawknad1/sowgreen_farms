@@ -11,14 +11,12 @@ const BasketOrderSummery = () => {
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 
+  console.log(deliveryFee, "feee")
+
   const cartWithTax = cart.map((product) => ({
     ...product,
     price: product.price,
   }))
-
-  if (cart.length > 0) {
-    setDeliveryFee(30)
-  }
 
   const basketTotal = getCartTotal(cartWithTax)
   const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))

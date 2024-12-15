@@ -87,33 +87,9 @@ export const columns: ColumnDef<Order>[] = [
     },
   },
 
-  // {
-  //   accessorKey: "orderNumber",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Order Number
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     )
-  //   },
-  //   cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
-  // },
-  // {
-  //   accessorKey: "createdAt",
-  //   header: "Date",
-  //   cell: ({ row }) => {
-  //     const date = new Date(row.getValue("createdAt"))
-  //     return <div>{date.toLocaleDateString("en-US", options)}</div>
-  //   },
-  // },
-
   {
     accessorKey: "shippingAddress.name",
-    header: "Customer Name",
+    header: "Name",
     cell: ({ row }) => (
       <div className="capitalize">{row.original.shippingAddress.name}</div>
     ),
@@ -127,10 +103,19 @@ export const columns: ColumnDef<Order>[] = [
         className={`capitalize px-3 w-fit min-w-16 text-center py-0.5 rounded-3xl ${
           row.original.status === "processing" &&
           "text-yellow-500 bg-yellow-400/15 border border-yellow-300 tracking-wide"
-        } ${
-          row.original.status === "shipped" &&
+        } 
+         ${
+           row.original.status === "confirmed" &&
+           "text-emerald-500 bg-emerald-500/15 border border-emerald-300 tracking-wide"
+         }
+        ${
+          row.original.status === "in-transit" &&
           "text-cyan-500 bg-cyan-400/15 border border-cyan-300 tracking-wide"
-        } ${
+        }
+         ${
+           row.original.status === "cancelled" &&
+           "text-red-500 bg-red-500/15 border border-red-300 tracking-wide"
+         } ${
           row.original.status === "delivered" &&
           "text-indigo-500 bg-indigo-500/15 border border-indigo-300 tracking-wide"
         }`}

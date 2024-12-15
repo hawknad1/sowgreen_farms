@@ -64,10 +64,12 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
     }
   }
 
+  // const orderTotal = order?.total + order?.deliveryFee
+
   const generatePaystackConfig = (order: Order) => ({
     reference: new Date().getTime().toString(),
     email: order.shippingAddress?.email,
-    amount: Math.round(order.total * 100),
+    amount: Math.round((order.total + order?.deliveryFee) * 100),
     currency: "GHS",
     metadata: {
       custom_fields: [
@@ -101,7 +103,7 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
               <TableCell className="font-bold text-base">Order #</TableCell>
               <TableCell className="font-bold text-base">Date Placed</TableCell>
               <TableCell className="font-bold text-base">
-                Shipping Method
+                Delivery Method
               </TableCell>
               <TableCell className="font-bold text-base" align="center">
                 Status
@@ -123,11 +125,13 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
                   <TableCell>
                     {new Date(order.createdAt).toLocaleDateString()}
                   </TableCell>
-                  <TableCell>{order.deliveryMethod || "N/A"}</TableCell>
+                  <TableCell>
+                    {order?.shippingAddress?.deliveryMethod || "N/A"}
+                  </TableCell>
                   <TableCell align="center">
                     <span
                       className={`px-2 py-1 rounded ${
-                        order.status === "shipped"
+                        order.status === "in-transit"
                           ? "text-emerald-500 bg-emerald-500/15"
                           : order.status === "processing"
                           ? "text-yellow-600 bg-yellow-100/60"
@@ -142,15 +146,19 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
                   </TableCell>
                   <TableCell align="center">
                     {order?.paymentMode === "cash" &&
-                    order?.paymentAction === "cash-on-delivery" ? (
+                    order?.paymentAction === "cash-on-delivery" &&
+                    order?.status === "confirmed" ? (
                       <PaystackButton
                         {...generatePaystackConfig(order)}
                         className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
                       />
+                    ) : order?.paymentAction === "paid" ? (
+                      <p>Paid</p>
                     ) : (
-                      <p className="bg-neutral-600/15 rounded-full px-2 py-0.5 font-bold text-neutral-600">
-                        {order?.paymentAction?.charAt(0).toUpperCase() +
-                          order?.paymentAction?.slice(1)}
+                      <p className="bg-neutral-500/15 rounded-full px-1 py-0.5 font-bold text-neutral-500">
+                        {/* {order?.paymentAction?.charAt(0).toUpperCase() +
+                          order?.paymentAction?.slice(1)} */}
+                        Pending
                       </p>
                     )}
                   </TableCell>

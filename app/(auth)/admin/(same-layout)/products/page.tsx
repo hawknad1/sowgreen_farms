@@ -6,8 +6,6 @@ const AdminProducts = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
 
-  console.log(products, "pppppppoooo")
-
   useEffect(() => {
     async function getProductList() {
       try {

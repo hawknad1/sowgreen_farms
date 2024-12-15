@@ -71,7 +71,7 @@ const Dashboard = () => {
   }, [])
 
   return (
-    <div className="h-screen overflow-scroll scrollbar-hide">
+    <div className="h-screen overflow-scroll scrollbar-hide w-full p-4 ">
       <Cards
         orders={orders}
         products={products}

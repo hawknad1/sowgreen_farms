@@ -24,7 +24,7 @@ import {
 
 import { EditOrderDetailSchema } from "@/schemas"
 import { Order } from "@/types"
-import { deliveryMethods, newDeliveryMethod } from "@/constants"
+import { deliveryDates, newDeliveryMethod } from "@/constants"
 
 interface OrderProps {
   order: Order
@@ -37,40 +37,45 @@ const EditOrderDetails = ({ order }: OrderProps) => {
   const form = useForm<z.infer<typeof EditOrderDetailSchema>>({
     resolver: zodResolver(EditOrderDetailSchema),
     defaultValues: {
-      deliveryMethod: order?.deliveryMethod || "",
-      deliveryDate: order?.deliveryDate || "",
+      deliveryMethod: order?.shippingAddress?.deliveryMethod,
+      deliveryDate: order?.deliveryDate,
     },
   })
 
-  const updateOrderDetails = async (
-    values: z.infer<typeof EditOrderDetailSchema>
-  ) => {
+  const onSubmit = async (values: z.infer<typeof EditOrderDetailSchema>) => {
+    if (!order?.shippingAddress?.id || !order?.id) {
+      console.error("Order or Shipping Address ID is missing.")
+      return
+    }
+
     setIsSaving(true)
 
     try {
-      const res = await fetch(`/api/orders/${order.id}`, {
+      const res = await fetch(
+        `/api/shipping-address/${order.shippingAddress.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ deliveryMethod: values.deliveryMethod }),
+        }
+      )
+
+      if (!res.ok) throw new Error("Failed to update delivery method")
+
+      const deliverRes = await fetch(`/api/orders/${order.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({ deliveryDate: values.deliveryDate }),
       })
 
-      if (!res.ok) {
-        const error = await res.json()
-        throw new Error(error?.message || "Failed to update order details.")
-      }
+      if (!deliverRes.ok) throw new Error("Failed to update delivery date")
 
-      toast.success("Order updated successfully!")
-      router.refresh()
-    } catch (error: any) {
-      toast.error(error.message || "Error updating order details.")
+      window.location.reload()
+    } catch (error) {
+      console.error("Error updating delivery method or date:", error)
     } finally {
       setIsSaving(false)
     }
-  }
-
-  const onSubmit = (values: z.infer<typeof EditOrderDetailSchema>) => {
-    updateOrderDetails(values)
-    console.log(values, "values")
   }
 
   return (
@@ -122,8 +127,8 @@ const EditOrderDetails = ({ order }: OrderProps) => {
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {deliveryMethods.map((method) => (
-                    <SelectItem key={method.value} value={method.value}>
+                  {deliveryDates.map((method) => (
+                    <SelectItem key={method.date} value={method.date}>
                       {method.date}
                     </SelectItem>
                   ))}
@@ -136,7 +141,11 @@ const EditOrderDetails = ({ order }: OrderProps) => {
 
         {/* Submit Button */}
         <Button type="submit" className="w-full" disabled={isSaving}>
-          {isSaving ? "Saving changes..." : "Save Changes"}
+          {isSaving ? (
+            <span className="loading loading-infinity loading-md"></span>
+          ) : (
+            "Save changes"
+          )}
         </Button>
       </form>
     </Form>

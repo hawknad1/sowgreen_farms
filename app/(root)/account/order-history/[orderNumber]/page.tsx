@@ -57,8 +57,10 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
           <div className="grid grid-cols-5 gap-4 text-center text-gray-600 p-4 mb-4 border-b border-gray-200">
             <p>{orderDetails.orderNumber}</p>
             <p>{new Date(orderDetails.createdAt).toLocaleDateString()}</p>
-            <p>{orderDetails.deliveryMethod}</p>
-            <p>{`GHS ${orderDetails.total.toFixed(2)}`}</p>
+            <p>{orderDetails.shippingAddress.deliveryMethod}</p>
+            <p>{`GHS ${(orderDetails.total + orderDetails.deliveryFee).toFixed(
+              2
+            )}`}</p>
             <p>{status}</p>
           </div>
         )}

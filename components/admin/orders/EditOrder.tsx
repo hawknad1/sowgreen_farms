@@ -19,7 +19,6 @@ const EditOrder = ({ orders }: EditOrderProps) => {
   const [total, setTotal] = useState(0)
   const [isSaving, setIsSaving] = useState(false) // Disable button while saving
 
-  console.log(orderItems, "orderItems")
   useEffect(() => {
     const newSubtotal = orderItems.reduce(
       (sum, item) =>

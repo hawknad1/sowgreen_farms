@@ -20,7 +20,7 @@ interface Props {
 const AddCredit = ({ product }: Props) => (
   <Dialog>
     <DialogTrigger asChild>
-      <Button className=" flex gap-x-1">
+      <Button className=" flex gap-x-1 text-xs lg:text-sm">
         <DollarSign className="h-4 w-4" />
         Credit
       </Button>

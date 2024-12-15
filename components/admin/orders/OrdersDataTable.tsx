@@ -82,55 +82,65 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
   })
 
   return (
-    <div className="w-full">
-      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">
-        <Input
-          placeholder="Filter order number..."
-          value={
-            (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(event) =>
-            table.getColumn("orderNumber")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-          aria-label="Filter Order number"
-        />
+    <div className="w-full p-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
+        <div className="flex gap-x-2">
+          <Input
+            placeholder="Filter order number..."
+            value={
+              (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("orderNumber")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm w-full"
+            aria-label="Filter Order number"
+          />
 
-        <Input
-          placeholder="Filter Status..."
-          value={(table.getColumn("status")?.getFilterValue() as string) ?? ""}
-          onChange={(event) => {
-            table.getColumn("status")?.setFilterValue(event.target.value)
-          }}
-          className="max-w-sm"
-          aria-label="Filter Status"
-        />
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto flex items-center">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        {/* <Export action={handleExport} /> */}
-        <ExportDialog />
-        <AddCustomerOrderDialog />
+          <Input
+            placeholder="Filter Status..."
+            value={
+              (table.getColumn("status")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) => {
+              table.getColumn("status")?.setFilterValue(event.target.value)
+            }}
+            className="max-w-sm w-full"
+            aria-label="Filter Status"
+          />
+        </div>
+        <div className="flex w-full justify-between lg:justify-end gap-x-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="lg:inline-flex items-center hidden "
+              >
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* <Export action={handleExport} /> */}
+          <ExportDialog />
+          {/* <AddCustomerOrderDialog /> */}
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-md border">

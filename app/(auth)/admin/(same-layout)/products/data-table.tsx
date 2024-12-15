@@ -75,7 +75,7 @@ const ProductDataTable = ({ products, loading }: ProductProps) => {
   })
 
   return (
-    <div className="w-full">
+    <div className="w-full p-4">
       <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">
         <Input
           placeholder="Filter products..."

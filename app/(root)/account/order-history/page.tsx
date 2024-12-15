@@ -56,7 +56,7 @@ const OrderHistoryPage = () => {
     )
 
   return (
-    <div className="min-h-screen p-10 mb-10 container mx-auto flex justify-center items-center ">
+    <div className="min-h-screen p-10 mb-10 container mx-auto flex justify-center items-center bg-white">
       <div className="flex flex-col gap-y-5">
         <h2 className="text-4xl font-bold">Order History</h2>
         <p className="text-neutral-600">

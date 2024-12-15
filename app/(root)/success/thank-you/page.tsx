@@ -22,20 +22,20 @@ const ThankYouPage = () => {
     ordersData || {}
 
   // Format delivery method
-  const deliveryMethodLabel = useMemo(() => {
-    switch (deliveryMethod) {
-      case "Wednesday - DZORWULU - 11AM-5PM":
-        return "Pick up - Dzorwolu"
-      case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
-        return "Pick up - Dubois Center"
-      case "wednesday-delivery":
-        return "Wednesday Delivery"
-      case "saturday-delivery":
-        return "Saturday Delivery"
-      default:
-        return deliveryMethod || "Not specified"
-    }
-  }, [deliveryMethod])
+  // const deliveryMethodLabel = useMemo(() => {
+  //   switch (deliveryMethod) {
+  //     case "Wednesday - DZORWULU - 11AM-5PM":
+  //       return "Pick up - Dzorwolu"
+  //     case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
+  //       return "Pick up - Dubois Center"
+  //     case "wednesday-delivery":
+  //       return "Wednesday Delivery"
+  //     case "saturday-delivery":
+  //       return "Saturday Delivery"
+  //     default:
+  //       return deliveryMethod || "Not specified"
+  //   }
+  // }, [deliveryMethod])
 
   // Calculate subtotal
   useEffect(() => {
@@ -75,7 +75,7 @@ const ThankYouPage = () => {
           <div className="flex flex-col">
             <h2 className="text-sm font-bold mb-3">Shipping Method</h2>
             <p className="text-sm font-medium text-neutral-500/80 mb-2">
-              {deliveryMethodLabel}
+              {shippingAddress?.deliveryMethod}
             </p>
           </div>
         </div>

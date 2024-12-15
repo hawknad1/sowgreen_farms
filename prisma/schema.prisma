@@ -90,16 +90,26 @@ model Category {
   products     Product[]
 }
 
+model Customer {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  email             String            @unique
+  shippingAddresses ShippingAddress[] // One customer can have multiple shipping addresses
+  orders            Order[] // One customer can have multiple orders
+}
+
 model ShippingAddress {
-  id      String  @id @default(auto()) @map("_id") @db.ObjectId
-  name    String
-  region  String
-  city    String
-  address String
-  phone   String
-  country String?
-  email   String?
-  orders  Order[] // Indicates a one-to-many relationship; can be empty
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  name           String
+  region         String
+  city           String
+  address        String
+  phone          String
+  country        String?
+  email          String?
+  deliveryMethod String?
+  customerId     String?   @db.ObjectId
+  customer       Customer? @relation(fields: [customerId], references: [id])
+  orders         Order[] // Indicates a one-to-many relationship; can be empty
 }
 
 model Product {
@@ -124,21 +134,55 @@ model Product {
   // weightsAndPrices WeightPrice[]
 }
 
-// model DeliveryMethod {
-//   id              String         @id @default(auto()) @map("_id") @db.ObjectId
-//   label           String
-//   tag             String?
-//   price           String?
-//   value           String
-//   pickupOptions   PickupOption[] @relation("DeliveryMethodPickupOptions") // Establishing relation with PickupOption
-// }
+model ProductOrder {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId     String   @db.ObjectId
+  orderId       String   @db.ObjectId
+  quantity      Int
+  quantityTotal String?
+  available     Boolean?
+  product       Product  @relation(fields: [productId], references: [id])
+  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
 
-// model PickupOption {
-//   id               String         @id @default(auto()) @map("_id") @db.ObjectId
-//   label            String
-//   deliveryMethodId String         @db.ObjectId
-//   deliveryMethod   DeliveryMethod @relation("DeliveryMethodPickupOptions", fields: [deliveryMethodId], references: [id]) // Linking back to DeliveryMethod
-// }
+model Order {
+  id                String           @id @default(auto()) @map("_id") @db.ObjectId
+  referenceNumber   String
+  orderNumber       String           @unique
+  total             Float?
+  status            String?          @default("processing")
+  dispatchRider     String?
+  shippingAddressId String?          @db.ObjectId
+  shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  products          ProductOrder[]
+  deliveryMethod    String?
+  deliveryFee       Int?
+  customerId        String?          @db.ObjectId
+  customer          Customer?        @relation(fields: [customerId], references: [id])
+  deliveryDate      String?
+  cardType          String?
+  last4Digits       String?
+  paymentMode       String?
+  paymentAction     String?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+}
+
+model Management {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CitiesWithFees {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  city        String
+  deliveryFee Float
+  region      String?
+}
 
 model PickupOptions {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
@@ -191,43 +235,18 @@ model PickupOptions {
 //   order         Order   @relation(fields: [orderId], references: [id])
 // }
 
-model ProductOrder {
-  id            String   @id @default(auto()) @map("_id") @db.ObjectId
-  productId     String   @db.ObjectId
-  orderId       String   @db.ObjectId
-  quantity      Int
-  quantityTotal String?
-  available     Boolean?
-  product       Product  @relation(fields: [productId], references: [id])
-  order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-}
+// model DeliveryMethod {
+//   id              String         @id @default(auto()) @map("_id") @db.ObjectId
+//   label           String
+//   tag             String?
+//   price           String?
+//   value           String
+//   pickupOptions   PickupOption[] @relation("DeliveryMethodPickupOptions") // Establishing relation with PickupOption
+// }
 
-model Order {
-  id                String           @id @default(auto()) @map("_id") @db.ObjectId
-  referenceNumber   String
-  orderNumber       String           @unique
-  total             Float?
-  status            String?          @default("processing")
-  dispatchRider     String?
-  shippingAddressId String?          @db.ObjectId
-  shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
-  products          ProductOrder[]
-  deliveryMethod    String
-  deliveryFee       Int?
-  deliveryDate      String?
-  cardType          String?
-  last4Digits       String?
-  paymentMode       String?
-  paymentAction     String?
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-}
-
-model Management {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  name      String
-  email     String   @unique
-  phone     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
+// model PickupOption {
+//   id               String         @id @default(auto()) @map("_id") @db.ObjectId
+//   label            String
+//   deliveryMethodId String         @db.ObjectId
+//   deliveryMethod   DeliveryMethod @relation("DeliveryMethodPickupOptions", fields: [deliveryMethodId], references: [id]) // Linking back to DeliveryMethod
+// }

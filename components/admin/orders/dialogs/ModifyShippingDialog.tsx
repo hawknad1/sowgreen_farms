@@ -13,17 +13,17 @@ import {
 import { Button } from "../../../ui/button"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
-import { Order } from "@/types"
+import { ShippingAddress } from "@/types"
 import { PencilSquareIcon } from "@heroicons/react/20/solid"
 import EditShippingDetails from "../EditShippingDetails"
 
 interface Props {
-  order?: Order
+  shippingAddress?: ShippingAddress
   children?: React.ReactNode
   className?: string
 }
 
-const ModifyShippingDialog = ({ order, children, className }: Props) => {
+const ModifyShippingDialog = ({ shippingAddress, className }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
@@ -43,7 +43,7 @@ const ModifyShippingDialog = ({ order, children, className }: Props) => {
             Edit, remove or add new product to existing order.
           </DialogDescription>
         </DialogHeader>
-        <EditShippingDetails />
+        <EditShippingDetails shippingAddress={shippingAddress} />
         <DialogFooter></DialogFooter>
       </DialogContent>
     </Dialog>

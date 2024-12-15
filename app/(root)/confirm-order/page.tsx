@@ -134,22 +134,27 @@ const ConfirmOrderPage = () => {
   //   total: (addTax(order.item.price) * order.quantity).toFixed(2),
   // }))
 
-  const { deliveryMethod, ...newFormData } = formData
+  const { deliveryDate, ...newFormData } = formData
 
-  const deliveryMethodLabel = useMemo(() => {
-    switch (deliveryMethod) {
-      case "Wednesday - DZORWULU - 11AM-5PM":
-        return "Pick up - Dzorwolu"
-      case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
-        return "Pick up - Dubois Center"
-      case "wednesday-delivery":
-        return `Home Delivery - ${newFormData.deliveryDate}`
-      case "saturday-delivery":
-        return `Home Delivery - ${newFormData.deliveryDate}`
-      default:
-        return deliveryMethod || "Not specified"
-    }
-  }, [deliveryMethod])
+  // const deliveryMethodLabel = useMemo(() => {
+  //   switch (deliveryMethod) {
+  //     case "DZORWULU":
+  //       return "Pick up - Dzorwolu"
+  //     case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
+  //       return "Pick up - Dubois Center"
+  //     case "wednesday-delivery":
+  //       return `Home Delivery - ${newFormData.deliveryDate}`
+  //     case "saturday-delivery":
+  //       return `Home Delivery - ${newFormData.deliveryDate}`
+  //     default:
+  //       return deliveryMethod || "Not specified"
+  //   }
+  // }, [deliveryMethod])
+
+  // console.log(deliveryMethodLabel, "deliveryMethodLabel")
+  console.log(deliveryDate, "deliveryDate")
+  // console.log(deliveryMethod, "deliveryMethod")
+  console.log(newFormData, "newFormData")
 
   // Order number generator
   const orderNumber = generateOrderNumber()
@@ -229,8 +234,8 @@ const ConfirmOrderPage = () => {
         products: taxedOrders,
         shippingAddress: newFormData,
         orderNumber,
-        deliveryMethod: deliveryMethodLabel,
-        deliveryDate: deliveryMethodLabel,
+        // deliveryMethod:,
+        deliveryDate,
         deliveryFee: deliveryFee,
         referenceNumber: reference?.reference || "cash-on-delivery",
         cardType: verifyData?.cardType,
@@ -330,6 +335,7 @@ const ConfirmOrderPage = () => {
 
         <div className="flex flex-col md:flex-row justify-between mt-8 gap-4">
           <Button
+            disabled={isConfirming}
             onClick={() => router.push("/basket")}
             className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
           >

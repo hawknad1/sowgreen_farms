@@ -33,6 +33,7 @@ import { getCartTotal } from "@/lib/getCartTotal"
 import { cityDeliveryPrices, regions } from "@/constants"
 import { DeliveryMethod } from "./DeliveryMethod"
 import OrderSummary from "./OrderSummary"
+import { CitiesWithFees } from "@/types"
 
 interface ExtendedUser {
   email: string
@@ -43,10 +44,11 @@ interface ExtendedUser {
 export function CheckoutForm() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string>("")
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] =
-    useState("next-day-delivery")
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
   const [selectedPickupOption, setSelectedPickupOption] = useState("")
+  const [selectedDeliveryDate, setSelectedDeliveryDate] = useState("")
   const [selectedCity, setSelectedCity] = useState("")
+  const [filteredCities, setFilteredCities] = useState([])
 
   const session = useSession()
   const router = useRouter()
@@ -54,8 +56,28 @@ export function CheckoutForm() {
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
   const cart = useCartStore((state) => state.cart)
   const basketTotal = getCartTotal(cart)
+  const [list, setList] = useState<CitiesWithFees[]>([])
 
   const user = session?.data?.user as ExtendedUser
+
+  useEffect(() => {
+    async function getCityList() {
+      try {
+        const res = await fetch("/api/cities", {
+          method: "GET",
+          cache: "no-store",
+        })
+
+        if (res.ok) {
+          const cityList = await res.json()
+          setList(cityList)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getCityList()
+  }, [])
 
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
@@ -115,7 +137,7 @@ export function CheckoutForm() {
     const formData = {
       ...values,
       deliveryMethod: selectedDelivery,
-      deliveryDate: selectedDelivery,
+      deliveryDate: selectedDeliveryDate,
     }
     const query = new URLSearchParams(formData).toString()
     router.push(`/confirm-order?${query}`)
@@ -170,6 +192,11 @@ export function CheckoutForm() {
                         <Select
                           onValueChange={(value) => {
                             field.onChange(value)
+                            // Filter cities for the selected region
+                            const filteredCities = list.filter(
+                              (city) => city.region === value
+                            )
+                            setFilteredCities(filteredCities) // Update the cities state
                           }}
                           defaultValue={field.value}
                         >
@@ -191,6 +218,7 @@ export function CheckoutForm() {
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="city"
@@ -200,7 +228,7 @@ export function CheckoutForm() {
                         <Select
                           onValueChange={(value) => {
                             field.onChange(value)
-                            setSelectedCity(value)
+                            setSelectedCity(value) // Set the selected city
                           }}
                           defaultValue={field.value}
                         >
@@ -210,9 +238,9 @@ export function CheckoutForm() {
                           <SelectContent className="max-h-72 py-1.5 overflow-auto">
                             <SelectGroup>
                               <SelectLabel>City</SelectLabel>
-                              {Object.keys(cityDeliveryPrices).map((city) => (
-                                <SelectItem key={city} value={city}>
-                                  {city}
+                              {filteredCities.map((city) => (
+                                <SelectItem key={city.id} value={city.city}>
+                                  {city.city}
                                 </SelectItem>
                               ))}
                             </SelectGroup>
@@ -254,10 +282,13 @@ export function CheckoutForm() {
             <div className="mt-4">
               <h2 className="font-bold text-lg mb-4">Schedule Delivery</h2>
               <DeliveryMethod
+                form={form} // Pass the form object
                 setSelectedDeliveryMethod={setSelectedDeliveryMethod}
                 selectedDeliveryMethod={selectedDeliveryMethod}
                 setSelectedPickupOption={setSelectedPickupOption}
                 selectedPickupOption={selectedPickupOption}
+                setSelectedDeliveryDate={setSelectedDeliveryDate}
+                selectedDeliveryDate={selectedDeliveryDate}
               />
             </div>
           </div>

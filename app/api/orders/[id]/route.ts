@@ -21,7 +21,10 @@ export async function GET(
     })
     return NextResponse.json(order)
   } catch (error) {
-    return NextResponse.json({ message: "couldnt fetch order!" })
+    return NextResponse.json(
+      { message: "couldnt fetch order!" },
+      { status: 500 }
+    )
   }
 }
 

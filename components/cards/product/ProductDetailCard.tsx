@@ -98,7 +98,11 @@ const ProductDetailCard = ({ product }: Props) => {
               <div className="flex items-center gap-x-1.5">
                 <h3 className="text-2xl font-bold text-black">{taxedPrice}</h3>
                 {product?.weight && (
-                  <span className="text-neutral-500 text-xl font-semibold">{`/ ${product?.weight}${product?.unit}`}</span>
+                  <span className="text-neutral-500 text-xl font-semibold">{`/ ${
+                    product?.weight < 1
+                      ? product?.weight * 1000
+                      : product?.weight
+                  }${product?.unit}`}</span>
                 )}
               </div>
             </div>
