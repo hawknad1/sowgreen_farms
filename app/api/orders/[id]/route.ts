@@ -79,6 +79,157 @@ export async function DELETE(
   }
 }
 
+// async function getTotalForOrder(orderId: string): Promise<number> {
+//   const orderWithProducts = await prisma.order.findUnique({
+//     where: { id: orderId },
+//     include: {
+//       products: {
+//         include: {
+//           product: true,
+//         },
+//       },
+//     },
+//   })
+
+//   if (!orderWithProducts) return 0
+
+//   return orderWithProducts.products.reduce((sum, productOrder) => {
+//     if (productOrder.available === false) return sum // Skip out-of-stock items
+//     const price = productOrder.price || 0
+//     return sum + price * productOrder.quantity
+//   }, 0)
+// }
+
+// // Main API handler for updating an order
+// export async function PUT(
+//   req: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   const {
+//     status,
+//     dispatchRider,
+//     paymentAction,
+//     deliveryDate,
+//     deliveryMethod,
+//     deliveryFee,
+//     shippingAddress,
+//     address,
+//     city,
+//     region,
+//     phone,
+//     email,
+//     products,
+//   } = await req.json()
+//   const orderId = params.id
+
+//   try {
+//     // Fetch the existing order with related products
+//     const existingOrder = await prisma.order.findUnique({
+//       where: { id: orderId },
+//       include: { products: { include: { product: true } } },
+//     })
+
+//     if (!existingOrder) {
+//       return NextResponse.json({ message: "Order not found" }, { status: 404 })
+//     }
+
+//     if (products?.length) {
+//       const updatedProductsPromises = products.map(
+//         async (product: ProductOrder) => {
+//           const { productId, quantity, available } = product
+
+//           const existingProductOrder = existingOrder.products.find(
+//             (p) => p.productId === productId
+//           )
+
+//           if (existingProductOrder) {
+//             return prisma.productOrder.update({
+//               where: { id: existingProductOrder.id },
+//               data: {
+//                 quantity,
+//                 quantityTotal:
+//                   available !== false
+//                     ? (quantity * existingProductOrder.price).toString()
+//                     : "0",
+//                 available,
+//               },
+//             })
+//           }
+
+//           const productDetails = await prisma.product.findUnique({
+//             where: { id: productId },
+//           })
+
+//           if (!productDetails) {
+//             throw new Error(`Product with id ${productId} not found`)
+//           }
+
+//           return prisma.productOrder.create({
+//             data: {
+//               orderId,
+//               productId,
+//               quantity,
+//               quantityTotal:
+//                 available !== false
+//                   ? (quantity * (productDetails.price || 0)).toString()
+//                   : "0",
+//               available,
+//             },
+//           })
+//         }
+//       )
+
+//       await Promise.all(updatedProductsPromises)
+//     }
+
+//     // Recalculate total only if `products` is provided
+
+//     const productTotal = await getTotalForOrder(orderId)
+//     const total = productTotal
+
+//     // if (products?.length) {
+//     //   updateData.total = await getTotalForOrder(orderId)
+//     // }
+
+//     // ** Step 2: Update order fields **
+//     const updateData: Record<string, any> = {
+//       status,
+//       dispatchRider,
+//       paymentAction,
+//       deliveryDate,
+//       deliveryFee,
+//       total,
+//       shippingAddress: {
+//         update: {
+//           address,
+//           city,
+//           region,
+//           phone,
+//           email,
+//           deliveryMethod,
+//         },
+//       },
+//     }
+
+//     const updatedOrder = await prisma.order.update({
+//       where: { id: orderId },
+//       data: updateData,
+//       include: {
+//         products: { include: { product: true } },
+//         shippingAddress: true,
+//       },
+//     })
+
+//     return NextResponse.json(updatedOrder)
+//   } catch (error) {
+//     console.error("Error updating order:", error)
+//     return NextResponse.json(
+//       { message: "Error editing order" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
 async function getTotalForOrder(orderId: string): Promise<number> {
   const orderWithProducts = await prisma.order.findUnique({
     where: { id: orderId },
@@ -95,7 +246,7 @@ async function getTotalForOrder(orderId: string): Promise<number> {
 
   return orderWithProducts.products.reduce((sum, productOrder) => {
     if (productOrder.available === false) return sum // Skip out-of-stock items
-    const price = productOrder.product.price || 0
+    const price = productOrder.price || 0
     return sum + price * productOrder.quantity
   }, 0)
 }
@@ -111,7 +262,14 @@ export async function PUT(
     paymentAction,
     deliveryDate,
     deliveryMethod,
-    products,
+    deliveryFee,
+    shippingAddress,
+    address,
+    city,
+    region,
+    phone,
+    email,
+    products, // Array of products, including new ones to add
   } = await req.json()
   const orderId = params.id
 
@@ -128,27 +286,37 @@ export async function PUT(
 
     if (products?.length) {
       const updatedProductsPromises = products.map(
-        async (product: ProductOrder) => {
-          const { productId, quantity, available } = product
+        async (product: {
+          productId: string
+          quantity: number
+          price: number | null
+          weight: number | null
+          unit: string | null
+          available: boolean
+        }) => {
+          const { productId, quantity, available, price, weight, unit } =
+            product
 
           const existingProductOrder = existingOrder.products.find(
             (p) => p.productId === productId
           )
 
           if (existingProductOrder) {
+            // Update the existing product in the order
             return prisma.productOrder.update({
               where: { id: existingProductOrder.id },
               data: {
                 quantity,
                 quantityTotal:
                   available !== false
-                    ? (quantity * existingProductOrder.product.price).toString()
+                    ? (quantity * (existingProductOrder.price || 0)).toString()
                     : "0",
                 available,
               },
             })
           }
 
+          // Fetch product details for new product additions
           const productDetails = await prisma.product.findUnique({
             where: { id: productId },
           })
@@ -157,14 +325,18 @@ export async function PUT(
             throw new Error(`Product with id ${productId} not found`)
           }
 
+          // Add the new product to the order
           return prisma.productOrder.create({
             data: {
               orderId,
               productId,
               quantity,
+              price: price || productDetails.price || 0,
+              weight: weight || productDetails.weight || null,
+              unit: unit || productDetails.unit || null,
               quantityTotal:
                 available !== false
-                  ? (quantity * (productDetails.price || 0)).toString()
+                  ? (quantity * (price || productDetails.price || 0)).toString()
                   : "0",
               available,
             },
@@ -175,32 +347,36 @@ export async function PUT(
       await Promise.all(updatedProductsPromises)
     }
 
-    // ** Step 2: Update order fields **
-    const updateData: Record<string, any> = {
-      status,
-      dispatchRider,
-      paymentAction,
-      deliveryDate,
-      deliveryMethod,
-    }
+    // Recalculate the total for the order
+    const updatedTotal = await getTotalForOrder(orderId)
 
-    // Recalculate total only if `products` is provided
-    if (products?.length) {
-      updateData.total = await getTotalForOrder(orderId)
-    }
-
+    // Update the order with new total and other details
     const updatedOrder = await prisma.order.update({
       where: { id: orderId },
-      data: updateData,
+      data: {
+        total: updatedTotal,
+        status,
+        dispatchRider,
+        paymentAction,
+        deliveryDate,
+        deliveryMethod,
+        deliveryFee,
+        shippingAddress: {
+          update: {
+            address,
+            city,
+            region,
+            phone,
+            email,
+          },
+        },
+      },
       include: { products: { include: { product: true } } },
     })
 
-    return NextResponse.json(updatedOrder)
+    return NextResponse.json(updatedOrder, { status: 200 })
   } catch (error) {
-    console.error("Error updating order:", error)
-    return NextResponse.json(
-      { message: "Error editing order" },
-      { status: 500 }
-    )
+    console.error(error)
+    return NextResponse.json({ message: error }, { status: 500 })
   }
 }

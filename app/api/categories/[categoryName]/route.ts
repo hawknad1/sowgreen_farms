@@ -10,7 +10,7 @@ export async function GET(
     const category = await prisma.category.findMany({
       where: { categoryName: catName },
       include: {
-        products: true,
+        products: { include: { variants: true } },
       },
     })
     const response = NextResponse.json(category)

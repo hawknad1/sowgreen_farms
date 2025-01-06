@@ -21,7 +21,7 @@ const EditProduct = ({ product }: Props) => (
         Edit Product
       </Button>
     </DialogTrigger>
-    <DialogContent className="sm:max-w-[530px]">
+    <DialogContent className="w-full md:max-w-[650px] md:max-h-[500px]">
       <DialogHeader>
         <DialogTitle>Edit Product</DialogTitle>
         <DialogDescription>

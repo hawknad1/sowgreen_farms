@@ -2,6 +2,7 @@ import { Separator } from "@/components/ui/separator"
 import React, { useMemo } from "react"
 import Card from "./Card"
 import { date, formatCurrency } from "@/lib/utils"
+import { useDeliveryStore } from "@/store"
 
 interface InfoCardProps {
   data: any
@@ -9,6 +10,7 @@ interface InfoCardProps {
 
 const InfoCard = ({ data }: InfoCardProps) => {
   const deliveryMethod = data?.formData?.deliveryMethod?.trim()?.toUpperCase()
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
@@ -100,8 +102,7 @@ const InfoCard = ({ data }: InfoCardProps) => {
           <div className="w-full flex items-center justify-between">
             <h3 className="text-lg font-semibold text-gray-700">Order Total</h3>
             <p className="text-gray-600 flex justify-end md:justify-start">
-              {formatCurrency(data?.total + data?.deliveryFee, "GHS") ||
-                "No total"}
+              {formatCurrency(data?.total + deliveryFee, "GHS") || "No total"}
             </p>
           </div>
         </div>

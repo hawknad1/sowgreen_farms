@@ -45,8 +45,8 @@ export function downloadOrders(orders: Order[]) {
     productTotals: order.products.map((p) => p.quantityTotal).join(", "),
     orderWeight: order.products
       .map((p: ProductOrder) => {
-        const totalWeight = p.product.weight * p.quantity // Multiply weight by quantity
-        return `${totalWeight} ${p.product.unit}` // Append unit to weight
+        const totalWeight = p.product.variants[0]?.weight * p.quantity // Multiply weight by quantity
+        return `${totalWeight} ${p.product.variants[0]?.unit}` // Append unit to weight
       })
       .join(", "), // Convert array to string
     customerName: order.shippingAddress.name,

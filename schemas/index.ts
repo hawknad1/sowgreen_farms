@@ -63,7 +63,7 @@ export const AddProductSchema = z.object({
   title: z.string().min(2, { message: "Title is required!" }),
   description: z.string().min(5, { message: "Description is required!" }),
   discount: z.coerce.number().optional(),
-  imageUrl: z.string(),
+  imageUrl: z.string().optional(),
   images: z
     .array(
       z.object({
@@ -72,13 +72,47 @@ export const AddProductSchema = z.object({
       })
     )
     .optional(),
-  price: z.coerce.number().positive().optional(),
-  weight: z.coerce.number().positive().optional(),
-  unit: z.string(),
   categoryName: z.string().min(1, { message: "Category is required!" }),
-  quantity: z.coerce.number().positive().optional(),
   isInStock: z.string(),
+  quantity: z.coerce.number().positive().optional(),
+  variants: z.array(
+    z.object({
+      weight: z.coerce.number().positive().optional(),
+      price: z.coerce.number().positive().optional(),
+      unit: z.string(),
+      quantity: z.coerce.number().positive().optional(),
+    })
+  ),
 })
+
+// export const AddProductSchema = z.object({
+//   title: z.string().min(2, { message: "Title is required!" }),
+//   description: z.string().min(5, { message: "Description is required!" }),
+//   discount: z.coerce.number().optional(),
+//   imageUrl: z.string(),
+//   images: z
+//     .array(
+//       z.object({
+//         productImageUrl: z.string(),
+//         publicId: z.string(),
+//       })
+//     )
+//     .optional(),
+//   price: z.coerce.number().positive().optional(),
+//   weight: z.coerce.number().positive().optional(),
+//   unit: z.string(),
+//   categoryName: z.string().min(1, { message: "Category is required!" }),
+//   quantity: z.coerce.number().positive().optional(),
+//   isInStock: z.string(),
+//   variants: z.array(
+//     z.object({
+//       weight: z.number().positive("Weight must be greater than 0"),
+//       price: z.number().positive("Price must be greater than 0"),
+//       unit: z.string().min(1, "Unit is required"),
+//       quantity: z.number().int().positive("Quantity must be greater than 0"),
+//     })
+//   ),
+// })
 
 export const EditProductSchema = z.object({
   title: z.string().optional(),
@@ -92,6 +126,15 @@ export const EditProductSchema = z.object({
   unit: z.string(),
   quantity: z.coerce.number().positive().optional(),
   isInStock: z.string().optional(),
+  variants: z
+    .array(
+      z.object({
+        price: z.coerce.number().positive(),
+        weight: z.coerce.number().positive().optional(),
+        unit: z.string().optional(),
+      })
+    )
+    .nonempty("At least one variation is required"),
 })
 
 // export const UpdateStatusSchema = z.object({
@@ -185,4 +228,54 @@ export const AddOrderSchema = z.object({
   deliveryMethod: z
     .string()
     .min(1, { message: "Delivery method is required!" }),
+})
+
+export const stepOneSchema = z.object({
+  title: z.string().min(2, { message: "Title is required!" }),
+  description: z.string().min(5, { message: "Description is required!" }),
+  categoryName: z.string().min(1, { message: "Category is required!" }),
+  discount: z.coerce.number().optional(),
+  isInStock: z.string(),
+  quantity: z.coerce.number().positive().optional(),
+})
+
+export const stepTwoSchema = z.object({
+  variants: z
+    .array(
+      z.object({
+        price: z.coerce.number().positive(),
+        weight: z.coerce.number().positive().optional(),
+        unit: z.string().optional(),
+      })
+    )
+    .nonempty("At least one variation is required"),
+})
+
+export const stepThreeSchema = z.object({
+  imageUrl: z.string().optional(),
+  images: z
+    .array(
+      z.object({
+        productImageUrl: z.string(),
+        publicId: z.string(),
+      })
+    )
+    .optional(),
+})
+
+// export const editDeliveryMethod = z.object({
+//   address: z.string(),
+//   city: z.string(),
+//   region: z.string(),
+//   deliveryMethod: z.string(),
+//   deliveryFee: z.coerce.number(),
+// })
+
+export const editDeliveryMethod = z.object({
+  address: z.string().optional(),
+  city: z.string().optional(),
+  region: z.string().optional(),
+  deliveryMethod: z.string(),
+  deliveryFee: z.coerce.number(),
+  pickupOption: z.string().optional(), // Add pickupOption field
 })

@@ -13,7 +13,7 @@ import {
 import { Button } from "../../../ui/button"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
-import { ShippingAddress } from "@/types"
+import { Order, ShippingAddress } from "@/types"
 import { PencilSquareIcon } from "@heroicons/react/20/solid"
 import EditShippingDetails from "../EditShippingDetails"
 
@@ -21,9 +21,10 @@ interface Props {
   shippingAddress?: ShippingAddress
   children?: React.ReactNode
   className?: string
+  order: Order
 }
 
-const ModifyShippingDialog = ({ shippingAddress, className }: Props) => {
+const ModifyShippingDialog = ({ order, className }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
@@ -31,8 +32,9 @@ const ModifyShippingDialog = ({ shippingAddress, className }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-fit h-fit p-1.5">
-          <PencilSquareIcon className="h-5 w-5" />
+        <Button variant="outline" className="w-fit h-fit">
+          {/* <PencilSquareIcon className="h-5 w-5" /> */}
+          Change Order Details
         </Button>
       </DialogTrigger>
 
@@ -40,10 +42,10 @@ const ModifyShippingDialog = ({ shippingAddress, className }: Props) => {
         <DialogHeader>
           <DialogTitle>{`Modify address. `}</DialogTitle>
           <DialogDescription>
-            Edit, remove or add new product to existing order.
+            Update customer's delivery address
           </DialogDescription>
         </DialogHeader>
-        <EditShippingDetails shippingAddress={shippingAddress} />
+        <EditShippingDetails order={order} />
         <DialogFooter></DialogFooter>
       </DialogContent>
     </Dialog>

@@ -1,24 +1,3 @@
-// export interface Product {
-//   category: string
-//   url: string
-//   prices: number
-//   title: string
-//   images: string
-//   currency: string
-//   warranty: string
-//   _warnings: string
-//   breadcrumbs: string
-//   description: string
-//   out_of_stock: boolean
-// }
-
-export type TCategory = {
-  id: string
-  categoryName: string
-  imageUrl: string
-  link: string
-}
-
 export type Category = {
   id: string
   categoryName: string
@@ -66,17 +45,6 @@ export type CustomerDetailType = {
   orders?: Order[]
 }
 
-// export type Order = {
-//   id: string
-//   orderNumber: string
-//   referenceNumber: string
-//   total: number
-//   payment: "pending" | "processing" | "success" | "failed"
-//   deliveryMethod: string
-//   shippingAddress: ShippingAddress
-//   products: Product[]
-// }
-
 export type OrderStatus =
   | "processing"
   | "confirmed"
@@ -103,24 +71,36 @@ export type Order = {
   createdAt: string
 }
 
-export type Product = {
+export type TCategory = {
   id: string
   categoryName: string
   imageUrl: string
-  images: { url: string; publicId: string }[]
-  price: number
-  title: string
+  link: string
+  products: Product[]
+}
+
+export type Product = {
+  categoryName: string
+  createdAt: string
+  images?: { url: string; publicId: string }[]
   description: string
+  discount: number
+  id: string
+  imageUrl: string
   isInStock: string
   purchaseCount: number
-  products?: []
   quantity: number
-  discount: number
-  productOrders: ProductOrder[]
-  weight: number
-  unit: string
+  title: string
+  updatedAt: string
+  variants: Variant[]
+}
 
-  // weightsAndPrices: { price: number; weight: number }[]
+export type Variant = {
+  id: string
+  productId: string
+  weight: number
+  price: number
+  unit: string
 }
 
 export type PaymentInfo = {
@@ -153,37 +133,40 @@ export type CreditRequestBody = {
   amount: number
 }
 
-// export type CartItem = {
-//   id: string
-//   item: Product // The Product type definition
-//   total: string
-//   quantity: number
-//   weight: number
-//   categoryName: string
-//   imageUrl: string
-//   price: number
-//   // other necessary fields
-// }
-
 export type CartItem = {
   item: Item
   quantity: number
   total: string
 }
-// export interface CartItem extends Product {
-//   weight: number // Assuming weight is not part of Product and is specific to CartItem
-// }
+
+export type VariantCartItem = {
+  productId: string // ID of the product
+  variantId: string // ID of the selected variant
+  product: Product
+  title: string // Title of the product (optional for convenience)
+  quantity: number // Quantity of the selected variant
+  price: number // Price of the selected variant
+  weight: number // Weight of the selected variant
+  unit: string // Unit of the selected variant
+}
+
+export type Cart = {
+  items: CartItem[] // List of items in the cart
+  totalPrice: number // Total price of the cart
+}
 
 export type ProductOrder = {
   id: string
   productId: string
   orderId: string
-  quantity: number
+  quantity?: number
   available?: boolean
-  quantityTotal: string // Changed from string to number
+  quantityTotal?: string // Changed from string to number
   product: Product
-  weight?: number
-  order: Order
+  price: number
+  weight: number
+  unit: string
+  order?: Order
 }
 
 export type User = {

@@ -8,15 +8,13 @@ import {
   useOrdersStore,
   usePaymentStore,
 } from "@/store"
-import { getCartTotal } from "@/lib/getCartTotal"
 
 import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
 import { PaystackButton } from "react-paystack"
 import { date, formatCurrency, time } from "@/lib/utils"
-import { CartItem, PaymentInfo } from "@/types"
-import { processCartItems } from "@/lib/processCartItems"
-import { generateOrderNumber } from "@/lib/generateOrderNumber"
+import { CartItem, PaymentInfo, ProductOrder, VariantCartItem } from "@/types"
+import { generateOrderNumber } from "@/lib/actions/whatsAppMessages/generateOrderNumber"
 import { addTax } from "@/lib/addTax"
 import InfoCard from "./InfoCard"
 import { updatePurchaseCounts } from "@/lib/actions/updatePurchaseCount"
@@ -24,7 +22,7 @@ import { updateProductQuantities } from "@/lib/actions/updateProductQuantity"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
 import { verifyTransaction } from "@/lib/actions/verifyTransaction"
-import { generateOrderReceivedMessage } from "@/lib/generateOrderReceivedMessage"
+import { generateOrderReceivedMessage } from "@/lib/actions/whatsAppMessages/generateOrderReceivedMessage"
 import { sendOrderReceived } from "@/lib/actions/sendWhatsappMessage"
 
 export type User = {
@@ -42,7 +40,8 @@ const ConfirmOrderPage = () => {
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
   const [activeUser, setActiveUser] = useState<User | null>(null)
   const setOrdersData = useOrderDataStore((state) => state.setOrdersData)
-  const cart = useCartStore((state) => state.cart)
+  // const cart = useCartStore((state) => state.cart)
+  const { cartTotal, cart } = useCartStore()
   const clearCart = useCartStore((state) => state.clearCart)
   const [orders, setOrders] = useState<CartItem[]>([])
   const [result, setResult] = useState<PaymentInfo>(null)
@@ -81,19 +80,7 @@ const ConfirmOrderPage = () => {
     fetchUser()
   }, [user?.email])
 
-  // const cartWithTax = cart.map((product) => ({
-  //   ...product,
-  //   price: addTax(product.price),
-  // }))
-
-  const cartWithTax = cart.map((product) => ({
-    ...product,
-    price: product.price,
-  }))
-
-  const basketTotal = getCartTotal(cartWithTax)
-  // const total = parseFloat(basketTotal) + parseFloat(deliveryFee.toFixed(2))
-  const total = parseFloat(basketTotal)
+  const total = cartTotal
 
   const {
     updatedBalance,
@@ -102,7 +89,7 @@ const ConfirmOrderPage = () => {
     proceedToPaystack,
   } = deductBalance(balance, total)
 
-  const formattedSubtotal = formatCurrency(parseFloat(basketTotal), "GHS")
+  const formattedSubtotal = formatCurrency(cartTotal, "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
 
@@ -125,43 +112,28 @@ const ConfirmOrderPage = () => {
     total: (order.item.price * order.quantity).toFixed(2),
   }))
 
-  // const taxedOrders = orders.map((order) => ({
-  //   ...order, // Spread the existing order object
-  //   item: {
-  //     ...order.item,
-  //     price: addTax(order.item.price),
-  //   },
-  //   total: (addTax(order.item.price) * order.quantity).toFixed(2),
-  // }))
-
   const { deliveryDate, ...newFormData } = formData
-
-  // const deliveryMethodLabel = useMemo(() => {
-  //   switch (deliveryMethod) {
-  //     case "DZORWULU":
-  //       return "Pick up - Dzorwolu"
-  //     case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
-  //       return "Pick up - Dubois Center"
-  //     case "wednesday-delivery":
-  //       return `Home Delivery - ${newFormData.deliveryDate}`
-  //     case "saturday-delivery":
-  //       return `Home Delivery - ${newFormData.deliveryDate}`
-  //     default:
-  //       return deliveryMethod || "Not specified"
-  //   }
-  // }, [deliveryMethod])
-
-  // console.log(deliveryMethodLabel, "deliveryMethodLabel")
-  console.log(deliveryDate, "deliveryDate")
-  // console.log(deliveryMethod, "deliveryMethod")
-  console.log(newFormData, "newFormData")
 
   // Order number generator
   const orderNumber = generateOrderNumber()
 
-  useEffect(() => {
-    setOrders(processCartItems(cart)) // Using the helper function to set orders
-  }, [cart])
+  const transformCart = (cart: any[]) => {
+    return cart.map((item: VariantCartItem) => ({
+      item: {
+        price: item.price, // Include price
+        weight: item.weight, // Include weight
+        productId: item.productId,
+        quantity: item.quantity,
+        unit: item.unit,
+        variantId: item.variantId,
+        product: item.product,
+      },
+      quantity: item.quantity, // Top-level quantity
+      total: (item.price * item.quantity).toFixed(2), // Total as a string
+    }))
+  }
+
+  const transformedCart = transformCart(cart)
 
   const config = {
     reference: new Date().getTime().toString(),
@@ -203,7 +175,6 @@ const ConfirmOrderPage = () => {
           },
           body: JSON.stringify({ reference: reference?.reference }),
         })
-        // console.log(paymentAction, "acction-1")
 
         if (!verifyTransaction.ok)
           throw new Error("Failed to verify transaction")
@@ -214,7 +185,6 @@ const ConfirmOrderPage = () => {
           paymentAction: "paid",
         }
         setResult(verifyData)
-        console.log(verifyData, "Verified Paystack transaction")
       } else if (reference.reference === "cash-on-delivery") {
         // Non-Paystack transaction
 
@@ -231,7 +201,7 @@ const ConfirmOrderPage = () => {
       }
 
       const ordersData = {
-        products: taxedOrders,
+        products: transformedCart,
         shippingAddress: newFormData,
         orderNumber,
         // deliveryMethod:,

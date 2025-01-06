@@ -7,7 +7,7 @@ const Coupon = () => {
   //   e.preventDefault()
   // }
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full">
       <h2 className="text-lg font-semibold">Coupon Code</h2>
       <Separator className="my-3 h-0.5" />
       <form className="flex-1 flex flex-col gap-y-4">

@@ -1,5 +1,5 @@
 "use client"
-import React from "react"
+import React, { useState } from "react"
 import {
   Dialog,
   DialogContent,
@@ -21,9 +21,32 @@ interface Props {
 }
 
 const DeleteProductDialog = ({ product, children, className }: Props) => {
+  const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
 
+  // const handleDelete = async () => {
+  //   try {
+  //     const res = await fetch(`/api/products/${product.id}`, {
+  //       method: "DELETE",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     })
+
+  //     if (!res.ok) {
+  //       throw new Error(`Failed to delete product. Status: ${res.status}`)
+  //     }
+
+  //     toast.success(`${product.title} deleted successfully!`)
+  //     router.replace("/admin/products") // Optional: Use replace to avoid history back
+  //   } catch (error) {
+  //     toast.error("Error deleting product.")
+  //     console.error("Delete product error:", error)
+  //   }
+  // }
+
   const handleDelete = async () => {
+    setIsDeleting(true)
     try {
       const res = await fetch(`/api/products/${product.id}`, {
         method: "DELETE",
@@ -32,15 +55,21 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
         },
       })
 
+      const result = await res.json()
+
       if (!res.ok) {
-        throw new Error(`Failed to delete product. Status: ${res.status}`)
+        throw new Error(
+          `Failed to delete product. Status: ${res.status} - ${result.message}`
+        )
       }
 
       toast.success(`${product.title} deleted successfully!`)
-      router.replace("/admin/products") // Optional: Use replace to avoid history back
+      router.replace("/admin/products")
     } catch (error) {
       toast.error("Error deleting product.")
       console.error("Delete product error:", error)
+    } finally {
+      setIsDeleting(false)
     }
   }
 
@@ -66,6 +95,7 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
         <DialogFooter>
           <Button
             variant="outline"
+            disabled={isDeleting}
             onClick={() => router.back()} // Close the dialog without action
           >
             Cancel
@@ -73,8 +103,13 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
           <Button
             variant="destructive"
             onClick={handleDelete} // Removed passing product.id, as it's handled internally
+            disabled={isDeleting}
           >
-            Confirm
+            {isDeleting ? (
+              <span className="loading loading-spinner loading-md"></span>
+            ) : (
+              "Confirm"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

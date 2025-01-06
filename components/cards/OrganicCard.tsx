@@ -13,7 +13,7 @@ const OrganicCard = () => {
   return (
     <>
       <h2 className="text-xl sm:text-2xl md:text-3xl font-bold flex justify-center">
-        Fresh & Flavorful organic goods
+        Fresh & flavorful organic produce
       </h2>
       <div className="flex flex-col justify-center items-center md:flex-row p-4 ">
         <div className="h-[450px] justify-center flex items-center">

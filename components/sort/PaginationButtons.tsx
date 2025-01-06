@@ -27,7 +27,7 @@ const PaginationButtons = () => {
   }, [])
 
   return (
-    <div className="flex items-center justify-center lg:justify-between lg:px-10 w-full">
+    <div className="flex items-center justify-center lg:justify-between w-full">
       <div className="flex items-center gap-x-3">
         <Select onValueChange={(value) => setSelected(value)}>
           <SelectTrigger className="lg:w-[170px] w-[145px] bg-red-600 rounded-full lg:px-4 font-medium text-white">

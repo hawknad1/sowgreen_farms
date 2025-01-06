@@ -12,6 +12,7 @@ import ProductChevrons from "@/components/ProductChevrons"
 import MiddleCardAds from "@/components/cards/middle-cards/MiddleCardAds"
 import { useCustomerStore, useOrdersStore, useProductStore } from "@/store"
 import React, { useEffect, useState } from "react"
+import HeroBanner from "./HeroBanner"
 
 export default function Home() {
   const { setProductDetails, products, setLoading } = useProductStore()
@@ -85,9 +86,10 @@ export default function Home() {
         <title>Growcer - Fresh Grocery Store</title>
       </Head>
 
-      <section className="bg-[#254336] rounded-lg">
+      {/* <section className="bg-[#254336] rounded-lg">
         <Banner />
-      </section>
+      </section> */}
+      <HeroBanner />
       <main className="container mx-auto py-8 flex-1">
         <section className="my-10">
           <CategoryChevrons>
@@ -106,9 +108,11 @@ export default function Home() {
           <ViewAll />
         </section>
 
-        <section className="my-8 bg-[#E4DCCF] p-5 rounded-lg flex flex-col md:flex-row items-center ">
+        {/* <section className="my-8 bg-emerald-500/15 p-5 rounded-lg flex flex-col md:flex-row items-center ">
           <DeliveryCard />
-        </section>
+        </section> */}
+
+        <DeliveryCard />
 
         <section className="my-8">
           <OrganicCard />

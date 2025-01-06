@@ -30,6 +30,10 @@ const nextConfig = {
         protocol: "http",
         hostname: "localhost",
       },
+      {
+        protocol: "https",
+        hostname: "images.pexels.com",
+      },
     ],
   },
 }

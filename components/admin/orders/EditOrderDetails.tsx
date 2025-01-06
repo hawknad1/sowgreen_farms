@@ -1,9 +1,8 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
-import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -24,15 +23,46 @@ import {
 
 import { EditOrderDetailSchema } from "@/schemas"
 import { Order } from "@/types"
-import { deliveryDates, newDeliveryMethod } from "@/constants"
+import {
+  cityDeliveryPrices,
+  deliveryDates,
+  newDeliveryMethod,
+} from "@/constants"
+import { useDeliveryStore } from "@/store"
 
 interface OrderProps {
   order: Order
 }
 
 const EditOrderDetails = ({ order }: OrderProps) => {
-  const router = useRouter()
   const [isSaving, setIsSaving] = useState(false)
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
+  const [selectedPickupOption, setSelectedPickupOption] = useState("")
+  const [selectedCity, setSelectedCity] = useState("")
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+
+  useEffect(() => {
+    let newDeliveryFee = 0 // Default fee for schedule-pickup
+
+    if (
+      selectedDeliveryMethod !== "schedule-pickup" &&
+      selectedCity &&
+      cityDeliveryPrices[selectedCity]
+    ) {
+      newDeliveryFee = cityDeliveryPrices[selectedCity]
+    }
+
+    if (deliveryFee !== newDeliveryFee) {
+      setDeliveryFee(newDeliveryFee)
+    }
+  }, [
+    selectedDeliveryMethod,
+    selectedPickupOption,
+    selectedCity,
+    deliveryFee,
+    setDeliveryFee,
+  ])
 
   const form = useForm<z.infer<typeof EditOrderDetailSchema>>({
     resolver: zodResolver(EditOrderDetailSchema),
@@ -65,12 +95,16 @@ const EditOrderDetails = ({ order }: OrderProps) => {
       const deliverRes = await fetch(`/api/orders/${order.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ deliveryDate: values.deliveryDate }),
+        body: JSON.stringify({
+          deliveryDate: values.deliveryDate,
+          deliveryFee,
+        }),
       })
 
       if (!deliverRes.ok) throw new Error("Failed to update delivery date")
 
       window.location.reload()
+      toast.success("Delivery method updated successfully!")
     } catch (error) {
       console.error("Error updating delivery method or date:", error)
     } finally {

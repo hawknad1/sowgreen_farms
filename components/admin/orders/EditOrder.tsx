@@ -20,27 +20,33 @@ const EditOrder = ({ orders }: EditOrderProps) => {
   const [isSaving, setIsSaving] = useState(false) // Disable button while saving
 
   useEffect(() => {
-    const newSubtotal = orderItems.reduce(
-      (sum, item) =>
-        item.available !== false
-          ? sum + item.product.price * item.quantity
-          : sum,
+    const newSubtotal = orders.products.reduce(
+      (sum, item) => sum + item.price * item.quantity,
       0
     )
     setSubtotal(parseFloat(newSubtotal.toFixed(2)))
-    setTotal(parseFloat((newSubtotal + orders.deliveryFee).toFixed(2)))
-  }, [orderItems, orders.deliveryFee])
+    setTotal(newSubtotal)
+    // setTotal(parseFloat((newSubtotal + orders.deliveryFee).toFixed(2)))
+  }, [orders.products, orders.deliveryFee])
+
+  // const handleQuantityChange = (productId: string, quantity: number) => {
+  //   setOrderItems((prev) =>
+  //     prev.map((item) =>
+  //       item.productId === productId
+  //         ? {
+  //             ...item,
+  //             quantity,
+  //             quantityTotal: (item.product.price * quantity).toString(),
+  //           }
+  //         : item
+  //     )
+  //   )
+  // }
 
   const handleQuantityChange = (productId: string, quantity: number) => {
     setOrderItems((prev) =>
       prev.map((item) =>
-        item.productId === productId
-          ? {
-              ...item,
-              quantity,
-              quantityTotal: (item.product.price * quantity).toString(),
-            }
-          : item
+        item.productId === productId ? { ...item, quantity } : item
       )
     )
   }
@@ -53,7 +59,7 @@ const EditOrder = ({ orders }: EditOrderProps) => {
               ...item,
               available: !item.available,
               quantityTotal: !item.available
-                ? (item.product.price * item.quantity).toString()
+                ? (item.product.variants[0]?.price * item.quantity).toString()
                 : "0",
             }
           : item
@@ -120,14 +126,14 @@ const EditOrder = ({ orders }: EditOrderProps) => {
           >
             <div className="flex gap-x-3 items-center">
               <Image
-                src={item?.product?.imageUrl}
+                src={item?.product?.images[0]?.url}
                 alt={item?.product?.title}
                 height={20}
                 width={20}
                 className="object-contain h-6 w-6"
               />
               <p
-                className={`font-medium ${
+                className={`font-medium line-clamp-1 ${
                   item.available === false ? "line-through text-red-500" : ""
                 }`}
               >
@@ -174,7 +180,11 @@ const EditOrder = ({ orders }: EditOrderProps) => {
         className="mt-4 w-full"
         disabled={isSaving}
       >
-        {isSaving ? "Saving..." : "Save Changes"}
+        {isSaving ? (
+          <span className="loading loading-spinner loading-md"></span>
+        ) : (
+          "Update order"
+        )}
       </Button>
     </div>
   )

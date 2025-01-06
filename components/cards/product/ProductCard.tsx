@@ -21,9 +21,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   // Memoized values to avoid recalculating on each render
   const discount = data.isInStock === "out-of-stock" ? null : data.discount
 
-  // const taxedPrice = formatCurrency(addTax(data.price), "GHS")
-  const taxedPrice = formatCurrency(data.price, "GHS")
-
   // Helper function to render stars based on rating
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
@@ -52,14 +49,29 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
         ) : null}
       </div>
       <div className="flex flex-col h-[270px] w-64">
-        <div className="bg-gray-50 rounded-t-lg flex justify-center">
+        <div className="relative w-full h-[170px]">
+          {/* Primary Image */}
           <Image
-            src={data.imageUrl}
+            src={data?.imageUrl || data.images[0]?.url}
             alt={data.title}
             width={100}
             height={100}
-            className="h-[170px] w-full object-contain p-2 hover:scale-110 transition-all ease-in-out"
+            className={`h-[170px] w-full object-contain bg-gray-50 rounded-t-lg p-2 ${
+              data?.images?.length > 1 &&
+              "absolute z-10 transition-opacity hover:opacity-0 duration-500 ease-in-out"
+            }`}
           />
+
+          {/* Secondary Image - Only if there are multiple images */}
+          {data?.images?.length > 1 && (
+            <Image
+              src={data?.images[1]?.url}
+              alt={data.title}
+              width={100}
+              height={100}
+              className="absolute h-[170px] w-full object-contain bg-gray-50 rounded-t-lg p-2 hover:scale-110 transition-transform ease-in-out"
+            />
+          )}
         </div>
 
         <div className="border border-neutral-300 rounded-b-md ">
@@ -76,14 +88,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
             <div className="flex items-center justify-between pt-2">
               <div className="flex">
                 <p className="text-sm tracking-wide font-semibold">
-                  {taxedPrice}
+                  {formatCurrency(data?.variants[0]?.price, "GHS")}
                 </p>
-                {data?.weight > 0 && (
+                {data?.variants[0]?.weight > 0 && (
                   <div className="flex items-center text-neutral-400 px-0.5">
                     <p className="text-sm tracking-wide font-medium">{`/${formatWeight(
-                      data?.weight
+                      data?.variants[0]?.weight
                     )}`}</p>
-                    <p className="text-sm tracking-wide font-medium">{`${data?.unit}`}</p>
+                    <p className="text-sm tracking-wide font-medium">{`${data?.variants[0]?.unit}`}</p>
                   </div>
                 )}
               </div>

@@ -1,32 +1,28 @@
 import { Order } from "@/types"
 import ModifyShippingDialog from "./dialogs/ModifyShippingDialog"
 
-export const ShippingInfo = ({
-  shippingAddress,
-}: {
-  shippingAddress: Order["shippingAddress"]
-}) => {
-  if (!shippingAddress) return <p>No shipping address available</p>
+export const ShippingInfo = ({ order }: { order: Order }) => {
+  if (!order?.shippingAddress) return <p>No shipping address available</p>
 
-  const { name, address, city, region, email, phone } = shippingAddress
+  const { name, address, city, region, email, phone } = order?.shippingAddress
   return (
     <div className="w-full border border-neutral-200 px-6 py-4 rounded-lg">
-      <div className="flex justify-between">
+      <div className="flex justify-between flex-wrap">
         <h3 className="text-base lg:text-lg font-bold mb-2">
           Shipping Address
         </h3>
 
-        <ModifyShippingDialog shippingAddress={shippingAddress} />
+        <ModifyShippingDialog order={order} />
       </div>
-      <div className="flex flex-col gap-y-1">
-        <p>{name}</p>
-        <p>{address}</p>
+      <div className="flex flex-col gap-y-1 mt-2 ">
+        <p className="text-sm lg:text-base text-neutral-600">{name}</p>
+        <p className="text-sm lg:text-base text-neutral-600">{address}</p>
         <div className="flex">
-          <p>{city}, </p>
-          <p>{region}</p>
+          <p className="text-sm lg:text-base text-neutral-600">{city}, </p>
+          <p className="text-sm lg:text-base text-neutral-600">{region}</p>
         </div>
-        <p>{phone}</p>
-        <p>{email}</p>
+        <p className="text-sm lg:text-base text-neutral-600">{phone}</p>
+        <p className="text-sm lg:text-base text-neutral-600">{email}</p>
       </div>
     </div>
   )

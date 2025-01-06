@@ -7,18 +7,22 @@ import { useRouter } from "next/navigation"
 const ShopBasketIcon = () => {
   const router = useRouter()
   const cart = useCartStore((state) => state.cart)
-  const quantity = cart.length
+  // const quantity = cart.length
+  const { cartItemCount } = useCartStore()
+
+  console.log(cartItemCount, "cartItemCount")
+
   return (
     <div
       onClick={() => router.push("/basket")}
       className="cursor-pointer relative"
     >
       <ShoppingCartIcon className="size-6" />
-      {quantity <= 0 ? (
+      {cartItemCount <= 0 ? (
         ""
       ) : (
         <div className="absolute -top-2.5 -right-2 h-5 w-5 p-1 flex items-center justify-center text-xs bg-red-400 rounded-full text-white">
-          <p>{quantity}</p>
+          <p>{cartItemCount}</p>
         </div>
       )}
     </div>

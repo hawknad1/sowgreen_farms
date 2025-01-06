@@ -13,7 +13,11 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { CheckoutSchema, EditProductSchema } from "@/schemas"
+import {
+  CheckoutSchema,
+  editDeliveryMethod,
+  EditProductSchema,
+} from "@/schemas"
 import {
   Select,
   SelectContent,
@@ -26,47 +30,165 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { useRouter } from "next/navigation"
 import { cityDeliveryPrices, regions } from "@/constants"
-import { useState } from "react"
-import { ShippingAddress } from "@/types"
+import { useEffect, useState } from "react"
+import { CitiesWithFees, Order, ShippingAddress } from "@/types"
+import { useDeliveryStore } from "@/store"
 
 interface ShippingProps {
-  shippingAddress: ShippingAddress
+  order: Order
 }
 
-const EditShippingDetails = ({ shippingAddress }: ShippingProps) => {
-  const router = useRouter()
-  const [selectedCity, setSelectedCity] = useState("")
+const EditShippingDetails = ({ order }: ShippingProps) => {
   const [isSaving, setIsSaving] = useState(false)
+  const [selectedCity, setSelectedCity] = useState("")
+  const [filteredCities, setFilteredCities] = useState([])
+  const [list, setList] = useState<CitiesWithFees[]>([])
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
+  const [selectedPickupOption, setSelectedPickupOption] = useState("")
+  const [pickupOptions, setPickupOptions] = useState<string[]>([])
+
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+
+  useEffect(() => {
+    async function fetchCities() {
+      try {
+        const res = await fetch("/api/cities", {
+          method: "GET",
+          cache: "no-store",
+        })
+        if (res.ok) {
+          const cityList = await res.json()
+          setList(cityList)
+        }
+      } catch (error) {
+        console.error("Error fetching cities:", error)
+      }
+    }
+    fetchCities()
+  }, [])
+
+  useEffect(() => {
+    let newDeliveryFee = 0 // Default fee for schedule-pickup
+
+    if (
+      selectedDeliveryMethod !== "schedule-pickup" &&
+      selectedCity &&
+      cityDeliveryPrices[selectedCity]
+    ) {
+      newDeliveryFee = cityDeliveryPrices[selectedCity]
+    }
+
+    if (deliveryFee !== newDeliveryFee) {
+      setDeliveryFee(newDeliveryFee)
+    }
+  }, [
+    selectedDeliveryMethod,
+    selectedPickupOption,
+    selectedCity,
+    deliveryFee,
+    setDeliveryFee,
+  ])
+
+  console.log(deliveryFee, "deliveryFee---")
+
+  const finalDeliveryMethod =
+    selectedDeliveryMethod === "schedule-pickup"
+      ? selectedPickupOption
+      : selectedDeliveryMethod
+
+  useEffect(() => {
+    async function fetchPickupOptions() {
+      try {
+        const res = await fetch("/api/pickup-options", {
+          method: "GET",
+          cache: "no-store",
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setPickupOptions(
+            data.map((option: { location: string }) => option.location)
+          )
+        }
+      } catch (error) {
+        console.error("Error fetching pickup options:", error)
+      }
+    }
+    fetchPickupOptions()
+  }, [])
 
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
-    defaultValues: shippingAddress,
+    defaultValues: order?.shippingAddress,
   })
 
+  // const updateShippingAddress = async (
+  //   values: z.infer<typeof CheckoutSchema>
+  // ) => {
+  //   setIsSaving(true)
+  //   try {
+  //     const res = await fetch(`/api/shipping-address/${shippingAddress?.id}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(values),
+  //     })
+
+  //     if (!res.ok) throw new Error("Failed to update shipping address")
+
+  //     toast.success("Delivery details updated successfully!")
+  //     // router.push(`/admin/products`)
+  //   } catch (error) {
+  //     toast.error("Error updating delivery info.")
+  //   } finally {
+  //     setIsSaving(false)
+  //   }
+  // }
+
   const updateShippingAddress = async (
-    values: z.infer<typeof CheckoutSchema>
+    values: z.infer<typeof editDeliveryMethod>
   ) => {
-    setIsSaving(true)
+    const address = values.address
+    const city = values.city
+    const region = values.region
+    const deliveryMethod = finalDeliveryMethod
+    console.log(values, "values")
     try {
-      const res = await fetch(`/api/shipping-address/${shippingAddress?.id}`, {
+      const res = await fetch(`/api/orders/${order?.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          deliveryFee,
+          address,
+          city,
+          region,
+        }),
       })
 
-      if (!res.ok) throw new Error("Failed to update shipping address")
+      if (!res.ok) {
+        const errorData = await res.json()
+        console.error("Failed to update order:", errorData)
+        throw new Error(errorData.message || "Failed to update order")
+      }
 
-      toast.success("Product updated successfully!")
-      // router.push(`/admin/products`)
+      const data = await res.json()
+      console.log("Order updated successfully:", data)
+      window.location.reload()
+      toast.success("Delivery method updated!")
     } catch (error) {
-      toast.error("Error updating product.")
-    } finally {
-      setIsSaving(false)
+      console.log("Error updating order:", error)
+      toast.error("An unexpected error occurred while updating the order")
     }
   }
 
   const onSubmit = (values: z.infer<typeof CheckoutSchema>) =>
     updateShippingAddress(values)
+
+  // Update filtered cities when the region changes
+  const handleRegionChange = (region: string) => {
+    const filteredCities = list.filter((city) => city.region === region)
+    setFilteredCities(filteredCities)
+    setSelectedCity("") // Reset city when region changes
+  }
 
   return (
     <Form {...form}>
@@ -106,22 +228,23 @@ const EditShippingDetails = ({ shippingAddress }: ShippingProps) => {
             name="region"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Region</FormLabel>
+                <label className="font-medium">Region</label>
                 <Select
                   onValueChange={(value) => {
                     field.onChange(value)
+                    handleRegionChange(value)
                   }}
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select region" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-72 py-1.5 overflow-auto">
+                  <SelectContent className="max-h-72">
                     <SelectGroup>
                       <SelectLabel>Region</SelectLabel>
-                      {regions.map((reg) => (
-                        <SelectItem key={reg.name} value={reg.name}>
-                          {reg.name}
+                      {regions.map((region) => (
+                        <SelectItem key={region.name} value={region.name}>
+                          {region.name}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -131,12 +254,13 @@ const EditShippingDetails = ({ shippingAddress }: ShippingProps) => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name="city"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>City</FormLabel>
+                <label className="font-medium">City</label>
                 <Select
                   onValueChange={(value) => {
                     field.onChange(value)
@@ -147,12 +271,12 @@ const EditShippingDetails = ({ shippingAddress }: ShippingProps) => {
                   <SelectTrigger>
                     <SelectValue placeholder="Select city" />
                   </SelectTrigger>
-                  <SelectContent className="max-h-72 py-1.5 overflow-auto">
+                  <SelectContent className="max-h-72">
                     <SelectGroup>
                       <SelectLabel>City</SelectLabel>
-                      {Object.keys(cityDeliveryPrices).map((city) => (
-                        <SelectItem key={city} value={city}>
-                          {city}
+                      {filteredCities.map((city) => (
+                        <SelectItem key={city.id} value={city.city}>
+                          {city.city}
                         </SelectItem>
                       ))}
                     </SelectGroup>

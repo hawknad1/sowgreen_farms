@@ -113,8 +113,8 @@ model ShippingAddress {
 }
 
 model Product {
-  id            String         @id @default(auto()) @map("_id") @db.ObjectId
-  title         String         @unique
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  title         String           @unique
   imageUrl      String
   images        Json?
   description   String
@@ -123,25 +123,38 @@ model Product {
   weight        Float?
   unit          String?
   categoryName  String
-  category      Category?      @relation(fields: [categoryName], references: [categoryName])
+  category      Category?        @relation(fields: [categoryName], references: [categoryName])
   isInStock     String
   quantity      Int
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
   productOrders ProductOrder[]
-  purchaseCount Int            @default(0)
+  purchaseCount Int              @default(0)
+  variants      ProductVariant[] @relation("ProductVariants")
+}
 
-  // weightsAndPrices WeightPrice[]
+model ProductVariant {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId String   @db.ObjectId
+  product   Product  @relation("ProductVariants", fields: [productId], references: [id])
+  weight    Float?
+  price     Int?
+  unit      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model ProductOrder {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   productId     String   @db.ObjectId
   orderId       String   @db.ObjectId
+  price         Int?
+  weight        Int?
+  unit          String?
   quantity      Int
   quantityTotal String?
   available     Boolean?
-  product       Product  @relation(fields: [productId], references: [id])
+  product       Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 

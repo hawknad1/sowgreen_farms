@@ -13,6 +13,7 @@ import AddCredit from "./AddCredit"
 import DeleteOrderDialog from "./dialogs/DeleteOrderDialog"
 import ModifyOrderDialog from "./dialogs/ModifyOrderDialog"
 import CancelOrderDialog from "./dialogs/CancelOrderDialog"
+import ModifyOrderDetailsDialog from "./dialogs/ModifyOrderDetailsDialog"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   if (!orders)
@@ -41,11 +42,12 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
 
           <div className="flex items-center gap-x-3">
             <CancelOrderDialog order={orders} className="" />
+
+            <AddCredit />
             <DeleteOrderDialog
               order={orders}
               className="hidden lg:inline-flex"
             />
-            <AddCredit />
           </div>
         </div>
 
@@ -74,7 +76,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
 
               {/* Shipping and order details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <ShippingInfo shippingAddress={orders?.shippingAddress} />
+                <ShippingInfo order={orders} />
                 <OrderInfo orders={orders} />
               </div>
 

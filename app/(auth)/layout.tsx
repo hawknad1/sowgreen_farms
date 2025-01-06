@@ -1,8 +1,14 @@
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Jost } from "next/font/google"
 import ".././globals.css"
 
 const inter = Inter({ subsets: ["latin"] })
+
+const jost = Jost({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-jost",
+})
 
 export const metadata: Metadata = {
   title: "Sowgreen Farms",
@@ -17,7 +23,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className={inter.className}>{children}</div>
+        <div className={jost.className}>{children}</div>
       </body>
     </html>
   )

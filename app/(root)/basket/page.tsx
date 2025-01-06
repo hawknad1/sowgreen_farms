@@ -11,6 +11,7 @@ import React from "react"
 import BasketItems from "@/components/basket/BasketItems"
 import BasketOrderSummery from "@/components/checkout/BasketOrderSummery"
 import { useCartStore, useDeliveryStore } from "@/store"
+import CartBasket from "@/components/basket/CartBasket"
 
 const BasketPage = () => {
   const clearCart = useCartStore((state) => state.clearCart)
@@ -44,33 +45,15 @@ const BasketPage = () => {
         )}
       </div>
 
-      <div className="flex flex-col lg:flex-row lg:h-full gap-y-8 lg:gap-x-16 items-start">
+      <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-8 lg:gap-x-20">
         {/* Left Section */}
-        <div className="flex-1 lg:flex-[2] p-4 rounded-md h-full">
-          <div className="flex flex-col h-full">
-            <div className="w-full flex-grow">
-              <div className="overflow-y-auto scrollbar-hide w-full h-[400px] md:h-[600px]">
-                <BasketItems />
-              </div>
-            </div>
-            {/* <div className="flex items-center justify-between mt-4">
-              <div
-                onClick={() => router.back()}
-                className="flex items-center cursor-pointer"
-              >
-                <ChevronLeftIcon className="h-4 w-4" />
-                <p className="text-sm font-semibold">Back</p>
-              </div>
-              <Button onClick={handleClearCart} variant="destructive">
-                Cancel Order
-              </Button>
-            </div> */}
-          </div>
+        <div className="w-full lg:col-span-2 col-span-1">
+          <CartBasket />
         </div>
 
         {/* Right Section */}
-        <div className="hidden lg:block lg:flex-[1] space-y-4 h-full">
-          <CheckoutBox>
+        <div className="w-full grid gap-3 col-span-1">
+          <CheckoutBox className="hidden lg:inline-flex ">
             <Coupon />
           </CheckoutBox>
           <CheckoutBox>
@@ -86,3 +69,30 @@ const BasketPage = () => {
 }
 
 export default BasketPage
+
+// <div className="flex flex-col lg:flex-row lg:h-full gap-y-8 lg:gap-x-16 items-start">
+//         {/* Left Section */}
+//         <div className="flex-1 lg:flex-[2] p-4 rounded-md h-full">
+//           <div className="flex flex-col h-full">
+//             <div className="w-full flex-grow bg-red-300">
+//               <div className="overflow-y-auto scrollbar-hide w-full h-[400px] md:h-[600px]">
+//                 {/* <BasketItems /> */}
+//                 <CartBasket />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Right Section */}
+//         <div className="hidden lg:block lg:flex-[1] space-y-4 h-full">
+//           <CheckoutBox>
+//             <Coupon />
+//           </CheckoutBox>
+//           <CheckoutBox>
+//             <BasketOrderSummery />
+//           </CheckoutBox>
+//           <CheckoutBox>
+//             <PaymentMethod />
+//           </CheckoutBox>
+//         </div>
+//       </div>

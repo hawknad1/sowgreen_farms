@@ -32,16 +32,17 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-fit h-fit p-1.5">
-          <PencilSquareIcon className="h-5 w-5" />
+        <Button variant="outline" className="">
+          {/* <PencilSquareIcon className="h-5 w-5" /> */}
+          Change Delivery Method
         </Button>
       </DialogTrigger>
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{`Modify order details.`}</DialogTitle>
+          <DialogTitle>Update Delivery Method</DialogTitle>
           <DialogDescription>
-            Edit, remove or add new product to existing order.
+            Update the delivery method of an existing order.
           </DialogDescription>
         </DialogHeader>
         <EditOrderDetails order={order} />

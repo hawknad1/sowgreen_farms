@@ -9,6 +9,9 @@ export async function GET(
     const id = params.id
     const product = await prisma.product.findUnique({
       where: { id },
+      include: {
+        variants: true,
+      },
     })
     return NextResponse.json(product)
   } catch (error) {
@@ -58,6 +61,21 @@ export async function PUT(
   }
 }
 
+// export async function DELETE(
+//   req: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   const id = params.id
+//   try {
+//     const deletedProduct = await prisma.product.delete({
+//       where: { id },
+//     })
+//     return NextResponse.json(deletedProduct)
+//   } catch (error) {
+//     return NextResponse.json({ message: "Error deleting product!" })
+//   }
+// }
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -67,8 +85,12 @@ export async function DELETE(
     const deletedProduct = await prisma.product.delete({
       where: { id },
     })
-    return NextResponse.json(deletedProduct)
+    return NextResponse.json({ success: true, deletedProduct })
   } catch (error) {
-    return NextResponse.json({ message: "Error deleting product!" })
+    console.error("Error deleting product:", error)
+    return NextResponse.json(
+      { success: false, message: `Error deleting product: ${error}` },
+      { status: 500 }
+    )
   }
 }

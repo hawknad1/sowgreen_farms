@@ -70,7 +70,8 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "price",
     header: "Price",
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price"))
+      // const price = parseFloat(row.getValue("price"))
+      const price = row.original.variants[0]?.price
       const formattedPrice = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "GHS", // Currency formatted to GHC
@@ -119,7 +120,7 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: "total",
     header: () => <div className="text-right">Total</div>,
     cell: ({ row }) => {
-      const price = parseFloat(row.getValue("price"))
+      const price = row.original.variants[0]?.price
       const quantity = parseInt(row.getValue("quantity"))
 
       // Ensure both price and quantity are valid numbers before calculation

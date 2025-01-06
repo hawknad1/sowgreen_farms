@@ -1,6 +1,7 @@
 import { Order } from "@/types"
 import { useMemo } from "react"
 import ModifyOrderDetailsDialog from "./dialogs/ModifyOrderDetailsDialog"
+import { formatCurrency } from "@/lib/utils"
 
 export const OrderInfo = ({ orders }: { orders: Order }) => {
   const {
@@ -17,8 +18,6 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
   } = orders
 
   const orderTotal = total + deliveryFee
-
-  console.log(orders, "orderrsss!!!")
 
   // const deliveryMethodLabel = useMemo(() => {
   //   switch (deliveryMethod) {
@@ -58,38 +57,40 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
 
   return (
     <div className="w-full border border-neutral-200 px-6 py-4 rounded-lg">
-      <div className="flex w-full justify-between mb-1 ">
+      <div className="flex justify-between flex-wrap">
         <h3 className="text-base lg:text-lg font-bold mb-2">Order Details</h3>
 
         <ModifyOrderDetailsDialog order={orders} />
       </div>
-      <div className="flex flex-col gap-y-1">
-        <p className="font-medium flex justify-between">
-          <span className="text-sm text-neutral-500">Order Number: </span>{" "}
-          {orderNumber}
+      <div className="flex flex-col gap-y-1 mt-2 lg:mt-1">
+        <p className="flex justify-between text-sm lg:text-base">
+          <span className=" text-neutral-600">Order Number: </span>{" "}
+          <span className="font-medium">{orderNumber}</span>
         </p>
-        <p className="font-medium flex justify-between">
-          <span className="text-sm text-neutral-500">Order Total: </span> GHS{" "}
-          {orderTotal.toFixed(2)}
+        <p className="flex justify-between text-sm lg:text-base">
+          <span className=" text-neutral-600">Order Total:</span>
+          <span className="font-medium">
+            {formatCurrency(orderTotal, "GHS")}
+          </span>
         </p>
         {cardType ? (
-          <p className="font-medium flex justify-between">
-            <span className="text-sm text-neutral-500">Payment Method: </span>
-            {typeCard}
+          <p className=" flex justify-between text-sm lg:text-base">
+            <span className=" text-neutral-600">Payment Method:</span>
+            <span className="font-medium"> {typeCard}</span>
           </p>
         ) : (
-          <p className="font-medium flex justify-between">
-            <span className="text-sm text-neutral-500">Payment Method: </span>
-            {modeOfPayment}
+          <p className=" flex justify-between text-sm lg:text-base">
+            <span className=" text-neutral-600">Payment Method: </span>
+            <span className="font-medium">{modeOfPayment}</span>
           </p>
         )}
-        <p className="font-medium flex justify-between">
-          <span className="text-sm text-neutral-500">Delivery Date: </span>
-          {deliveryDate}
+        <p className="flex justify-between text-sm lg:text-base">
+          <span className=" text-neutral-600">Delivery Date:</span>
+          <span className="font-medium">{deliveryDate}</span>
         </p>
 
-        <p className="font-medium flex justify-between">
-          <span className="text-sm text-neutral-500">Delivery Method: </span>{" "}
+        <p className="flex justify-between text-sm lg:text-base">
+          <span className=" text-neutral-600">Delivery Method: </span>{" "}
           {shippingAddress?.deliveryMethod}
         </p>
       </div>

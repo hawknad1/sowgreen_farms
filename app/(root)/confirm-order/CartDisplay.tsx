@@ -1,66 +1,72 @@
 "use client"
 import Image from "next/image"
 import React from "react"
-import groupById from "@/lib/groupById"
 
-import { getCartTotal } from "@/lib/getCartTotal"
 import { useCartStore } from "@/store"
-import { addTax } from "@/lib/addTax"
+import { formatCurrency } from "@/lib/utils"
 
 const CartDisplay = () => {
-  const cart = useCartStore((state) => state.cart)
-  const grouped = groupById(cart)
+  const { cartProducts, cart } = useCartStore()
 
   return (
     <div className="bg-white rounded-md shadow-sm p-4">
       <h3 className="text-lg font-semibold text-gray-700 mb-4">Cart Items</h3>
       <div className="max-h-[400px] overflow-y-auto scrollbar-hide">
-        <ul className="divide-y divide-neutral-200">
-          {Object.keys(grouped).map((id) => {
-            const items = grouped[id]
-            const item = items[0]
-            const total = getCartTotal(grouped[id])
-            const taxedItem = parseFloat(total)
-            const quantity = items.length
+        <div className="mt-4 space-y-4 w-full">
+          {cart.map((item) => {
+            const product = cartProducts[item.productId]
+            const variant = product?.variants.find(
+              (v) => v.id === item.variantId
+            )
 
             return (
-              <li
-                key={id}
-                className="flex items-center justify-between gap-x-4 px-2 py-4 mb-2"
+              <div
+                key={item.variantId}
+                className={`my-2 flex items-center justify-between border p-2.5
+                border-neutral-300/55 rounded-lg`}
               >
-                <div className="flex items-center w-full">
-                  <div className="bg-gray-50 rounded-md p-2">
-                    {item.imageUrl && (
-                      <Image
-                        src={item.imageUrl}
-                        alt={item.title}
-                        width={80}
-                        height={80}
-                        className="h-16 w-16 object-contain rounded-md"
-                      />
-                    )}
-                  </div>
-                  <div className="flex justify-between items-center w-full">
-                    <div className="flex flex-col flex-grow ml-4">
-                      <p className="text-sm font-semibold line-clamp-2">
-                        {item.title}
-                      </p>
-                      <p className="text-sm text-gray-600 mt-1">
-                        Quantity: {quantity}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-end">
-                      <p className="text-sm text-gray-500">Subtotal</p>
-                      <p className="text-sm font-bold mt-1">
-                        GHS {taxedItem.toFixed(2)}
-                      </p>
-                    </div>
+                <div className={"flex items-center space-x-4 cursor-pointer"}>
+                  <Image
+                    src={product?.imageUrl || product?.images[0]?.url}
+                    alt={product?.title}
+                    width={80}
+                    height={80}
+                    className={
+                      "h-20 w-20 object-contain bg-slate-50 rounded-md p-1"
+                    }
+                  />
+                  <div>
+                    <>
+                      <p className="line-clamp-2 font-bold">{product?.title}</p>
+                      <div className="flex flex-col items-start ">
+                        <p className="text-sm font-medium">
+                          {formatCurrency(variant?.price, "GHS")}
+                        </p>
+                        <p className="text-sm font-light text-neutral-500">
+                          x {item?.quantity}
+                        </p>
+                        <div className="flex items-center">
+                          <p className="font-medium text-neutral-400 text-sm">
+                            {variant?.weight}
+                          </p>
+                          <p className="font-medium text-neutral-400 text-sm">
+                            {variant?.unit}
+                          </p>
+                        </div>
+                      </div>
+                    </>
                   </div>
                 </div>
-              </li>
+                <div>
+                  <p className="text-neutral-600">Subtotal</p>
+                  <p className={"font-medium flex text-neutral-400 text-sm"}>
+                    {formatCurrency(item?.price * item?.quantity, "GHS")}
+                  </p>
+                </div>
+              </div>
             )
           })}
-        </ul>
+        </div>
       </div>
     </div>
   )

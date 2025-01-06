@@ -98,3 +98,20 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom Swiper Navigation Buttons */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #6b7280; /* Tailwind Gray 500 */
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  color: #4b5563; /* Tailwind Gray 600 */
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 1.5rem; /* Adjust size if needed */
+  font-weight: bold;
+}

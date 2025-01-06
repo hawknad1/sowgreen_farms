@@ -64,16 +64,6 @@ function TheMenu() {
     getCategories()
   }, [])
 
-  // const SkeletonItem = () => (
-  //   <div className="flex items-center space-x-2 p-2 rounded-md bg-gray-200 animate-pulse">
-  //     <div className="h-12 w-14 bg-gray-300" />
-  //     <div className="flex-1 space-y-2">
-  //       <div className="h-4 w-3/4 bg-gray-300" />
-  //       <div className="h-3 w-1/2 bg-gray-300" />
-  //     </div>
-  //   </div>
-  // )
-
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -100,11 +90,11 @@ function TheMenu() {
                       className="flex items-center cursor-pointer space-x-2 p-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
                     >
                       <Image
-                        src={product.imageUrl}
+                        src={product.imageUrl || product?.images[0]?.url || ""}
                         alt={product.categoryName}
                         width={50}
                         height={50}
-                        className="h-12 w-14 object-contain"
+                        className="h-12 w-12 object-contain"
                       />
                       <ListItem
                         title={product.title}

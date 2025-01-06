@@ -1,7 +1,7 @@
 "use client"
 import ProductCard from "@/components/cards/product/ProductCard"
 import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
-import { Product } from "@/types"
+import { Product, TCategory } from "@/types"
 import Image from "next/image"
 import React, { useEffect, useState, useCallback } from "react"
 
@@ -12,7 +12,7 @@ type Props = {
 }
 
 const Category = ({ searchParams: { q } }: Props) => {
-  const [productsByCategory, setProductsByCategory] = useState<Product[]>([])
+  const [productsByCategory, setProductsByCategory] = useState<TCategory[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -38,6 +38,9 @@ const Category = ({ searchParams: { q } }: Props) => {
   }, [q, fetchProductsByCategory])
 
   const catProducts = productsByCategory[0]?.products || []
+
+  console.log(productsByCategory, "productsByCategory")
+  console.log(catProducts, "catProducts")
 
   if (error) {
     return <div className="text-red-500 text-center">Error: {error}</div>

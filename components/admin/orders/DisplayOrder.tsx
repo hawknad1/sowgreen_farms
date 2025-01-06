@@ -1,3 +1,4 @@
+import { formatCurrency } from "@/lib/utils"
 import { Order, ProductOrder } from "@/types"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -10,8 +11,6 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
   if (!products?.length) {
     return <p>No products available in this order.</p>
   }
-
-  console.log(products, "pppp")
 
   return (
     <div>
@@ -27,7 +26,7 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
             onClick={() => router.push(`/products/${ord.product.id}`)}
           >
             <Image
-              src={ord.product.imageUrl}
+              src={ord.product.imageUrl || ord?.product?.images[0]?.url}
               alt={ord.product.title}
               width={80}
               height={80}
@@ -48,19 +47,28 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
               >
                 {ord.product?.title}
               </p>
-              <p className="text-sm text-gray-600 mt-1">
-                Quantity: {ord?.quantity}
+
+              <p className="font-medium text-gray-600/65 text-sm">
+                {formatCurrency(ord.price, "GHS")}
+                {ord?.weight === null ? (
+                  ""
+                ) : (
+                  <span className="text-sm text-neutral-400">
+                    {` / ${ord?.weight < 1 ? ord?.weight * 1000 : ord?.weight}${
+                      ord?.unit
+                    }`}
+                  </span>
+                )}
               </p>
             </div>
-            <div className="flex flex-col items-end">
-              <p className="text-sm text-gray-500">Subtotal</p>
-              <p
-                className={`text-sm font-bold mt-1 ${
-                  ord.available === false ? "text-gray-500" : ""
-                }`}
-              >
-                GHS {parseFloat(ord?.quantityTotal).toFixed(2)}
-              </p>
+            <div className="text-right space-y-1">
+              <div className="text-sm text-neutral-600 space-x-2 flex flex-col">
+                <span className="font-semibold">{`QTY : ${ord.quantity}`}</span>
+                <span>{`Subtotal:  ${formatCurrency(
+                  parseFloat(ord?.quantityTotal),
+                  "GHS"
+                )}`}</span>
+              </div>
             </div>
           </div>
         </div>

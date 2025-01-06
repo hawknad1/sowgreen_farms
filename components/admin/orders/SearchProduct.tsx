@@ -1,19 +1,21 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Order, Product, ProductOrder } from "@/types"
-import { PlusIcon } from "lucide-react"
+import { PlusIcon, SquarePlusIcon } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 import React, { useEffect, useState } from "react"
 
 interface SearchOrdersProp {
   orders: Order
-  onAddProduct: (newProductOrder: ProductOrder) => void
+  onAddProduct?: (newProductOrder: ProductOrder) => void
 }
 
 const SearchProduct = ({ orders, onAddProduct }: SearchOrdersProp) => {
   const [productSuggestions, setProductSuggestions] = useState<Product[]>([])
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [searchQuery, setSearchQuery] = useState("")
+  const [showDropdown, setShowDropdown] = useState(false)
 
   // Fetch product suggestions
   useEffect(() => {
@@ -38,70 +40,148 @@ const SearchProduct = ({ orders, onAddProduct }: SearchOrdersProp) => {
     fetchProductSuggestions()
   }, [searchQuery])
 
-  const handleAddItem = () => {
-    if (selectedProduct) {
-      const newProductOrder: ProductOrder = {
-        id: `${selectedProduct.id}-${Date.now()}`,
-        productId: selectedProduct.id,
-        orderId: orders.id,
-        quantity: 1,
-        quantityTotal: (selectedProduct.price * 1).toString(),
-        product: selectedProduct,
-        order: orders,
-      }
+  // const handleAddItem = () => {
+  //   if (selectedProduct) {
+  //     const variant = selectedProduct.variants[0]
+  //     const newProductOrder: ProductOrder = {
+  //       id: `${selectedProduct.id}-${Date.now()}`,
+  //       productId: selectedProduct.id,
+  //       orderId: orders.id,
+  //       // quantity: 1,
+  //       price: variant.price || 0,
+  //       weight: variant.weight || 0,
+  //       unit: variant.unit || "",
+  //       quantityTotal: ((variant.price || 0) * 1).toFixed(2),
+  //       product: selectedProduct,
+  //       order: orders,
+  //     }
 
-      onAddProduct(newProductOrder)
-      console.log(newProductOrder, "new product")
-      setSelectedProduct(null)
-      setSearchQuery("")
+  //     onAddProduct?.(newProductOrder)
+  //     setSelectedProduct(null)
+  //     setSearchQuery("")
+  //   }
+  // }
+
+  // const newProductOrder: ProductOrder = {
+  //   id: `${selectedProduct?.id}-${Date.now()}`,
+  //   productId: selectedProduct?.id,
+  //   orderId: orders?.id,
+  //   quantity: 1,
+  //   price: selectedProduct?.variants[0]?.price || 0,
+  //   weight: selectedProduct?.variants[0]?.weight || 0,
+  //   unit: selectedProduct?.variants[0]?.unit || "",
+  //   quantityTotal: ((selectedProduct?.variants[0]?.price || 0) * 1).toFixed(2),
+  //   product: selectedProduct,
+  // }
+
+  // const handleAddItem = () => {
+  //   console.log([...orders?.products, newProductOrder])
+  //   onAddProduct?.(newProductOrder)
+  // }
+
+  // const handleAddItem = () => {
+  //   if (!selectedProduct) return
+
+  //   const newProductOrder: ProductOrder = {
+  //     id: `${selectedProduct.id}-${Date.now()}`,
+  //     productId: selectedProduct.id,
+  //     orderId: orders.id,
+  //     quantity: 1, // Default quantity is 1
+  //     price: selectedProduct.variants[0]?.price || 0,
+  //     weight: selectedProduct.variants[0]?.weight || 0,
+  //     unit: selectedProduct.variants[0]?.unit || "",
+  //     product: selectedProduct,
+  //   }
+
+  //   onAddProduct?.(newProductOrder)
+  //   setSelectedProduct(null) // Reset selected product
+  //   setSearchQuery("") // Clear search input
+  // }
+
+  const handleAddItem = () => {
+    if (!selectedProduct) return
+
+    const newProductOrder: ProductOrder = {
+      id: `${selectedProduct.id}-${Date.now()}`,
+      productId: selectedProduct.id,
+      orderId: orders.id,
+      quantity: 1, // Default quantity is 1
+      price: selectedProduct.variants[0]?.price || 0,
+      weight: selectedProduct.variants[0]?.weight || 0,
+      unit: selectedProduct.variants[0]?.unit || "",
+      quantityTotal: ((selectedProduct.variants[0]?.price || 0) * 1).toFixed(2), // Initial quantityTotal
+      product: selectedProduct,
     }
+
+    onAddProduct?.(newProductOrder)
+    setSelectedProduct(null) // Reset selected product
+    setSearchQuery("") // Clear search input
   }
 
   return (
     <div className="mt-4">
-      <h4 className="text-md font-semibold">Add New Product</h4>
-      <div className="relative">
-        <Input
-          type="text"
-          placeholder="Search for a product"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        {productSuggestions?.length > 0 && (
-          <ul className="absolute z-10 w-full bg-white border rounded-md shadow-lg max-h-40 overflow-y-auto">
-            {productSuggestions.map((product) => (
-              <li
-                key={product.id}
-                className="flex items-center justify-between gap-x-2 px-4 py-2  hover:bg-gray-100 cursor-pointer"
-                onClick={() => {
-                  setSelectedProduct(product)
-                  setSearchQuery(product.title)
-                  setProductSuggestions([])
-                }}
-              >
-                <div className="flex items-center gap-x-3">
-                  <Image
-                    src={product?.imageUrl}
-                    alt={product?.title}
-                    width={25}
-                    height={25}
-                  />
-                  <p>{product?.title}</p>
-                  <p className="text-xs font-semibold text-neutral-500">{`${product?.weight} ${product?.unit}`}</p>
-                </div>
+      <div className="flex justify-between gap-x-2">
+        <div className="relative w-full">
+          <Input
+            type="text"
+            placeholder="Search for a product"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="flex-1 w-full"
+          />
+          {productSuggestions?.length > 0 && (
+            <div className="absolute z-10 w-full bg-white border rounded-md shadow-sm max-h-64 overflow-y-auto">
+              {productSuggestions.map((product) => (
+                <div
+                  key={product.id}
+                  className="flex items-center justify-between gap-x-2 px-4 py-2  hover:bg-gray-100 cursor-pointer"
+                  onClick={() => {
+                    setSelectedProduct(product)
+                    setSearchQuery(product.title)
+                    setProductSuggestions([])
+                  }}
+                >
+                  <div className="flex items-center gap-x-3">
+                    <Image
+                      src={product?.imageUrl || product?.images[0].url}
+                      alt={product?.title}
+                      width={35}
+                      height={35}
+                      className="h-16 w-16 object-contain bg-gray-100 p-1 rounded-md"
+                    />
 
-                <p className="font-bold">{`GHS ${product?.price.toFixed(
-                  2
-                )}`}</p>
-              </li>
-            ))}
-          </ul>
-        )}
+                    <div>
+                      <p>{product?.title}</p>
+                      <>
+                        {product?.variants.length > 0 ? (
+                          <p className="text-xs font-semibold text-neutral-500">{`${
+                            product?.variants[0]?.weight < 1
+                              ? product?.variants[0]?.weight * 1000
+                              : product?.variants[0]?.weight
+                          } ${product?.variants[0]?.unit}`}</p>
+                        ) : (
+                          ""
+                        )}
+                      </>
+                    </div>
+                  </div>
+
+                  <p className="font-bold">{`GHS ${product?.variants[0]?.price?.toFixed(
+                    2
+                  )}`}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <Button
+          onClick={handleAddItem}
+          className="mt-2 flex items-center gap-2"
+        >
+          <SquarePlusIcon className="h-5 w-5" />
+          Add
+        </Button>
       </div>
-      <Button onClick={handleAddItem} className="mt-2 flex items-center gap-2">
-        <PlusIcon className="h-5 w-5" />
-        Add Product
-      </Button>
     </div>
   )
 }

@@ -1,58 +1,63 @@
 "use client"
+
 import Image from "next/image"
 import OrderConfirmSkeleton from "@/components/skeletons/OrderConfirmSkeleton"
 import { Separator } from "@/components/ui/separator"
 import { useCartStore, useDeliveryStore, useOrderDataStore } from "@/store"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { OrderInfo } from "./OrderInfo"
 import { ShippingAddress } from "./ShippingAddress"
-import { addTax } from "@/lib/addTax"
 import { formatCurrency } from "@/lib/utils"
+import { Product } from "@/types"
 
 const ThankYouPage = () => {
-  const [calculatedTotal, setCalculatedTotal] = useState(0)
+  const [newProduct, setNewProduct] = useState<Product[]>([])
 
   // Fetch state data
   const ordersData = useOrderDataStore((state) => state.ordersData)
-  const cart = useCartStore((state) => state.cart)
   const { deliveryFee } = useDeliveryStore()
 
   // Extract order details
-  const { orderNumber, shippingAddress, products, total, deliveryMethod } =
-    ordersData || {}
+  const { orderNumber, shippingAddress, products, total } = ordersData || {}
 
-  // Format delivery method
-  // const deliveryMethodLabel = useMemo(() => {
-  //   switch (deliveryMethod) {
-  //     case "Wednesday - DZORWULU - 11AM-5PM":
-  //       return "Pick up - Dzorwolu"
-  //     case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
-  //       return "Pick up - Dubois Center"
-  //     case "wednesday-delivery":
-  //       return "Wednesday Delivery"
-  //     case "saturday-delivery":
-  //       return "Saturday Delivery"
-  //     default:
-  //       return deliveryMethod || "Not specified"
-  //   }
-  // }, [deliveryMethod])
-
-  // Calculate subtotal
   useEffect(() => {
-    if (products?.length) {
-      let tempTotal = products.reduce(
-        (acc, order) =>
-          acc + ((order?.item?.price || 0) as number) * (order?.quantity || 1),
-        0
-      )
-      setCalculatedTotal(tempTotal)
-    } else {
-      setCalculatedTotal(0)
+    async function fetchProducts() {
+      try {
+        const res = await fetch("/api/products", {
+          method: "GET",
+          cache: "no-store",
+        })
+
+        if (res.ok) {
+          const cartProducts = await res.json()
+          setNewProduct(cartProducts)
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error)
+      }
     }
-  }, [products])
+
+    fetchProducts()
+  }, [])
+
+  const productMap = Object.fromEntries(
+    newProduct.map((product) => [product.id, product])
+  )
+
+  // Enrich the `products` array with the associated `product` details
+  const enrichedProducts =
+    products?.map((product) => ({
+      ...product,
+      item: {
+        ...product.item,
+        product: productMap[product.item.productId] || null,
+      },
+    })) || []
 
   // Format delivery fee
   const formattedDelivery = formatCurrency(deliveryFee || 0, "GHS")
+
+  console.log(enrichedProducts, "enrichedProducts")
 
   // Show skeleton if no data
   if (!ordersData) {
@@ -65,9 +70,9 @@ const ThankYouPage = () => {
         <p className="font-semibold text-sm text-neutral-500/95">THANK YOU</p>
         <h3 className="text-2xl font-bold">Your order is confirmed</h3>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-4xl w-full">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-[950px] w-full">
         {/* Left Section: Order Info */}
-        <div className="w-full bg-white rounded-l-lg p-4">
+        <div className="w-full bg-white rounded-lg p-4">
           <OrderInfo orderNumber={orderNumber} />
           <Separator className="mt-6 mb-4" />
           <ShippingAddress shippingAddress={shippingAddress} />
@@ -81,21 +86,24 @@ const ThankYouPage = () => {
         </div>
 
         {/* Right Section: Products and Totals */}
-        <div className="w-full flex flex-col justify-between bg-white rounded-r-lg p-4">
+        <div className="w-full flex flex-col justify-between bg-white rounded-lg  p-4">
           <div className="flex flex-col gap-2 flex-grow">
             <h2 className="text-sm font-bold mb-2">Ordered Items</h2>
             <div className="flex flex-col gap-3 max-h-[290px] overflow-y-auto scrollbar-hide p-2">
-              {products?.length ? (
-                products.map((order) => (
+              {enrichedProducts.length ? (
+                enrichedProducts.map((order) => (
                   <div
-                    key={order?.item?.id}
-                    className="flex items-start justify-between"
+                    key={order?.item?.productId}
+                    className="flex items-start justify-between w-full"
                   >
-                    <div className="flex gap-4">
+                    <div className="flex gap-4 w-full">
                       <div className="bg-gray-100 p-1.5 rounded-lg">
                         <Image
-                          src={order?.item?.imageUrl}
-                          alt={order?.item?.title}
+                          src={
+                            order?.item?.product?.imageUrl ||
+                            order?.item?.product?.images[0]?.url
+                          }
+                          alt={order?.item?.product?.title}
                           height={50}
                           width={50}
                           className="h-14 w-14 object-contain"
@@ -103,18 +111,34 @@ const ThankYouPage = () => {
                         />
                       </div>
                       <div>
-                        <p className="text-sm font-semibold">
-                          {order?.item?.title}
+                        <p className="text-sm font-semibold line-clamp-1">
+                          {order?.item?.product?.title}
                         </p>
-                        <p className="text-sm text-neutral-500/85">
-                          x {order?.quantity}
+
+                        <p className="font-medium text-gray-600/65 text-sm">
+                          {formatCurrency(order?.item?.price, "GHS")}
+                          {order?.item?.weight === null ? (
+                            ""
+                          ) : (
+                            <span className="text-sm text-neutral-400">
+                              {` / ${
+                                order?.item?.weight < 1
+                                  ? order?.item?.weight * 1000
+                                  : order?.item?.weight
+                              }${order?.item?.unit}`}
+                            </span>
+                          )}
                         </p>
                       </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-semibold">
-                        {formatCurrency(order?.item.price, "GHS")}
-                      </p>
+                    <div className="text-right space-y-1 w-fit">
+                      <div className="text-sm text-neutral-600 space-x-2 flex flex-col">
+                        <span className="">{`QTY : ${order?.item?.quantity}`}</span>
+                        <span className="">{`Subtotal:  ${formatCurrency(
+                          parseFloat(order?.total),
+                          "GHS"
+                        )}`}</span>
+                      </div>
                     </div>
                   </div>
                 ))
@@ -134,7 +158,7 @@ const ThankYouPage = () => {
                   Subtotal
                 </p>
                 <p className="text-sm font-semibold text-neutral-500/85">
-                  {formatCurrency(calculatedTotal, "GHS")}
+                  {formatCurrency(total || 0, "GHS")}
                 </p>
               </div>
               <div className="flex justify-between">
@@ -148,7 +172,7 @@ const ThankYouPage = () => {
               <div className="flex justify-between">
                 <p className="text-sm font-bold text-black">Total</p>
                 <p className="text-sm font-bold">
-                  {formatCurrency(total + deliveryFee, "GHS")}
+                  {formatCurrency((total || 0) + (deliveryFee || 0), "GHS")}
                 </p>
               </div>
             </div>

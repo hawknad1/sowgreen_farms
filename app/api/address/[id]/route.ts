@@ -90,6 +90,7 @@ export async function GET(
         orders: {
           include: {
             products: true, // Include product details if needed
+            shippingAddress: true,
           },
         },
       },

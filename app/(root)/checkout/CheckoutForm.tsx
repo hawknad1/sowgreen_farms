@@ -29,7 +29,6 @@ import {
 
 import { CheckoutSchema } from "@/schemas"
 import { useCartStore, useDeliveryStore } from "@/store"
-import { getCartTotal } from "@/lib/getCartTotal"
 import { cityDeliveryPrices, regions } from "@/constants"
 import { DeliveryMethod } from "./DeliveryMethod"
 import OrderSummary from "./OrderSummary"
@@ -55,7 +54,7 @@ export function CheckoutForm() {
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
   const cart = useCartStore((state) => state.cart)
-  const basketTotal = getCartTotal(cart)
+  // const basketTotal = getCartTotal(cart)
   const [list, setList] = useState<CitiesWithFees[]>([])
 
   const user = session?.data?.user as ExtendedUser
@@ -97,6 +96,27 @@ export function CheckoutForm() {
       form.setValue("email", user.email)
     }
   }, [user?.email, form])
+
+  // Load data from localStorage when the component mounts
+  useEffect(() => {
+    const savedData = JSON.parse(localStorage.getItem("checkoutForm") || "{}")
+    form.reset({ ...form.getValues(), ...savedData })
+
+    // Restore dependent states for region and city
+    if (savedData.region) {
+      const filtered = list.filter((city) => city.region === savedData.region)
+      setFilteredCities(filtered)
+    }
+    if (savedData.city) {
+      setSelectedCity(savedData.city)
+    }
+  }, [form])
+
+  // Save data to localStorage whenever the form data changes
+  const saveToLocalStorage = () => {
+    const formData = form.getValues()
+    localStorage.setItem("checkoutForm", JSON.stringify(formData))
+  }
 
   // Helper function for delivery selection
   const selectedDelivery = useMemo(() => {
@@ -147,6 +167,7 @@ export function CheckoutForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleFormSubmit)}
+        onChange={saveToLocalStorage}
         className="space-y-4 p-4 w-full min-h-fit"
       >
         <div className="flex flex-col md:flex-row gap-6 justify-between">
@@ -197,6 +218,7 @@ export function CheckoutForm() {
                               (city) => city.region === value
                             )
                             setFilteredCities(filteredCities) // Update the cities state
+                            form.setValue("city", "") // Reset city if region changes
                           }}
                           defaultValue={field.value}
                         >

@@ -13,7 +13,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 import { ChevronDown } from "lucide-react"
-
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -32,11 +31,9 @@ import {
 } from "@/components/ui/table"
 import { columns } from "./columns"
 import { Product } from "@/types"
-import AddProduct from "./AddProduct"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
 import Export from "@/components/admin/Export"
-import { useProductStore } from "@/store"
-import { downloadProducts } from "@/lib/xlsx"
+import { AddProductModal } from "./AddProductModal"
 
 interface ProductProps {
   products: Product[]
@@ -45,7 +42,6 @@ interface ProductProps {
 
 const ProductDataTable = ({ products, loading }: ProductProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  // const { products, loading } = useProductStore()
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -73,6 +69,8 @@ const ProductDataTable = ({ products, loading }: ProductProps) => {
       rowSelection,
     },
   })
+
+  console.log(table.getIsAllRowsSelected(), "row selected")
 
   return (
     <div className="w-full p-4">
@@ -108,7 +106,8 @@ const ProductDataTable = ({ products, loading }: ProductProps) => {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <AddProduct />
+        <AddProductModal />
+
         <Export />
       </div>
       <div className="rounded-md border">
