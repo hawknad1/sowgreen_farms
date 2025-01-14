@@ -202,12 +202,20 @@ model PickupOptions {
   location String
 }
 
+model DispatchRider {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  gender    String
+  firstName String
+  lastName  String
+  phone     String
+}
+
+
 // model DeliveryMethod {
 //   id                String           @id @default(auto()) @map("_id") @db.ObjectId
 //   label String
 //   tag String
 //   value String
-
 // }
 
 // model WeightPrice {

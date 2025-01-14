@@ -29,20 +29,6 @@ const EditOrder = ({ orders }: EditOrderProps) => {
     // setTotal(parseFloat((newSubtotal + orders.deliveryFee).toFixed(2)))
   }, [orders.products, orders.deliveryFee])
 
-  // const handleQuantityChange = (productId: string, quantity: number) => {
-  //   setOrderItems((prev) =>
-  //     prev.map((item) =>
-  //       item.productId === productId
-  //         ? {
-  //             ...item,
-  //             quantity,
-  //             quantityTotal: (item.product.price * quantity).toString(),
-  //           }
-  //         : item
-  //     )
-  //   )
-  // }
-
   const handleQuantityChange = (productId: string, quantity: number) => {
     setOrderItems((prev) =>
       prev.map((item) =>

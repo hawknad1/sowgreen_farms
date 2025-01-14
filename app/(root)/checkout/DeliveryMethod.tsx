@@ -83,7 +83,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
               <RadioGroup
                 onValueChange={(value) => {
                   field.onChange(value)
-                  setSelectedDeliveryMethod(value)
+                  setSelectedDeliveryMethod(value.split("-")[0])
                 }}
                 defaultValue={field.value}
                 className="flex flex-col"

@@ -252,6 +252,149 @@ async function getTotalForOrder(orderId: string): Promise<number> {
 }
 
 // Main API handler for updating an order
+
+// export async function PUT(
+//   req: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   const {
+//     status,
+//     dispatchRider,
+//     paymentAction,
+//     deliveryDate,
+//     deliveryMethod,
+//     deliveryFee,
+//     shippingAddress,
+//     address,
+//     city,
+//     region,
+//     phone,
+//     email,
+//     products, // Array of products, including new ones to add
+//   } = await req.json()
+//   const orderId = params.id
+
+//   try {
+//     // Fetch the existing order with related products
+//     const existingOrder = await prisma.order.findUnique({
+//       where: { id: orderId },
+//       include: { products: true },
+//     })
+
+//     if (!existingOrder) {
+//       return NextResponse.json({ message: "Order not found" }, { status: 404 })
+//     }
+
+//     // Identify productOrder entries that should be removed
+//     const incomingProductIds = products.map((p: any) => p.productId)
+//     const productOrdersToRemove = existingOrder.products.filter(
+//       (p) => !incomingProductIds.includes(p.productId)
+//     )
+
+//     // Remove products that are no longer in the order
+//     const deletePromises = productOrdersToRemove.map((p) =>
+//       prisma.productOrder.delete({ where: { id: p.id } })
+//     )
+//     await Promise.all(deletePromises)
+
+//     // Update existing products or add new ones
+//     if (products?.length) {
+//       const updatedProductsPromises = products.map(
+//         async (product: {
+//           productId: string
+//           quantity: number
+//           price: number | null
+//           weight: number | null
+//           unit: string | null
+//           available: boolean
+//         }) => {
+//           const { productId, quantity, available, price, weight, unit } =
+//             product
+
+//           const existingProductOrder = existingOrder.products.find(
+//             (p) => p.productId === productId
+//           )
+
+//           if (existingProductOrder) {
+//             // Update the existing product in the order
+//             return prisma.productOrder.update({
+//               where: { id: existingProductOrder.id },
+//               data: {
+//                 quantity,
+//                 quantityTotal:
+//                   available !== false
+//                     ? (quantity * (existingProductOrder.price || 0)).toString()
+//                     : "0",
+//                 available,
+//               },
+//             })
+//           }
+
+//           // Fetch product details for new product additions
+//           const productDetails = await prisma.product.findUnique({
+//             where: { id: productId },
+//           })
+
+//           if (!productDetails) {
+//             throw new Error(`Product with id ${productId} not found`)
+//           }
+
+//           // Add the new product to the order
+//           return prisma.productOrder.create({
+//             data: {
+//               orderId,
+//               productId,
+//               quantity,
+//               price: price || productDetails.price || 0,
+//               weight: weight || productDetails.weight || null,
+//               unit: unit || productDetails.unit || null,
+//               quantityTotal:
+//                 available !== false
+//                   ? (quantity * (price || productDetails.price || 0)).toString()
+//                   : "0",
+//               available,
+//             },
+//           })
+//         }
+//       )
+
+//       await Promise.all(updatedProductsPromises)
+//     }
+
+//     // Recalculate the total for the order
+//     const updatedTotal = await getTotalForOrder(orderId)
+
+//     // Update the order with new total and other details
+//     const updatedOrder = await prisma.order.update({
+//       where: { id: orderId },
+//       data: {
+//         total: updatedTotal,
+//         status,
+//         dispatchRider,
+//         paymentAction,
+//         deliveryDate,
+//         deliveryMethod,
+//         deliveryFee,
+//         shippingAddress: {
+//           update: {
+//             address,
+//             city,
+//             region,
+//             phone,
+//             email,
+//           },
+//         },
+//       },
+//       include: { products: { include: { product: true } } },
+//     })
+
+//     return NextResponse.json(updatedOrder, { status: 200 })
+//   } catch (error) {
+//     console.error(error)
+//     return NextResponse.json({ message: error }, { status: 500 })
+//   }
+// }
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -260,17 +403,22 @@ export async function PUT(
     status,
     dispatchRider,
     paymentAction,
+    last4Digits,
+    cardType,
+    paymentMode,
     deliveryDate,
     deliveryMethod,
     deliveryFee,
     shippingAddress,
+    referenceNumber,
     address,
     city,
     region,
     phone,
     email,
-    products, // Array of products, including new ones to add
+    products, // Allow products to be undefined to signify no change
   } = await req.json()
+
   const orderId = params.id
 
   try {
@@ -284,67 +432,92 @@ export async function PUT(
       return NextResponse.json({ message: "Order not found" }, { status: 404 })
     }
 
-    if (products?.length) {
-      const updatedProductsPromises = products.map(
-        async (product: {
-          productId: string
-          quantity: number
-          price: number | null
-          weight: number | null
-          unit: string | null
-          available: boolean
-        }) => {
-          const { productId, quantity, available, price, weight, unit } =
-            product
+    // Handle product updates only if `products` is defined
+    if (products !== undefined) {
+      if (products.length === 0) {
+        // If `products` is explicitly an empty array, remove all products from the order
+        await prisma.productOrder.deleteMany({
+          where: { orderId },
+        })
+      } else {
+        // Identify productOrder entries that should be removed
+        const incomingProductIds = products.map((p: any) => p.productId)
+        const productOrdersToRemove = existingOrder.products.filter(
+          (p) => !incomingProductIds.includes(p.productId)
+        )
 
-          const existingProductOrder = existingOrder.products.find(
-            (p) => p.productId === productId
-          )
+        // Remove products that are no longer in the order
+        const deletePromises = productOrdersToRemove.map((p) =>
+          prisma.productOrder.delete({ where: { id: p.id } })
+        )
+        await Promise.all(deletePromises)
 
-          if (existingProductOrder) {
-            // Update the existing product in the order
-            return prisma.productOrder.update({
-              where: { id: existingProductOrder.id },
+        // Add or update products in the order
+        const updatedProductsPromises = products.map(
+          async (product: {
+            productId: string
+            quantity: number
+            price: number | null
+            weight: number | null
+            unit: string | null
+            available: boolean
+          }) => {
+            const { productId, quantity, available, price, weight, unit } =
+              product
+
+            const existingProductOrder = existingOrder.products.find(
+              (p) => p.productId === productId
+            )
+
+            if (existingProductOrder) {
+              // Update the existing product in the order
+              return prisma.productOrder.update({
+                where: { id: existingProductOrder.id },
+                data: {
+                  quantity,
+                  quantityTotal:
+                    available !== false
+                      ? (
+                          quantity * (existingProductOrder.price || 0)
+                        ).toString()
+                      : "0",
+                  available,
+                },
+              })
+            }
+
+            // Fetch product details for new product additions
+            const productDetails = await prisma.product.findUnique({
+              where: { id: productId },
+            })
+
+            if (!productDetails) {
+              throw new Error(`Product with id ${productId} not found`)
+            }
+
+            // Add the new product to the order
+            return prisma.productOrder.create({
               data: {
+                orderId,
+                productId,
                 quantity,
+                price: price || productDetails.price || 0,
+                weight: weight || productDetails.weight || null,
+                unit: unit || productDetails.unit || null,
                 quantityTotal:
                   available !== false
-                    ? (quantity * (existingProductOrder.price || 0)).toString()
+                    ? (
+                        quantity * (price || productDetails.price || 0)
+                      ).toString()
                     : "0",
                 available,
               },
             })
           }
+        )
 
-          // Fetch product details for new product additions
-          const productDetails = await prisma.product.findUnique({
-            where: { id: productId },
-          })
-
-          if (!productDetails) {
-            throw new Error(`Product with id ${productId} not found`)
-          }
-
-          // Add the new product to the order
-          return prisma.productOrder.create({
-            data: {
-              orderId,
-              productId,
-              quantity,
-              price: price || productDetails.price || 0,
-              weight: weight || productDetails.weight || null,
-              unit: unit || productDetails.unit || null,
-              quantityTotal:
-                available !== false
-                  ? (quantity * (price || productDetails.price || 0)).toString()
-                  : "0",
-              available,
-            },
-          })
-        }
-      )
-
-      await Promise.all(updatedProductsPromises)
+        await Promise.all(updatedProductsPromises)
+      }
     }
 
     // Recalculate the total for the order
@@ -361,6 +534,10 @@ export async function PUT(
         deliveryDate,
         deliveryMethod,
         deliveryFee,
+        last4Digits,
+        cardType,
+        paymentMode,
+        referenceNumber,
         shippingAddress: {
           update: {
             address,

@@ -1,25 +1,21 @@
 "use client"
+
+import React from "react"
+import BasketOrderSummery from "@/components/checkout/BasketOrderSummery"
 import CheckoutBox from "@/components/checkout/CheckoutBox"
 import Coupon from "@/components/checkout/Coupon"
 import PaymentMethod from "@/components/checkout/PaymentMethod"
-import { ChevronLeftIcon } from "@heroicons/react/24/outline"
-import { Button } from "@/components/ui/button"
+import CartBasket from "@/components/basket/CartBasket"
 
 import { ShoppingCartIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/navigation"
-import React from "react"
-import BasketItems from "@/components/basket/BasketItems"
-import BasketOrderSummery from "@/components/checkout/BasketOrderSummery"
 import { useCartStore, useDeliveryStore } from "@/store"
-import CartBasket from "@/components/basket/CartBasket"
 
 const BasketPage = () => {
   const clearCart = useCartStore((state) => state.clearCart)
-  const cart = useCartStore((state) => state.cart)
-
-  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
-
   const router = useRouter()
+  const cart = useCartStore((state) => state.cart)
+  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
 
   const handleClearCart = () => {
     clearCart()
@@ -69,30 +65,3 @@ const BasketPage = () => {
 }
 
 export default BasketPage
-
-// <div className="flex flex-col lg:flex-row lg:h-full gap-y-8 lg:gap-x-16 items-start">
-//         {/* Left Section */}
-//         <div className="flex-1 lg:flex-[2] p-4 rounded-md h-full">
-//           <div className="flex flex-col h-full">
-//             <div className="w-full flex-grow bg-red-300">
-//               <div className="overflow-y-auto scrollbar-hide w-full h-[400px] md:h-[600px]">
-//                 {/* <BasketItems /> */}
-//                 <CartBasket />
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Right Section */}
-//         <div className="hidden lg:block lg:flex-[1] space-y-4 h-full">
-//           <CheckoutBox>
-//             <Coupon />
-//           </CheckoutBox>
-//           <CheckoutBox>
-//             <BasketOrderSummery />
-//           </CheckoutBox>
-//           <CheckoutBox>
-//             <PaymentMethod />
-//           </CheckoutBox>
-//         </div>
-//       </div>

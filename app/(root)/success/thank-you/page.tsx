@@ -57,8 +57,6 @@ const ThankYouPage = () => {
   // Format delivery fee
   const formattedDelivery = formatCurrency(deliveryFee || 0, "GHS")
 
-  console.log(enrichedProducts, "enrichedProducts")
-
   // Show skeleton if no data
   if (!ordersData) {
     return <OrderConfirmSkeleton />
@@ -80,7 +78,7 @@ const ThankYouPage = () => {
           <div className="flex flex-col">
             <h2 className="text-sm font-bold mb-3">Shipping Method</h2>
             <p className="text-sm font-medium text-neutral-500/80 mb-2">
-              {shippingAddress?.deliveryMethod}
+              {`${shippingAddress?.deliveryMethod} -`}
             </p>
           </div>
         </div>

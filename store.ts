@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
-import { Order, Product, ShippingAddress } from "./types"
+import { DispatchRider, Order, Product, ShippingAddress } from "./types"
 // import { CartItem } from "@/types"
 
 interface PaymentStore {
@@ -57,13 +57,6 @@ interface DatePickerStore {
   setDateRange: (range: DateRange) => void
 }
 
-// interface CartState {
-//   cart: Product[]
-//   addToCart: (product: Product) => void
-//   removeFromCart: (product: Product) => void
-//   clearCart: () => void
-// }
-
 interface TaxState {
   subtotal: number
   total: number
@@ -99,57 +92,6 @@ type Variant = {
   price: number
 }
 
-// type CartState = {
-//   selectedVariant: Variant | null
-//   quantity: number
-//   cart: CartItem[]
-//   setSelectedVariant: (variant: Variant | null) => void
-//   setQuantity: (quantity: number) => void
-//   addToCart: (item: CartItem) => void
-//   updateCartItem: (variantId: string, quantity: number) => void
-// }
-// type CartState = {
-//   selectedVariant: any
-//   quantity: number
-//   cart: CartItem[]
-//   setSelectedVariant: (variant: Variant) => void
-//   setQuantity: (quantity: number) => void
-//   addToCart: (item: CartItem) => void
-//   updateCartItem: (variantId: string, quantity: number) => void
-//   clearCart: () => void
-// }
-
-// export const useCartStore = create<CartState>()(
-//   persist(
-//     (set) => ({
-//       selectedVariant: null,
-//       quantity: 1,
-//       cart: [],
-
-//       setSelectedVariant: (variant) =>
-//         set(() => ({ selectedVariant: variant })),
-//       setQuantity: (quantity) => set(() => ({ quantity })),
-//       addToCart: (item) =>
-//         set((state) => ({
-//           cart: [...state.cart, item],
-//         })),
-//       updateCartItem: (variantId, quantity) =>
-//         set((state) => ({
-//           cart: state.cart.map((item) =>
-//             item.variantId === variantId
-//               ? { ...item, quantity: item.quantity + quantity }
-//               : item
-//           ),
-//         })),
-//       clearCart: () => set({ cart: [] }), // Clear the cart
-//     }),
-//     {
-//       name: "cart-storage", // Name of the localStorage key
-//       partialize: (state) => ({ cart: state.cart }), // Only persist the `cart` state
-//     }
-//   )
-// )
-
 type CartItem = {
   variantId: string
   productId: string
@@ -159,54 +101,6 @@ type CartItem = {
   unit: string
   quantity: number
 }
-
-// type CartState = {
-//   selectedVariant: Variant
-//   quantity: number
-//   cart: CartItem[]
-//   setSelectedVariant: (variant: Variant) => void
-//   setQuantity: (quantity: number) => void
-//   addToCart: (item: CartItem) => void
-//   updateCartItem: (variantId: string, quantity: number) => void
-//   removeFromCart: (variantId: string) => void
-//   clearCart: () => void
-// }
-
-// export const useCartStore = create<CartState>()(
-//   persist(
-//     (set) => ({
-//       selectedVariant: null,
-//       quantity: 1,
-//       cart: [],
-
-//       setSelectedVariant: (variant) =>
-//         set(() => ({ selectedVariant: variant })),
-//       setQuantity: (quantity) => set(() => ({ quantity })),
-//       addToCart: (item) =>
-//         set((state) => ({
-//           cart: [...state.cart, item],
-//         })),
-//       updateCartItem: (variantId, quantity) =>
-//         set((state) => ({
-//           cart: state.cart.map((item) =>
-//             item.variantId === variantId
-//               ? { ...item, quantity: Math.max(0, item.quantity + quantity) }
-//               : item
-//           ),
-//         })),
-
-//       removeFromCart: (variantId) =>
-//         set((state) => ({
-//           cart: state.cart.filter((item) => item.variantId !== variantId),
-//         })),
-//       clearCart: () => set({ cart: [] }), // Clear the cart
-//     }),
-//     {
-//       name: "cart-storage", // Name of the localStorage key
-//       partialize: (state) => ({ cart: state.cart }), // Only persist the `cart` state
-//     }
-//   )
-// )
 
 type CartState = {
   selectedVariant: Variant | null
@@ -224,66 +118,29 @@ type CartState = {
   setCartProducts: (products: Record<string, Product>) => void
 }
 
-// export const useCartStore = create<CartState>()(
-//   persist(
-//     (set, get) => ({
-//       selectedVariant: null,
-//       quantity: 1,
-//       cart: [],
-//       cartTotal: 0, // Initialize total to 0
+type DispatchRidersStore = {
+  dispatchRiders: DispatchRider[]
+  fetchDispatchRiders: () => Promise<void>
+}
 
-//       setSelectedVariant: (variant) =>
-//         set(() => ({ selectedVariant: variant })),
-//       setQuantity: (quantity) => set(() => ({ quantity })),
+export const useDispatchRidersStore = create<DispatchRidersStore>((set) => ({
+  dispatchRiders: [],
+  fetchDispatchRiders: async () => {
+    try {
+      const res = await fetch("/api/dispatch-riders", {
+        method: "GET",
+        cache: "no-store",
+      })
 
-//       addToCart: (item) =>
-//         set((state) => {
-//           const updatedCart = [...state.cart, item]
-//           const updatedTotal = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-//             0
-//           )
-//           return { cart: updatedCart, cartTotal: updatedTotal }
-//         }),
-
-//       updateCartItem: (variantId, quantity) =>
-//         set((state) => {
-//           const updatedCart = state.cart.map((item) =>
-//             item.variantId === variantId
-//               ? { ...item, quantity: Math.max(0, item.quantity + quantity) }
-//               : item
-//           )
-//           const updatedTotal = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-//             0
-//           )
-//           return { cart: updatedCart, cartTotal: updatedTotal }
-//         }),
-
-//       removeFromCart: (variantId) =>
-//         set((state) => {
-//           const updatedCart = state.cart.filter(
-//             (item) => item.variantId !== variantId
-//           )
-//           const updatedTotal = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-//             0
-//           )
-//           return { cart: updatedCart, cartTotal: updatedTotal }
-//         }),
-
-//       clearCart: () =>
-//         set(() => ({
-//           cart: [],
-//           cartTotal: 0, // Reset total to 0 when cart is cleared
-//         })),
-//     }),
-//     {
-//       name: "cart-storage", // Name of the localStorage key
-//       partialize: (state) => ({ cart: state.cart, cartTotal: state.cartTotal }), // Persist cart and total
-//     }
-//   )
-// )
+      if (res.ok) {
+        const riders = await res.json()
+        set({ dispatchRiders: riders })
+      }
+    } catch (error) {
+      console.error("Error fetching dispatch riders:", error)
+    }
+  },
+}))
 
 export const useCartStore = create<CartState>()(
   persist(
@@ -381,151 +238,6 @@ export const useCartStore = create<CartState>()(
   )
 )
 
-// export const useCartStore = create<CartState>()(
-//   devtools(
-//     persist(
-//       (set, get) => ({
-//         cart: [],
-//         addToCart: (product) => {
-//           set((state) => {
-//             // Check if the product with the same variant is already in the cart
-//             const existingProductIndex = state.cart.findIndex(
-//               (item) =>
-//                 item.id === product.id &&
-//                 item.price === product.price &&
-//                 item.weight === product.weight
-//             )
-
-//             // If the product exists, increment its quantity, otherwise add it
-//             if (existingProductIndex !== -1) {
-//               const updatedCart = [...state.cart]
-//               updatedCart[existingProductIndex].quantity += 1
-//               return { cart: updatedCart }
-//             } else {
-//               return { cart: [...state.cart, { ...product, quantity: 1 }] }
-//             }
-//           })
-//         },
-//         removeFromCart: (product) => {
-//           set((state) => {
-//             const productToRemoveIndex = state.cart.findIndex(
-//               (p) =>
-//                 p.id === product.id &&
-//                 p.price === product.price &&
-//                 p.weight === product.weight
-//             )
-
-//             if (productToRemoveIndex === -1) {
-//               return state
-//             }
-
-//             const updatedCart = [...state.cart]
-//             if (updatedCart[productToRemoveIndex].quantity > 1) {
-//               updatedCart[productToRemoveIndex].quantity -= 1
-//             } else {
-//               updatedCart.splice(productToRemoveIndex, 1)
-//             }
-//             return { cart: updatedCart }
-//           })
-//         },
-//         clearCart: () => set({ cart: [] }), // Clear the cart
-//       }),
-//       {
-//         name: "shopping-cart-storage",
-//       }
-//     )
-//   )
-// )
-
-// export const useCartStore = create<CartState>()(
-//   devtools(
-//     persist(
-//       (set, get) => ({
-//         cart: [],
-//         addToCart: (product) =>
-//           set((state) => ({ cart: [...state.cart, product] })),
-//         removeFromCart: (product) => {
-//           set((state) => {
-//             const productToRemoveIndex = state.cart.findIndex(
-//               (p) => p.id === product.id
-//             )
-
-//             if (productToRemoveIndex === -1) {
-//               return state
-//             }
-
-//             const newCart = [...state.cart]
-//             newCart.splice(productToRemoveIndex, 1)
-//             return { cart: newCart }
-//           })
-//         },
-//         clearCart: () => set({ cart: [] }), // clear the cart
-//       }),
-//       {
-//         name: "shopping-cart-storage",
-//       }
-//     )
-//   )
-// )
-
-// export const useCartStore = create<CartState>()(
-//   devtools(
-//     persist(
-//       (set, get) => ({
-//         cart: [],
-//         addToCart: (product) => {
-//           const { cart } = get()
-
-//           // Check if the product with the same variant ID already exists
-//           const existingProductIndex = cart.findIndex(
-//             (p) =>
-//               p.id === product.id && p.variants[0].id === product.variants[0].id
-//           )
-
-//           if (existingProductIndex !== -1) {
-//             // If found, increment the quantity of the existing product
-//             const updatedCart = [...cart]
-//             updatedCart[existingProductIndex].quantity =
-//               (updatedCart[existingProductIndex].quantity || 1) + 1
-//             set({ cart: updatedCart })
-//           } else {
-//             // Otherwise, add the new product variant to the cart
-//             set({ cart: [...cart, { ...product, quantity: 1 }] })
-//           }
-//         },
-//         removeFromCart: (product) => {
-//           set((state) => {
-//             const productIndex = state.cart.findIndex(
-//               (p) =>
-//                 p.id === product.id &&
-//                 p.variants[0].id === product.variants[0].id
-//             )
-
-//             if (productIndex === -1) {
-//               return state // Product not found, no action needed
-//             }
-
-//             const updatedCart = [...state.cart]
-
-//             // Decrement the quantity or remove the product if quantity is 1
-//             if (updatedCart[productIndex].quantity > 1) {
-//               updatedCart[productIndex].quantity -= 1
-//             } else {
-//               updatedCart.splice(productIndex, 1)
-//             }
-
-//             return { cart: updatedCart }
-//           })
-//         },
-//         clearCart: () => set({ cart: [] }), // Clear the entire cart
-//       }),
-//       {
-//         name: "shopping-cart-storage",
-//       }
-//     )
-//   )
-// )
-
 export const useCartTotalStore = create<{
   cart: CartItem[]
   setCart: (cart: CartItem[]) => void
@@ -582,11 +294,6 @@ export const useTaxStore = create<TaxState>((set, get) => ({
     set({ total })
   },
 }))
-
-// export const useDeliveryStore = create<DeliveryStore>((set) => ({
-//   deliveryFee: 0, // Initial delivery fee
-//   setDeliveryFee: (fee) => set({ deliveryFee: fee }),
-// }))
 
 export const useDeliveryStore = create<DeliveryStore>()(
   persist(

@@ -90,8 +90,6 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
     setDeliveryFee,
   ])
 
-  console.log(deliveryFee, "deliveryFee---")
-
   const finalDeliveryMethod =
     selectedDeliveryMethod === "schedule-pickup"
       ? selectedPickupOption
@@ -122,28 +120,6 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
     defaultValues: order?.shippingAddress,
   })
 
-  // const updateShippingAddress = async (
-  //   values: z.infer<typeof CheckoutSchema>
-  // ) => {
-  //   setIsSaving(true)
-  //   try {
-  //     const res = await fetch(`/api/shipping-address/${shippingAddress?.id}`, {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(values),
-  //     })
-
-  //     if (!res.ok) throw new Error("Failed to update shipping address")
-
-  //     toast.success("Delivery details updated successfully!")
-  //     // router.push(`/admin/products`)
-  //   } catch (error) {
-  //     toast.error("Error updating delivery info.")
-  //   } finally {
-  //     setIsSaving(false)
-  //   }
-  // }
-
   const updateShippingAddress = async (
     values: z.infer<typeof editDeliveryMethod>
   ) => {
@@ -169,9 +145,7 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
         console.error("Failed to update order:", errorData)
         throw new Error(errorData.message || "Failed to update order")
       }
-
       const data = await res.json()
-      console.log("Order updated successfully:", data)
       window.location.reload()
       toast.success("Delivery method updated!")
     } catch (error) {

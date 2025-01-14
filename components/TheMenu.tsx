@@ -78,34 +78,42 @@ function TheMenu() {
         <NavigationMenuItem>
           <NavigationMenuTrigger className="p-4">Shop</NavigationMenuTrigger>
           <NavigationMenuContent className="absolute left-0 z-50 w-[400px] transform translate-x-0 md:w-[500px] lg:w-[600px] p-4 border border-gray-200 shadow-lg bg-white rounded-md">
-            <ul className="grid gap-3 md:grid-cols-2">
+            <ul className="grid gap-4 md:grid-cols-2">
               {loading
                 ? Array.from({ length: 6 }).map((_, index) => (
                     <SkeletonItems key={index} />
                   ))
                 : productList.slice(0, 6).map((product: Product) => (
                     <Link
-                      href={`/products/${product?.id}`}
                       key={product.id}
-                      className="flex items-center cursor-pointer space-x-2 p-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
+                      href={`/products/${product.id}`}
+                      className="flex items-center space-x-4 p-1.5 rounded-md transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground"
                     >
-                      <Image
-                        src={product.imageUrl || product?.images[0]?.url || ""}
-                        alt={product.categoryName}
-                        width={50}
-                        height={50}
-                        className="h-12 w-12 object-contain"
-                      />
-                      <ListItem
-                        title={product.title}
-                        href={`/products/${product.id}`}
-                        className=""
-                      >
-                        {`${product.description}`}
-                      </ListItem>
+                      {/* Product Image */}
+                      <div className="flex-shrink-0 h-14 w-14  bg-gray-200 rounded-md overflow-hidden">
+                        <Image
+                          src={
+                            product.imageUrl || product?.images?.[0]?.url || ""
+                          }
+                          alt={product.categoryName || "Product Image"}
+                          width={80}
+                          height={80}
+                          className="h-full w-full object-contain p-1"
+                        />
+                      </div>
+                      {/* Product Text */}
+                      <div className="flex-1">
+                        <p className="font-semibold text-sm md:text-base text-gray-800 line-clamp-1">
+                          {product.title}
+                        </p>
+                        <p className="text-sm text-gray-500 line-clamp-2">
+                          {product.description}
+                        </p>
+                      </div>
                     </Link>
                   ))}
-              {/* Shop All Products link */}
+
+              {/* "Shop All Products" link */}
               <div
                 onClick={() => router.push(`/products`)}
                 className="cursor-pointer self-center font-medium text-sm flex justify-center text-neutral-600 w-full space-x-2 p-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"

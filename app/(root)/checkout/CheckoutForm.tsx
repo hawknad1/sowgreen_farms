@@ -153,6 +153,8 @@ export function CheckoutForm() {
     setDeliveryFee,
   ])
 
+  console.log(selectedDelivery, "selectedDelivery---")
+
   const handleFormSubmit = async (values: z.infer<typeof CheckoutSchema>) => {
     const formData = {
       ...values,

@@ -11,7 +11,7 @@ import {
   Img,
   Hr,
 } from "@react-email/components"
-import { ShippingAddress } from "@/types"
+import { Product, ShippingAddress } from "@/types"
 import { date } from "@/lib/utils"
 
 interface OrderConfirmationEmailProps {
@@ -34,20 +34,13 @@ export type Order = {
 
 export type ProductOrder = {
   item: {
-    id: string
-    title: string
-    categoryName: string
-    description: string
-    imageUrl: string
+    productId: string
     price: number
     weight: number
-    unit: string
-    isInStock: string
-    discount: number
     quantity: number
-    purchaseCount: number
-    createdAt: string
-    updatedAt: string
+    unit: string
+    variantId: string
+    product: Product
   }
   total: number
   quantity: number
@@ -56,7 +49,6 @@ export type ProductOrder = {
 const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
   order,
 }) => {
-  console.log(order?.createdAt, "date")
   return (
     <Html>
       <Head />
@@ -102,75 +94,79 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
               {order?.shippingAddress.region}.
             </Text>
             <Text>
-              <strong>Delivery Method:</strong> {order?.deliveryMethod}
+              <strong>Delivery Method:</strong>{" "}
+              {order?.shippingAddress.deliveryMethod}
             </Text>
           </Section>
 
           <Hr style={{ borderColor: "#e5e7eb", margin: "24px 0" }} />
 
           {/* Product List */}
-          {/* Product List */}
           <Section style={{ marginBottom: "24px" }}>
             {order?.products?.length > 0 ? (
-              order.products.map((product: ProductOrder, index) => (
-                <table
-                  key={index}
-                  width="100%"
-                  cellPadding="0"
-                  cellSpacing="0"
-                  style={{
-                    width: "100%",
-                    marginBottom: "16px",
-                    borderBottom: "1px solid #e5e7eb",
-                    paddingBottom: "16px",
-                  }}
-                >
-                  <tbody>
-                    <tr>
-                      {/* Image */}
-                      <td width="70" style={{ paddingRight: "16px" }}>
-                        {product?.item?.imageUrl && (
-                          <Img
-                            src={product.item.imageUrl}
-                            alt={product.item.title || "Product Image"}
-                            width="60"
-                            height="60"
-                            style={{
-                              display: "block",
-                              backgroundColor: "#ffffff",
-                              borderRadius: "8px",
-                              objectFit: "contain",
-                            }}
-                          />
-                        )}
-                      </td>
+              order.products.map((product: ProductOrder, index) => {
+                return (
+                  <table
+                    key={index}
+                    width="100%"
+                    cellPadding="0"
+                    cellSpacing="0"
+                    style={{
+                      width: "100%",
+                      marginBottom: "16px",
+                      borderBottom: "1px solid #e5e7eb",
+                      paddingBottom: "16px",
+                    }}
+                  >
+                    <tbody>
+                      <tr>
+                        {/* Image */}
+                        <td width="70" style={{ paddingRight: "16px" }}>
+                          {product?.item?.product.images.length > 0 && (
+                            <Img
+                              src={product.item.product.images[0]?.url}
+                              alt={
+                                product.item.product.title || "Product Image"
+                              }
+                              width="60"
+                              height="60"
+                              style={{
+                                display: "block",
+                                backgroundColor: "#ffffff",
+                                borderRadius: "8px",
+                                objectFit: "contain",
+                              }}
+                            />
+                          )}
+                        </td>
 
-                      {/* Title */}
-                      <td style={{ textAlign: "left" }}>
-                        <Text style={{ fontWeight: "600", color: "#1f2937" }}>
-                          {product?.item?.title || "No Title"}
-                        </Text>
-                      </td>
+                        {/* Title */}
+                        <td style={{ textAlign: "left" }}>
+                          <Text style={{ fontWeight: "600", color: "#1f2937" }}>
+                            {product?.item?.product.title || "No Title"}
+                          </Text>
+                        </td>
 
-                      {/* Quantity */}
-                      <td style={{ textAlign: "center" }}>
-                        <Text style={{ color: "#6b7280", fontSize: "14px" }}>
-                          Qty {product.quantity}
-                        </Text>
-                      </td>
+                        {/* Quantity */}
+                        <td style={{ textAlign: "center" }}>
+                          <Text style={{ color: "#6b7280", fontSize: "14px" }}>
+                            Qty {product.quantity}
+                          </Text>
+                        </td>
 
-                      {/* Price */}
-                      <td style={{ textAlign: "right" }}>
-                        <Text style={{ fontWeight: "500", color: "#1d4ed8" }}>
-                          {`GHS ${(
-                            product.item.price * product.quantity
-                          ).toFixed(2)}`}
-                        </Text>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              ))
+                        {/* Price */}
+                        <td style={{ textAlign: "right" }}>
+                          <Text style={{ fontWeight: "500", color: "#1d4ed8" }}>
+                            {`GHS ${(
+                              product.item.price * product.quantity
+                            ).toFixed(2)}`}
+                          </Text>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                )
+              })
             ) : (
               <Text style={{ color: "#4b5563" }}>
                 No products in this order.
@@ -178,21 +174,19 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
             )}
           </Section>
 
-          {/* <Hr style={{ borderColor: "#e5e7eb", margin: "24px 0" }} /> */}
-
           {/* Pricing Summary */}
           <Section style={{ color: "#4b5563", fontSize: "14px" }}>
             <Text>
-              <strong>Subtotal:</strong> {`GHS ${order.total.toFixed(2)}`}
+              <strong>Subtotal:</strong> {`GHS ${order?.total.toFixed(2)}`}
             </Text>
             <Text>
               <strong>Shipping Fee:</strong>{" "}
-              {`GHS ${order.deliveryFee.toFixed(2)}`}
+              {`GHS ${order?.deliveryFee.toFixed(2)}`}
             </Text>
             <Heading
               style={{ fontSize: "20px", color: "#1d4ed8", marginTop: "16px" }}
             >
-              Total: {`GHS ${(order.total + order.deliveryFee).toFixed(2)}`}
+              Total: {`GHS ${(order?.total + order?.deliveryFee).toFixed(2)}`}
             </Heading>
           </Section>
 

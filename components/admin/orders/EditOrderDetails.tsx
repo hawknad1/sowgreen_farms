@@ -3,7 +3,6 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import toast from "react-hot-toast"
-
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -20,13 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
 import { EditOrderDetailSchema } from "@/schemas"
 import { Order } from "@/types"
 import {
   cityDeliveryPrices,
   deliveryDates,
   newDeliveryMethod,
+  paymentActionList,
 } from "@/constants"
 import { useDeliveryStore } from "@/store"
 
@@ -36,39 +35,36 @@ interface OrderProps {
 
 const EditOrderDetails = ({ order }: OrderProps) => {
   const [isSaving, setIsSaving] = useState(false)
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
-  const [selectedPickupOption, setSelectedPickupOption] = useState("")
-  const [selectedCity, setSelectedCity] = useState("")
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
+    order?.shippingAddress?.deliveryMethod || ""
+  ) // Initialize with order's delivery method
+  const [selectedCity, setSelectedCity] = useState(
+    order?.shippingAddress?.city || ""
+  ) // Initialize with order's city
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
 
+  // Update delivery fee whenever the selected delivery method or city changes
   useEffect(() => {
-    let newDeliveryFee = 0 // Default fee for schedule-pickup
+    let newDeliveryFee = 0
 
     if (
-      selectedDeliveryMethod !== "schedule-pickup" &&
+      selectedDeliveryMethod === "Home Delivery" &&
       selectedCity &&
       cityDeliveryPrices[selectedCity]
     ) {
       newDeliveryFee = cityDeliveryPrices[selectedCity]
     }
 
-    if (deliveryFee !== newDeliveryFee) {
-      setDeliveryFee(newDeliveryFee)
-    }
-  }, [
-    selectedDeliveryMethod,
-    selectedPickupOption,
-    selectedCity,
-    deliveryFee,
-    setDeliveryFee,
-  ])
+    setDeliveryFee(newDeliveryFee)
+  }, [selectedDeliveryMethod, selectedCity, setDeliveryFee])
 
   const form = useForm<z.infer<typeof EditOrderDetailSchema>>({
     resolver: zodResolver(EditOrderDetailSchema),
     defaultValues: {
-      deliveryMethod: order?.shippingAddress?.deliveryMethod,
+      deliveryMethod: order?.shippingAddress?.deliveryMethod?.trim(),
       deliveryDate: order?.deliveryDate,
+      paymentAction: order?.paymentAction,
     },
   })
 
@@ -98,6 +94,7 @@ const EditOrderDetails = ({ order }: OrderProps) => {
         body: JSON.stringify({
           deliveryDate: values.deliveryDate,
           deliveryFee,
+          paymentAction: values.paymentAction,
         }),
       })
 
@@ -114,64 +111,98 @@ const EditOrderDetails = ({ order }: OrderProps) => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {/* Delivery Method */}
-        <FormField
-          control={form.control}
-          name="deliveryMethod"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Delivery Method</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(value)}
-                value={field.value} // Bind value to React Hook Form
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a delivery method" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {newDeliveryMethod.map((method) => (
-                    <SelectItem key={method.value} value={method.value}>
-                      {method.value}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
+        <div className="md:inline-flex w-full md:gap-x-4">
+          {/* Delivery Method */}
+          <FormField
+            control={form.control}
+            name="deliveryMethod"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Delivery Method</FormLabel>
+                <Select
+                  onValueChange={(value) => {
+                    field.onChange(value)
+                    setSelectedDeliveryMethod(value) // Update selected delivery method
+                  }}
+                  value={field.value} // Bind value to React Hook Form
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a delivery method" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {newDeliveryMethod.map((method) => (
+                      <SelectItem key={method.value} value={method.value}>
+                        {method.value}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        {/* Delivery/Pickup Date */}
-        <FormField
-          control={form.control}
-          name="deliveryDate"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormLabel>Delivery/Pickup Date</FormLabel>
-              <Select
-                onValueChange={(value) => field.onChange(value)}
-                value={field.value} // Bind value to React Hook Form
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a Delivery/Pickup Date" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {deliveryDates.map((method) => (
-                    <SelectItem key={method.date} value={method.date}>
-                      {method.date}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          {/* Delivery/Pickup Date */}
+          <FormField
+            control={form.control}
+            name="deliveryDate"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Delivery/Pickup Date</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(value)}
+                  value={field.value} // Bind value to React Hook Form
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a Delivery/Pickup Date" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {deliveryDates.map((method) => (
+                      <SelectItem key={method.date} value={method.date}>
+                        {method.date}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Payment Action */}
+          <FormField
+            control={form.control}
+            name="paymentAction"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormLabel>Payment Action</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(value)}
+                  value={field.value} // Bind value to React Hook Form
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select payment action" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {paymentActionList.map((action) => (
+                      <SelectItem key={action.value} value={action.value}>
+                        {action.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         {/* Submit Button */}
         <Button type="submit" className="w-full" disabled={isSaving}>

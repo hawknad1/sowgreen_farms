@@ -29,16 +29,16 @@ const OrderSummary = ({
       <div className="bg-white flex flex-col py-4 border-t border-neutral-200">
         <div className="flex flex-col space-y-4">
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-neutral-500">Subtotal</p>
+            <p className="text-sm  md:text-base text-neutral-500">Subtotal</p>
             <p className="font-semibold text-sm">{subtotal}</p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-sm font-medium text-neutral-500">Delivery</p>
+            <p className="text-sm  md:text-base text-neutral-500">Delivery</p>
             <p className="font-semibold text-sm">{formattedDelivery}</p>
           </div>
-          <div className="flex items-center justify-between font-semibold text-lg">
-            <p className="text-sm text-neutral-500">Total</p>
-            <p className="text-lg">{formattedTotal}</p>
+          <div className="flex items-center justify-between text-lg">
+            <p className="text-sm  md:text-base text-neutral-500">Total</p>
+            <p className="text-lg font-semibold">{formattedTotal}</p>
           </div>
         </div>
       </div>

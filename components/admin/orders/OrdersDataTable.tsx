@@ -30,11 +30,10 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { columns } from "./columns" // Corrected import for the columns
+import { downloadOrders } from "@/lib/xlsx"
+import { Order } from "@/types"
 import DataSkeletons from "../../skeletons/DataSkeletons"
 import Export from "../Export"
-import { Order } from "@/types"
-import { downloadOrders } from "@/lib/xlsx"
-import AddCustomerOrderDialog from "./dialogs/AddCustomerOrderDialog"
 import ExportDialog from "../Export"
 
 interface OrdersProps {
@@ -139,7 +138,6 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
           </DropdownMenu>
           {/* <Export action={handleExport} /> */}
           <ExportDialog />
-          {/* <AddCustomerOrderDialog /> */}
         </div>
       </div>
 

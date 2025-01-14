@@ -29,19 +29,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { confirmedColumns } from "../confirmed/confirmedColumns"
-import { Order } from "@/types"
-import { downloadOrders } from "@/lib/xlsx"
-import { columns } from "@/components/admin/orders/columns" // Corrected import for the columns
-import ExportDialog from "@/components/admin/Export"
+import { columns } from "@/app/(auth)/admin/(same-layout)/dispatch-riders/columns" // Corrected import for the columns
+
+import { CitiesWithFees, DispatchRider } from "@/types"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
+import AddRiderDialog from "./AddRiderDialog"
 
 interface OrdersProps {
-  loading: boolean
-  order: Order[]
+  loading?: boolean
+  data?: DispatchRider[]
 }
 
-const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
+const DispatchRiderTable = ({ loading, data }: OrdersProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -52,14 +51,8 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
-  // Filter orders to only include those with status "confirmed"
-  const confirmedOrders = React.useMemo(
-    () => order.filter((o) => o.status === "in-transit"),
-    [order]
-  )
-
   const table = useReactTable({
-    data: confirmedOrders, // Use the filtered data here
+    data: data ?? [], // Added orders data
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -79,21 +72,21 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
 
   return (
     <div className="w-full p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
-        <div className="flex gap-x-2">
+      <div className="py-4 gap-x-3 lg:gap-x-0 flex items-center justify-between">
+        <div className="flex gap-x-2 w-full">
           <Input
-            placeholder="Filter order number..."
+            placeholder="Filter riders..."
             value={
-              (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
+              (table.getColumn("firstName")?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn("orderNumber")?.setFilterValue(event.target.value)
+              table.getColumn("firstName")?.setFilterValue(event.target.value)
             }
             className="max-w-sm w-full"
-            aria-label="Filter Order number"
+            aria-label="Filter riders"
           />
         </div>
-        <div className="flex w-full justify-between lg:justify-end gap-x-4">
+        <div className="flex items-center justify-between gap-x-6 max-w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -121,7 +114,8 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <ExportDialog />
+
+          <AddRiderDialog />
         </div>
       </div>
 
@@ -146,12 +140,12 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={confirmedColumns.length} className="h-14">
+                <TableCell colSpan={columns.length} className="h-14">
                   <DataSkeletons />
                 </TableCell>
               </TableRow>
-            ) : table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
+            ) : table?.getRowModel()?.rows.length ? (
+              table?.getRowModel()?.rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() ? "selected" : undefined}
@@ -169,7 +163,7 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={confirmedColumns.length}
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
                   No results.
@@ -208,4 +202,4 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
   )
 }
 
-export default InTransitOrderTable
+export default DispatchRiderTable

@@ -275,6 +275,14 @@ export const sidebarLinks = {
           title: "City List",
           url: "/admin/city-list",
         },
+        {
+          title: "Dispatch Riders",
+          url: "/admin/dispatch-riders",
+        },
+        {
+          title: "Broadcast Message",
+          url: "/admin/broadcast-message",
+        },
       ],
     },
     {
@@ -324,54 +332,6 @@ export const sidebarLinks = {
     },
   ],
 }
-
-// export const sidebarLinks = [
-//   {
-//     label: "Dashboard",
-//     path: "/admin/dashboard",
-//     icon: Home,
-//   },
-//   {
-//     label: "Orders",
-//     path: "/admin/orders",
-//     icon: ShoppingCart,
-//   },
-//   {
-//     label: "Products",
-//     path: "/admin/products",
-//     icon: Package,
-//   },
-//   {
-//     label: "Customers",
-//     path: "/admin/customers",
-//     icon: Users,
-//   },
-//   {
-//     label: "Management",
-//     path: "/admin/management",
-//     icon: Users,
-//   },
-//   {
-//     label: "Transactions",
-//     path: "/admin/transactions",
-//     icon: LineChart,
-//   },
-//   {
-//     label: "Sales",
-//     path: "/admin/sales",
-//     icon: LineChart,
-//   },
-//   {
-//     label: "Settings",
-//     path: "/admin/settings",
-//     icon: Settings,
-//   },
-//   {
-//     label: "Help",
-//     path: "/admin/help",
-//     icon: BadgeInfo,
-//   },
-// ]
 
 const [wednesday, saturday] = getUpcomingDeliveryDates()
 
@@ -710,6 +670,15 @@ export const regions = [
   },
 ]
 
+export const gender = [
+  {
+    name: "Male",
+  },
+  {
+    name: "Female",
+  },
+]
+
 export const newDeliveryMethod = [
   { value: "Home Delivery" },
   { value: "DZORWULU" },
@@ -723,5 +692,16 @@ export const deliveryDates = [
   },
   {
     date: formatDeliveryDate(saturday),
+  },
+]
+
+export const paymentActionList = [
+  {
+    title: "Paid",
+    value: "paid",
+  },
+  {
+    title: "Pending",
+    value: "pending",
   },
 ]

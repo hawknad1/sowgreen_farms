@@ -18,7 +18,7 @@ const ProductImages = ({ product }: ProductImagesProps) => {
           alt=""
           fill
           sizes="50vw"
-          className="object-contain rounded-md bg-gray-100"
+          className="object-contain rounded-md p-2 bg-gray-100"
         />
         <div className="absolute right-5 top-3">
           {product?.isInStock === "out-of-stock" ? (
@@ -46,7 +46,7 @@ const ProductImages = ({ product }: ProductImagesProps) => {
               alt=""
               fill
               sizes="30vw"
-              className="object-contain rounded-md"
+              className="object-contain p-2"
             />
           </div>
         ))}

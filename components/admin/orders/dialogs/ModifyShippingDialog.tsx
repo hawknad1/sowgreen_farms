@@ -11,10 +11,7 @@ import {
   DialogTrigger,
 } from "../../../ui/dialog"
 import { Button } from "../../../ui/button"
-import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
 import { Order, ShippingAddress } from "@/types"
-import { PencilSquareIcon } from "@heroicons/react/20/solid"
 import EditShippingDetails from "../EditShippingDetails"
 
 interface Props {
@@ -25,15 +22,12 @@ interface Props {
 }
 
 const ModifyShippingDialog = ({ order, className }: Props) => {
-  const [isDeleting, setIsDeleting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" className="w-fit h-fit">
-          {/* <PencilSquareIcon className="h-5 w-5" /> */}
           Change Order Details
         </Button>
       </DialogTrigger>

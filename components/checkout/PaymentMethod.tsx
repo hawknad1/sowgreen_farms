@@ -1,7 +1,8 @@
 "use client"
 import React from "react"
-import { Separator } from "../ui/separator"
 import Image from "next/image"
+
+import { Separator } from "../ui/separator"
 import { Button } from "../ui/button"
 import { useRouter } from "next/navigation"
 

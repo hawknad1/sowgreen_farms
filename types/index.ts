@@ -183,3 +183,15 @@ export type CitiesWithFees = {
   deliveryFee: number
   region: string
 }
+
+export type DispatchRider = {
+  id: string
+  gender: string
+  firstName: string
+  lastName: string
+  phone: string
+}
+
+// export type PaymentAction = {
+
+// }

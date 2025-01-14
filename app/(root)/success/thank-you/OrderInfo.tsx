@@ -12,9 +12,9 @@ export const OrderInfo = ({ orderNumber }: { orderNumber: string }) => {
       <p className="text-sm font-medium text-neutral-500/80 mb-3">
         Date: <span className="text-black">{date}</span>
       </p>
-      <Button className="bg-slate-100 w-fit text-black py-0 hover:bg-slate-200/70 font-semibold">
+      {/* <Button className="bg-slate-100 w-fit text-black py-0 hover:bg-slate-200/70 font-semibold">
         View Invoice
-      </Button>
+      </Button> */}
     </div>
   )
 }

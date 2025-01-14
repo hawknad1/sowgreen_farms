@@ -1,6 +1,6 @@
 "use client"
 
-import * as React from "react"
+import React from "react"
 import {
   ColumnFiltersState,
   SortingState,
@@ -29,14 +29,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
 import { Order } from "@/types"
 import { downloadOrders } from "@/lib/xlsx"
+import { confirmedColumns } from "./confirmedColumns"
 import { columns } from "@/components/admin/orders/columns" // Corrected import for the columns
 import ExportDialog from "@/components/admin/Export"
-import AddCustomerOrderDialog from "@/components/admin/orders/dialogs/AddCustomerOrderDialog"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
-import { confirmedColumns } from "./confirmedColumns"
 
 interface OrdersProps {
   loading: boolean
@@ -124,7 +122,6 @@ const ConfirmedOrdersDataTable = ({ order, loading }: OrdersProps) => {
             </DropdownMenuContent>
           </DropdownMenu>
           <ExportDialog />
-          <AddCustomerOrderDialog />
         </div>
       </div>
 

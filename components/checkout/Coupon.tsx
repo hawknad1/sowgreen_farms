@@ -3,9 +3,6 @@ import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
 
 const Coupon = () => {
-  // const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault()
-  // }
   return (
     <div className="flex flex-col gap-2 w-full">
       <h2 className="text-lg font-semibold">Coupon Code</h2>

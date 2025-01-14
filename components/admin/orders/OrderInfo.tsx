@@ -14,46 +14,22 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
     dispatchRider,
     shippingAddress,
     paymentMode,
+
+    paymentAction,
+    last4Digits,
     cardType,
   } = orders
 
   const orderTotal = total + deliveryFee
-
-  // const deliveryMethodLabel = useMemo(() => {
-  //   switch (deliveryMethod) {
-  //     case "DZORWULU":
-  //       return "Pick up - Dzorwolu"
-  //     case "WEB DuBOIS CENTER":
-  //       return "Pick up - Dubois Center"
-  //     case "wednesday-delivery":
-  //       return `Home Delivery - ${deliveryMethod}`
-  //     case "saturday-delivery":
-  //       return `Home Delivery - ${deliveryMethod}`
-  //     default:
-  //       return deliveryMethod || "Not specified"
-  //   }
-  // }, [deliveryMethod])
-
-  // const deliveryMethodLabel = useMemo(() => {
-  //   switch (deliveryMethod) {
-  //     case "Wednesday - DZORWULU - 11AM-5PM":
-  //       return "Pick up - Dzorwolu"
-  //     case "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM":
-  //       return "Pick up - Dubois Center"
-  //     case "wednesday-delivery":
-  //       return `Home Delivery - ${deliveryMethod}`
-  //     case "saturday-delivery":
-  //       return `Home Delivery - ${deliveryMethod}`
-  //     default:
-  //       return deliveryMethod || "Not specified"
-  //   }
-  // }, [deliveryMethod])
 
   if (!orders) return null
 
   const typeCard = cardType?.charAt(0).toUpperCase() + cardType?.slice(1)
   const modeOfPayment =
     paymentMode?.charAt(0).toUpperCase() + paymentMode?.slice(1)
+
+  const actionOfPayment =
+    paymentAction?.charAt(0).toUpperCase() + paymentAction?.slice(1)
 
   return (
     <div className="w-full border border-neutral-200 px-6 py-4 rounded-lg">
@@ -76,12 +52,35 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
         {cardType ? (
           <p className=" flex justify-between text-sm lg:text-base">
             <span className=" text-neutral-600">Payment Method:</span>
-            <span className="font-medium"> {typeCard}</span>
+            <span className="font-medium ">
+              {typeCard} - xxxx {last4Digits}{" "}
+              <span className="bg-emerald-500/15 text-emerald-500 px-6 rounded-full">
+                {actionOfPayment}
+              </span>
+            </span>
+          </p>
+        ) : cardType === "" && paymentMode === "mobile_money" ? (
+          <p className="flex justify-between text-sm lg:text-base">
+            <span className=" text-neutral-600">Payment Method:</span>
+            <span className="font-medium">
+              Mobile Money - {last4Digits}{" "}
+              <span className="bg-emerald-500/15 text-emerald-500 px-6 rounded-full">
+                {actionOfPayment}
+              </span>
+            </span>
           </p>
         ) : (
           <p className=" flex justify-between text-sm lg:text-base">
             <span className=" text-neutral-600">Payment Method: </span>
-            <span className="font-medium">{modeOfPayment}</span>
+            <span
+              className={`font-medium px-4 rounded-full ${
+                paymentAction === "paid"
+                  ? "bg-emerald-500/15 text-emerald-500"
+                  : "bg-red-500/15 text-red-500"
+              }`}
+            >
+              {actionOfPayment}
+            </span>
           </p>
         )}
         <p className="flex justify-between text-sm lg:text-base">

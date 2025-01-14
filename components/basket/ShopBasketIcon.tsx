@@ -6,11 +6,7 @@ import { useRouter } from "next/navigation"
 
 const ShopBasketIcon = () => {
   const router = useRouter()
-  const cart = useCartStore((state) => state.cart)
-  // const quantity = cart.length
   const { cartItemCount } = useCartStore()
-
-  console.log(cartItemCount, "cartItemCount")
 
   return (
     <div

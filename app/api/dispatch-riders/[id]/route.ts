@@ -7,25 +7,25 @@ export async function PUT(
 ) {
   const id = params.id
   try {
-    const { region, city, deliveryFee } = await req.json()
+    const { gender, firstName, lastName, phone } = await req.json()
 
-    if (!region || !city || typeof deliveryFee !== "number") {
+    if (!gender || !firstName || !lastName || !phone) {
       return NextResponse.json(
-        { message: "Valid region, city, and delivery fee are required." },
+        { message: "Valid gender, firstname, and lastname are required." },
         { status: 400 }
       )
     }
 
-    const updatedLocation = await prisma.citiesWithFees.update({
+    const updatedRider = await prisma.dispatchRider.update({
       where: { id },
-      data: { city, deliveryFee, region },
+      data: { gender, firstName, lastName, phone },
     })
 
-    return NextResponse.json(updatedLocation, { status: 200 })
+    return NextResponse.json(updatedRider, { status: 200 })
   } catch (error) {
-    console.error("Error updating location:", error)
+    console.error("Error updating rider:", error)
     return NextResponse.json(
-      { message: "An error occurred while updating the location." },
+      { message: "An error occurred while updating the rider." },
       { status: 500 }
     )
   }
@@ -37,19 +37,19 @@ export async function DELETE(
 ) {
   const { id } = params
   try {
-    const deleteLocation = await prisma.citiesWithFees.delete({
+    const deleteRider = await prisma.dispatchRider.delete({
       where: {
         id,
       },
     })
     return NextResponse.json(
-      { message: "Location deleted successfully" },
+      { message: "Rider deleted successfully" },
       { status: 200 }
     )
   } catch (error) {
     console.log(error)
     return NextResponse.json(
-      { message: "Couldnt delete location" },
+      { message: "Couldnt delete rider" },
       { status: 500 }
     )
   }
@@ -61,13 +61,13 @@ export async function GET(
 ) {
   try {
     const id = params.id
-    const location = await prisma.citiesWithFees.findUnique({
+    const rider = await prisma.dispatchRider.findUnique({
       where: { id },
     })
-    return NextResponse.json(location)
+    return NextResponse.json(rider)
   } catch (error) {
     return NextResponse.json(
-      { message: "couldnt fetch city!" },
+      { message: "couldnt fetch rider!" },
       { status: 500 }
     )
   }

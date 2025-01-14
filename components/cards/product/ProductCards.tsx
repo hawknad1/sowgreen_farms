@@ -1,9 +1,8 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React from "react"
 import ProductCard from "./ProductCard"
 import HomeProductSkeleton from "../../skeletons/HomeProductSkeleton"
-import prisma from "@/lib/prismadb"
 import { Product } from "@/types"
 
 interface ProductsProps {
@@ -12,29 +11,6 @@ interface ProductsProps {
 }
 
 const ProductCards = ({ data, isLoading }: ProductsProps) => {
-  // const [productList, setProductList] = useState([])
-  // const [isLoading, setIsLoading] = useState(true)
-
-  // useEffect(() => {
-  //   async function getProductList() {
-  //     try {
-  //       const res = await fetch("/api/products", {
-  //         method: "GET",
-  //         cache: "no-store",
-  //       })
-
-  //       if (res.ok) {
-  //         const products = await res.json()
-  //         setProductList(products)
-  //         setIsLoading(false)
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  //   getProductList()
-  // }, [])
-
   return (
     <>
       {isLoading ? (

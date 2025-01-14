@@ -4,7 +4,7 @@ import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Order, Payment } from "@/types"
+import { Order } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -14,7 +14,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { options } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 
 export const confirmedColumns: ColumnDef<Order>[] = [

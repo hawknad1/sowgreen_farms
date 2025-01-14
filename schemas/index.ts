@@ -202,7 +202,7 @@ export const CreditSchema = z
 
 export const EditOrderDetailSchema = z.object({
   deliveryMethod: z.string(),
-  // paymentMethod: z.string(),
+  paymentAction: z.string(),
   deliveryDate: z.string(),
 })
 
@@ -216,6 +216,23 @@ export const UpdateCityandFeeSchema = z.object({
   city: z.string().min(1, { message: "City is required!" }),
   deliveryFee: z.coerce.number(),
   region: z.string().min(1, { message: "Region is required!" }),
+})
+
+// export const UpdateRiderSchema = z.object({
+//   gender: z.string().min(1, { message: "Gender is required!" }),
+//   firstName: z.string(),
+//   lastName: z.string().optional(),
+//   phone: z.string().regex(phoneRegex, "Invalid Number!"),
+// })
+
+export const UpdateRiderSchema = z.object({
+  firstName: z.string().nonempty("First Name is required"),
+  lastName: z.string().nonempty("Last Name is required"),
+  phone: z
+    .string()
+    .nonempty("Phone number is required")
+    .regex(/^\d+$/, "Phone must be numeric"),
+  gender: z.string().optional(),
 })
 
 export const AddOrderSchema = z.object({

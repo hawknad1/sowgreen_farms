@@ -1,6 +1,9 @@
 "use client"
 
 import React, { useState } from "react"
+import { Button } from "../../../ui/button"
+import { Order } from "@/types"
+
 import {
   Dialog,
   DialogContent,
@@ -10,12 +13,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../../../ui/dialog"
-import { Button } from "../../../ui/button"
-import { useRouter } from "next/navigation"
-import toast from "react-hot-toast"
-import { Order } from "@/types"
-import { PencilSquareIcon } from "@heroicons/react/20/solid"
-import EditOrder from "../EditOrder"
 import EditOrderDetails from "../EditOrderDetails"
 
 interface Props {
@@ -25,9 +22,7 @@ interface Props {
 }
 
 const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
-  const [isDeleting, setIsDeleting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-  const router = useRouter()
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -38,7 +33,7 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>Update Delivery Method</DialogTitle>
           <DialogDescription>

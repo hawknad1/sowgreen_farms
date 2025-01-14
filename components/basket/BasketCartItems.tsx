@@ -1,29 +1,23 @@
+"use client"
 import AddButton from "@/app/(root)/products/[productId]/AddButton"
+import Image from "next/image"
+
+import React, { useEffect, useState } from "react"
 import { formatCurrency } from "@/lib/utils"
 import { useCartStore } from "@/store"
 import { Product } from "@/types"
-import { TrashIcon, XCircleIcon } from "@heroicons/react/20/solid"
-import Image from "next/image"
+import { XCircleIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
-import React, { useEffect, useState } from "react"
 
 interface BasketCartItemsProps {
   isCheckout?: boolean
 }
 
 const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
-  // const [cartProducts, setCartProducts] = useState<Record<string, Product>>({})
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  const {
-    cart,
-    cartTotal,
-    quantity,
-    removeFromCart,
-    setCartProducts,
-    cartProducts,
-  } = useCartStore()
+  const { cart, removeFromCart, setCartProducts, cartProducts } = useCartStore()
 
   const fetchProduct = async (id: string) => {
     try {
@@ -37,20 +31,6 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
     }
   }
 
-  // const fetchProducts = async () => {
-  //   setLoading(true)
-  //   const fetchedProducts: { [id: string]: Product } = {}
-  //   for (const item of cart) {
-  //     if (!cartProducts[item.productId]) {
-  //       const product = await fetchProduct(item.productId)
-  //       if (product) {
-  //         fetchedProducts[item.productId] = product
-  //       }
-  //     }
-  //   }
-  //   setCartProducts((prev) => ({ ...prev, ...fetchedProducts }))
-  //   setLoading(false)
-  // }
   const fetchProducts = async () => {
     setLoading(true)
     const fetchedProducts: { [id: string]: Product } = {}
@@ -85,19 +65,21 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
         return (
           <div
             key={item.variantId}
-            className={`my-2 flex items-center justify-between border ${
-              isCheckout ? "p-1.5" : "p-2.5"
+            className={`my-2  border w-full ${
+              isCheckout
+                ? "p-1.5 w-full flex items-center"
+                : "p-2.5 flex gap-x-2"
             } border-neutral-300/55 rounded-lg`}
           >
             <div
-              className={`${
+              className={`w-full ${
                 isCheckout
-                  ? "flex space-x-2 items-center"
+                  ? "flex items-center space-x-2 w-full "
                   : "flex items-center space-x-4 cursor-pointer"
               }`}
             >
               <Image
-                src={product?.imageUrl || product?.images[0]?.url}
+                src={product?.images[0]?.url}
                 alt={product?.title}
                 width={80}
                 height={80}
@@ -107,27 +89,37 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
                     : "h-20 w-20 object-contain bg-gray-100 rounded-md p-1"
                 }`}
               />
-              <div>
+              <div className="">
                 {isCheckout ? (
-                  <>
+                  <div className="">
                     <p
-                      className="line-clamp-2 font-bold"
+                      className="line-clamp-2 font-semibold"
                       onClick={() => router.push(`/products/${product.id}`)}
                     >
                       {product?.title}
                     </p>
-                    <p className="font-medium text-neutral-500 text-sm">
-                      {`GHS ${item?.price * item?.quantity}`}
-                    </p>
-                  </>
+                  </div>
                 ) : (
                   <>
-                    <p className="line-clamp-2 font-bold">{product?.title}</p>
+                    <p className="line-clamp-2 font-semibold">
+                      {product?.title}
+                    </p>
                     <div className="md:inline-flex space-x-1 hidden">
-                      <p className="font-medium text-neutral-400 text-sm">
-                        {variant?.weight}
+                      {!isCheckout && (
+                        <p
+                          className={`${
+                            isCheckout
+                              ? "text-xs"
+                              : " hidden md:inline-flex text-neutral-400 text-sm"
+                          }`}
+                        >
+                          {formatCurrency(variant?.price || 0, "GHS")}
+                        </p>
+                      )}{" "}
+                      <p className=" text-neutral-400 text-sm">
+                        / {variant?.weight}
                       </p>
-                      <p className="font-medium text-neutral-400 text-sm">
+                      <p className=" text-neutral-400 text-sm">
                         {variant?.unit}
                       </p>
                     </div>
@@ -135,48 +127,51 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
                 )}
               </div>
             </div>
-            {!isCheckout && (
-              <p
-                className={`${
-                  isCheckout
-                    ? "text-xs"
-                    : "font-medium hidden md:inline-flex text-neutral-400 text-sm"
-                }`}
-              >
-                {formatCurrency(variant?.price || 0, "GHS")}
-              </p>
-            )}
 
-            <AddButton
-              product={product}
-              variantId={item.variantId}
-              isCheckout={true}
-            />
-            <div className="flex items-center gap-x-3">
-              {!isCheckout && (
-                <p
+            {/* add button */}
+            <div
+              className={`${
+                isCheckout && ""
+              } flex items-center justify-center w-2/3`}
+            >
+              <AddButton
+                product={product}
+                variantId={item.variantId}
+                isCheckout={true}
+              />
+            </div>
+            {/* subtotal -- remove cart */}
+            <div
+              className={`flex items-center justify-end w-2/3 ${
+                isCheckout && "w-fit"
+              }`}
+            >
+              <>
+                {!isCheckout && (
+                  <p
+                    className={`${
+                      isCheckout ? "font-medium text-sm" : "font-semibold"
+                    }`}
+                  >
+                    {formatCurrency(item?.price * item?.quantity, "GHS")}
+                  </p>
+                )}
+
+                <button
                   className={`${
-                    isCheckout ? "font-medium text-sm" : "font-bold"
+                    isCheckout
+                      ? "p-1"
+                      : "rounded-full w-fit h-fit p-2 hover:bg-gray-100"
                   }`}
+                  onClick={() => handleRemoveItem(item.variantId)}
                 >
-                  {formatCurrency(item?.price * item?.quantity, "GHS")}
-                </p>
-              )}
-
-              <button
-                className={`${
-                  isCheckout
-                    ? "p-1"
-                    : "rounded-full w-fit h-fit p-2 hover:bg-gray-100"
-                }`}
-                onClick={() => handleRemoveItem(item.variantId)}
-              >
-                <XCircleIcon
-                  className={`${
-                    isCheckout ? "h-5 w-5" : "h-6 w-6 text-red-500/65"
-                  }`}
-                />
-              </button>
+                  <XCircleIcon
+                    className={`${
+                      isCheckout ? "h-5 w-5" : "h-6 w-6 text-red-500/65"
+                    }`}
+                  />
+                </button>
+              </>
             </div>
           </div>
         )

@@ -1,11 +1,11 @@
 "use client"
-import { Order } from "@/types"
 import Image from "next/image"
-import { useEffect, useState } from "react"
-import EditCustomerOrderDialog from "./EditCustomerOrderDialog"
-import CancelCustomerOrderDialog from "./CancelCustomerOrderDialog"
-import { formatCurrency } from "@/lib/utils"
 import ChangeDeliveryMethodDialog from "./DeliveryMethodDialog"
+import CancelCustomerOrderDialog from "./CancelCustomerOrderDialog"
+import EditCustomerOrderDialog from "./EditCustomerOrderDialog"
+import { Order } from "@/types"
+import { useEffect, useState } from "react"
+import { formatCurrency } from "@/lib/utils"
 import { capitalizeName } from "@/lib/capitalizeName"
 
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
@@ -37,8 +37,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
       </div>
     )
 
-  const subtotal = orderDetails?.total - orderDetails?.deliveryFee
-
   const status = orderDetails?.status
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
@@ -64,7 +62,9 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               {new Date(orderDetails.createdAt).toLocaleDateString()}
             </p>
             <p className="text-sm lg:text-base">
-              {orderDetails.shippingAddress.deliveryMethod}
+              <span>{orderDetails.shippingAddress.deliveryMethod}</span>
+              <br />
+              <span>{orderDetails.deliveryDate}</span>
             </p>
             <p className="text-sm lg:text-base">{`GHS ${(
               orderDetails.total + orderDetails.deliveryFee

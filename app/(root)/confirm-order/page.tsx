@@ -114,6 +114,8 @@ const ConfirmOrderPage = () => {
 
   const { deliveryDate, ...newFormData } = formData
 
+  console.log(newFormData, "newFormData~~~~~$$$$$$$")
+
   // Order number generator
   const orderNumber = generateOrderNumber()
 
@@ -191,7 +193,8 @@ const ConfirmOrderPage = () => {
         verifyData = {
           status: "success",
           paymentMode: "cash",
-          paymentAction: "cash-on-delivery",
+          // paymentAction: "cash-on-delivery",
+          paymentAction: "pending",
           cardType: null,
           last4Digits: null,
         }

@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import ConfirmedOrdersDataTable from "./confirmed-OrdersDataTable"
 import { Order } from "@/types"
+import ConfirmedOrdersDataTable from "./confirmed-OrdersDataTable"
 
 const ConfirmedPage = () => {
   const [order, setOrder] = useState<Order[]>([])

@@ -1,17 +1,17 @@
 "use client"
+
+import { useCustomerStore, useOrdersStore, useProductStore } from "@/store"
+import React, { useEffect, useState } from "react"
 import Head from "next/head"
 import ProductCards from "@/components/cards/product/ProductCards"
 import CategoryCards from "@/components/cards/category/CategoryCards"
 import Testimonials from "@/components/Testimonials"
-import Banner from "@/components/Banner"
 import ViewAll from "@/components/ViewAll"
 import DeliveryCard from "@/components/cards/DeliveryCard"
 import OrganicCard from "@/components/cards/OrganicCard"
 import CategoryChevrons from "@/components/CategoryChevrons"
 import ProductChevrons from "@/components/ProductChevrons"
 import MiddleCardAds from "@/components/cards/middle-cards/MiddleCardAds"
-import { useCustomerStore, useOrdersStore, useProductStore } from "@/store"
-import React, { useEffect, useState } from "react"
 import HeroBanner from "./HeroBanner"
 
 export default function Home() {
@@ -83,12 +83,9 @@ export default function Home() {
   return (
     <div className="">
       <Head>
-        <title>Growcer - Fresh Grocery Store</title>
+        <title>Sowgreen Organic - Fresh Grocery Store</title>
       </Head>
 
-      {/* <section className="bg-[#254336] rounded-lg">
-        <Banner />
-      </section> */}
       <HeroBanner />
       <main className="container mx-auto py-8 flex-1">
         <section className="my-10">
@@ -107,10 +104,6 @@ export default function Home() {
           </ProductChevrons>
           <ViewAll />
         </section>
-
-        {/* <section className="my-8 bg-emerald-500/15 p-5 rounded-lg flex flex-col md:flex-row items-center ">
-          <DeliveryCard />
-        </section> */}
 
         <DeliveryCard />
 

@@ -215,9 +215,6 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
 
-  // Debug: Log the shipping addresses
-  console.log(shippingAddresses, "shippingAddresses")
-
   // Total count of orders
   const totalOrdersCount = useMemo(
     () =>
@@ -245,14 +242,39 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
     setPage(0)
   }
 
-  const handlePaystackSuccessAction = async (orderId: string) => {
+  const handlePaystackSuccessAction = async (
+    reference: any,
+    orderId: string
+  ) => {
     try {
+      // First POST request to verify the transaction
+      const payRes = await fetch(`/api/verify-transaction`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reference: reference.reference }),
+      })
+
+      if (!payRes.ok) throw new Error("Transaction verification failed")
+
+      // Parse the response from the first POST request
+      const payData = await payRes.json()
+
+      // Second PUT request to update the order
       const res = await fetch(`/api/orders/${orderId}`, {
         method: "PUT",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({ paymentAction: "paid" }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          paymentAction: "paid",
+          referenceNumber: reference.reference,
+          cardType: payData.cardType,
+          last4Digits: payData.last4Digits,
+          paymentMode: payData.paymentMode, // Include additional fields if needed
+        }),
       })
+
       if (!res.ok) throw new Error("Payment update failed")
+
+      // Notify success
       toast.success("Payment was successful!")
       window.location.reload()
     } catch (error) {
@@ -282,7 +304,8 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
     },
     publicKey: process.env.PAYSTACK_PUBLIC_TEST_KEY || "",
     text: "Pay now",
-    onSuccess: () => handlePaystackSuccessAction(order.id),
+    onSuccess: (reference?: any) =>
+      handlePaystackSuccessAction(reference, order.id),
     onClose: () => console.log("Payment dialog closed"),
   })
 
@@ -311,7 +334,6 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
           <TableBody>
             {paginatedOrders.length > 0 ? (
               paginatedOrders.map((order: Order) => {
-                console.log(order, "order---order")
                 return (
                   <TableRow hover key={order.id}>
                     <TableCell>
@@ -343,7 +365,7 @@ const OrderHistoryTable = ({ shippingAddresses }: Props) => {
                     </TableCell>
                     <TableCell align="center">
                       {order?.paymentMode === "cash" &&
-                      order?.paymentAction === "cash-on-delivery" &&
+                      order?.paymentAction === "pending" &&
                       order?.status === "confirmed" ? (
                         <PaystackButton
                           {...generatePaystackConfig(order)}

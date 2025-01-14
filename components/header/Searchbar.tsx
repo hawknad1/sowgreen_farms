@@ -80,19 +80,19 @@ const Searchbar = () => {
             productSuggestions.slice(0, 4).map((product) => (
               <Link
                 key={product.id}
-                className="flex items-center justify-between gap-x-2 py-2 px-3 hover:bg-gray-100 cursor-pointer"
+                className="flex items-center space-x-4 p-1.5 rounded-md transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground"
                 href={`/products/${product.id}`}
               >
-                <div className="flex items-center gap-x-3">
+                <div className="flex-shrink-0 h-14 w-14 bg-gray-200 rounded-md overflow-hidden">
                   <Image
-                    src={product.imageUrl}
+                    src={product.images[0]?.url}
                     alt={product.title}
                     width={45}
                     height={45}
-                    className="rounded"
+                    className="h-full w-full object-contain p-1"
                   />
-                  <p className="text-base font-medium">{product.title}</p>
                 </div>
+                <p className="text-base font-medium">{product.title}</p>
               </Link>
             ))
           ) : (

@@ -34,6 +34,7 @@ const EditCustomerOrderDialog = ({ order, className }: Props) => {
   const handleNextStep = () => setCurrentStep((prev) => prev + 1)
   const handlePrevStep = () => setCurrentStep((prev) => prev - 1)
 
+
   const handleAddProduct = (newProductOrder: ProductOrder) => {
     // console.log("Current Order Items:", orderItems)
     if (

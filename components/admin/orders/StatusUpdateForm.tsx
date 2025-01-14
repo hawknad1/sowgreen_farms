@@ -1,10 +1,9 @@
+"use client"
 import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "react-hot-toast"
-import { useRouter } from "next/navigation"
-
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -21,11 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
 import { Order, OrderStatus } from "@/types"
-import { dispatchRider } from "@/constants"
 import { UpdateStatusSchema } from "@/schemas"
 import { sendOrderConfirmation } from "@/lib/actions/sendWhatsappMessage"
+import { useDispatchRidersStore } from "@/store"
 
 interface StatusUpdateFormProps {
   orders: Order
@@ -36,9 +34,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
   orders,
   closeModal,
 }) => {
-  const router = useRouter()
   const [orderStatus, setOrderStatus] = useState(orders.status)
   const [isSaving, setIsSaving] = useState(false)
+  const { dispatchRiders, fetchDispatchRiders } = useDispatchRidersStore()
 
   const [isMessageSent, setIsMessageSent] = useState(
     orders.status === "confirmed"
@@ -48,9 +46,13 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     resolver: zodResolver(UpdateStatusSchema),
     defaultValues: {
       ...orders,
-      dispatchRider: "",
+      dispatchRider: orders.dispatchRider,
     },
   })
+
+  useEffect(() => {
+    fetchDispatchRiders()
+  }, [fetchDispatchRiders])
 
   // API Call to Update Order
   const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
@@ -66,7 +68,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
         const error = await response.json()
         throw new Error(error.message || "Failed to update order")
       }
-
       toast.success("Order status updated successfully!")
       closeModal()
       window.location.reload()
@@ -139,9 +140,12 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
                     <SelectValue placeholder="Select Rider" />
                   </SelectTrigger>
                   <SelectContent>
-                    {dispatchRider.map(({ name, value }) => (
-                      <SelectItem key={value} value={value}>
-                        {name}
+                    {dispatchRiders.map((rider) => (
+                      <SelectItem
+                        key={rider.id}
+                        value={`${rider.firstName} ${rider.lastName}`}
+                      >
+                        {`${rider.firstName} ${rider.lastName}`}
                       </SelectItem>
                     ))}
                   </SelectContent>

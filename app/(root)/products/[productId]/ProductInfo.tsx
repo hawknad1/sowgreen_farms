@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
@@ -13,6 +11,7 @@ import { useCartStore } from "@/store"
 import { Product } from "@/types"
 import React, { useEffect } from "react"
 import Add from "./Add"
+import AdditionalDescription from "./AdditionalDescription"
 
 const ProductInfo: React.FC<{ product: Product }> = ({ product }) => {
   const {
@@ -54,8 +53,6 @@ const ProductInfo: React.FC<{ product: Product }> = ({ product }) => {
 
     setQuantity(1) // Reset quantity after adding to cart
   }
-
-  console.log(selectedVariant, "selectedVariant")
 
   return (
     <div className="flex flex-col gap-6 w-full lg:w-1/2">
@@ -107,35 +104,9 @@ const ProductInfo: React.FC<{ product: Product }> = ({ product }) => {
         <Separator />
       </div>
 
-      <div className="flex flex-col gap-6">
-        <div className="text-sm">
-          <h4 className="font-medium mb-4">Title</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error
-            adipisci labore at culpa, dolore itaque dignissimos quaerat deleniti
-            eveniet voluptatem. Molestiae minima iste veniam autem nesciunt
-            tenetur recusandae, voluptatem quis!
-          </p>
-        </div>
-        <div className="text-sm">
-          <h4 className="font-medium mb-4">Title</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error
-            adipisci labore at culpa, dolore itaque dignissimos quaerat deleniti
-            eveniet voluptatem. Molestiae minima iste veniam autem nesciunt
-            tenetur recusandae, voluptatem quis!
-          </p>
-        </div>{" "}
-        <div className="text-sm">
-          <h4 className="font-medium mb-4">Title</h4>
-          <p>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Error
-            adipisci labore at culpa, dolore itaque dignissimos quaerat deleniti
-            eveniet voluptatem. Molestiae minima iste veniam autem nesciunt
-            tenetur recusandae, voluptatem quis!
-          </p>
-        </div>
-      </div>
+      {/* Additional product info/description  */}
+
+      {/* <AdditionalDescription /> */}
     </div>
   )
 }
