@@ -265,7 +265,7 @@ export const sidebarLinks = {
       items: [
         {
           title: "Pickup Locations",
-          url: "/admin/locations",
+          url: "/admin/management/pickup-locations",
         },
         {
           title: "Route Sheets",
@@ -704,4 +704,12 @@ export const paymentActionList = [
     title: "Pending",
     value: "pending",
   },
+]
+
+export const status = [
+  { title: "Processing", value: "processing" },
+  { title: "Confirmed", value: "confirmed" },
+  { title: "In Transit", value: "in-transit" },
+  { title: "Delivered", value: "delivered" },
+  { title: "Cancelled", value: "cancelled" },
 ]

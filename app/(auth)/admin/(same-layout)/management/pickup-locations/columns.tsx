@@ -4,7 +4,7 @@ import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { DispatchRider } from "@/types"
+import { Location } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -14,11 +14,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import EditRiderDialog from "./EditRiderDialog"
-import DeleteRiderDialog from "./DeleteRiderDialog"
-import { useRouter } from "next/navigation"
 
-export const columns: ColumnDef<DispatchRider>[] = [
+import { useRouter } from "next/navigation"
+import EditLocationDialog from "./EditLocationDialog"
+import DeleteLocationDialog from "./DeleteLocationDialog"
+
+export const columns: ColumnDef<Location>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -46,41 +47,41 @@ export const columns: ColumnDef<DispatchRider>[] = [
   },
 
   {
-    accessorKey: "firstName",
+    accessorKey: "region",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          First Name
+          Region
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
-    cell: ({ row }) => <div>{row.getValue("firstName")}</div>,
+    cell: ({ row }) => <div>{row.getValue("region")}</div>,
   },
   {
-    accessorKey: "lastName",
+    accessorKey: "city",
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          First Name
+          City
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
     },
-    cell: ({ row }) => <div>{row.getValue("lastName")}</div>,
+    cell: ({ row }) => <div>{row.getValue("city")}</div>,
   },
 
   {
-    accessorKey: "phone",
-    header: "Phone",
+    accessorKey: "address",
+    header: "Address",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("phone")}</div>
+      <div className="capitalize">{row.getValue("address")}</div>
     ),
   },
 
@@ -88,7 +89,7 @@ export const columns: ColumnDef<DispatchRider>[] = [
     id: "actions",
     enableHiding: false,
     cell: function ActionCell({ row }) {
-      const rider = row.original
+      const location = row.original
       const router = useRouter()
 
       return (
@@ -106,23 +107,18 @@ export const columns: ColumnDef<DispatchRider>[] = [
             {/* Prevent closing dropdown on Dialog trigger */}
             <div onClick={(e) => e.stopPropagation()}>
               <DropdownMenuItem asChild>
-                <EditRiderDialog rider={rider} />
+                <EditLocationDialog location={location} />
               </DropdownMenuItem>
             </div>
 
             {/* Prevent closing dropdown on Dialog trigger */}
-            <Button
-              onClick={() => router.push(`/admin/dispatch-riders/${rider.id}`)}
-            >
-              View Deliveries
-            </Button>
 
             <DropdownMenuSeparator />
 
             <DropdownMenuSeparator />
             <div onClick={(e) => e.stopPropagation()}>
               <DropdownMenuItem asChild>
-                <DeleteRiderDialog location={rider} />
+                <DeleteLocationDialog location={location} />
               </DropdownMenuItem>
             </div>
           </DropdownMenuContent>

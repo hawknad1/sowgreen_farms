@@ -10,34 +10,45 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Order } from "@/types"
 import { PlusCircleIcon } from "@heroicons/react/20/solid"
 import { Button } from "@/components/ui/button"
+import LocationForm from "./LocationForm"
+import { SquareCheckBig } from "lucide-react"
+import { PickupOptions } from "../PickupOptions"
 
-const PickupLocation = () => {
+interface Props {
+  order?: Order
+  children?: React.ReactNode
+  className?: string
+}
+
+const SelectLocationDialog = ({ order, children, className }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
-          variant="default"
+          variant="secondary"
           className="flex items-center gap-x-2 w-fit h-fit px-4 py-3"
         >
-          <PlusCircleIcon className="h-5 w-5" />
-          Pickup Locations
+          <SquareCheckBig className="h-5 w-5" />
+          Available Locations
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{`Location and Delivery fee`}</DialogTitle>
-          <DialogDescription>Select locations.</DialogDescription>
+          <DialogTitle>Pickup Locations</DialogTitle>
+          <DialogDescription>Select available locations.</DialogDescription>
         </DialogHeader>
-        {/* <PickupLocation /> */}
+        {/* <LocationForm /> */}
+        <PickupOptions />
         <DialogFooter></DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
 
-export default PickupLocation
+export default SelectLocationDialog

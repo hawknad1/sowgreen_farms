@@ -61,6 +61,8 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
       {cart.map((item) => {
         const product = cartProducts[item.productId]
         const variant = product?.variants.find((v) => v.id === item.variantId)
+        console.log(variant, "variant")
+        console.log(product, "variant")
 
         return (
           <div

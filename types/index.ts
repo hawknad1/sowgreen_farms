@@ -192,6 +192,13 @@ export type DispatchRider = {
   phone: string
 }
 
+export type Location = {
+  id: string
+  region: string
+  city: string
+  address: string
+}
+
 // export type PaymentAction = {
 
 // }

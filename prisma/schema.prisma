@@ -136,7 +136,7 @@ model Product {
 model ProductVariant {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   productId String   @db.ObjectId
-  product   Product  @relation("ProductVariants", fields: [productId], references: [id])
+  product   Product  @relation("ProductVariants", fields: [productId], references: [id], onDelete: Cascade) // Define `onDelete` here
   weight    Float?
   price     Int?
   unit      String?
@@ -181,6 +181,13 @@ model Order {
   updatedAt         DateTime         @updatedAt
 }
 
+model PickupLocations {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  region  String?
+  city    String?
+  address String
+}
+
 model Management {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
@@ -209,7 +216,6 @@ model DispatchRider {
   lastName  String
   phone     String
 }
-
 
 // model DeliveryMethod {
 //   id                String           @id @default(auto()) @map("_id") @db.ObjectId

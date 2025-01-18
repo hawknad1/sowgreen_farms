@@ -23,7 +23,10 @@ import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
 import { verifyTransaction } from "@/lib/actions/verifyTransaction"
 import { generateOrderReceivedMessage } from "@/lib/actions/whatsAppMessages/generateOrderReceivedMessage"
-import { sendOrderReceived } from "@/lib/actions/sendWhatsappMessage"
+import {
+  sendOrderConfirmation,
+  sendOrderReceived,
+} from "@/lib/actions/sendWhatsappMessage"
 
 export type User = {
   user: {
@@ -136,6 +139,8 @@ const ConfirmOrderPage = () => {
   }
 
   const transformedCart = transformCart(cart)
+
+  console.log(transformedCart, "transformedCart")
 
   const config = {
     reference: new Date().getTime().toString(),
@@ -254,6 +259,8 @@ const ConfirmOrderPage = () => {
 
       // sendWhatsAppMessage(ordersData)
       sendOrderReceived(ordersData)
+      // sendOrderConfirmation(ordersData)
+      console.log(ordersData, "ordersData----ordersData")
 
       clearCart() // Clear the cart after successful order processing
       router.push("/success/thank-you")

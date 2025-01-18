@@ -103,8 +103,8 @@ Hello *${order.shippingAddress.name}*,
   
 We’ve successfully received your order, and it’s now being processed.
 
-Please note that once your order is confirmed, it cannot be modified. Rest assured, 
-our team is working on confirming your order as quickly as possible.
+Please note that once your order is confirmed, it cannot be modified.
+Rest assured, our team is working on confirming your order as quickly as possible.
 
 If you have any questions or need assistance, please contact:  
 ${contactList}

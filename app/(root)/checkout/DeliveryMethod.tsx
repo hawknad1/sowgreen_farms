@@ -41,14 +41,6 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
   const [pickupOptions, setPickupOptions] = useState<string[]>([])
   const [wednesday, saturday] = getUpcomingDeliveryDates()
 
-  // React Hook Form setup
-  // const form = useForm<z.infer<typeof CheckoutSchema>>({
-  //   resolver: zodResolver(CheckoutSchema),
-  //   defaultValues: {
-  //     deliveryMethod: "",
-  //   },
-  // })
-
   // Fetch available pickup options
   useEffect(() => {
     async function getPickupOptions() {
@@ -83,7 +75,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
               <RadioGroup
                 onValueChange={(value) => {
                   field.onChange(value)
-                  setSelectedDeliveryMethod(value.split("-")[0])
+                  setSelectedDeliveryMethod(value)
                 }}
                 defaultValue={field.value}
                 className="flex flex-col"

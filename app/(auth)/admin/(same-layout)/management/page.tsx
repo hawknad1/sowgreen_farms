@@ -17,18 +17,7 @@ import {
 // import { DatePickerWithRange } from "./DatePicker"
 
 const Magagement = () => {
-  return (
-    <div className="bg-white">
-      <div className="border border-neutral-200 w-fit m-4 p-2 rounded-lg">
-        <PickupOptions />
-      </div>
-
-      {/* <ExportButton />
-      <DatePickerWithRange /> */}
-      {/* <DatePicker /> */}
-      {/* <DatePickerR /> */}
-    </div>
-  )
+  return <div>page</div>
 }
 
 export default Magagement

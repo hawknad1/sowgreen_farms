@@ -124,6 +124,14 @@ export async function GET(req: NextRequest) {
   }
 }
 
+// export async function POST(req: Request) {
+//   const { region, city, address } = await req.json()
+
+//   // const locations = await prisma.pickupOptions.create({
+//   //   data:{}
+//   // })
+// }
+
 export async function PUT(req: Request) {
   const { pickupOptions } = await req.json()
 

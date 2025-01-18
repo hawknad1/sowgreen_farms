@@ -9,9 +9,9 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form"
-import { toast } from "@/components/ui/use-toast"
 import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
 import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
+import toast from "react-hot-toast"
 
 // Updated Zod schema
 export const PickupOptionSchema = z.object({
@@ -20,18 +20,6 @@ export const PickupOptionSchema = z.object({
 
 const [wednesday, saturday] = getUpcomingDeliveryDates()
 
-const availablePickupOptions = [
-  `DZORWULU `,
-  `WEB DuBOIS CENTER`,
-  `PARKS & GARDENS`,
-]
-
-// const availablePickupOptions = [
-//   `DZORWULU - ${formatDeliveryDate(wednesday)} - 11AM-5PM`,
-//   `WEB DuBOIS CENTER - ${formatDeliveryDate(saturday)} - 10AM-3PM`,
-//   `PARKS & GARDENS - ${formatDeliveryDate(saturday)} - 10AM-3PM`,
-// ]
-
 type FormValues = z.infer<typeof PickupOptionSchema>
 
 export function PickupOptions() {
@@ -39,12 +27,21 @@ export function PickupOptions() {
   const [existingPickupOptions, setExistingPickupOptions] = useState<string[]>(
     []
   )
+  const [availablePickupOptions, setAvailablePickupOptions] = useState<
+    string[]
+  >([])
+  const [isLoading, setIsLoading] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   // Fetch existing pickup options from the database
   useEffect(() => {
     const fetchExistingOptions = async () => {
+      setIsLoading(true)
       try {
-        const res = await fetch("/api/pickup-options")
+        const res = await fetch("/api/pickup-options", {
+          method: "GET",
+          cache: "no-store",
+        })
         if (res.ok) {
           const data = await res.json()
           setExistingPickupOptions(
@@ -53,10 +50,33 @@ export function PickupOptions() {
         }
       } catch (error) {
         console.error("Error fetching existing pickup options:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
     fetchExistingOptions()
+  }, [])
+
+  useEffect(() => {
+    const fetchPickupOptions = async () => {
+      try {
+        const res = await fetch("/api/pickup-locations", {
+          method: "GET",
+          cache: "no-store",
+        })
+        if (res.ok) {
+          const data = await res.json()
+          setAvailablePickupOptions(
+            data.map((item: { address: string }) => item.address)
+          )
+        }
+      } catch (error) {
+        console.error("Error fetching existing pickup options:", error)
+      }
+    }
+
+    fetchPickupOptions()
   }, [])
 
   // Initialize the form with the existing pickup options
@@ -79,7 +99,7 @@ export function PickupOptions() {
   // Handle form submission
   async function onSubmit(data: FormValues) {
     console.log("Updated pickup options:", data.pickupOptions)
-
+    setIsSaving(true)
     try {
       const res = await fetch("/api/pickup-options", {
         method: "PUT",
@@ -88,63 +108,77 @@ export function PickupOptions() {
       })
 
       if (res.ok) {
-        toast({
-          title: "Pickup Options Updated Successfully",
-        })
-        // router.push("/admin/dashboard")
+        toast.success("Pickup Options Updated Successfully")
         window.location.reload()
       } else {
         console.log("Failed to submit data:", await res.json())
       }
     } catch (error) {
       console.error("Error submitting data:", error)
+    } finally {
+      setIsSaving(false)
     }
   }
 
+  if (isLoading)
+    return (
+      <div className="w-full flex justify-center">
+        <span className="loading loading-dots loading-lg"></span>
+      </div>
+    )
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-4">
-        <FormLabel className="text-lg font-semibold">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">
+        {/* <FormLabel className="text-lg font-semibold">
           Select Pickup Options
-        </FormLabel>
-        {availablePickupOptions.map((option) => (
-          <FormItem
-            key={option}
-            className="flex flex-row max-w-[400px] items-start space-x-3 space-y-0 rounded-md border p-4 shadow"
-          >
-            <FormControl>
-              <Controller
-                control={form.control}
-                name="pickupOptions"
-                render={({ field }) => {
-                  const isChecked = field.value.includes(option)
+        </FormLabel> */}
+        <div className="space-y-2 border border-neutral-300 p-3 rounded-lg h-fit max-h-64 overflow-y-scroll">
+          {availablePickupOptions.map((option) => (
+            <FormItem
+              key={option}
+              className="flex flex-row w-full items-start space-x-3 space-y-0 rounded-md border border-neutral-200 p-4"
+            >
+              <FormControl>
+                <Controller
+                  control={form.control}
+                  name="pickupOptions"
+                  render={({ field }) => {
+                    const isChecked = field.value.includes(option)
 
-                  const handleCheckboxChange = (checked: boolean) => {
-                    if (checked) {
-                      // Add the selected option to the array
-                      field.onChange([...field.value, option])
-                    } else {
-                      // Remove the unselected option from the array
-                      field.onChange(
-                        field.value.filter((item: string) => item !== option)
-                      )
+                    const handleCheckboxChange = (checked: boolean) => {
+                      if (checked) {
+                        // Add the selected option to the array
+                        field.onChange([...field.value, option])
+                      } else {
+                        // Remove the unselected option from the array
+                        field.onChange(
+                          field.value.filter((item: string) => item !== option)
+                        )
+                      }
                     }
-                  }
 
-                  return (
-                    <Checkbox
-                      checked={isChecked}
-                      onCheckedChange={handleCheckboxChange}
-                    />
-                  )
-                }}
-              />
-            </FormControl>
-            <FormLabel>{option}</FormLabel>
-          </FormItem>
-        ))}
+                    return (
+                      <Checkbox
+                        checked={isChecked}
+                        onCheckedChange={handleCheckboxChange}
+                      />
+                    )
+                  }}
+                />
+              </FormControl>
+              <FormLabel>{option}</FormLabel>
+            </FormItem>
+          ))}
+        </div>
 
-        <Button type="submit">Save</Button>
+        <Button type="submit" className="w-full" disabled={isSaving}>
+          {isSaving ? (
+            <span className="loading loading-infinity loading-md"></span>
+          ) : (
+            "Save"
+          )}
+        </Button>
       </form>
     </Form>
   )

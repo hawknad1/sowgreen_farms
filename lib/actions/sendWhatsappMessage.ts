@@ -3,8 +3,9 @@ import { generateOrderConfirmationMessage } from "./whatsAppMessages/generateOrd
 import { generateOrderReceivedMessage } from "./whatsAppMessages/generateOrderReceivedMessage"
 import { generateUpdatedDeliveryMethod } from "./whatsAppMessages/generateUpdatedDeliveryMethod"
 
-export async function sendOrderConfirmation(order: any) {
+export async function sendOrderConfirmation(order: Order) {
   const message = generateOrderConfirmationMessage(order)
+  console.log("Generated message:", message)
 
   try {
     const response = await fetch("/api/sendWhatsapp", {
@@ -28,6 +29,8 @@ export async function sendOrderConfirmation(order: any) {
 
 export async function sendOrderReceived(order: any) {
   const message = generateOrderReceivedMessage(order)
+  // const message = generateOrderConfirmationMessage(order)
+  console.log(order, "order from whatsapp")
 
   try {
     const response = await fetch("/api/sendWhatsapp", {

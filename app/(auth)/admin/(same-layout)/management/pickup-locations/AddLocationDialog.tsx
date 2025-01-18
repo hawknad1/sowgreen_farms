@@ -10,10 +10,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Order } from "@/types"
 import { PlusCircleIcon } from "@heroicons/react/20/solid"
 import { Button } from "@/components/ui/button"
+import LocationForm from "./LocationForm"
 
-const PickupLocation = () => {
+interface Props {
+  order?: Order
+  children?: React.ReactNode
+  className?: string
+}
+
+const AddLocationDialog = ({ order, children, className }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -24,20 +32,22 @@ const PickupLocation = () => {
           className="flex items-center gap-x-2 w-fit h-fit px-4 py-3"
         >
           <PlusCircleIcon className="h-5 w-5" />
-          Pickup Locations
+          Add Location
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{`Location and Delivery fee`}</DialogTitle>
-          <DialogDescription>Select locations.</DialogDescription>
+          <DialogTitle>{`Dispatch Riders`}</DialogTitle>
+          <DialogDescription>
+            Add new rider to list of riders.
+          </DialogDescription>
         </DialogHeader>
-        {/* <PickupLocation /> */}
+        <LocationForm />
         <DialogFooter></DialogFooter>
       </DialogContent>
     </Dialog>
   )
 }
 
-export default PickupLocation
+export default AddLocationDialog

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
 
   if (!city || !deliveryFee || !region) {
     return NextResponse.json(
-      { message: '"City,region and delivery fee are required"' },
+      { message: "City,region and delivery fee are required" },
       { status: 400 }
     )
   }

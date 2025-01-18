@@ -235,6 +235,12 @@ export const UpdateRiderSchema = z.object({
   gender: z.string().optional(),
 })
 
+export const AddLocationSchema = z.object({
+  region: z.string().optional(),
+  city: z.string().optional(),
+  address: z.string().min(1, { message: "Address is required!" }),
+})
+
 export const AddOrderSchema = z.object({
   name: z.string().min(1, { message: "Name is required!" }),
   email: z.string().email({ message: "Email is required!" }),
