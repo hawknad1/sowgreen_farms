@@ -253,12 +253,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       if (updatedOrder.status === "confirmed") {
         await sendOrderConfirmation(orders)
       }
-      // if (updatedOrder.status === "confirmed") {
-      //   await sendOrderReceived(orders)
-      // }
 
       closeModal()
-      // window.location.reload()
+      window.location.reload()
     } catch (error: any) {
       toast.error(`Error: ${error.message || "Failed to update order"}`)
     } finally {

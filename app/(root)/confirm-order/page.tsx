@@ -116,6 +116,13 @@ const ConfirmOrderPage = () => {
   }))
 
   const { deliveryDate, ...newFormData } = formData
+  const shippingInfo = {
+    deliveryDate,
+    ...formData,
+    deliveryMethod: formData.deliveryMethod.split("-")[0],
+  }
+
+  console.log(shippingInfo, "shippingInfo")
 
   console.log(newFormData, "newFormData~~~~~$$$$$$$")
 
@@ -210,7 +217,7 @@ const ConfirmOrderPage = () => {
 
       const ordersData = {
         products: transformedCart,
-        shippingAddress: newFormData,
+        shippingAddress: shippingInfo,
         orderNumber,
         // deliveryMethod:,
         deliveryDate,
@@ -266,15 +273,15 @@ const ConfirmOrderPage = () => {
       router.push("/success/thank-you")
 
       // Update user balance (if applicable)
-      await fetch("/api/balance", {
-        method: "PUT",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({
-          email: user?.email,
-          updatedBalance,
-          phone: ordersData?.shippingAddress?.phone,
-        }),
-      })
+      // await fetch("/api/balance", {
+      //   method: "PUT",
+      //   headers: { "Content-type": "application/json" },
+      //   body: JSON.stringify({
+      //     email: user?.email,
+      //     updatedBalance,
+      //     phone: ordersData?.shippingAddress?.phone,
+      //   }),
+      // })
 
       // Update product quantities
       const quantityResponse = await fetch("/api/products/updateQuantity", {

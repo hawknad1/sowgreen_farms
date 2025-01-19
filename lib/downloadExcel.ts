@@ -1,5 +1,6 @@
 import ExcelJS from "exceljs"
 import { formatDate } from "./formatDate"
+import { useState } from "react"
 
 // Fetch products from the API and extract details
 async function fetchProducts() {
@@ -110,20 +111,9 @@ export default async function downloadExcel(from: Date, to: Date) {
       const orderProduct = order.products.find(
         (o: any) => o.productId === product.id
       )
-      console.log(orderProduct, "orderProduct--00000000000000000")
-      // if (orderProduct) {
-      //   // Check if the product weight is 0, if so, use quantityTotal instead
-      //   if (orderProduct.unit === "ltr" || orderProduct.unit === "ml") {
-      //     return orderProduct.quantity // Use quantityTotal if weight is 0
-      //   } else {
-      //     // Multiply quantity by product weight to calculate total for that product
-      //     if (orderProduct.weight > 100)
-      //       return orderProduct.quantity * (orderProduct.weight / 1000)
-      //     return orderProduct.quantity * orderProduct.weight
-      //   }
-      // }
 
       if (orderProduct) {
+        if (orderProduct.available === false) return "N/A"
         // Check for specific weight, unit, and title conditions
         if (
           orderProduct.weight === 250 &&
