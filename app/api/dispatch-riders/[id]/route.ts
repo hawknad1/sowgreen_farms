@@ -63,6 +63,7 @@ export async function GET(
     const id = params.id
     const rider = await prisma.dispatchRider.findUnique({
       where: { id },
+      include: { orders: true },
     })
     return NextResponse.json(rider)
   } catch (error) {

@@ -164,7 +164,8 @@ model Order {
   orderNumber       String           @unique
   total             Float?
   status            String?          @default("processing")
-  dispatchRider     String?
+  dispatchRiderId   String?          @db.ObjectId
+  dispatchRider     DispatchRider?   @relation(fields: [dispatchRiderId], references: [id], onDelete: Cascade)
   shippingAddressId String?          @db.ObjectId
   shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
   products          ProductOrder[]
@@ -210,11 +211,12 @@ model PickupOptions {
 }
 
 model DispatchRider {
-  id        String @id @default(auto()) @map("_id") @db.ObjectId
-  gender    String
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  gender    String?
   firstName String
   lastName  String
-  phone     String
+  phone     String?
+  orders    Order[]
 }
 
 // model DeliveryMethod {

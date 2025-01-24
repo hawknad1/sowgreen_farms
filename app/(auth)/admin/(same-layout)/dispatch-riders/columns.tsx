@@ -112,7 +112,7 @@ export const columns: ColumnDef<DispatchRider>[] = [
 
             {/* Prevent closing dropdown on Dialog trigger */}
             <Button
-              onClick={() => router.push(`/admin/dispatch-riders/${rider.id}`)}
+              onClick={() => router.push(`/admin/dispatch-riders/deliveries`)}
             >
               View Deliveries
             </Button>

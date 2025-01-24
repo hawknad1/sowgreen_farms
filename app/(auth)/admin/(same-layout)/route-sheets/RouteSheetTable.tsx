@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import * as React from "react"
 import {
   ColumnFiltersState,
   SortingState,
@@ -29,18 +29,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { columns } from "@/app/(auth)/admin/(same-layout)/route-sheets/columns" // Corrected import for the columns
+
 import { Order } from "@/types"
-import { confirmedColumns } from "../confirmed/confirmedColumns"
-import { columns } from "@/components/admin/orders/columns" // Corrected import for the columns
-import ExportDialog from "@/components/admin/Export"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
+import ExportRouteSheetButton from "./ExportRouteSheetButton"
+import ExportRouteSheetDialog from "./ExportRouteSheetDialog"
 
 interface OrdersProps {
-  loading: boolean
-  order: Order[]
+  loading?: boolean
+  data?: Order[]
 }
 
-const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
+const RouteSheetTable = ({ loading, data }: OrdersProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -51,14 +52,8 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
-  // Filter orders to only include those with status "confirmed"
-  const confirmedOrders = React.useMemo(
-    () => order.filter((o) => o.status === "delivered"),
-    [order]
-  )
-
   const table = useReactTable({
-    data: confirmedOrders, // Use the filtered data here
+    data: data ?? [], // Added orders data
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -78,21 +73,25 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
 
   return (
     <div className="w-full p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
-        <div className=" w-full">
+      <div className="py-4 gap-x-3 lg:gap-x-0 flex items-center justify-between">
+        <div className="flex gap-x-2 w-full">
           <Input
-            placeholder="Filter order number..."
+            placeholder="Filter riders..."
             value={
-              (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
+              (table
+                .getColumn("shippingAddress.name")
+                ?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn("orderNumber")?.setFilterValue(event.target.value)
+              table
+                .getColumn("shippingAddress.name")
+                ?.setFilterValue(event.target.value)
             }
-            className=" w-full"
-            aria-label="Filter Order number"
+            className="max-w-sm w-full"
+            aria-label="Filter riders"
           />
         </div>
-        <div className="flex w-full justify-between lg:justify-end gap-x-4">
+        <div className="flex items-center justify-between gap-x-6 max-w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -120,7 +119,8 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <ExportDialog />
+
+          <ExportRouteSheetDialog />
         </div>
       </div>
 
@@ -145,12 +145,12 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={confirmedColumns.length} className="h-14">
+                <TableCell colSpan={columns.length} className="h-14">
                   <DataSkeletons />
                 </TableCell>
               </TableRow>
-            ) : table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
+            ) : table?.getRowModel()?.rows.length ? (
+              table?.getRowModel()?.rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() ? "selected" : undefined}
@@ -168,7 +168,7 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={confirmedColumns.length}
+                  colSpan={columns.length}
                   className="h-24 text-center"
                 >
                   No results.
@@ -207,4 +207,4 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
   )
 }
 
-export default DeliveredOrderTable
+export default RouteSheetTable

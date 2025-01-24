@@ -30,7 +30,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { columns } from "./columns" // Corrected import for the columns
-import { downloadOrders } from "@/lib/xlsx"
 import { Order } from "@/types"
 import DataSkeletons from "../../skeletons/DataSkeletons"
 import Export from "../Export"
@@ -54,12 +53,12 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
-  const handleExport = () => {
-    const filteredData = table
-      .getFilteredRowModel()
-      .rows.map((row) => row.original)
-    downloadOrders(filteredData)
-  }
+  // const handleExport = () => {
+  //   const filteredData = table
+  //     .getFilteredRowModel()
+  //     .rows.map((row) => row.original)
+  //   downloadOrders(filteredData)
+  // }
 
   const table = useReactTable({
     data: order, // Added orders data

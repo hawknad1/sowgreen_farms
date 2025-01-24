@@ -23,9 +23,13 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
       </div>
     )
 
-  const rider =
-    orders?.dispatchRider?.charAt(0).toUpperCase() +
-    orders?.dispatchRider?.slice(1)
+  // const rider =
+  //   orders?.dispatchRider?.charAt(0).toUpperCase() +
+  //   orders?.dispatchRider?.slice(1)
+
+  const fistName = orders?.dispatchRider?.firstName
+  const lastName = orders?.dispatchRider?.lastName
+  const rider = `${fistName} ${lastName}`
 
   return (
     <div className="p-4">

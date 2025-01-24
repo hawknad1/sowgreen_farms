@@ -32,6 +32,7 @@ export async function GET(req: Request) {
       },
       include: {
         shippingAddress: true,
+        dispatchRider: true,
         products: {
           include: {
             product: true,
@@ -197,6 +198,7 @@ export async function POST(req: Request) {
       },
       include: {
         shippingAddress: true,
+        dispatchRider: true,
         products: {
           include: {
             product: true,

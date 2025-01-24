@@ -217,7 +217,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     resolver: zodResolver(UpdateStatusSchema),
     defaultValues: {
       ...orders,
-      dispatchRider: orders.dispatchRider,
+      dispatchRider: orders.dispatchRider
+        ? `${orders.dispatchRider.firstName} ${orders.dispatchRider.lastName}` // Join first name and last name
+        : "",
     },
   })
 
@@ -225,18 +227,69 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     fetchDispatchRiders()
   }, [fetchDispatchRiders])
 
-  console.log(orders, "orderorders")
-
   // API Call to Update Order
-  const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
-    console.log(values, "valuesvalues")
+  // const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
+  //   setIsSaving(true)
+  //   try {
+  //     const response = await fetch(`/api/orders/${orders.id}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(values),
+  //     })
 
+  //     if (!response.ok) {
+  //       const error = await response.json()
+  //       throw new Error(error.message || "Failed to update order")
+  //     }
+
+  //     const updatedOrder = await response.json()
+  //     setOrderStatus(updatedOrder.status)
+
+  //     toast.success("Order status updated successfully!")
+
+  //     // Send WhatsApp message only if the status is "confirmed"
+  //     if (updatedOrder.status === "confirmed") {
+  //       await sendOrderConfirmation(orders)
+  //     }
+
+  //     closeModal()
+  //     window.location.reload()
+  //   } catch (error: any) {
+  //     toast.error(`Error: ${error.message || "Failed to update order"}`)
+  //   } finally {
+  //     setIsSaving(false)
+  //   }
+  // }
+
+  // Handle form submission
+
+  const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
     setIsSaving(true)
     try {
+      // Map the dispatch rider's name to their ID before sending the request
+      const dispatchRider = dispatchRiders.find(
+        (rider) =>
+          `${rider.firstName} ${rider.lastName}` === values.dispatchRider
+      )
+
+      const dispatchRiderId = dispatchRider?.id // Extract ID
+      const dispatchRiderData = dispatchRider
+        ? {
+            id: dispatchRider.id, // Pass ID
+            firstName: dispatchRider.firstName,
+            lastName: dispatchRider.lastName,
+            phone: dispatchRider.phone,
+          }
+        : undefined
+
       const response = await fetch(`/api/orders/${orders.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          ...values,
+          dispatchRider: dispatchRiderData, // Pass the full dispatch rider object
+          dispatchRiderId, // Pass the ID if needed
+        }),
       })
 
       if (!response.ok) {
@@ -247,14 +300,12 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       const updatedOrder = await response.json()
       setOrderStatus(updatedOrder.status)
 
-      toast.success("Order status updated successfully!")
-
-      // Send WhatsApp message only if the status is "confirmed"
       if (updatedOrder.status === "confirmed") {
         await sendOrderConfirmation(orders)
       }
 
       closeModal()
+      toast.success("Order status updated successfully!")
       window.location.reload()
     } catch (error: any) {
       toast.error(`Error: ${error.message || "Failed to update order"}`)
@@ -263,7 +314,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     }
   }
 
-  // Handle form submission
   const onSubmit = (values: z.infer<typeof UpdateStatusSchema>) => {
     updateOrder(values)
   }
@@ -311,7 +361,10 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
                 <FormLabel>Dispatch Rider</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  defaultValue={field.value || ""}
+                  // defaultValue={field.value || ""}
+                  defaultValue={
+                    typeof field.value === "string" ? field.value : ""
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select Rider" />

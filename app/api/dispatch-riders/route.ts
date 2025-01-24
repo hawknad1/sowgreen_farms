@@ -32,7 +32,9 @@ export async function POST(req: Request) {
 
 export async function GET(req: Request) {
   try {
-    const riders = await prisma.dispatchRider.findMany()
+    const riders = await prisma.dispatchRider.findMany({
+      include: { orders: true },
+    })
     return NextResponse.json(riders, { status: 200 })
   } catch (error) {
     console.log(error)

@@ -372,3 +372,45 @@ export const useVariantStore = create<VariantState>((set) => ({
   setSelectedVariant: (price, weight, unit) =>
     set({ selectedVariant: { price, weight, unit } }),
 }))
+
+interface OrderDashboardStore {
+  order: Order[] | null
+  loading: boolean
+  error: string | null
+  totalRevenue: number
+  fetchOrders: () => Promise<void>
+}
+
+export const useOrderDashboardStore = create<OrderDashboardStore>((set) => ({
+  order: null,
+  loading: true,
+  error: null,
+  totalRevenue: 0, // Add totalRevenue to the store
+  fetchOrders: async () => {
+    try {
+      set({ loading: true, error: null })
+      const res = await fetch(`/api/orders`, {
+        method: "GET",
+        cache: "no-store",
+      })
+
+      if (!res.ok) {
+        throw new Error(`Error: ${res.status} ${res.statusText}`)
+      }
+
+      const orderDetail = await res.json()
+
+      // Calculate total revenue
+      const revenue = orderDetail
+        .filter((order: Order) => order.paymentAction === "paid")
+        .reduce(
+          (sum: any, order: Order) => sum + order.total + order.deliveryFee,
+          0
+        )
+
+      set({ order: orderDetail, totalRevenue: revenue, loading: false })
+    } catch (error) {
+      set({ loading: false })
+    }
+  },
+}))

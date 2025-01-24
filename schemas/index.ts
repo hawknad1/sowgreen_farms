@@ -142,6 +142,21 @@ export const EditProductSchema = z.object({
 //   dispatchRider: z.string().optional(),
 // })
 
+// export const UpdateStatusSchema = z.object({
+//   status: z.enum([
+//     "processing",
+//     "confirmed",
+//     "in-transit",
+//     "delivered",
+//     "cancelled",
+//   ]),
+//   // dispatchRider: z.string().optional(),
+//   dispatchRider: z.object({
+//     firstName: z.string(),
+//     lastName: z.string(),
+//   }),
+// })
+
 export const UpdateStatusSchema = z.object({
   status: z.enum([
     "processing",
@@ -150,7 +165,15 @@ export const UpdateStatusSchema = z.object({
     "delivered",
     "cancelled",
   ]),
-  dispatchRider: z.string().optional(),
+  dispatchRider: z
+    .union([
+      z.string(),
+      z.object({
+        firstName: z.string().optional(),
+        lastName: z.string().optional(),
+      }),
+    ])
+    .optional(),
 })
 
 export const SearchSchema = z.object({

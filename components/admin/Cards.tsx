@@ -1,9 +1,14 @@
 "use client"
-import React from "react"
+import React, { useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DollarSign, Users, Carrot } from "lucide-react"
-import { useCustomerStore, useProductStore } from "@/store"
+import {
+  useCustomerStore,
+  useOrderDashboardStore,
+  useProductStore,
+} from "@/store"
 import { Order, Product, ShippingAddress } from "@/types"
+import { formatCurrency } from "@/lib/utils"
 
 interface OrdersProps {
   loading: boolean
@@ -18,7 +23,11 @@ export const Cards = ({
   products,
   customers,
 }: OrdersProps) => {
+  const { order, error, totalRevenue, fetchOrders } = useOrderDashboardStore()
 
+  useEffect(() => {
+    fetchOrders()
+  }, [fetchOrders])
 
   return (
     <div className="grid gap-4 lg:gap-3 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
@@ -28,7 +37,9 @@ export const Cards = ({
           <DollarSign className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">$45,231.89</div>
+          <div className="text-2xl font-bold">
+            {formatCurrency(totalRevenue, "GHS")}
+          </div>
           <p className="text-xs text-muted-foreground">
             <span className="text-green-500 font-semibold"> +20.1% </span>from
             last month

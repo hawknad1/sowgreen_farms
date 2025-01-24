@@ -12,6 +12,7 @@ export async function GET(
       where: { id },
       include: {
         shippingAddress: true,
+        dispatchRider: true,
         products: {
           include: {
             product: true, // Include product details in the response
@@ -432,6 +433,52 @@ export async function PUT(
       return NextResponse.json({ message: "Order not found" }, { status: 404 })
     }
 
+    // Update or create the dispatch rider if provided
+    // Update or create the dispatch rider if provided
+    let dispatchRiderId = existingOrder.dispatchRiderId
+
+    // if (dispatchRider) {
+    //   const { firstName, lastName, phone } = dispatchRider
+
+    //   if (dispatchRiderId) {
+    //     // Update existing dispatch rider
+    //     await prisma.dispatchRider.update({
+    //       where: { id: dispatchRiderId },
+    //       data: { firstName, lastName, phone },
+    //     })
+    //   } else {
+    //     // Create a new dispatch rider and get the ID
+    //     const newDispatchRider = await prisma.dispatchRider.create({
+    //       data: { firstName, lastName, phone },
+    //     })
+    //     dispatchRiderId = newDispatchRider.id
+    //   }
+    // }
+
+    if (dispatchRider) {
+      const { firstName, lastName, phone } = dispatchRider
+
+      const existingRider = await prisma.dispatchRider.findFirst({
+        where: { firstName, lastName, phone },
+      })
+
+      if (existingRider) {
+        dispatchRiderId = existingRider.id
+      } else if (dispatchRiderId) {
+        // Update existing dispatch rider by ID
+        await prisma.dispatchRider.update({
+          where: { id: dispatchRiderId },
+          data: { firstName, lastName, phone },
+        })
+      } else {
+        // Create a new dispatch rider if no match is found
+        const newDispatchRider = await prisma.dispatchRider.create({
+          data: { firstName, lastName, phone },
+        })
+        dispatchRiderId = newDispatchRider.id
+      }
+    }
+
     // Handle product updates only if `products` is defined
     if (products !== undefined) {
       if (products.length === 0) {
@@ -529,7 +576,12 @@ export async function PUT(
       data: {
         total: updatedTotal,
         status,
-        dispatchRider,
+        // dispatchRider,
+        dispatchRider: dispatchRiderId
+          ? {
+              connect: { id: dispatchRiderId },
+            }
+          : undefined,
         paymentAction,
         deliveryDate,
         deliveryMethod,

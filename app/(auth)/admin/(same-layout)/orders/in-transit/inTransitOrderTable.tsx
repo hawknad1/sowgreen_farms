@@ -31,7 +31,6 @@ import {
 } from "@/components/ui/table"
 import { confirmedColumns } from "../confirmed/confirmedColumns"
 import { Order } from "@/types"
-import { downloadOrders } from "@/lib/xlsx"
 import { columns } from "@/components/admin/orders/columns" // Corrected import for the columns
 import ExportDialog from "@/components/admin/Export"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"

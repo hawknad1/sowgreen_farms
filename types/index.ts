@@ -58,7 +58,7 @@ export type Order = {
   referenceNumber: string
   total: number
   status: OrderStatus
-  dispatchRider: string
+  dispatchRider: DispatchRider
   deliveryMethod?: string
   deliveryFee: number
   deliveryDate: string
@@ -190,6 +190,7 @@ export type DispatchRider = {
   firstName: string
   lastName: string
   phone: string
+  orders?: Order
 }
 
 export type Location = {
