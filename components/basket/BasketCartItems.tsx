@@ -52,6 +52,7 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
   //   }
   // }, [cart])
 
+  console.log(cart, "CART")
   const handleRemoveItem = (variantId: string) => {
     removeFromCart(variantId)
   }
@@ -59,8 +60,9 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
   return (
     <div className="mt-4 space-y-4 w-full">
       {cart.map((item) => {
-        const product = cartProducts[item.productId]
-        const variant = product?.variants.find((v) => v.id === item.variantId)
+        // const product = cartProducts[item.productId]
+        // const variant = product?.variants.find((v) => v.id === item.variantId)
+        const product = item.product
 
         return (
           <div
@@ -113,16 +115,16 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
                               : " hidden md:inline-flex text-neutral-400 text-sm"
                           }`}
                         >
-                          {formatCurrency(variant?.price || 0, "GHS")}
+                          {formatCurrency(item?.price || 0, "GHS")}
                         </p>
                       )}{" "}
-                      {variant?.weight && (
+                      {item?.weight && (
                         <>
                           <p className=" text-neutral-400 text-sm">
-                            / {variant.weight}
+                            / {item.weight}
                           </p>
                           <p className=" text-neutral-400 text-sm">
-                            {variant?.unit}
+                            {item?.unit}
                           </p>
                         </>
                       )}

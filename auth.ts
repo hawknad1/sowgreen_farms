@@ -69,6 +69,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
     }),
   ],
+  trustHost: true,
   callbacks: {
     async jwt({ token, user }) {
       // When user logs in, add the role to the token
