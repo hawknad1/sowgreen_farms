@@ -61,7 +61,14 @@ const CustomerDataTable = () => {
         })
         if (res.ok) {
           const address = await res.json()
-          setCustomerDetails(address) // Set the customer details
+
+          const uniqueCustomers = address.filter(
+            ((seen) => (customer: any) => {
+              const uniqueKey = customer.email || customer.phone // Use email or phone as the key
+              return uniqueKey && !seen.has(uniqueKey) && seen.add(uniqueKey)
+            })(new Set())
+          )
+          setCustomerDetails(uniqueCustomers) // Set the customer details
           setIsLoading(false) // Stop loading
         }
       } catch (error) {
@@ -95,9 +102,9 @@ const CustomerDataTable = () => {
       <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
         <Input
           placeholder="Filter customers..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
           aria-label="Filter customers"

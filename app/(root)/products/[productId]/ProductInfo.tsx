@@ -71,9 +71,11 @@ const ProductInfo: React.FC<{ product: Product }> = ({ product }) => {
       {/* Variant Selector */}
       <div className="flex flex-col gap-y-7">
         {product.variants.length > 1 && (
-          <div className="flex flex-col w-full ">
+          <div className="flex flex-col w-full">
             <div className="flex items-center w-full gap-x-2.5">
-              <h2 className="font-medium">Weight</h2>
+              <h2 className="font-medium">
+                {product.variants.some((v) => v.weight) ? "Weight" : "Price"}
+              </h2>
               <Select
                 onValueChange={(value) => {
                   const variant = product.variants.find((v) => v.id === value)
@@ -91,7 +93,9 @@ const ProductInfo: React.FC<{ product: Product }> = ({ product }) => {
                       key={variant.id}
                       value={variant.id}
                     >
-                      {`${variant.weight} ${variant.unit}`}
+                      {variant.weight && variant.unit
+                        ? `${variant.weight} ${variant.unit}`
+                        : formatCurrency(variant.price, "GHS")}
                     </SelectItem>
                   ))}
                 </SelectContent>

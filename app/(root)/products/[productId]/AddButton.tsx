@@ -36,7 +36,7 @@ const AddButton: React.FC<AddButtonProps> = ({
   return (
     <div className="py-2 lg:px-4 px-2 border border-l-slate-200 rounded-full flex items-center justify-between w-28 min-w-32 lg:w-36">
       <button
-        className="cursor-pointer border border-slate-300 rounded-full h-7 w-7 text-xl disabled:cursor-not-allowed disabled:opacity-20"
+        className="cursor-pointer border flex justify-center items-center border-slate-300 rounded-full h-7 w-7 text-xl disabled:cursor-not-allowed disabled:opacity-20"
         onClick={(e) => {
           e.preventDefault()
           handleQuantity("d")
@@ -47,7 +47,7 @@ const AddButton: React.FC<AddButtonProps> = ({
       </button>
       {quantity}
       <button
-        className="cursor-pointer border border-slate-300 rounded-full h-7 w-7 text-xl disabled:cursor-not-allowed disabled:opacity-20"
+        className="cursor-pointer border flex justify-center items-center border-slate-300 rounded-full h-7 w-7 text-xl disabled:cursor-not-allowed disabled:opacity-20"
         onClick={(e) => {
           e.preventDefault()
           handleQuantity("i")

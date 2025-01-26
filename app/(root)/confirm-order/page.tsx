@@ -50,6 +50,7 @@ const ConfirmOrderPage = () => {
   const [result, setResult] = useState<PaymentInfo>(null)
   // const [paymentAction, setPaymentAction] = useState<string | null>(null)
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+  const setCartProducts = useCartStore((state) => state.setCartProducts)
   const [isConfirming, setIsConfirming] = useState(false)
 
   const session = useSession()
@@ -309,10 +310,10 @@ const ConfirmOrderPage = () => {
   }
 
   return (
-    <div className="container mx-auto min-h-screen p-8 bg-gray-100">
-      <div className="mx-auto bg-white shadow-md rounded-lg p-6 max-w-4xl">
-        <h2 className="text-2xl font-bold mb-6 text-center">
-          Confirm Order & Pay
+    <div className="container mx-auto min-h-screen p-8">
+      <div className="mx-auto bg-white border border-neutral-500/25 rounded-xl p-6 max-w-5xl">
+        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+          Confirm Order
         </h2>
         <InfoCard data={dataProps} />
 
@@ -324,7 +325,7 @@ const ConfirmOrderPage = () => {
           <Button
             disabled={isConfirming}
             onClick={() => router.push("/basket")}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
           >
             Edit Order
           </Button>
@@ -336,16 +337,27 @@ const ConfirmOrderPage = () => {
               })
             }
             disabled={isConfirming}
+            className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all"
           >
             {isConfirming ? (
-              <span className="loading loading-spinner loading-md">
-                Processing order
+              <span className="flex items-center gap-2">
+                <span className="loading loading-spinner loading-md"></span>
+                Processing order...
               </span>
             ) : (
               "Place Order"
             )}
           </Button>
-          {/* {proceedToPaystack ? (
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ConfirmOrderPage
+
+{
+  /* {proceedToPaystack ? (
             <PaystackButton
               {...componentProps}
               className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
@@ -362,11 +374,5 @@ const ConfirmOrderPage = () => {
             >
               Pay with Balance
             </Button>
-          )} */}
-        </div>
-      </div>
-    </div>
-  )
+          )} */
 }
-
-export default ConfirmOrderPage

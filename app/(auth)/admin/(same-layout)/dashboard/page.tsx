@@ -11,6 +11,13 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [customers, setCustomers] = useState([])
 
+  const uniqueCustomers = customers.filter(
+    ((seen) => (customer) => {
+      const uniqueKey = customer.email || customer.phone // Use email or phone as the key
+      return uniqueKey && !seen.has(uniqueKey) && seen.add(uniqueKey)
+    })(new Set())
+  )
+
   useEffect(() => {
     const OrdersData = async () => {
       try {
@@ -60,6 +67,7 @@ const Dashboard = () => {
 
         if (res.ok) {
           const customers = await res.json()
+
           setCustomers(customers)
           setLoading(false)
         }
@@ -76,7 +84,7 @@ const Dashboard = () => {
         orders={orders}
         products={products}
         loading={loading}
-        customers={customers}
+        customers={uniqueCustomers}
       />
       <OrdersDataTable order={orders} loading={loading} />
     </div>

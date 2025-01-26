@@ -116,6 +116,7 @@ type CartState = {
   clearCart: () => void
   cartProducts: Record<string, Product>
   setCartProducts: (products: Record<string, Product>) => void
+  updateCartTotals: () => void
 }
 
 type DispatchRidersStore = {
@@ -142,98 +143,191 @@ export const useDispatchRidersStore = create<DispatchRidersStore>((set) => ({
   },
 }))
 
+// export const useCartStore = create<CartState>()(
+//   persist(
+//     (set, get) => ({
+//       selectedVariant: null,
+//       quantity: 1,
+//       cart: [],
+//       cartTotal: 0, // Initialize total to 0
+//       cartItemCount: 0, // Initialize count to 0
+//       cartProducts: {},
+
+//       setSelectedVariant: (variant) =>
+//         set(() => ({ selectedVariant: variant })),
+//       setQuantity: (quantity) => set(() => ({ quantity })),
+
+//       addToCart: (item) =>
+//         set((state) => {
+//           const updatedCart = [...state.cart, item]
+//           const updatedTotal = updatedCart.reduce(
+//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
+//             0
+//           )
+//           const updatedItemCount = updatedCart.reduce(
+//             (acc, cartItem) => acc + cartItem.quantity,
+//             0
+//           )
+//           return {
+//             cart: updatedCart,
+//             cartTotal: updatedTotal,
+//             cartItemCount: updatedItemCount,
+//           }
+//         }),
+
+//       updateCartItem: (variantId, quantity) =>
+//         set((state) => {
+//           const updatedCart = state.cart.map((item) =>
+//             item.variantId === variantId
+//               ? { ...item, quantity: Math.max(0, item.quantity + quantity) }
+//               : item
+//           )
+//           const updatedTotal = updatedCart.reduce(
+//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
+//             0
+//           )
+//           const updatedItemCount = updatedCart.reduce(
+//             (acc, cartItem) => acc + cartItem.quantity,
+//             0
+//           )
+//           return {
+//             cart: updatedCart,
+//             cartTotal: updatedTotal,
+//             cartItemCount: updatedItemCount,
+//           }
+//         }),
+
+//       removeFromCart: (variantId) =>
+//         set((state) => {
+//           const updatedCart = state.cart.filter(
+//             (item) => item.variantId !== variantId
+//           )
+//           const updatedTotal = updatedCart.reduce(
+//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
+//             0
+//           )
+//           const updatedItemCount = updatedCart.reduce(
+//             (acc, cartItem) => acc + cartItem.quantity,
+//             0
+//           )
+//           return {
+//             cart: updatedCart,
+//             cartTotal: updatedTotal,
+//             cartItemCount: updatedItemCount,
+//           }
+//         }),
+
+//       clearCart: () =>
+//         set(() => ({
+//           cart: [],
+//           cartTotal: 0, // Reset total to 0 when cart is cleared
+//           cartItemCount: 0, // Reset item count to 0
+//         })),
+//       setCartProducts: (products) =>
+//         set((state) => ({
+//           cartProducts: { ...state.cartProducts, ...products },
+//         })),
+//     }),
+//     {
+//       name: "cart-storage", // Name of the localStorage key
+//       partialize: (state) => ({
+//         cart: state.cart,
+//         cartTotal: state.cartTotal,
+//         cartItemCount: state.cartItemCount, // Persist cart item count
+//       }),
+//     }
+//   )
+// )
+
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       selectedVariant: null,
       quantity: 1,
       cart: [],
-      cartTotal: 0, // Initialize total to 0
-      cartItemCount: 0, // Initialize count to 0
+      cartTotal: 0,
+      cartItemCount: 0,
       cartProducts: {},
 
-      setSelectedVariant: (variant) =>
-        set(() => ({ selectedVariant: variant })),
-      setQuantity: (quantity) => set(() => ({ quantity })),
+      // Actions
+      setSelectedVariant: (variant) => set({ selectedVariant: variant }),
+      setQuantity: (quantity) => set({ quantity }),
 
-      addToCart: (item) =>
+      addToCart: (item) => {
         set((state) => {
-          const updatedCart = [...state.cart, item]
-          const updatedTotal = updatedCart.reduce(
-            (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-            0
+          const existingItem = state.cart.find(
+            (i) => i.variantId === item.variantId
           )
-          const updatedItemCount = updatedCart.reduce(
-            (acc, cartItem) => acc + cartItem.quantity,
-            0
-          )
-          return {
-            cart: updatedCart,
-            cartTotal: updatedTotal,
-            cartItemCount: updatedItemCount,
-          }
-        }),
 
-      updateCartItem: (variantId, quantity) =>
-        set((state) => {
-          const updatedCart = state.cart.map((item) =>
-            item.variantId === variantId
-              ? { ...item, quantity: Math.max(0, item.quantity + quantity) }
-              : item
-          )
-          const updatedTotal = updatedCart.reduce(
-            (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-            0
-          )
-          const updatedItemCount = updatedCart.reduce(
-            (acc, cartItem) => acc + cartItem.quantity,
-            0
-          )
-          return {
-            cart: updatedCart,
-            cartTotal: updatedTotal,
-            cartItemCount: updatedItemCount,
+          // Update quantity if item exists
+          if (existingItem) {
+            return {
+              cart: state.cart.map((i) =>
+                i.variantId === item.variantId
+                  ? { ...i, quantity: i.quantity + item.quantity }
+                  : i
+              ),
+            }
           }
-        }),
 
-      removeFromCart: (variantId) =>
-        set((state) => {
-          const updatedCart = state.cart.filter(
-            (item) => item.variantId !== variantId
-          )
-          const updatedTotal = updatedCart.reduce(
-            (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-            0
-          )
-          const updatedItemCount = updatedCart.reduce(
-            (acc, cartItem) => acc + cartItem.quantity,
-            0
-          )
-          return {
-            cart: updatedCart,
-            cartTotal: updatedTotal,
-            cartItemCount: updatedItemCount,
-          }
-        }),
+          // Add new item
+          return { cart: [...state.cart, item] }
+        })
+        get().updateCartTotals()
+      },
 
-      clearCart: () =>
-        set(() => ({
-          cart: [],
-          cartTotal: 0, // Reset total to 0 when cart is cleared
-          cartItemCount: 0, // Reset item count to 0
-        })),
-      setCartProducts: (products) =>
+      updateCartItem: (variantId, quantity) => {
+        set((state) => ({
+          cart: state.cart
+            .map((item) =>
+              item.variantId === variantId
+                ? { ...item, quantity: Math.max(0, item.quantity + quantity) }
+                : item
+            )
+            .filter((item) => item.quantity > 0), // Remove items with 0 quantity
+        }))
+        get().updateCartTotals()
+      },
+
+      removeFromCart: (variantId) => {
+        set((state) => ({
+          cart: state.cart.filter((item) => item.variantId !== variantId),
+        }))
+        get().updateCartTotals()
+      },
+
+      clearCart: () => set({ cart: [], cartTotal: 0, cartItemCount: 0 }),
+
+      setCartProducts: (products) => {
         set((state) => ({
           cartProducts: { ...state.cartProducts, ...products },
-        })),
+        }))
+      },
+
+      // Helper to update totals
+      updateCartTotals: () => {
+        const { cart } = get()
+        const cartTotal = cart.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        )
+        const cartItemCount = cart.reduce((acc, item) => acc + item.quantity, 0)
+        set({ cartTotal, cartItemCount })
+      },
     }),
     {
-      name: "cart-storage", // Name of the localStorage key
+      name: "cart-storage",
       partialize: (state) => ({
         cart: state.cart,
+        cartProducts: state.cartProducts, // Added cartProducts to persistence
         cartTotal: state.cartTotal,
-        cartItemCount: state.cartItemCount, // Persist cart item count
+        cartItemCount: state.cartItemCount,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state.updateCartTotals()
+        }
+      },
     }
   )
 )

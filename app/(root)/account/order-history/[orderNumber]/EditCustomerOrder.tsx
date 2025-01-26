@@ -450,6 +450,7 @@ const EditCustomerOrder = ({
                 <Select
                   onValueChange={(value) => {
                     const isAvailable = value === "instock"
+                    console.log(orderDetails, "orderdetails")
                     setOrderDetails((prev) => ({
                       ...prev,
                       products: prev.products.map((prod) =>

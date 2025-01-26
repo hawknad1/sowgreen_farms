@@ -19,50 +19,48 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
 
   const { cart, removeFromCart, setCartProducts, cartProducts } = useCartStore()
 
-  const fetchProduct = async (id: string) => {
-    try {
-      const response = await fetch(`/api/products/${id}`)
-      if (!response.ok)
-        throw new Error(`Failed to fetch product with id: ${id}`)
-      return await response.json()
-    } catch (error) {
-      console.error("Error fetching product:", error)
-      return null
-    }
-  }
+  // const fetchProduct = async (id: string) => {
+  //   try {
+  //     const response = await fetch(`/api/products/${id}`)
+  //     if (!response.ok)
+  //       throw new Error(`Failed to fetch product with id: ${id}`)
+  //     return await response.json()
+  //   } catch (error) {
+  //     console.error("Error fetching product:", error)
+  //     return null
+  //   }
+  // }
 
-  const fetchProducts = async () => {
-    setLoading(true)
-    const fetchedProducts: { [id: string]: Product } = {}
-    for (const item of cart) {
-      if (!cartProducts[item.productId]) {
-        const product = await fetchProduct(item.productId)
-        if (product) {
-          fetchedProducts[item.productId] = product
-        }
-      }
-    }
-    setCartProducts(fetchedProducts)
-    setLoading(false)
-  }
+  // const fetchProducts = async () => {
+  //   setLoading(true)
+  //   const fetchedProducts: { [id: string]: Product } = {}
+  //   for (const item of cart) {
+  //     if (!cartProducts[item.productId]) {
+  //       const product = await fetchProduct(item.productId)
+  //       if (product) {
+  //         fetchedProducts[item.productId] = product
+  //       }
+  //     }
+  //   }
+  //   setCartProducts(fetchedProducts)
+  //   setLoading(false)
+  // }
+
+  // useEffect(() => {
+  //   if (cart.length > 0) {
+  //     fetchProducts()
+  //   }
+  // }, [cart])
 
   const handleRemoveItem = (variantId: string) => {
     removeFromCart(variantId)
   }
-
-  useEffect(() => {
-    if (cart.length > 0) {
-      fetchProducts()
-    }
-  }, [cart])
 
   return (
     <div className="mt-4 space-y-4 w-full">
       {cart.map((item) => {
         const product = cartProducts[item.productId]
         const variant = product?.variants.find((v) => v.id === item.variantId)
-        console.log(variant, "variant")
-        console.log(product, "variant")
 
         return (
           <div
@@ -118,12 +116,16 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
                           {formatCurrency(variant?.price || 0, "GHS")}
                         </p>
                       )}{" "}
-                      <p className=" text-neutral-400 text-sm">
-                        / {variant?.weight}
-                      </p>
-                      <p className=" text-neutral-400 text-sm">
-                        {variant?.unit}
-                      </p>
+                      {variant?.weight && (
+                        <>
+                          <p className=" text-neutral-400 text-sm">
+                            / {variant.weight}
+                          </p>
+                          <p className=" text-neutral-400 text-sm">
+                            {variant?.unit}
+                          </p>
+                        </>
+                      )}
                     </div>
                   </>
                 )}

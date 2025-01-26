@@ -27,9 +27,13 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   //   orders?.dispatchRider?.charAt(0).toUpperCase() +
   //   orders?.dispatchRider?.slice(1)
 
-  const fistName = orders?.dispatchRider?.firstName
+  const firstName = orders?.dispatchRider?.firstName
   const lastName = orders?.dispatchRider?.lastName
-  const rider = `${fistName} ${lastName}`
+  const rider =
+    firstName && lastName ? `${firstName} ${lastName}` : "Not Assigned"
+
+  console.log(orders, "orders---ORDERS")
+  console.log(rider, "RIDER---RIDER")
 
   return (
     <div className="p-4">
@@ -67,8 +71,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                   </span>
                 </p>
                 <p className="font-semibold text-neutral-600">
-                  Dispatch Rider:{" "}
-                  <span className="text-black">{rider || "Not assigned"}</span>
+                  Dispatch Rider: <span className="text-black">{rider}</span>
                 </p>
               </div>
 

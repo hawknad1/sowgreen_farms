@@ -9,6 +9,7 @@ import { OrderInfo } from "./OrderInfo"
 import { ShippingAddress } from "./ShippingAddress"
 import { formatCurrency } from "@/lib/utils"
 import { Product } from "@/types"
+import { CircleCheckBigIcon } from "lucide-react"
 
 const ThankYouPage = () => {
   const [newProduct, setNewProduct] = useState<Product[]>([])
@@ -66,7 +67,10 @@ const ThankYouPage = () => {
     <div className="flex flex-col items-center w-full p-12 bg-gray-100 min-h-screen">
       <div className="flex flex-col items-center gap-y-2 mb-3">
         <p className="font-semibold text-sm text-neutral-500/95">THANK YOU</p>
-        <h3 className="text-2xl font-bold">Your order is confirmed</h3>
+        <div className="flex items-center w-full space-x-2">
+          <CircleCheckBigIcon className="h-6 w-6 text-green-700 " />
+          <h3 className="text-2xl font-bold">Your Order Has Been Received</h3>
+        </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-[950px] w-full">
         {/* Left Section: Order Info */}
