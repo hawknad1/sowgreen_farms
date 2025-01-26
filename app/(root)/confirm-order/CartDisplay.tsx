@@ -118,7 +118,7 @@ const CartDisplay = () => {
             return (
               <div
                 key={item.variantId}
-                className="flex items-center justify-between border p-4 rounded-lg hover:shadow-md transition-shadow"
+                className="flex items-center justify-between border p-4 rounded-lg "
               >
                 <div className="flex items-center space-x-4">
                   <Image

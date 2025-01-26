@@ -47,7 +47,7 @@ export function CheckoutForm() {
   const [selectedDeliveryDate, setSelectedDeliveryDate] = useState("")
   const [selectedCity, setSelectedCity] = useState("")
   const [selectedRegion, setSelectedRegion] = useState("")
-  const [filteredCities, setFilteredCities] = useState([])
+  const [filteredCities, setFilteredCities] = useState<CitiesWithFees[]>([])
   const [list, setList] = useState<CitiesWithFees[]>([])
 
   const session = useSession()
@@ -58,7 +58,7 @@ export function CheckoutForm() {
 
   const user = session?.data?.user as ExtendedUser
 
-  // Fetch cities data
+  // Fetch cities data and restore form data
   useEffect(() => {
     async function getCityList() {
       try {
@@ -71,7 +71,7 @@ export function CheckoutForm() {
           const cityList = await res.json()
           setList(cityList)
 
-          // Restore form data from localStorage after fetching cities
+          // Restore form data from localStorage
           const savedData = JSON.parse(
             localStorage.getItem("checkoutForm") || "{}"
           )
@@ -88,10 +88,18 @@ export function CheckoutForm() {
             if (savedData.city) {
               setSelectedCity(savedData.city)
             }
-          }
 
-          // Reset the form with the saved data
-          form.reset({ ...form.getValues(), ...savedData })
+            // Reset the form with the saved data
+            form.reset({
+              ...form.getValues(),
+              ...savedData,
+            })
+
+            // Recalculate delivery fee after city is set
+            if (savedData.city && cityDeliveryPrices[savedData.city]) {
+              setDeliveryFee(cityDeliveryPrices[savedData.city])
+            }
+          }
         }
       } catch (error) {
         console.log(error)
@@ -101,53 +109,7 @@ export function CheckoutForm() {
     getCityList()
   }, [])
 
-  // useEffect(() => {
-  //   async function getCityList() {
-  //     try {
-  //       const res = await fetch("/api/cities", {
-  //         method: "GET",
-  //         cache: "no-store",
-  //       })
-
-  //       if (res.ok) {
-  //         const cityList = await res.json()
-  //         setList(cityList)
-
-  //         // Restore form data from localStorage
-  //         const savedData = JSON.parse(
-  //           localStorage.getItem("checkoutForm") || "{}"
-  //         )
-
-  //         if (savedData.region) {
-  //           // Filter cities for the saved region
-  //           const filtered = cityList.filter(
-  //             (city: any) => city.region === savedData.region
-  //           )
-  //           setFilteredCities(filtered)
-
-  //           // Set the selected region and city
-  //           setSelectedRegion(savedData.region)
-  //           if (savedData.city) {
-  //             setSelectedCity(savedData.city)
-  //           }
-
-  //           // Reset the form with the saved data
-  //           form.reset({
-  //             ...form.getValues(),
-  //             region: savedData.region,
-  //             city: savedData.city,
-  //           })
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-
-  //   getCityList()
-  // }, [])
-
-  // Initialize form
+  // Initialize form with default values
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
     defaultValues: {
