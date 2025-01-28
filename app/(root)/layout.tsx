@@ -39,7 +39,7 @@ export default async function RootLayout({
   const session = await auth()
   return (
     <html lang="en">
-      <SessionProvider>
+      <SessionProvider session={session}>
         <body className={jost.className}>
           <header className="border-b sticky top-0 z-50 bg-white w-full">
             <Navbar />

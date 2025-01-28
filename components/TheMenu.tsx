@@ -90,7 +90,7 @@ function TheMenu() {
                       className="flex items-center space-x-4 p-1.5 rounded-md transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground"
                     >
                       {/* Product Image */}
-                      <div className="flex-shrink-0 h-14 w-14  bg-gray-200 rounded-md overflow-hidden">
+                      <div className="flex-shrink-0 h-14 w-14 bg-gray-200 rounded-md overflow-hidden">
                         <Image
                           src={
                             product.imageUrl || product?.images?.[0]?.url || ""

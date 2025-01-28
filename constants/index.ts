@@ -353,8 +353,14 @@ export const deliveryMethods = [
     label: "Schedule a pickup",
     value: "schedule-pickup",
     pickupOptions: [
-      { label: "Wednesday - DZORWULU - 11AM-5PM" },
-      { label: "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM" },
+      {
+        label: "Wednesday - DZORWULU - 11AM-5PM",
+        date: formatDeliveryDate(wednesday),
+      },
+      {
+        label: "SATURDAY - WEB DuBOIS CENTER - 10AM-3PM",
+        date: formatDeliveryDate(saturday),
+      },
     ],
   },
 ]

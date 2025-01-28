@@ -187,6 +187,8 @@ export function CheckoutForm() {
     router.push(`/confirm-order?${query}`)
   }
 
+  console.log(selectedDeliveryDate, "selectedDeliveryDate")
+
   return (
     <Form {...form}>
       <form

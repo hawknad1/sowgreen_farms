@@ -52,7 +52,6 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
   //   }
   // }, [cart])
 
-  console.log(cart, "CART")
   const handleRemoveItem = (variantId: string) => {
     removeFromCart(variantId)
   }

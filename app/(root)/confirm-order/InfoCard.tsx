@@ -131,9 +131,9 @@ const InfoCard = ({ data }: InfoCardProps) => {
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
       case "DZORWULU":
-        return "Pick Up - DZORWULU"
+        return "PICK UP - DZORWULU"
       case "WEB DuBOIS CENTER":
-        return `Pick Up - WEB DuBOIS CENTER`
+        return `PICK UP - WEB DuBOIS CENTER`
       case `Home Delivery - ${deliveryMethod}`:
         return `Home Delivery - ${deliveryMethod}`
       default:

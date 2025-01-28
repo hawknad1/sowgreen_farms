@@ -37,10 +37,14 @@ const EditOrderDetails = ({ order }: OrderProps) => {
   const [isSaving, setIsSaving] = useState(false)
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
     order?.shippingAddress?.deliveryMethod || ""
-  ) // Initialize with order's delivery method
+  )
+
+  // Initialize with order's delivery method
   const [selectedCity, setSelectedCity] = useState(
     order?.shippingAddress?.city || ""
-  ) // Initialize with order's city
+  )
+
+  // Initialize with order's city
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
 

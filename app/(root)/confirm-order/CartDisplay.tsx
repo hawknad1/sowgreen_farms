@@ -105,10 +105,14 @@ const CartDisplay = () => {
       <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <div className="space-y-4">
           {cart.map((item) => {
-            const product = cartProducts[item.productId]
-            const variant = product?.variants?.find(
-              (v) => v.id === item.variantId
-            )
+            // const product = cartProducts[item.productId]
+            // const variant = product?.variants?.find(
+            //   (v) => v.id === item.variantId
+            // )
+
+            const product = item.product
+
+            console.log(item, "item")
 
             if (!product) {
               console.error("Missing product data for:", item.productId)
@@ -134,11 +138,11 @@ const CartDisplay = () => {
                     </p>
                     <div className="text-sm text-gray-600/65 flex items-center">
                       <p>
-                        {formatCurrency(variant?.price || 0, "GHS")}
-                        {variant && (
+                        {formatCurrency(item?.price || 0, "GHS")}
+                        {item && (
                           <span className="text-sm text-neutral-400">
-                            {` / ${variant?.weight}`}
-                            {variant?.unit}
+                            {` / ${item?.weight}`}
+                            {item?.unit}
                           </span>
                         )}
                       </p>

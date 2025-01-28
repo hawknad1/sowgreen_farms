@@ -70,6 +70,7 @@ interface OrderDataState {
     shippingAddress: Record<string, any>
     orderNumber: string
     deliveryMethod: string
+    deliveryDate: string
     referenceNumber: string
     total: number
   } | null

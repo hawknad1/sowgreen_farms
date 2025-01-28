@@ -152,7 +152,12 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                                   }`}
                                 >
                                   <FormControl>
-                                    <RadioGroupItem value={pickupOption} />
+                                    <RadioGroupItem
+                                      value={pickupOption}
+                                      onClick={() =>
+                                        setSelectedDeliveryDate(date)
+                                      }
+                                    />
                                   </FormControl>
                                   <FormLabel className="flex flex-col">
                                     <span>{pickupOption}</span>

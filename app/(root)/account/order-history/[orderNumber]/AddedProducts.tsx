@@ -60,7 +60,12 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
     setOrderItems((prev) =>
       prev.map((item) =>
         item.productId === productId
-          ? { ...item, price: selectedVariant.price }
+          ? {
+              ...item,
+              price: selectedVariant.price,
+              weight: selectedVariant.weight,
+              unit: selectedVariant.unit,
+            }
           : item
       )
     )
@@ -97,6 +102,7 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                         const selectedVariant = item.product.variants.find(
                           (variant) => variant.weight.toString() === value
                         )
+                        console.log(selectedVariant, "selectedVariant")
                         if (selectedVariant) {
                           handleVariantChange(item.productId, selectedVariant)
                         }
@@ -111,7 +117,7 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                           {item.product.variants.map((variant, index) => (
                             <SelectItem
                               key={index}
-                              value={variant.weight.toString()}
+                              value={variant?.weight?.toString()}
                             >
                               {`${formatCurrency(variant.price, "GHS")} / ${
                                 variant.weight < 1
@@ -126,9 +132,7 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                   ) : item.product.variants &&
                     item.product.variants.length === 1 ? (
                     <p className="text-sm text-neutral-600">
-                      {`${formatCurrency(item.price, "GHS")} / ${
-                        item.product.variants[0].weight
-                      } ${item.product.variants[0].unit}`}
+                      {`${formatCurrency(item.price, "GHS")} `}
                     </p>
                   ) : (
                     <p className="text-sm">
