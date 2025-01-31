@@ -11,9 +11,10 @@ import { useRouter } from "next/navigation"
 
 interface BasketCartItemsProps {
   isCheckout?: boolean
+  isCartIcon?: boolean
 }
 
-const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
+const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
@@ -66,7 +67,7 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
         return (
           <div
             key={item.variantId}
-            className={`my-2  border w-full ${
+            className={`my-2 border w-full ${
               isCheckout
                 ? "p-1.5 w-full flex items-center"
                 : "p-2.5 flex gap-x-2"
@@ -92,14 +93,12 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
               />
               <div className="">
                 {isCheckout ? (
-                  <div className="">
-                    <p
-                      className="line-clamp-2 font-semibold"
-                      onClick={() => router.push(`/products/${product.id}`)}
-                    >
-                      {product?.title}
-                    </p>
-                  </div>
+                  <p
+                    className="line-clamp-2 font-semibold max-w-[120px]"
+                    onClick={() => router.push(`/products/${product.id}`)}
+                  >
+                    {product?.title}
+                  </p>
                 ) : (
                   <>
                     <p className="line-clamp-2 font-semibold">
@@ -143,6 +142,7 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
                 product={product}
                 variantId={item.variantId}
                 isCheckout={true}
+                isCartIcon={true}
               />
             </div>
             {/* subtotal -- remove cart */}

@@ -95,6 +95,7 @@ const config = {
   plugins: [
     require("tailwindcss-animate"),
     require("tailwind-scrollbar-hide"),
+    require("tailwind-scrollbar"),
     require("daisyui"),
   ],
 } satisfies Config

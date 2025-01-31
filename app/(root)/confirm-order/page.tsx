@@ -123,10 +123,6 @@ const ConfirmOrderPage = () => {
     deliveryMethod: formData.deliveryMethod.split("-")[0],
   }
 
-  console.log(shippingInfo, "shippingInfo")
-
-  console.log(newFormData, "newFormData~~~~~$$$$$$$")
-
   // Order number generator
   const orderNumber = generateOrderNumber()
 
@@ -258,12 +254,36 @@ const ConfirmOrderPage = () => {
       if (!email.ok) throw new Error("Email API failed")
 
       // Update purchase counts for products
-      const productIds = taxedOrders.map((product) => product.item?.id)
+      // const productIds = taxedOrders.map((product) => product.item?.id)
+      // const productIds = transformedCart.map(
+      //   (product) => product.item?.productId
+      // )
+
+      // const productQuantity = transformedCart.map(
+      //   (product) => product.item?.quantity
+      // )
+
+      // await fetch("/api/products/updatePurchaseCount", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ productIds, productQuantity }),
+      // })
+
+      const productIds = transformedCart.map(
+        (product) => product.item.productId
+      )
+      const productQuantity = transformedCart.map(
+        (product) => product.item.quantity
+      )
+
       await fetch("/api/products/updatePurchaseCount", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productIds }),
+        body: JSON.stringify({ products: transformedCart }),
       })
+
+      console.log(productIds, "productIdsIDDD")
+      // console.log(newProductIds, "newProductIds")
 
       // sendWhatsAppMessage(ordersData)
       sendOrderReceived(ordersData)
@@ -285,6 +305,7 @@ const ConfirmOrderPage = () => {
       // })
 
       // Update product quantities
+      console.log(ordersData.products, "ORDERS DATA PRODUCTS")
       const quantityResponse = await fetch("/api/products/updateQuantity", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

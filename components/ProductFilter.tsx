@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React from "react"
 import PaginationButtons from "./sort/PaginationButtons"
 import { useCategoryState } from "@/hooks/state"
-import { Product } from "@/types"
 
 const ProductFilter = () => {
   const { selected } = useCategoryState()

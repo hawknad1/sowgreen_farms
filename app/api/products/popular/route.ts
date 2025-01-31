@@ -5,6 +5,7 @@ import { NextResponse } from "next/server"
 export async function GET() {
   try {
     const popularProducts = await prisma.product.findMany({
+      include: { variants: true, productOrders: true },
       orderBy: { purchaseCount: "desc" },
       // take: 10, // Adjust the number as needed
     })

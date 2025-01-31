@@ -34,8 +34,8 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
   if (loading) return <LoadProductDetail />
 
   return (
-    <div>
-      <div className="px-4 mt-7 mb-7 md:px-8 lg:px-16 xl:px-32 2xl:px-64 relative flex flex-col lg:flex-row gap-16">
+    <div className="px-4  md:px-8 lg:px-16 xl:px-32 2xl:px-64">
+      <div className="mt-7 mb-7 relative flex flex-col lg:flex-row gap-16">
         {/* Images */}
         <div className="w-full lg:w-1/2 lg:sticky top-20 h-max">
           <ProductImages product={product} />
@@ -44,6 +44,9 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
         <ProductInfo product={product} />
       </div>
       {/* <CustomersWants /> */}
+      <div className="mt-24">
+        <CustomersWants />
+      </div>
     </div>
   )
 }

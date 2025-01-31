@@ -9,12 +9,14 @@ type AddButtonProps = {
   }
   variantId: string
   isCheckout?: boolean
+  isCartIcon?: boolean
 }
 
 const AddButton: React.FC<AddButtonProps> = ({
   product,
   variantId,
   isCheckout,
+  isCartIcon,
 }) => {
   const { cart, updateCartItem, removeFromCart } = useCartStore()
 
@@ -34,7 +36,11 @@ const AddButton: React.FC<AddButtonProps> = ({
   }
 
   return (
-    <div className="py-2 lg:px-4 px-2 border border-l-slate-200 rounded-full flex items-center justify-between w-28 min-w-32 lg:w-36">
+    <div
+      className={`${
+        isCheckout ? "py-1 px-1 w-28 " : "py-2 lg:px-4 px-2 lg:w-32"
+      }  border border-l-slate-200 rounded-full flex items-center justify-between `}
+    >
       <button
         className="cursor-pointer border flex justify-center items-center border-slate-300 rounded-full h-7 w-7 text-xl disabled:cursor-not-allowed disabled:opacity-20"
         onClick={(e) => {

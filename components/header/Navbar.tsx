@@ -10,6 +10,7 @@ import SignUpButton from "../buttons/SignUpButton"
 import { useSession } from "next-auth/react"
 import { Skeleton } from "../ui/skeleton"
 import UserButton from "./UserButton"
+import { CartPopover } from "../CartPopover"
 
 const Navbar = () => {
   const { data: session, status } = useSession()
@@ -50,7 +51,8 @@ const Navbar = () => {
                 <SignUpButton />
               </div>
             )}
-            <ShopBasketIcon />
+            <CartPopover />
+            {/* <ShopBasketIcon /> */}
             <SideSheet />
           </div>
         </div>

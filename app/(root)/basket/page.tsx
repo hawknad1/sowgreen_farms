@@ -10,6 +10,7 @@ import CartBasket from "@/components/basket/CartBasket"
 import { ShoppingCartIcon } from "@heroicons/react/24/outline"
 import { useRouter } from "next/navigation"
 import { useCartStore, useDeliveryStore } from "@/store"
+import { Button } from "@/components/ui/button"
 
 const BasketPage = () => {
   const clearCart = useCartStore((state) => state.clearCart)
@@ -43,12 +44,19 @@ const BasketPage = () => {
 
       <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-8 lg:gap-x-20">
         {/* Left Section */}
-        <div className="w-full lg:col-span-2 col-span-1">
-          <CartBasket />
+        <div className="w-full lg:col-span-2 col-span-1 max-h-screen ">
+          <div className="overflow-y-scroll scrollbar-sowgreen">
+            <CartBasket />
+          </div>
+          <div className="mt-4 mb-4">
+            <Button className="w-fit" variant="destructive" onClick={clearCart}>
+              Clear basket
+            </Button>
+          </div>
         </div>
 
         {/* Right Section */}
-        <div className="w-full grid gap-3 col-span-1">
+        <div className="w-full grid gap-3 mt-12 md:mt-0 col-span-1">
           <CheckoutBox className="hidden lg:inline-flex ">
             <Coupon />
           </CheckoutBox>

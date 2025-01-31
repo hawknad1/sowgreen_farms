@@ -23,9 +23,9 @@ const CartBasket = () => {
         )}
       </>
 
-      <Button className="w-fit" variant="destructive" onClick={clearCart}>
+      {/* <Button className="w-fit" variant="destructive" onClick={clearCart}>
         Clear basket
-      </Button>
+      </Button> */}
     </div>
   )
 }

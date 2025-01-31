@@ -31,6 +31,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
     ))
   }
 
+  // Primary and secondary image URLs
+  const primaryImage = data?.imageUrl || data.images[0]?.url
+  const secondaryImage = data?.images?.length > 1 ? data.images[1]?.url : null
+
   const handleCardClick = () => {
     router.push(`/products/${data.id}`)
   }
@@ -48,11 +52,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           </Badge>
         ) : null}
       </div>
-      <div className="flex flex-col h-[270px] w-64">
-        <div className="relative w-full h-[170px]">
-          {/* Primary Image */}
+
+      <div className="flex flex-col justify-between w-[280px] h-[270px] sm:w-[260px] border border-neutral-400/25 rounded-lg overflow-hidden">
+        {/* Image Container */}
+        <div className="w-full h-full bg-gray-50 relative">
           <Image
-            src={data?.imageUrl || data.images[0]?.url}
+            src={primaryImage}
             alt={data.title}
             width={100}
             height={100}
@@ -65,7 +70,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           {/* Secondary Image - Only if there are multiple images */}
           {data?.images?.length > 1 && (
             <Image
-              src={data?.images[1]?.url}
+              src={secondaryImage}
               alt={data.title}
               width={100}
               height={100}
@@ -74,20 +79,16 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
           )}
         </div>
 
-        <div className="border border-neutral-300 rounded-b-md ">
-          {/* Product Info */}
+        {/* Product Info */}
+        <div className="w-full h-[45%] border border-neutral-400/30">
           <div className="self-start w-full p-2.5">
             <p className="text-[10px] text-blue-400">{data.categoryName}</p>
             <p className="text-base tracking-wide font-semibold line-clamp-1">
               {data.title}
             </p>
-            <div className="flex items-center">
-              {renderStars(4)}
-              <p className="text-[10px] text-blue-500 tracking-wide"> · 4.0</p>
-            </div>
             <div className="flex items-center justify-between pt-2">
               <div className="flex">
-                <p className="text-sm tracking-wide font-semibold">
+                <p className="text-sm tracking-wide font-medium">
                   {formatCurrency(data?.variants[0]?.price, "GHS")}
                 </p>
                 {data?.variants[0]?.weight > 0 && (
@@ -111,3 +112,62 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
 }
 
 export default ProductCard
+
+// <div className="flex flex-col h-[270px] w-64">
+//         <div className="relative w-full h-[170px]">
+//           {/* Primary Image */}
+//           <Image
+//             src={primaryImage}
+//             alt={data.title}
+//             width={100}
+//             height={100}
+//             className={`h-[170px] w-full object-contain bg-gray-50 rounded-t-lg p-2 ${
+//               data?.images?.length > 1 &&
+//               "absolute z-10 transition-opacity hover:opacity-0 duration-500 ease-in-out"
+//             }`}
+//           />
+
+//           {/* Secondary Image - Only if there are multiple images */}
+//           {data?.images?.length > 1 && (
+//             <Image
+//               src={secondaryImage}
+//               alt={data.title}
+//               width={100}
+//               height={100}
+//               className="absolute h-[170px] w-full object-contain bg-gray-50 rounded-t-lg p-2 hover:scale-110 transition-transform ease-in-out"
+//             />
+//           )}
+//         </div>
+
+//         <div className="border border-neutral-300 rounded-b-md ">
+//           {/* Product Info */}
+//           <div className="self-start w-full p-2.5">
+//             <p className="text-[10px] text-blue-400">{data.categoryName}</p>
+//             <p className="text-base tracking-wide font-semibold line-clamp-1">
+//               {data.title}
+//             </p>
+//             <div className="flex items-center">
+//               {renderStars(4)}
+//               <p className="text-[10px] text-blue-500 tracking-wide"> · 4.0</p>
+//             </div>
+//             <div className="flex items-center justify-between pt-2">
+//               <div className="flex">
+//                 <p className="text-sm tracking-wide font-semibold">
+//                   {formatCurrency(data?.variants[0]?.price, "GHS")}
+//                 </p>
+//                 {data?.variants[0]?.weight > 0 && (
+//                   <div className="flex items-center text-neutral-400 px-0.5">
+//                     <p className="text-sm tracking-wide font-medium">{`/${formatWeight(
+//                       data?.variants[0]?.weight
+//                     )}`}</p>
+//                     <p className="text-sm tracking-wide font-medium">{`${data?.variants[0]?.unit}`}</p>
+//                   </div>
+//                 )}
+//               </div>
+//               <div className="bg-green-300 p-1.5 rounded-full cursor-pointer">
+//                 <ShoppingBagIcon className="size-4 text-gray-800" />
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>

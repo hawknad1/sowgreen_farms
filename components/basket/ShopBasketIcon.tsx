@@ -10,7 +10,7 @@ const ShopBasketIcon = () => {
 
   return (
     <div
-      onClick={() => router.push("/basket")}
+      // onClick={() => router.push("/basket")}
       className="cursor-pointer relative"
     >
       <ShoppingCartIcon className="size-6" />

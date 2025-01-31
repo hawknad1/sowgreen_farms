@@ -30,7 +30,7 @@ const CustomersWants = () => {
     getPopularProductList()
   }, [])
 
-  const message = `Customers also considered`
+  const message = `Customers also bought`
 
   return (
     <ProductChevrons message={message}>
