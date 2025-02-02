@@ -37,6 +37,23 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
       </div>
     )
 
+  const deliveryMethod = () => {
+    if (
+      orderDetails.shippingAddress.deliveryMethod.trim().toLowerCase() !==
+      "home delivery"
+    ) {
+      return (
+        <>
+          <p>PICK UP @</p>
+          <p className="font-semibold">
+            {orderDetails.shippingAddress.deliveryMethod}
+          </p>
+        </>
+      )
+    }
+    return orderDetails.shippingAddress.deliveryMethod
+  }
+
   const status = orderDetails?.status
     .split(" ")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
@@ -62,8 +79,8 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               {new Date(orderDetails.createdAt).toLocaleDateString()}
             </p>
             <p className="text-sm lg:text-base">
-              <span>{orderDetails.shippingAddress.deliveryMethod}</span>
-              <br />
+              {/* <span>{orderDetails.shippingAddress.deliveryMethod}</span> */}
+              <span> {deliveryMethod()}</span>
               <span>{orderDetails.deliveryDate}</span>
             </p>
             <p className="text-sm lg:text-base">{`GHS ${(

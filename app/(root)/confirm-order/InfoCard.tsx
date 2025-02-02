@@ -141,9 +141,26 @@ const InfoCard = ({ data }: InfoCardProps) => {
     }
   }, [deliveryMethod])
 
+  const deliveryMethodDisplay = useMemo(() => {
+    const normalizedDeliveryMethod = deliveryMethod.trim().toLowerCase()
+
+    // Check if the delivery method includes "home delivery"
+    if (normalizedDeliveryMethod.includes("home delivery")) {
+      return deliveryMethod // Return the original delivery method
+    }
+
+    // Otherwise, prepend "PICK UP @" to the delivery method
+    return (
+      <div className="md:inline-flex flex-col">
+        <p>PICK UP @</p>
+        <p className="font-semibold">{`${deliveryMethod} - ${data?.deliveryDate}`}</p>
+      </div>
+    )
+  }, [deliveryMethod])
+
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <Card>
+      <Card className="h-fit md:h-full">
         <div className="flex flex-col gap-4">
           <div>
             <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -167,11 +184,12 @@ const InfoCard = ({ data }: InfoCardProps) => {
               <FaTruck className="text-green-500" />
               Delivery Method
             </h3>
-            <p className="mt-2 text-gray-600">
+            {/* <p className="mt-2 text-gray-600">
               <span className="bg-cyan-500/25 text-cyan-500 px-2 py-1 rounded-full text-sm">
-                {deliveryMethodLabel}
+                {deliveryMethodNew}
               </span>
-            </p>
+            </p> */}
+            <p className="py-1">{deliveryMethodDisplay}</p>
           </div>
         </div>
       </Card>

@@ -378,6 +378,8 @@ const EditCustomerOrder = ({
     setOrderItems((prev) => prev.filter((item) => item.id !== productOrderId))
   }
 
+  console.log(orderDetails.products, "orderDetails")
+
   const handleSaveChanges = async () => {
     setIsSaving(true)
     try {
@@ -435,7 +437,7 @@ const EditCustomerOrder = ({
                 </p>
                 <p className="text-sm">
                   {formatCurrency(item?.price, "GHS")}{" "}
-                  {item?.weight === 0 ? (
+                  {item?.weight === 0 || item?.weight === null ? (
                     ""
                   ) : (
                     <span className="text-sm text-neutral-400">{`/ ${

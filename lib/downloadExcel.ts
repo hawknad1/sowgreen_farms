@@ -104,38 +104,108 @@ export default async function downloadExcel(from: Date, to: Date) {
   })
 
   // Add customer rows with order details and total calculation
+  // let totalRevenue = 0
+  // orders.forEach((order: any) => {
+  //   const customerName = order.shippingAddress.name
+  //   const orderDetails = products.map((product: any) => {
+  //     const orderProduct = order.products.find(
+  //       (o: any) => o.productId === product.id
+  //     )
+
+  //     console.log(orderProduct, "orderProduct")
+
+  //     if (orderProduct) {
+  //       if (orderProduct.available === false) return "N/A"
+  //       // Check for specific weight, unit, and title conditions
+
+  //       if (orderProduct.product.title.toLowerCase().includes("eggs")) {
+  //         let eggTotal = 0
+  //         if (orderProduct?.price === 4) return 1 * orderProduct?.quantity
+  //         if (orderProduct?.price === 108) return 30 * orderProduct?.quantity
+  //       }
+
+  //       if (
+  //         orderProduct.weight === 250 &&
+  //         orderProduct.unit === "g" &&
+  //         orderProduct.product.title.toLowerCase().includes("coffee")
+  //       ) {
+  //         return orderProduct.quantity
+  //       }
+
+  //       // Check if the product weight is 0, if so, use quantityTotal instead
+  //       if (orderProduct.unit === "ltr" || orderProduct.unit === "ml") {
+  //         return orderProduct.quantity // Use quantityTotal if weight is 0
+  //       } else {
+  //         // Multiply quantity by product weight to calculate total for that product
+  //         if (orderProduct.weight > 100) {
+  //           return orderProduct.quantity * (orderProduct.weight / 1000)
+  //         }
+  //         return orderProduct.quantity * orderProduct.weight
+  //       }
+  //     }
+
+  //     return null // If no order for that product, return 0
+  //   })
   let totalRevenue = 0
+
   orders.forEach((order: any) => {
     const customerName = order.shippingAddress.name
+      .toLowerCase()
+      .split(" ")
+      .map((word: any) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
     const orderDetails = products.map((product: any) => {
-      const orderProduct = order.products.find(
+      const orderProducts = order.products.filter(
         (o: any) => o.productId === product.id
       )
 
-      if (orderProduct) {
-        if (orderProduct.available === false) return "N/A"
+      if (orderProducts.length === 0) return null // If no order for that product, return null
+
+      let totalQuantity = 0
+
+      orderProducts.forEach((orderProduct: any) => {
+        if (orderProduct.available === false) return
+
         // Check for specific weight, unit, and title conditions
+        if (orderProduct.product.title.toLowerCase().includes("eggs")) {
+          if (orderProduct.price === 4) {
+            totalQuantity += 1 * orderProduct.quantity
+          } else if (orderProduct.price === 108) {
+            totalQuantity += 30 * orderProduct.quantity
+          }
+          return
+        }
+
         if (
           orderProduct.weight === 250 &&
           orderProduct.unit === "g" &&
           orderProduct.product.title.toLowerCase().includes("coffee")
         ) {
-          return orderProduct.quantity
+          totalQuantity += orderProduct.quantity
+          return
+        }
+
+        // If the product has no weight, return the quantity directly
+        if (!orderProduct.weight || orderProduct.weight === 0) {
+          totalQuantity += orderProduct.quantity
+          return
         }
 
         // Check if the product weight is 0, if so, use quantityTotal instead
         if (orderProduct.unit === "ltr" || orderProduct.unit === "ml") {
-          return orderProduct.quantity // Use quantityTotal if weight is 0
+          totalQuantity += orderProduct.quantity
         } else {
           // Multiply quantity by product weight to calculate total for that product
-          if (orderProduct.weight > 100) {
-            return orderProduct.quantity * (orderProduct.weight / 1000)
+          if (orderProduct.weight > 30) {
+            totalQuantity +=
+              orderProduct.quantity * (orderProduct.weight / 1000)
+          } else {
+            totalQuantity += orderProduct.quantity * orderProduct.weight
           }
-          return orderProduct.quantity * orderProduct.weight
         }
-      }
+      })
 
-      return null // If no order for that product, return 0
+      return totalQuantity > 0 ? totalQuantity : "N/A"
     })
 
     const totalOrderAmount = order.total + order.deliveryFee

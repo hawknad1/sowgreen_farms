@@ -97,16 +97,6 @@ const ConfirmOrderPage = () => {
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
 
-  const dataProps = {
-    formData,
-    formattedDelivery,
-    cart,
-    formattedSubtotal,
-    formattedTotal,
-    total,
-    deliveryFee,
-  }
-
   const taxedOrders = orders.map((order) => ({
     ...order, // Spread the existing order object
     item: {
@@ -166,6 +156,16 @@ const ConfirmOrderPage = () => {
       ],
     },
     publicKey: process.env.PAYSTACK_PUBLIC_TEST_KEY as string,
+  }
+  const dataProps = {
+    formData,
+    formattedDelivery,
+    cart,
+    formattedSubtotal,
+    formattedTotal,
+    total,
+    deliveryFee,
+    deliveryDate,
   }
 
   async function handlePaystackSuccessAction(reference?: any) {

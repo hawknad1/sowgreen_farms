@@ -52,6 +52,8 @@ const RouteSheetTable = ({ loading, data }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
+  console.log(data, "DATAAAA")
+
   const table = useReactTable({
     data: data ?? [], // Added orders data
     columns,
@@ -78,15 +80,13 @@ const RouteSheetTable = ({ loading, data }: OrdersProps) => {
           <Input
             placeholder="Filter riders..."
             value={
-              (table
-                .getColumn("shippingAddress.name")
-                ?.getFilterValue() as string) ?? ""
+              (table.getColumn("dispatchRider")?.getFilterValue() as string) ??
+              ""
             }
-            onChange={(event) =>
-              table
-                .getColumn("shippingAddress.name")
-                ?.setFilterValue(event.target.value)
-            }
+            onChange={(event) => {
+              const value = event.target.value
+              table.getColumn("dispatchRider")?.setFilterValue(value)
+            }}
             className="max-w-sm w-full"
             aria-label="Filter riders"
           />

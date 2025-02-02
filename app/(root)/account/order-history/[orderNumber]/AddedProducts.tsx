@@ -100,9 +100,11 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                     <Select
                       onValueChange={(value) => {
                         const selectedVariant = item.product.variants.find(
-                          (variant) => variant.weight.toString() === value
+                          (variant) =>
+                            variant?.weight?.toString() === value ||
+                            (variant?.weight === null &&
+                              variant?.price?.toString() === value)
                         )
-                        console.log(selectedVariant, "selectedVariant")
                         if (selectedVariant) {
                           handleVariantChange(item.productId, selectedVariant)
                         }
@@ -117,13 +119,23 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                           {item.product.variants.map((variant, index) => (
                             <SelectItem
                               key={index}
-                              value={variant?.weight?.toString()}
+                              value={
+                                variant?.weight?.toString() ||
+                                (variant?.weight === null &&
+                                  variant?.price?.toString())
+                              }
                             >
-                              {`${formatCurrency(variant.price, "GHS")} / ${
-                                variant.weight < 1
-                                  ? variant.weight * 1000
-                                  : variant.weight
-                              } ${variant.unit}`}
+                              {formatCurrency(variant.price, "GHS")}
+                              {variant?.weight === 0 ||
+                              variant?.weight === null ? (
+                                ""
+                              ) : (
+                                <span className="text-sm text-neutral-400">{`/ ${
+                                  variant?.weight < 1
+                                    ? variant?.weight * 1000
+                                    : variant?.weight
+                                }${variant?.unit}`}</span>
+                              )}{" "}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -137,7 +149,7 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                   ) : (
                     <p className="text-sm">
                       {formatCurrency(item?.price, "GHS")}{" "}
-                      {item?.weight === 0 ? (
+                      {item?.weight === 0 || item?.weight === null ? (
                         ""
                       ) : (
                         <span className="text-sm text-neutral-400">{`/ ${
@@ -159,14 +171,16 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                 }
                 className="w-16"
               />
-              <p className="text-sm font-bold">{`Total: GHS ${(
-                item.price * item.quantity
-              ).toFixed(2)}`}</p>
+              <p className="text-sm">
+                <span>Subtotal</span> <br />
+                <span>{formatCurrency(item.price * item.quantity, "GHS")}</span>
+              </p>
               <Button
                 variant="destructive"
                 onClick={() => handleRemoveItem(item.id)}
+                className="w-fit py-0 px-3"
               >
-                <TrashIcon className="h-5 w-5" />
+                <TrashIcon className="md:h-5 md:w-5 w-4 h-4" />
               </Button>
             </div>
           </div>

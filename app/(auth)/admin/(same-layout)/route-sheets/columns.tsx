@@ -2,9 +2,9 @@
 
 import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { DispatchRider, Order } from "@/types"
+import { Order } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -14,10 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
 import { useRouter } from "next/navigation"
-import EditRiderDialog from "../dispatch-riders/EditRiderDialog"
-import DeleteRiderDialog from "../dispatch-riders/DeleteRiderDialog"
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -45,22 +42,6 @@ export const columns: ColumnDef<Order>[] = [
     enableSorting: false,
     enableHiding: false,
   },
-
-  //   {
-  //     accessorKey: "shippingAddress.name",
-  //     header: ({ column }) => {
-  //       return (
-  //         <Button
-  //           variant="ghost"
-  //           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //         >
-  //           Customer Name
-  //           <ArrowUpDown className="ml-2 h-4 w-4" />
-  //         </Button>
-  //       )
-  //     },
-  //     cell: ({ row }) => <div>{row.getValue("shippingAddress.name")}</div>,
-  //   },
   {
     accessorKey: "shippingAddress.name",
     header: "Customer Name",
@@ -69,22 +50,6 @@ export const columns: ColumnDef<Order>[] = [
     ),
     enableHiding: false,
   },
-  //   {
-  //     accessorKey: "lastName",
-  //     header: ({ column }) => {
-  //       return (
-  //         <Button
-  //           variant="ghost"
-  //           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //         >
-  //           First Name
-  //           <ArrowUpDown className="ml-2 h-4 w-4" />
-  //         </Button>
-  //       )
-  //     },
-  //     cell: ({ row }) => <div>{row.getValue("lastName")}</div>,
-  //   },
-
   {
     accessorKey: "address",
     header: "Address",
@@ -98,6 +63,10 @@ export const columns: ColumnDef<Order>[] = [
     cell: ({ row }) => (
       <div className="capitalize">{`${row.original.dispatchRider.firstName} ${row.original.dispatchRider.lastName}`}</div>
     ),
+    filterFn: (row, columnId, filterValue) => {
+      const riderName = row.original.dispatchRider.firstName.toLowerCase()
+      return riderName.includes(filterValue.toLowerCase())
+    },
   },
   {
     accessorKey: "total",
@@ -135,25 +104,11 @@ export const columns: ColumnDef<Order>[] = [
             <DropdownMenuSeparator />
 
             {/* Prevent closing dropdown on Dialog trigger */}
-            {/* <div onClick={(e) => e.stopPropagation()}>
-              <DropdownMenuItem asChild>
-                <EditRiderDialog rider={rider} />
-              </DropdownMenuItem>
-            </div> */}
-
-            {/* Prevent closing dropdown on Dialog trigger */}
             <Button onClick={() => router.push(`/admin/orders/${order?.id}`)}>
               View Order
             </Button>
 
             <DropdownMenuSeparator />
-
-            <DropdownMenuSeparator />
-            {/* <div onClick={(e) => e.stopPropagation()}>
-              <DropdownMenuItem asChild>
-                <DeleteRiderDialog location={rider} />
-              </DropdownMenuItem>
-            </div> */}
           </DropdownMenuContent>
         </DropdownMenu>
       )

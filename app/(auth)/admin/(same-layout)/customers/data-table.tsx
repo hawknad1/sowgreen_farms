@@ -78,6 +78,8 @@ const CustomerDataTable = () => {
     customerData()
   }, [setCustomerDetails])
 
+  console.log(customerDetails, "customerDetails")
+
   const table = useReactTable<ShippingAddress>({
     data: customerDetails || [], // Ensure data is always an array
     columns,

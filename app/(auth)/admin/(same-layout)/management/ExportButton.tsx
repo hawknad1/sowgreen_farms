@@ -14,7 +14,7 @@ export default function ExportButton() {
     setIsLoading(true) // Set loading state to true
     try {
       await downloadExcel(dateRange[0], dateRange[1]) // Ensure downloadExcel is a promise
-      window.location.reload() // Reload the page after download
+      // window.location.reload() // Reload the page after download
     } catch (error) {
       console.error("Export failed:", error) // Handle errors if needed
     } finally {
