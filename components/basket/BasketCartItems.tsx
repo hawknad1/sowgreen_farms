@@ -63,6 +63,7 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
         // const product = cartProducts[item.productId]
         // const variant = product?.variants.find((v) => v.id === item.variantId)
         const product = item.product
+        console.log(item, "ITEM---")
 
         return (
           <div
@@ -93,12 +94,17 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
               />
               <div className="">
                 {isCheckout ? (
-                  <p
-                    className="line-clamp-2 font-semibold max-w-[120px]"
-                    onClick={() => router.push(`/products/${product.id}`)}
-                  >
-                    {product?.title}
-                  </p>
+                  <>
+                    <p
+                      className="line-clamp-1 font-semibold max-w-[120px]"
+                      onClick={() => router.push(`/products/${product.id}`)}
+                    >
+                      {product?.title}
+                    </p>
+                    <p className="text-sm text-neutral-400">
+                      {formatCurrency(item?.price, "GHS")}
+                    </p>
+                  </>
                 ) : (
                   <>
                     <p className="line-clamp-2 font-semibold">

@@ -35,7 +35,7 @@ const PaginationPageButton: React.FC<PaginationButtonsProps> = ({
         className={`px-4 py-2 rounded-md ${
           currentPage === 1
             ? "bg-gray-300 cursor-not-allowed"
-            : "bg-emerald-600 text-white hover:bg-emerald-700"
+            : "bg-[#184532] text-white font-medium text-sm hover:bg-[#184532cf]"
         }`}
       >
         Previous
@@ -46,7 +46,7 @@ const PaginationPageButton: React.FC<PaginationButtonsProps> = ({
         className={`px-4 py-2 rounded-md ${
           currentPage === totalPages
             ? "bg-gray-300 cursor-not-allowed"
-            : "bg-emerald-600 text-white hover:bg-emerald-700"
+            : "bg-[#184532] text-white font-medium text-sm hover:bg-[#184532cf]"
         }`}
       >
         Next

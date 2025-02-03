@@ -3,13 +3,14 @@
 import Image from "next/image"
 import React, { useMemo } from "react"
 import { StarIcon } from "@heroicons/react/16/solid"
-import { ShoppingBagIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
 import { Product } from "@/types"
-import { addTax } from "@/lib/addTax"
 import { Badge } from "@/components/ui/badge"
 import { formatCurrency } from "@/lib/utils"
 import { formatWeight } from "@/lib/formatWeight"
+import { Plus } from "lucide-react"
+import Link from "next/link"
+import { useCartStore } from "@/store"
 
 interface ProductCardProps {
   data: Product
@@ -17,6 +18,7 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   const router = useRouter()
+  const { addToCart, cart } = useCartStore()
 
   // Memoized values to avoid recalculating on each render
   const discount = data.isInStock === "out-of-stock" ? null : data.discount
@@ -39,135 +41,108 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
     router.push(`/products/${data.id}`)
   }
 
-  return (
-    <div onClick={handleCardClick} className="relative cursor-pointer">
-      <div className="absolute top-2 left-3">
-        {data.isInStock === "out-of-stock" ? (
-          <Badge className="bg-gray-500/40 text-gray-500">Out of stock</Badge>
-        ) : discount ? (
-          <Badge className="bg-red-500/85">
-            <p className="text-[10px] text-white tracking-wide">
-              {discount}% OFF
-            </p>
-          </Badge>
-        ) : null}
-      </div>
+  const handleAddToCartClick = (e: React.MouseEvent) => {
+    e.preventDefault() // Prevent the link from navigating
+    e.stopPropagation() // Prevent the card click event from firing
 
-      <div className="flex flex-col justify-between w-[280px] h-[270px] sm:w-[260px] border border-neutral-400/25 rounded-lg overflow-hidden">
-        {/* Image Container */}
-        <div className="w-full h-full bg-gray-50 relative">
+    if (data.variants.length === 1) {
+      // If there's only one variant, add it to the cart
+      const variant = data.variants[0]
+      addToCart({
+        variantId: variant.id,
+        productId: data.id,
+        weight: variant.weight,
+        price: variant.price,
+        unit: variant.unit,
+        product: data,
+        quantity: 1,
+      })
+    } else {
+      // If there are multiple variants, navigate to the product detail page
+      router.push(`/products/${data.id}`)
+    }
+  }
+
+  return (
+    <Link href={`/products/${data?.id}`}>
+      <div className="bg-[#F6F6F6] w-64 h-[300px] rounded-lg flex flex-col p-3 relative cursor-pointer">
+        {/* Badge Section */}
+        <div className="absolute top-2 left-3 z-20">
+          {data?.isInStock === "out-of-stock" ? (
+            <Badge className="bg-gray-500/40 text-gray-500">Out of stock</Badge>
+          ) : discount ? (
+            <Badge className="bg-red-500/85">
+              <p className="text-[10px] text-white tracking-wide">
+                {discount}% OFF
+              </p>
+            </Badge>
+          ) : null}
+        </div>
+
+        {/* Image Section */}
+        <div className="w-full h-[170px] relative">
           <Image
             src={primaryImage}
-            alt={data.title}
+            alt={data?.title}
             width={100}
             height={100}
-            className={`h-[170px] w-full object-contain bg-gray-50 rounded-t-lg p-2 ${
+            className={`h-full w-full object-contain ${
               data?.images?.length > 1 &&
-              "absolute z-10 transition-opacity hover:opacity-0 duration-500 ease-in-out"
+              "absolute z-10 transition-opacity hover:opacity-0 duration-500 bg-[#F6F6F6] ease-in-out"
             }`}
           />
-
-          {/* Secondary Image - Only if there are multiple images */}
           {data?.images?.length > 1 && (
             <Image
               src={secondaryImage}
-              alt={data.title}
+              alt={data?.title}
               width={100}
               height={100}
-              className="absolute h-[170px] w-full object-contain bg-gray-50 rounded-t-lg p-2 hover:scale-110 transition-transform ease-in-out"
+              className="absolute h-full w-full object-contain hover:scale-110 transition-transform ease-in-out"
             />
           )}
         </div>
 
-        {/* Product Info */}
-        <div className="w-full h-[45%] border border-neutral-400/30">
-          <div className="self-start w-full p-2.5">
-            <p className="text-[10px] text-blue-400">{data.categoryName}</p>
-            <p className="text-base tracking-wide font-semibold line-clamp-1">
-              {data.title}
-            </p>
-            <div className="flex items-center justify-between pt-2">
-              <div className="flex">
+        {/* Product Details Section */}
+        <div className="flex flex-col gap-y-2 mt-2">
+          <p
+            className="font-medium text-[#184532] line-clamp-1"
+            title={data?.title}
+          >
+            {data?.title}
+          </p>
+          <div className="flex justify-between items-center">
+            {data?.variants[0]?.weight > 0 && (
+              <div className="flex items-center text-neutral-400 px-0.5">
                 <p className="text-sm tracking-wide font-medium">
-                  {formatCurrency(data?.variants[0]?.price, "GHS")}
+                  {formatWeight(data?.variants[0]?.weight)}
                 </p>
-                {data?.variants[0]?.weight > 0 && (
-                  <div className="flex items-center text-neutral-400 px-0.5">
-                    <p className="text-sm tracking-wide font-medium">{`/${formatWeight(
-                      data?.variants[0]?.weight
-                    )}`}</p>
-                    <p className="text-sm tracking-wide font-medium">{`${data?.variants[0]?.unit}`}</p>
-                  </div>
-                )}
+                <p className="text-sm font-medium tracking-wide">
+                  {data?.variants[0]?.unit}
+                </p>
               </div>
-              <div className="bg-green-300 p-1.5 rounded-full cursor-pointer">
-                <ShoppingBagIcon className="size-4 text-gray-800" />
-              </div>
-            </div>
+            )}
+            <div className="flex">{renderStars(4)}</div>
           </div>
         </div>
+
+        {/* Price and Add to Cart Section */}
+        <div className="flex justify-between items-center w-full mt-auto">
+          <p className="text-lg tracking-wide font-bold text-[#184532]">
+            {formatCurrency(data?.variants[0]?.price, "GHS")}
+          </p>
+          <button
+            className="rounded-full bg-[#184532] w-8 h-8 text-white flex justify-center items-center hover:bg-[#123724] transition-colors"
+            aria-label="Add to cart"
+            onClick={handleAddToCartClick}
+          >
+            <Plus className="w-5 h-5" />
+          </button>
+        </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
 export default ProductCard
 
-// <div className="flex flex-col h-[270px] w-64">
-//         <div className="relative w-full h-[170px]">
-//           {/* Primary Image */}
-//           <Image
-//             src={primaryImage}
-//             alt={data.title}
-//             width={100}
-//             height={100}
-//             className={`h-[170px] w-full object-contain bg-gray-50 rounded-t-lg p-2 ${
-//               data?.images?.length > 1 &&
-//               "absolute z-10 transition-opacity hover:opacity-0 duration-500 ease-in-out"
-//             }`}
-//           />
-
-//           {/* Secondary Image - Only if there are multiple images */}
-//           {data?.images?.length > 1 && (
-//             <Image
-//               src={secondaryImage}
-//               alt={data.title}
-//               width={100}
-//               height={100}
-//               className="absolute h-[170px] w-full object-contain bg-gray-50 rounded-t-lg p-2 hover:scale-110 transition-transform ease-in-out"
-//             />
-//           )}
-//         </div>
-
-//         <div className="border border-neutral-300 rounded-b-md ">
-//           {/* Product Info */}
-//           <div className="self-start w-full p-2.5">
-//             <p className="text-[10px] text-blue-400">{data.categoryName}</p>
-//             <p className="text-base tracking-wide font-semibold line-clamp-1">
-//               {data.title}
-//             </p>
-//             <div className="flex items-center">
-//               {renderStars(4)}
-//               <p className="text-[10px] text-blue-500 tracking-wide"> · 4.0</p>
-//             </div>
-//             <div className="flex items-center justify-between pt-2">
-//               <div className="flex">
-//                 <p className="text-sm tracking-wide font-semibold">
-//                   {formatCurrency(data?.variants[0]?.price, "GHS")}
-//                 </p>
-//                 {data?.variants[0]?.weight > 0 && (
-//                   <div className="flex items-center text-neutral-400 px-0.5">
-//                     <p className="text-sm tracking-wide font-medium">{`/${formatWeight(
-//                       data?.variants[0]?.weight
-//                     )}`}</p>
-//                     <p className="text-sm tracking-wide font-medium">{`${data?.variants[0]?.unit}`}</p>
-//                   </div>
-//                 )}
-//               </div>
-//               <div className="bg-green-300 p-1.5 rounded-full cursor-pointer">
-//                 <ShoppingBagIcon className="size-4 text-gray-800" />
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </div>
+// export default ProductCard
