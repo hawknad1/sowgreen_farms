@@ -6,6 +6,8 @@ import { CitiesWithFees } from "@/types"
 
 const CityListPage = () => {
   const [list, setList] = useState<CitiesWithFees[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
     async function getCityList() {
       try {
@@ -20,10 +22,20 @@ const CityListPage = () => {
         }
       } catch (error) {
         console.log(error)
+      } finally {
+        setIsLoading(false)
       }
     }
     getCityList()
   }, [])
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full h-screen">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    )
+  }
 
   return (
     <div className="p-4">

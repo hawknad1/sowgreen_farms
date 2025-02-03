@@ -1,13 +1,13 @@
 "use client"
 import React, { useEffect, useState } from "react"
 
-import { DispatchRider, Location } from "@/types"
+import { Location } from "@/types"
 import LocationDataTable from "./LocationDataTable"
 
 const LocationListPage = () => {
   const [list, setList] = useState<Location[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  console.log(list, "lieeestt")
   useEffect(() => {
     async function getLocationList() {
       try {
@@ -22,10 +22,20 @@ const LocationListPage = () => {
         }
       } catch (error) {
         console.log(error)
+      } finally {
+        setIsLoading(false)
       }
     }
     getLocationList()
   }, [])
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center w-full h-screen">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    )
+  }
 
   return (
     <div className="p-4">

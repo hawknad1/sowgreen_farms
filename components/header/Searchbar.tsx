@@ -83,7 +83,7 @@ const Searchbar = () => {
                 className="flex items-center space-x-4 p-1.5 rounded-md transition-colors cursor-pointer hover:bg-accent hover:text-accent-foreground"
                 href={`/products/${product.id}`}
               >
-                <div className="flex-shrink-0 h-14 w-14 bg-gray-200 rounded-md overflow-hidden">
+                <div className="flex-shrink-0 h-12 w-12 md:h-14 md:w-14 bg-gray-200 rounded-md overflow-hidden">
                   <Image
                     src={product.images[0]?.url}
                     alt={product.title}
@@ -92,7 +92,7 @@ const Searchbar = () => {
                     className="h-full w-full object-contain p-1"
                   />
                 </div>
-                <p className="text-base font-medium">{product.title}</p>
+                <p className="text-sm md:text-base ">{product.title}</p>
               </Link>
             ))
           ) : (

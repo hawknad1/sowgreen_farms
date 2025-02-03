@@ -330,7 +330,7 @@ const ThankYouPage = () => {
         <div className="w-full flex flex-col justify-between bg-white rounded-lg p-4">
           <div className="flex flex-col gap-2 flex-grow">
             <h2 className="text-sm font-bold mb-2">Ordered Items</h2>
-            <div className="flex flex-col gap-3 max-h-[290px] overflow-y-auto scrollbar-hide p-2">
+            <div className="flex flex-col gap-3 max-h-[245px] overflow-y-auto scrollbar-thin p-2">
               {enrichedProducts.length ? (
                 enrichedProducts.map((order) => (
                   <div

@@ -139,12 +139,15 @@ const CartDisplay = () => {
                     <div className="text-sm text-gray-600/65 flex items-center">
                       <p>
                         {formatCurrency(item?.price || 0, "GHS")}
-                        {item && (
-                          <span className="text-sm text-neutral-400">
-                            {` / ${item?.weight}`}
-                            {item?.unit}
-                          </span>
-                        )}
+                        {item?.weight === 0 || item?.weight === null ? (
+                          ""
+                        ) : (
+                          <span className="text-sm text-neutral-400">{` / ${
+                            item?.weight < 1
+                              ? item?.weight * 1000
+                              : item?.weight
+                          }${item?.unit}`}</span>
+                        )}{" "}
                       </p>
 
                       {/* <p className="text-gray-500">x {item?.quantity || 0}</p> */}

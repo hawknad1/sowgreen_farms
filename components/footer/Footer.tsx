@@ -18,7 +18,7 @@ const Footer = () => {
         <div className="lg:flex lg:items-start lg:gap-8">
           <div>
             <Image
-              src="/images/sowgreen.png"
+              src="/images/logo.png"
               height={100}
               width={100}
               className="h-32 w-32 object-contain opacity-70"
@@ -28,8 +28,8 @@ const Footer = () => {
 
           <div className="mt-8 grid grid-cols-2 gap-8 lg:mt-0 lg:grid-cols-4 lg:gap-y-8 lg:w-full">
             <div className="col-span-2">
-              <p className="mt-4 text-gray-500 max-w-36">
-                Sowgreen Farms - East Legon - Accra.
+              <p className="mt-4 text-gray-500 max-w-[200px]">
+                Sowgreen Farms - DZORWULU - ACCRA.
               </p>
             </div>
 
@@ -42,7 +42,7 @@ const Footer = () => {
                   <Link
                     key={acc.id}
                     href={acc.href}
-                    className=" text-sm text-gray-700 transition hover:opacity-75"
+                    className="text-sm text-gray-700 transition hover:opacity-75"
                   >
                     {acc.title}
                   </Link>
@@ -107,7 +107,7 @@ const Footer = () => {
         <div className="mt-4 border-t border-gray-100 pt-4">
           <div className="sm:flex sm:justify-between">
             <p className="text-xs text-gray-500">
-              Copyright © 2024. Zoroastique Limited. All rights reserved.
+              Copyright © 2024. ZOROASTIQUE Limited. All rights reserved.
             </p>
 
             <div className="mt-8 flex flex-wrap justify-start gap-4 text-xs sm:mt-0 lg:justify-end">

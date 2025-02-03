@@ -44,20 +44,21 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 onClick={() => router.push("/")}
                 className="flex border cursor-pointer"
               >
-                <div className="flex aspect-square size-14 items-center justify-center rounded-lg  text-sidebar-primary-foreground">
+                <div className="flex flex-1 aspect-square size-16 items-center justify-center rounded-lg  text-sidebar-primary-foreground">
                   <Link
                     href="/"
                     className="flex items-center gap-2 font-semibold"
                   >
                     <Image
-                      src="/images/sowgreen.png"
+                      src="/images/logo.png"
                       alt="logo"
-                      height={65}
-                      width={65}
+                      height={80}
+                      width={80}
+                      className="w-24"
                     />
                   </Link>
                 </div>
-                <div className="grid flex-1 text-left text-sm leading-tight">
+                <div className="grid  text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
                     Sowgreen Organic
                   </span>

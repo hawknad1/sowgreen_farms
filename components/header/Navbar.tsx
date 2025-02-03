@@ -28,11 +28,11 @@ const Navbar = () => {
             <a className="block text-teal-600" href="/">
               <span className="sr-only">Home</span>
               <Image
-                src="/images/sowgreen.png"
+                src="/images/logo.png"
                 alt="logo"
                 width={80}
                 height={80}
-                className="object-contain w-20"
+                className="object-contain w-20 md:w-28"
               />
             </a>
           </div>
