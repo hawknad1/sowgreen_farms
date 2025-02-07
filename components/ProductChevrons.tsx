@@ -30,7 +30,7 @@ const ProductChevrons = ({ children, message }: ChevronProps) => {
   return (
     <div className="flex flex-col items-center gap-x-6">
       <div className="flex items-center justify-between w-full">
-        <h2 className="text-xl flex items-center text-neutral-700 self-center sm:text-2xl md:text-3xl font-bold mb-4">
+        <h2 className="text-xl flex items-center text-sowgren_Color self-center sm:text-2xl md:text-3xl font-bold mb-4">
           {message}
         </h2>
         <div className="flex items-center gap-x-5">
@@ -38,13 +38,13 @@ const ProductChevrons = ({ children, message }: ChevronProps) => {
             className="bg-slate-100 p-1 rounded-full cursor-pointer "
             onClick={scrollLeft}
           >
-            <ChevronLeftIcon className="w-5 h-5" />
+            <ChevronLeftIcon className="w-5 h-5 text-sowgren_Color" />
           </div>
           <div
             className="bg-slate-100 p-1 rounded-full cursor-pointer"
             onClick={scrollRight}
           >
-            <ChevronRightIcon className="w-5 h-5" />
+            <ChevronRightIcon className="w-5 h-5 text-sowgren_Color" />
           </div>
         </div>
       </div>

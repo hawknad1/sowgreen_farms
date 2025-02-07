@@ -53,13 +53,6 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
-  // const handleExport = () => {
-  //   const filteredData = table
-  //     .getFilteredRowModel()
-  //     .rows.map((row) => row.original)
-  //   downloadOrders(filteredData)
-  // }
-
   const table = useReactTable({
     data: order, // Added orders data
     columns,

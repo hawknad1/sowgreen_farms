@@ -12,7 +12,7 @@ import {
 const OrganicCard = () => {
   return (
     <>
-      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold flex justify-center">
+      <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-sowgren_Color flex justify-center">
         Fresh & flavorful organic produce
       </h2>
       <div className="flex flex-col justify-center items-center md:flex-row p-4 ">
@@ -30,7 +30,7 @@ const OrganicCard = () => {
           <Accordion
             type="single"
             collapsible
-            className="lg:w-[480px] h-[420px] w-96  flex flex-col gap-1.5 bg-gray-100 rounded-2xl p-4 "
+            className="lg:w-[480px] h-[420px] w-96 text-sowgren_Color flex flex-col gap-1.5 bg-gray-100 rounded-2xl p-4 "
           >
             {accordion.map(({ heading, description, id, value }) => (
               <AccordionItem

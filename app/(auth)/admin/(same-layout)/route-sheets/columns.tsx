@@ -43,6 +43,14 @@ export const columns: ColumnDef<Order>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "orderNumber",
+    header: "Order Number",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.original.orderNumber}</div>
+    ),
+    enableHiding: false,
+  },
+  {
     accessorKey: "shippingAddress.name",
     header: "Customer Name",
     cell: ({ row }) => (

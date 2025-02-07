@@ -23,10 +23,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
       </div>
     )
 
-  // const rider =
-  //   orders?.dispatchRider?.charAt(0).toUpperCase() +
-  //   orders?.dispatchRider?.slice(1)
-
   const firstName = orders?.dispatchRider?.firstName
   const lastName = orders?.dispatchRider?.lastName
   const rider =

@@ -2,7 +2,6 @@
 
 import React, { useState } from "react"
 import { useCartStore } from "@/store"
-import { ShoppingCartIcon } from "@heroicons/react/24/outline"
 import {
   Popover,
   PopoverContent,
@@ -11,6 +10,8 @@ import {
 import BasketCartItems from "./basket/BasketCartItems"
 import { Button } from "./ui/button"
 import { useRouter } from "next/navigation"
+import { ShoppingBasketIcon, ShoppingBasket, ShoppingCart } from "lucide-react"
+import { ShoppingCartIcon } from "@heroicons/react/20/solid"
 
 export function CartPopover() {
   const { cartItemCount } = useCartStore()
@@ -26,8 +27,8 @@ export function CartPopover() {
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <PopoverTrigger asChild>
-        <div className="cursor-pointer relative">
-          <ShoppingCartIcon className="size-6" />
+        <div className="cursor-pointer relative bg-[#184532] p-2 text-white rounded-full">
+          <ShoppingCartIcon className="size-5" />
           {cartItemCount > 0 && (
             <div className="absolute -top-2.5 -right-2 h-5 w-5 p-1 flex items-center justify-center text-xs bg-red-400 rounded-full text-white">
               <p>{cartItemCount}</p>

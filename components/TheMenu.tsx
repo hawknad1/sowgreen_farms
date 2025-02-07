@@ -10,12 +10,24 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import { Category, Product } from "@/types"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import SkeletonItems from "./skeletons/SkeletonItems"
+import { cva } from "class-variance-authority"
+
+const navigationMenuTriggerStyle = cva(
+  "group inline-flex h-6 w-max items-center justify-center rounded-md px-4 py-4 text-sm font-medium transition-colors focus:outline-none disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      active: {
+        true: "bg-sowgren_Color text-white",
+        false: "bg-background hover:bg-sowgren_Color hover:text-white",
+      },
+    },
+  }
+)
 
 function TheMenu() {
   const [categoryList, setCategoryList] = React.useState<Category[]>([])
@@ -67,16 +79,20 @@ function TheMenu() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
-        <NavigationMenuItem>
+        <NavigationMenuItem className="text-sowgren_Color  ">
           <Link href="/" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={`${navigationMenuTriggerStyle()} hover:bg-sowgren_Color hover:text-white active:bg-sowgren_Color`}
+            >
               Home
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="p-4">Shop</NavigationMenuTrigger>
+          <NavigationMenuTrigger className="p-4 text-sowgren_Color  hover:bg-sowgren_Color hover:text-gray-200">
+            Shop
+          </NavigationMenuTrigger>
           <NavigationMenuContent className="absolute left-0 z-50 w-[400px] transform translate-x-0 md:w-[500px] lg:w-[600px] p-4 border border-gray-200 shadow-lg bg-white rounded-md">
             <ul className="grid gap-4 md:grid-cols-2">
               {loading
@@ -103,7 +119,7 @@ function TheMenu() {
                       </div>
                       {/* Product Text */}
                       <div className="flex-1">
-                        <p className="font-semibold text-sm md:text-base text-gray-800 line-clamp-1">
+                        <p className="font-semibold text-sm md:text-base text-sowgren_Color line-clamp-1">
                           {product.title}
                         </p>
                         <p className="text-sm text-gray-500 line-clamp-2">
@@ -116,16 +132,16 @@ function TheMenu() {
               {/* "Shop All Products" link */}
               <div
                 onClick={() => router.push(`/products`)}
-                className="cursor-pointer self-center font-medium text-sm flex justify-center text-neutral-600 w-full space-x-2 p-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
+                className="cursor-pointer self-center font-medium text-sm flex justify-center text-sowgren_Color w-full space-x-2 p-2 rounded-md transition-colors hover:text-white hover:bg-sowgren_Color"
               >
-                Shop All Products
+                View All Products
               </div>
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
-          <NavigationMenuTrigger className="p-4">
+          <NavigationMenuTrigger className="p-4 text-sowgren_Color hover:bg-sowgren_Color hover:text-gray-200">
             Category
           </NavigationMenuTrigger>
           <NavigationMenuContent className="absolute left-0 z-50 w-[400px] transform translate-x-0 md:w-[500px] lg:w-[600px] p-4 border border-gray-200 shadow-lg bg-white rounded-md">
@@ -162,18 +178,12 @@ function TheMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
+        <NavigationMenuItem className="text-red-500">
           <Link href="/discount" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+            <NavigationMenuLink
+              className={`${navigationMenuTriggerStyle()} hover:bg-sowgren_Color hover:text-white active:bg-sowgren_Color`}
+            >
               Sale
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-
-        <NavigationMenuItem>
-          <Link href="/blog" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Blog
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

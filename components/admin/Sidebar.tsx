@@ -17,6 +17,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { AppSidebar } from "../app-sidebar"
+import { useSession } from "next-auth/react"
 
 interface SidebarProps {
   children?: React.ReactNode
@@ -24,43 +25,59 @@ interface SidebarProps {
 
 const Sidebar = ({ children }: SidebarProps) => {
   const pathname = usePathname()
+  const { data: session } = useSession()
+  const user = session?.user
 
   // Find active main and sub-navigation items
   const { activeMain, activeSub } = getActiveNav(pathname)
+
+  const fullName = user?.name
+  const firstName = fullName?.split(" ")[0] // Get the first name
+  const capitalizedFirstName =
+    firstName.charAt(0).toUpperCase() + firstName.slice(1) // Capitalize first letter
+
+  console.log(capitalizedFirstName) // Output: James
 
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="h-screen overflow-hidden">
         {/* Sticky Header */}
-        <header className="sticky top-0 z-10 flex h-16 items-center gap-2 bg-white px-4 shadow-sm">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="/admin/dashboard">Admin</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              {activeMain && (
-                <>
-                  <BreadcrumbItem>
-                    <BreadcrumbLink href={activeMain.url}>
-                      {activeMain.title}
-                    </BreadcrumbLink>
-                  </BreadcrumbItem>
-                  {activeSub && (
-                    <>
-                      <BreadcrumbSeparator />
-                      <BreadcrumbItem>
-                        <BreadcrumbPage>{activeSub.title}</BreadcrumbPage>
-                      </BreadcrumbItem>
-                    </>
-                  )}
-                </>
-              )}
-            </BreadcrumbList>
-          </Breadcrumb>
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between w-full px-4  bg-white  shadow-sm">
+          <div className=" flex items-center gap-2">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="/admin/dashboard">Admin</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                {activeMain && (
+                  <>
+                    <BreadcrumbItem>
+                      <BreadcrumbLink href={activeMain.url}>
+                        {activeMain.title}
+                      </BreadcrumbLink>
+                    </BreadcrumbItem>
+                    {activeSub && (
+                      <>
+                        <BreadcrumbSeparator />
+                        <BreadcrumbItem>
+                          <BreadcrumbPage>{activeSub.title}</BreadcrumbPage>
+                        </BreadcrumbItem>
+                      </>
+                    )}
+                  </>
+                )}
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+
+          <p>
+            {` 👋🏾 Welcome,`}{" "}
+            <span className="font-semibold">{capitalizedFirstName}</span>!
+          </p>
         </header>
 
         {/* Scrollable Content */}

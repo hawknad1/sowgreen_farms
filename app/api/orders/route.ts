@@ -7,6 +7,7 @@ export async function GET(req: Request) {
     const from = searchParams.get("from")
     const to = searchParams.get("to")
     const status = searchParams.get("status") // Get the status query parameter
+    const email = searchParams.get("email") // Get the email query parameter
 
     // Build the date filter
     const dateFilter =
@@ -24,11 +25,20 @@ export async function GET(req: Request) {
     // If status is provided, add it to the filter
     const statusFilter = status ? { status } : {}
 
+    const emailFilter = email
+      ? {
+          shippingAddress: {
+            email,
+          },
+        }
+      : {}
+
     // Fetch orders with filters
     const orders = await prisma.order.findMany({
       where: {
         ...dateFilter,
         ...statusFilter, // Apply the status filter if present
+        ...emailFilter,
       },
       include: {
         shippingAddress: true,

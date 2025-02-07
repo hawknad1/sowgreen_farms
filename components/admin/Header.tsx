@@ -21,14 +21,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useSession } from "next-auth/react"
 import UserButton from "../header/UserButton"
 import { formatName } from "@/lib/formatName"
+import { UserProps } from "@/types"
 
-interface UserProps {
-  name?: string
-  email?: string
-  role?: string
-  emailVerified?: string
-  image?: string
-}
+// interface UserProps {
+//   name?: string
+//   email?: string
+//   role?: string
+//   emailVerified?: string
+//   image?: string
+// }
 
 const Header = async () => {
   const session = await auth()

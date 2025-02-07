@@ -27,7 +27,11 @@ const ModifyShippingDialog = ({ order, className }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="w-fit h-fit">
+        <Button
+          variant="outline"
+          className="w-fit h-fit"
+          disabled={order?.status === "delivered"}
+        >
           Change Order Details
         </Button>
       </DialogTrigger>

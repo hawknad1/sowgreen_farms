@@ -36,6 +36,8 @@ import {
   PieChart,
   Send,
   SquareTerminal,
+  NotebookPenIcon,
+  Salad,
 } from "lucide-react"
 
 export const menuLinks = [
@@ -296,6 +298,11 @@ export const sidebarLinks = {
       icon: LineChart,
     },
     {
+      title: "Blog",
+      url: "/admin/blog",
+      icon: NotebookPenIcon,
+    },
+    {
       title: "Settings",
       url: "/admin/settings",
       icon: Settings2,
@@ -411,7 +418,7 @@ export const sideMenuLinks = [
   },
   {
     label: "Orders",
-    href: "/orders",
+    href: "/order",
     icon: Carrot,
   },
   {
@@ -427,11 +434,18 @@ export const adminSideMenuLinks = [
     href: "/admin/dashboard",
     icon: UserRound,
   },
+
   {
     label: "Orders",
-    href: "/orders",
+    href: "/account/order-history",
     icon: Carrot,
   },
+  {
+    label: "Products",
+    href: "/products",
+    icon: Salad,
+  },
+
   {
     label: "Wishlists",
     href: "/wishlists",

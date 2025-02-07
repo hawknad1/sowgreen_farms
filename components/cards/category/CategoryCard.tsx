@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Product } from "@/types"
@@ -23,7 +23,7 @@ const CategoryCard = ({ data }: { data: Product }) => {
               className="object-contain h-24 w-24 flex"
             />
           </div>
-          <p className="text-xs tracking-wide font-semibold">
+          <p className="text-xs tracking-wide font-semibold text-sowgren_Color">
             {data?.categoryName}
           </p>
         </div>

@@ -158,7 +158,7 @@ const EditProductForm = ({ product }: ProductProps) => {
           />
         </div>
 
-        <div className="h-[200px] overflow-y-scroll">
+        <div className="h-[200px] overflow-y-scroll scrollbar-thin">
           <FormLabel className="text-lg font-semibold">Variants</FormLabel>
           {fields.map((field, index) => (
             <div

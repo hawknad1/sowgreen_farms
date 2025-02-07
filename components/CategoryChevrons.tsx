@@ -30,7 +30,7 @@ const CategoryChevrons = ({ children }: ChevronProps) => {
     <div className="flex flex-col items-center gap-6">
       <div className="flex items-center justify-between w-full">
         <div>
-          <h2 className="text-xl sm:text-2xl md:text-3xl text-neutral-700 font-bold">
+          <h2 className="text-xl sm:text-2xl md:text-3xl text-sowgren_Color font-bold">
             Shop By Category
           </h2>
         </div>
@@ -39,13 +39,13 @@ const CategoryChevrons = ({ children }: ChevronProps) => {
             className="bg-slate-100 p-1 rounded-full cursor-pointer "
             onClick={scrollLeft}
           >
-            <ChevronLeftIcon className="w-5 h-5" />
+            <ChevronLeftIcon className="w-5 h-5 text-sowgren_Color" />
           </div>
           <div
             className="bg-slate-100 p-1 rounded-full cursor-pointer"
             onClick={scrollRight}
           >
-            <ChevronRightIcon className="w-5 h-5" />
+            <ChevronRightIcon className="w-5 h-5 text-sowgren_Color" />
           </div>
         </div>
       </div>

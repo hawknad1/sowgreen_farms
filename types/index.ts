@@ -34,6 +34,16 @@ export type ShippingAddress = {
   orders?: Order[]
 }
 
+export type UserProps = {
+  id?: string
+  name?: string
+  email?: string
+  role?: string
+  emailVerified?: boolean
+  image?: string
+  balance?: number
+}
+
 export type CustomerDetailType = {
   id: string
   name: string

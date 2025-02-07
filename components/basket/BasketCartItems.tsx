@@ -60,10 +60,7 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
   return (
     <div className="mt-4 space-y-4 w-full">
       {cart.map((item) => {
-        // const product = cartProducts[item.productId]
-        // const variant = product?.variants.find((v) => v.id === item.variantId)
         const product = item.product
-        console.log(item, "ITEM---")
 
         return (
           <div

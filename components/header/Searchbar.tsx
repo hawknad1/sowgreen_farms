@@ -62,8 +62,8 @@ const Searchbar = () => {
           placeholder="Search products"
           className="flex-1 bg-transparent outline-none text-sm lg:text-base"
         />
-        <div className="absolute inset-y-0 right-2 flex items-center cursor-pointer">
-          <MagnifyingGlassIcon className="lg:h-6 lg:w-6 h-5 w-5 text-gray-600" />
+        <div className="absolute inset-y-0 right-1 top-0.5 flex items-center cursor-pointer bg-sowgren_Color rounded-full w-fit p-1.5 h-fit">
+          <MagnifyingGlassIcon className="lg:h-6 lg:w-6 h-5 w-5 text-white" />
         </div>
       </form>
 

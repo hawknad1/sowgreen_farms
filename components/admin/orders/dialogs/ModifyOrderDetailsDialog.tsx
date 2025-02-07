@@ -27,7 +27,11 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" className="">
+        <Button
+          variant="outline"
+          className=""
+          disabled={order?.status === "delivered"}
+        >
           {/* <PencilSquareIcon className="h-5 w-5" /> */}
           Change Delivery Method
         </Button>

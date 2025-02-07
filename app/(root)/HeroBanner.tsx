@@ -11,7 +11,11 @@ import "swiper/css"
 import "swiper/css/navigation"
 import "swiper/css/pagination"
 import "swiper/css/autoplay"
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/20/solid"
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ShoppingBagIcon,
+} from "@heroicons/react/20/solid"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 
@@ -93,12 +97,14 @@ const HeroBanner = () => {
               >
                 {slide.subtitle}
               </motion.p>
+
               <Button
-                variant="secondary"
-                className="font-semibold text-lg mt-7"
+                variant="ghost"
+                className="w-fit text-white flex shadow-sm items-center gap-x-2 mt-4 max-w-64 font-semibold text-sm bg-sowgren_Color"
                 onClick={() => router.push("/products")}
               >
-                Shop now
+                Shop Now
+                <ShoppingBagIcon className="w-5 h-5" />
               </Button>
             </div>
           </SwiperSlide>

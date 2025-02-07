@@ -58,7 +58,7 @@ const Add = ({ product }: { product: Product }) => {
             <button
               className="cursor-pointer text-xl disabled:cursor-not-allowed disabled:opacity-20"
               onClick={() => handleQuantity("d")}
-              disabled={quantity === 1}
+              disabled={quantity === 1 || product?.isInStock === "out-of-stock"}
             >
               -
             </button>
@@ -66,7 +66,10 @@ const Add = ({ product }: { product: Product }) => {
             <button
               className="cursor-pointer text-xl disabled:cursor-not-allowed disabled:opacity-20"
               onClick={() => handleQuantity("i")}
-              disabled={quantity === product.quantity}
+              disabled={
+                quantity === product.quantity ||
+                product?.isInStock === "out-of-stock"
+              }
             >
               +
             </button>
@@ -84,6 +87,7 @@ const Add = ({ product }: { product: Product }) => {
         </div>
         <button
           onClick={handleAddToCart}
+          disabled={product?.isInStock === "out-of-stock"}
           // disabled={product.quantity < 1 || !selectedVariant}
           className="w-36 text-sm rounded-3xl ring-1 ring-green-900/25 text-green-900 py-2 px-4 hover:bg-green-700 font-medium hover:text-white disabled:cursor-not-allowed disabled:bg-pink-200 disabled:ring-0 disabled:text-white"
         >

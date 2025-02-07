@@ -64,23 +64,25 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
   }
 
   return (
-    <Link href={`/products/${data?.id}`}>
+    <Link href={`/products/${data?.id}`} className="relative overflow-hidden">
+      <div className="absolute -top-1 z-20">
+        {data?.isInStock === "out-of-stock" ? (
+          <Badge className="bg-gray-500/40 text-gray-500 rounded-none rounded-tl-md rounded-br-btn">
+            Out of stock
+          </Badge>
+        ) : discount ? (
+          <Badge className="bg-red-500/85 rounded-none rounded-tl-md rounded-br-btn ">
+            <p className="text-[10px] text-white tracking-wide">
+              {discount}% OFF
+            </p>
+          </Badge>
+        ) : null}
+      </div>
       <div className="bg-[#F6F6F6] w-64 h-[300px] rounded-lg flex flex-col p-3 relative cursor-pointer">
         {/* Badge Section */}
-        <div className="absolute top-2 left-3 z-20">
-          {data?.isInStock === "out-of-stock" ? (
-            <Badge className="bg-gray-500/40 text-gray-500">Out of stock</Badge>
-          ) : discount ? (
-            <Badge className="bg-red-500/85">
-              <p className="text-[10px] text-white tracking-wide">
-                {discount}% OFF
-              </p>
-            </Badge>
-          ) : null}
-        </div>
 
         {/* Image Section */}
-        <div className="w-full h-[170px] relative">
+        <div className="w-full h-[170px] relative bg-white rounded-lg shadow-sm">
           <Image
             src={primaryImage}
             alt={data?.title}
@@ -88,7 +90,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
             height={100}
             className={`h-full w-full object-contain ${
               data?.images?.length > 1 &&
-              "absolute z-10 transition-opacity hover:opacity-0 duration-500 bg-[#F6F6F6] ease-in-out"
+              "absolute z-10 transition-opacity hover:opacity-0 duration-500 bg-white rounded-lg ease-in-out"
             }`}
           />
           {data?.images?.length > 1 && (
@@ -131,9 +133,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
             {formatCurrency(data?.variants[0]?.price, "GHS")}
           </p>
           <button
-            className="rounded-full bg-[#184532] w-8 h-8 text-white flex justify-center items-center hover:bg-[#123724] transition-colors"
+            className={`rounded-full bg-[#184532] ${
+              data?.isInStock === "out-of-stock" && "opacity-50 hover:bg-none"
+            } w-8 h-8 text-white flex justify-center items-center hover:bg-[#123724] transition-colors`}
             aria-label="Add to cart"
             onClick={handleAddToCartClick}
+            disabled={data?.isInStock === "out-of-stock"}
           >
             <Plus className="w-5 h-5" />
           </button>
@@ -144,5 +149,3 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
 }
 
 export default ProductCard
-
-// export default ProductCard
