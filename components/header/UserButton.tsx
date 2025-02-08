@@ -200,12 +200,6 @@ const UserButton = ({ user }: { user: UserProps }) => {
     <>
       <DropdownMenuLabel>Account</DropdownMenuLabel>
       <DropdownMenuSeparator />
-      {/* <DropdownMenuItem
-        onClick={() => router.push("/account/order-history")}
-        className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
-      >
-        Order History
-      </DropdownMenuItem> */}
       {user.role !== "admin" && (
         <>
           <DropdownMenuItem

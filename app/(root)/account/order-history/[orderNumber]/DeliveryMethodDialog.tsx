@@ -45,7 +45,7 @@ const ChangeDeliveryMethodDialog = ({ order, className }: Props) => {
         className={` ${
           order?.status === "confirmed"
             ? "max-w-2xl h-96 lg:h-fit p-1"
-            : "max-w-2xl h-96 lg:h-fit flex flex-col py-3 lg:scrollbar-hide overflow-y-scroll"
+            : "max-w-2xl md:h-96 lg:h-fit flex flex-col py-3 lg:scrollbar-hide overflow-y-scroll rounded-lg"
         }`}
       >
         {order?.status === "confirmed" ? (
