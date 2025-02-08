@@ -44,6 +44,13 @@ export type UserProps = {
   balance?: number
 }
 
+export type MenuItem = {
+  label: string
+  href?: string // Optional for parent items
+  icon?: React.ForwardRefExoticComponent<any> // Icon component (optional for sub-items)
+  items?: MenuItem[] // Nested items (optional)
+}
+
 export type CustomerDetailType = {
   id: string
   name: string

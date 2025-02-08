@@ -1,40 +1,178 @@
+// "use client"
+// import { sideMenuLinks } from "@/constants"
+// import { CircleHelp, Heart, Salad, Settings, UserRound } from "lucide-react"
+// import { useSession } from "next-auth/react"
+// import Link from "next/link"
+// import React from "react"
+
+// export const adminSideMenuLinks = [
+//   {
+//     label: "Account",
+//     icon: UserRound,
+//     items: [
+//       {
+//         label: "Profile",
+//         href: "/profile",
+//       },
+//       {
+//         label: "Orders",
+//         href: "/account/order-history",
+//       },
+//       {
+//         label: "Admin",
+//         href: "/admin/dashboard",
+//       },
+//     ],
+//   },
+//   {
+//     label: "Products",
+//     href: "/products",
+//     icon: Salad,
+//   },
+//   {
+//     label: "Wishlists",
+//     href: "/wishlists",
+//     icon: Heart,
+//   },
+// ]
+
+// const SideMenu = () => {
+//   const { data: session } = useSession()
+//   const user = session?.user
+
+//   if (!user) return null // Avoid rendering if user is not available.
+//   const links = user.role === "admin" ? adminSideMenuLinks : sideMenuLinks
+
+//   return (
+//     <div className="flow-root">
+//       <ul className="-my-2 divide-y divide-gray-100">
+//         {/* Render the main menu items */}
+//         {(user.role === "admin" ? adminSideMenuLinks : sideMenuLinks).map(
+//           (menu, index) => (
+//             <li key={index} className="py-2">
+//               {/* Check if the menu item has nested items */}
+//               {menu.items ? (
+//                 <div>
+//                   {/* Render the parent label */}
+//                   <span
+//                     className="block px-4 py-2 text-sm font-medium text-gray-600"
+//                     aria-haspopup="true"
+//                   >
+//                     {menu.label}
+//                   </span>
+//                   {/* Render the nested items */}
+//                   <ul className="space-y-1 pl-4">
+//                     {menu.items.map((item, itemIndex) => (
+//                       <Link
+//                         key={itemIndex}
+//                         href={item.href}
+//                         className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+//                       >
+//                         <menu.icon className="h-4 w-4" />
+//                         {item.label}
+//                       </Link>
+//                     ))}
+//                   </ul>
+//                 </div>
+//               ) : (
+//                 // Render a single link if no nested items exist
+//                 <Link
+//                   href={menu.href}
+//                   className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+//                 >
+//                   <menu.icon className="h-4 w-4" />
+//                   {menu.label}
+//                 </Link>
+//               )}
+//             </li>
+//           )
+//         )}
+
+//         {/* Additional static links */}
+//         <li className="py-2">
+//           <ul className="space-y-1">
+//             <Link
+//               href="/help"
+//               className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+//             >
+//               <CircleHelp className="h-4 w-4" />
+//               Help
+//             </Link>
+//             <Link
+//               href="/settings"
+//               className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+//             >
+//               <Settings className="h-4 w-4" />
+//               Settings
+//             </Link>
+//           </ul>
+//         </li>
+//       </ul>
+//     </div>
+//   )
+// }
+
+// export default SideMenu
+
 "use client"
+
 import { adminSideMenuLinks, sideMenuLinks } from "@/constants"
-import { CircleHelp, Settings } from "lucide-react"
+import { MenuItem } from "@/types"
+import {
+  CircleHelp,
+  Heart,
+  LayoutDashboard,
+  Salad,
+  Settings,
+  UserRound,
+  ListOrdered,
+} from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import React from "react"
+import React, { useState } from "react"
 
+// Define the type for menu items with nested structure
 const SideMenu = () => {
   const { data: session } = useSession()
   const user = session?.user
 
   if (!user) return null // Avoid rendering if user is not available.
 
+  const links: MenuItem[] =
+    user.role === "admin" ? adminSideMenuLinks : sideMenuLinks
+
   return (
     <div className="flow-root">
       <ul className="-my-2 divide-y divide-gray-100">
-        <li className="py-2">
-          <ul className="space-y-1 mt-4">
-            {(user.role === "admin" ? adminSideMenuLinks : sideMenuLinks).map(
-              ({ label, href, icon: Icon }, index) => (
-                <Link
-                  key={index}
-                  href={href}
-                  className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                >
-                  <Icon className="h-4 w-4" />
-                  {label}
-                </Link>
-              )
+        {/* Render the main menu items */}
+        {links.map((menu, index) => (
+          <li key={index} className="py-2">
+            {/* Check if the menu item has nested items */}
+            {menu.items ? (
+              <CollapsibleSection
+                label={menu.label}
+                icon={menu.icon}
+                items={menu.items}
+              />
+            ) : (
+              // Render a single link if no nested items exist
+              <Link
+                href={menu.href || "#"}
+                className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+              >
+                {menu.icon && <menu.icon className="h-4 w-4" />}
+                {menu.label}
+              </Link>
             )}
-          </ul>
-        </li>
+          </li>
+        ))}
+
+        {/* Additional static links */}
         <li className="py-2">
           <ul className="space-y-1">
             <Link
               href="/help"
-              className="flex items-center gap-x-2  rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+              className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
             >
               <CircleHelp className="h-4 w-4" />
               Help
@@ -49,6 +187,62 @@ const SideMenu = () => {
           </ul>
         </li>
       </ul>
+    </div>
+  )
+}
+
+// CollapsibleSection Component
+const CollapsibleSection = ({ label, icon: ParentIcon, items }: MenuItem) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+
+  return (
+    <div>
+      {/* Parent Label with Toggle Button */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="flex items-center justify-between w-full px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg"
+      >
+        <span className="flex items-center gap-x-2">
+          {ParentIcon && <ParentIcon className="h-4 w-4" />}
+          {label}
+        </span>
+        {/* Chevron Icon for Expand/Collapse */}
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          className={`w-4 h-4 transition-transform duration-300 transform ${
+            isExpanded ? "rotate-180" : ""
+          }`}
+        >
+          <path
+            fillRule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
+      </button>
+
+      {/* Nested Items */}
+      {isExpanded && (
+        <ul className="space-y-1 pl-4">
+          {items?.map((item, itemIndex) => (
+            <Link
+              key={itemIndex}
+              href={item.href || "#"}
+              className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+            >
+              {/* Use sub-item's icon if available, otherwise use parent's icon */}
+              {item.icon ? (
+                <item.icon className="h-4 w-4" />
+              ) : ParentIcon ? (
+                <ParentIcon className="h-4 w-4" />
+              ) : null}
+              {item.label}
+            </Link>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }

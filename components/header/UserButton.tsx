@@ -158,14 +158,6 @@ import { Skeleton } from "../ui/skeleton"
 import { formatCurrency } from "@/lib/utils"
 import { UserProps } from "@/types"
 
-// export type User = {
-//   id: string
-//   name: string
-//   role: string
-//   balance: number
-//   email: string
-// }
-
 const UserButton = ({ user }: { user: UserProps }) => {
   const [activeUser, setActiveUser] = useState<UserProps | null>(null)
   const [isLoading, setIsLoading] = useState(false)

@@ -64,7 +64,7 @@ const CancelCustomerOrderDialog = ({ order, className }: Props) => {
         <Button
           disabled={buttonDisabled}
           variant="destructive"
-          className={`font-semibold text-xs lg:text-sm w-full hover:bg-red-600 ${className} shadow-sm border border-neutral-200 ${
+          className={`font-semibold hidden md:inline-flex text-xs lg:text-sm w-full hover:bg-red-600 ${className} shadow-sm border border-neutral-200 ${
             order?.status === "confirmed" && "bg-red-500/70 hover:bg-red-500/50"
           }`}
         >

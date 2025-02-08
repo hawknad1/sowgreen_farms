@@ -64,29 +64,31 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   return (
     <div className="min-h-screen flex flex-col items-center bg-white py-8">
       <div className="w-full max-w-5xl px-4 space-y-6">
-        <div className="grid grid-cols-5 gap-4 p-4 text-center place-items-center font-bold text-gray-700 text-lg border-t border-b border-black ">
-          <h2 className="text-sm lg:text-base">Order #</h2>
-          <h2 className="text-sm lg:text-base">Date Placed</h2>
-          <h2 className="text-sm lg:text-base">Shipping Method</h2>
-          <h2 className="text-sm lg:text-base">Order Total</h2>
-          <h2 className="text-sm lg:text-base">Status</h2>
+        <div className="grid grid-cols-5 gap-4 p-4 text-center place-items-center font-bold text-gray-700 border-t border-b border-black ">
+          <h2 className="text-xs md:text-sm lg:text-base">Order #</h2>
+          <h2 className="text-xs md:text-sm lg:text-base">Date Placed</h2>
+          <h2 className="text-xs md:text-sm lg:text-base">Shipping Method</h2>
+          <h2 className="text-xs md:text-sm lg:text-base">Order Total</h2>
+          <h2 className="text-xs md:text-sm lg:text-base">Status</h2>
         </div>
 
         {orderDetails && (
           <div className="grid grid-cols-5 gap-4 text-center place-items-center text-gray-600 p-4 mb-4 border-b border-gray-200">
-            <p className="text-sm lg:text-base">{orderDetails.orderNumber}</p>
-            <p className="text-sm lg:text-base">
+            <p className="text-xs md:text-sm lg:text-base">
+              {orderDetails.orderNumber}
+            </p>
+            <p className="text-xs md:text-sm lg:text-base">
               {new Date(orderDetails.createdAt).toLocaleDateString()}
             </p>
-            <p className="text-sm lg:text-base">
+            <p className="text-xs md:text-sm lg:text-base">
               {/* <span>{orderDetails.shippingAddress.deliveryMethod}</span> */}
               <span> {deliveryMethod()}</span>
               <span>{orderDetails.deliveryDate}</span>
             </p>
-            <p className="text-sm lg:text-base">{`GHS ${(
+            <p className="text-xs md:text-sm lg:text-base">{`GHS ${(
               orderDetails.total + orderDetails.deliveryFee
             ).toFixed(2)}`}</p>
-            <p>{status}</p>
+            <p className="text-xs md:text-sm">{status}</p>
           </div>
         )}
 
@@ -152,8 +154,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               <ChangeDeliveryMethodDialog order={orderDetails} />
               <CancelCustomerOrderDialog order={orderDetails} />
             </div>
-
-            {/* <p className="text-neutral-600">{`Showing All ${orderDetails?.products.length} Products`}</p> */}
           </div>
 
           <div className="space-y-4 overflow-auto max-h-96 border border-slate-300 rounded-lg">

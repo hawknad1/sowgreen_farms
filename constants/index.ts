@@ -1,7 +1,7 @@
 // import { Order, Payment, Product, ShippingAddress } from "@/types"
 import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
 import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
-import { ShippingAddress } from "@/types"
+import { MenuItem, ShippingAddress } from "@/types"
 import {
   BookmarkIcon,
   CreditCardIcon,
@@ -38,6 +38,8 @@ import {
   SquareTerminal,
   NotebookPenIcon,
   Salad,
+  ListOrdered,
+  LayoutDashboard,
 } from "lucide-react"
 
 export const menuLinks = [
@@ -413,13 +415,24 @@ export const units = [
 export const sideMenuLinks = [
   {
     label: "Account",
-    href: "/account",
     icon: UserRound,
+    items: [
+      {
+        label: "Profile",
+        href: "/profile",
+        icon: UserRound, // Add individual icons for sub-items if needed
+      },
+      {
+        label: "Order History",
+        href: "/account/order-history",
+        icon: ListOrdered, // Add individual icons for sub-items if needed
+      },
+    ],
   },
   {
-    label: "Orders",
-    href: "/order",
-    icon: Carrot,
+    label: "Products",
+    href: "/products",
+    icon: Salad,
   },
   {
     label: "Wishlists",
@@ -428,24 +441,62 @@ export const sideMenuLinks = [
   },
 ]
 
-export const adminSideMenuLinks = [
-  {
-    label: "Admin Dashboard",
-    href: "/admin/dashboard",
-    icon: UserRound,
-  },
+// export const adminSideMenuLinks = [
+//   {
+//     label: "Admin Dashboard",
+//     icon: UserRound,
+//     items: [
+//       {
+//         title: "Profile",
+//         href: "/profile",
+//       },
+//       {
+//         label: "Orders",
+//         href: "/account/order-history",
+//         // icon: Carrot,
+//       },
+//     ],
+//   },
+//   {
+//     label: "Products",
+//     href: "/products",
+//     icon: Salad,
+//   },
 
+//   {
+//     label: "Wishlists",
+//     href: "/wishlists",
+//     icon: Heart,
+//   },
+// ]
+
+export const adminSideMenuLinks: MenuItem[] = [
   {
-    label: "Orders",
-    href: "/account/order-history",
-    icon: Carrot,
+    label: "Account",
+    icon: UserRound,
+    items: [
+      {
+        label: "Profile",
+        href: "/profile",
+        icon: UserRound, // Add individual icons for sub-items if needed
+      },
+      {
+        label: "Order History",
+        href: "/account/order-history",
+        icon: ListOrdered, // Add individual icons for sub-items if needed
+      },
+      {
+        label: "Admin Dashboard",
+        href: "/admin/dashboard",
+        icon: LayoutDashboard, // Example of adding a specific icon for "Admin"
+      },
+    ],
   },
   {
     label: "Products",
     href: "/products",
     icon: Salad,
   },
-
   {
     label: "Wishlists",
     href: "/wishlists",
