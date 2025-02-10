@@ -1,5 +1,5 @@
 import { create } from "zustand"
-import { devtools, persist } from "zustand/middleware"
+import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import { DispatchRider, Order, Product, ShippingAddress } from "./types"
 // import { CartItem } from "@/types"
 
@@ -239,6 +239,56 @@ export const useDispatchRidersStore = create<DispatchRidersStore>((set) => ({
 //     }
 //   )
 // )
+
+interface CheckoutFormValues {
+  name: string
+  email: string
+  address: string
+  city: string
+  country: string
+  phone: string
+  region: string
+}
+
+interface CheckoutStore {
+  formValues: CheckoutFormValues
+  setFormValues: (values: Partial<CheckoutFormValues>) => void
+  resetFormValues: () => void
+}
+
+export const useCheckoutStore = create<CheckoutStore>()(
+  persist(
+    (set) => ({
+      formValues: {
+        name: "",
+        email: "",
+        address: "",
+        city: "",
+        country: "",
+        phone: "",
+        region: "",
+      },
+      setFormValues: (values) =>
+        set((state) => ({ formValues: { ...state.formValues, ...values } })),
+      resetFormValues: () =>
+        set({
+          formValues: {
+            name: "",
+            email: "",
+            address: "",
+            city: "",
+            country: "",
+            phone: "",
+            region: "",
+          },
+        }),
+    }),
+    {
+      name: "checkout-store", // Unique name for the localStorage key
+      storage: createJSONStorage(() => localStorage), // Use localStorage
+    }
+  )
+)
 
 export const useCartStore = create<CartState>()(
   persist(

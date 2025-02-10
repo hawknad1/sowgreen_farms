@@ -29,14 +29,16 @@ const BasketPage = () => {
       <div className="flex flex-col">
         <div className="flex items-center space-x-2 mb-2">
           <ShoppingCartIcon className="h-8 w-8 md:h-10 md:w-10" />
-          <h1 className="text-2xl md:text-3xl font-bold">Your Shopping Cart</h1>
+          <h1 className="text-lg lg:text-2xl md:text-3xl font-bold">
+            Your Shopping Cart
+          </h1>
         </div>
         {cart.length > 0 ? (
-          <p className="text-neutral-600/75 mb-2">
+          <p className="text-neutral-600/75 mb-2 text-sm md:text-base">
             Review the items in your cart and checkout when ready!
           </p>
         ) : (
-          <p className="text-neutral-600/75 mb-2">
+          <p className="text-neutral-600/75 mb-2 text-sm md:text-base">
             You have no items in your basket!
           </p>
         )}
@@ -44,11 +46,11 @@ const BasketPage = () => {
 
       <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-8 lg:gap-x-20">
         {/* Left Section */}
-        <div className="w-full lg:col-span-2 col-span-1 max-h-screen ">
+        <div className="w-full lg:col-span-2 col-span-1 ">
           <div className="overflow-y-scroll scrollbar-sowgreen">
             <CartBasket />
           </div>
-          <div className="mt-4 mb-4">
+          <div className="mt-4 hidden lg:inline-flex">
             <Button className="w-fit" variant="destructive" onClick={clearCart}>
               Clear basket
             </Button>
@@ -56,7 +58,7 @@ const BasketPage = () => {
         </div>
 
         {/* Right Section */}
-        <div className="w-full grid gap-3 mt-12 md:mt-0 col-span-1">
+        <div className="w-full grid gap-3 md:mt-0 col-span-1">
           <CheckoutBox className="hidden lg:inline-flex ">
             <Coupon />
           </CheckoutBox>

@@ -9,7 +9,7 @@ interface MiddleCardProps
 const MiddleCard = ({ children, className }: MiddleCardProps) => {
   return (
     <div
-      className={`flex items-center justify-center rounded-md px-3 ${className}`}
+      className={`flex items-center justify-center rounded-md px-3 w-full ${className}`}
     >
       {children}
     </div>

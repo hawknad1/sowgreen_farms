@@ -9,7 +9,9 @@ const ViewAll = () => {
       onClick={() => router.push("/products")}
       className="flex justify-center mt-7"
     >
-      <Button>View All Products</Button>
+      <Button className="bg-[#004729] hover:bg-[#004729d4]">
+        View All Products
+      </Button>
     </div>
   )
 }

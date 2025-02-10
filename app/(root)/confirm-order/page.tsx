@@ -61,6 +61,8 @@ const ConfirmOrderPage = () => {
   const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
 
+  console.log(formData, "FORMDATA")
+
   useEffect(() => {
     if (!user?.email) return
 

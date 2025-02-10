@@ -336,7 +336,7 @@ const OrderHistoryTable = ({ orders }: Props) => {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  No orders available.
                 </TableCell>
               </TableRow>
             )}
