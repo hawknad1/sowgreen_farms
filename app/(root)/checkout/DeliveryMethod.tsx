@@ -225,20 +225,20 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
   const [wednesday, saturday] = getUpcomingDeliveryDates()
 
   // Load selected delivery method from localStorage on component mount
-  // useEffect(() => {
-  //   const savedDeliveryMethod = localStorage.getItem("selectedDeliveryMethod")
-  //   if (savedDeliveryMethod) {
-  //     setSelectedDeliveryMethod(savedDeliveryMethod)
-  //     form.setValue("deliveryMethod", savedDeliveryMethod) // Sync with react-hook-form
-  //   }
-  // }, [form, setSelectedDeliveryMethod])
+  useEffect(() => {
+    const savedDeliveryMethod = localStorage.getItem("selectedDeliveryMethod")
+    if (savedDeliveryMethod) {
+      setSelectedDeliveryMethod(savedDeliveryMethod)
+      form.setValue("deliveryMethod", savedDeliveryMethod) // Sync with react-hook-form
+    }
+  }, [form, setSelectedDeliveryMethod])
 
   // Save selected delivery method to localStorage whenever it changes
-  // useEffect(() => {
-  //   if (selectedDeliveryMethod) {
-  //     localStorage.setItem("selectedDeliveryMethod", selectedDeliveryMethod)
-  //   }
-  // }, [selectedDeliveryMethod])
+  useEffect(() => {
+    if (selectedDeliveryMethod) {
+      localStorage.setItem("selectedDeliveryMethod", selectedDeliveryMethod)
+    }
+  }, [selectedDeliveryMethod])
 
   // Fetch available pickup options
   useEffect(() => {

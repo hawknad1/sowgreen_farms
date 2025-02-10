@@ -73,7 +73,7 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
 
   return (
     <div className="flex flex-col justify-between max-h-[350px]">
-      <div className="h-[250px] overflow-y-scroll">
+      <div className="h-[250px] overflow-y-scroll scrollbar-thin">
         {[...orders.products].reverse().map((item) => (
           <div
             key={item.id}
@@ -89,10 +89,10 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                 alt={item.product.title || "Product Image"}
                 height={40}
                 width={40}
-                className="object-contain h-16 w-16 bg-gray-100 p-1 rounded-md"
+                className="object-contain h-14 w-14 md:h-16 md:w-16 bg-gray-100 p-1 rounded-md"
               />
               <div>
-                <p className="font-semibold text-base text-black">
+                <p className="md:font-semibold text-sm font-medium md:text-base text-black line-clamp-1">
                   {item.product.title || "Untitled Product"}
                 </p>
                 <div className="flex items-center gap-x-2">
@@ -110,12 +110,14 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                         }
                       }}
                     >
-                      <SelectTrigger className="w-[180px]">
+                      <SelectTrigger className="w-24 lg:w-[180px]">
                         <SelectValue placeholder="Weight" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
-                          <SelectLabel>Price/Weight</SelectLabel>
+                          <SelectLabel className="text-xs md:text-base">
+                            Price/Weight
+                          </SelectLabel>
                           {item.product.variants.map((variant, index) => (
                             <SelectItem
                               key={index}
@@ -124,13 +126,16 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                                 (variant?.weight === null &&
                                   variant?.price?.toString())
                               }
+                              className=""
                             >
-                              {formatCurrency(variant.price, "GHS")}
+                              <span className="text-xs md:text-base">
+                                {formatCurrency(variant.price, "GHS")}
+                              </span>
                               {variant?.weight === 0 ||
                               variant?.weight === null ? (
                                 ""
                               ) : (
-                                <span className="text-sm text-neutral-400">{`/ ${
+                                <span className="text-xs md:text-sm text-neutral-400">{`/ ${
                                   variant?.weight < 1
                                     ? variant?.weight * 1000
                                     : variant?.weight
@@ -143,16 +148,16 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                     </Select>
                   ) : item.product.variants &&
                     item.product.variants.length === 1 ? (
-                    <p className="text-sm text-neutral-600">
+                    <p className="text-xs md:text-sm text-neutral-600">
                       {`${formatCurrency(item.price, "GHS")} `}
                     </p>
                   ) : (
-                    <p className="text-sm">
+                    <p className="text-xs md:text-sm">
                       {formatCurrency(item?.price, "GHS")}{" "}
                       {item?.weight === 0 || item?.weight === null ? (
                         ""
                       ) : (
-                        <span className="text-sm text-neutral-400">{`/ ${
+                        <span className="text-xs md:text-sm text-neutral-400">{`/ ${
                           item?.weight < 1 ? item?.weight * 1000 : item?.weight
                         }${item?.unit}`}</span>
                       )}{" "}
@@ -171,7 +176,7 @@ const AddedProducts = ({ orders, setOrderItems }: EditOrderProps) => {
                 }
                 className="w-16"
               />
-              <p className="text-sm">
+              <p className="text-xs md:text-sm">
                 <span>Subtotal</span> <br />
                 <span>{formatCurrency(item.price * item.quantity, "GHS")}</span>
               </p>

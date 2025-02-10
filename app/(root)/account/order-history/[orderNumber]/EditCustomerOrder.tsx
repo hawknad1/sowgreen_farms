@@ -426,7 +426,7 @@ const EditCustomerOrder = ({
               <div>
                 <p className={` `}>
                   <span
-                    className={`font-semibold text-base text-black ${
+                    className={`font-semibold text-xs md:text-base text-black ${
                       !item?.available && "line-through text-red-500 "
                     }`}
                   >
@@ -435,12 +435,12 @@ const EditCustomerOrder = ({
                   </span>
                   {!item?.available && <span> - N/A</span>}
                 </p>
-                <p className="text-sm">
+                <p className="text-xs md:text-sm">
                   {formatCurrency(item?.price, "GHS")}{" "}
                   {item?.weight === 0 || item?.weight === null ? (
                     ""
                   ) : (
-                    <span className="text-sm text-neutral-400">{`/ ${
+                    <span className="text-xs md:text-sm text-neutral-400">{`/ ${
                       item?.weight < 1 ? item?.weight * 1000 : item?.weight
                     }${item?.unit}`}</span>
                   )}{" "}
@@ -507,9 +507,18 @@ const EditCustomerOrder = ({
       </div>
       <div className="flex flex-col gap-y-3 mt-4">
         <div className="flex justify-between text-black font-semibold">
-          <p>Subtotal: {formatCurrency(subtotal, "GHS")}</p>
-          <p>Delivery Fee: {formatCurrency(orderDetails.deliveryFee, "GHS")}</p>
-          <p>Total: {formatCurrency(total, "GHS")}</p>
+          <p className="text-xs md:text-base">
+            <span className="text-neutral-500">Subtotal:</span>{" "}
+            {formatCurrency(subtotal, "GHS")}
+          </p>
+          <p className="text-xs md:text-base">
+            <span className="text-neutral-500">Delivery Fee:</span>{" "}
+            {formatCurrency(orderDetails.deliveryFee, "GHS")}
+          </p>
+          <p className="text-xs md:text-base">
+            <span className="text-neutral-500">Total:</span>{" "}
+            {formatCurrency(total, "GHS")}
+          </p>
         </div>
 
         <Button onClick={handleSaveChanges} disabled={isSaving}>

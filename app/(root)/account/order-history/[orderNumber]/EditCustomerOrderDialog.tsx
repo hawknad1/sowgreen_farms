@@ -56,7 +56,7 @@ const EditCustomerOrderDialog = ({ order, className }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          className={` w-full border border-x-slate-200 text-xs lg:text-sm tracking-wide disabled:cursor-not-allowed ${className}`}
+          className={`w-fit lg:w-full border border-x-slate-200 text-xs lg:text-sm tracking-wide disabled:cursor-not-allowed ${className}`}
           disabled={buttonDisabled}
         >
           Edit Order
@@ -67,7 +67,7 @@ const EditCustomerOrderDialog = ({ order, className }: Props) => {
         className={` ${
           order?.status === "confirmed"
             ? "max-w-2xl h-fit p-1"
-            : "max-w-3xl h-[500px] flex flex-col py-3"
+            : "max-w-3xl h-[500px] flex flex-col py-3 rounded-lg"
         }`}
       >
         {order?.status === "confirmed" ? (
