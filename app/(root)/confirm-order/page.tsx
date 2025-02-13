@@ -61,8 +61,6 @@ const ConfirmOrderPage = () => {
   const searchParams = useSearchParams()
   const formData = Object.fromEntries(searchParams.entries())
 
-  console.log(formData, "FORMDATA")
-
   useEffect(() => {
     if (!user?.email) return
 
@@ -334,8 +332,8 @@ const ConfirmOrderPage = () => {
 
   return (
     <div className="container mx-auto min-h-screen p-8">
-      <div className="mx-auto bg-white border border-neutral-500/25 rounded-xl p-6 max-w-5xl">
-        <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">
+      <div className="mx-auto lg:max-w-5xl w-full bg-white">
+        <h2 className="lg:text-3xl text-xl font-bold mb-4 lg:mb-8 text-center text-gray-800">
           Confirm Order
         </h2>
         <InfoCard data={dataProps} />
@@ -344,11 +342,11 @@ const ConfirmOrderPage = () => {
           <CartDisplay />
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between mt-8 gap-4">
+        <div className="w-full flex justify-between mt-8 gap-4">
           <Button
             disabled={isConfirming}
             onClick={() => router.push("/basket")}
-            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
+            className="bg-blue-500 text-white text-sm px-6 py-3 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
           >
             Edit Order
           </Button>
@@ -360,7 +358,7 @@ const ConfirmOrderPage = () => {
               })
             }
             disabled={isConfirming}
-            className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all"
+            className="bg-sowgren_Color text-white px-6 py-3 text-sm rounded-lg hover:bg-sowgren_Color/85 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all"
           >
             {isConfirming ? (
               <span className="flex items-center gap-2">

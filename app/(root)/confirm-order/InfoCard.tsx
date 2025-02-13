@@ -151,9 +151,9 @@ const InfoCard = ({ data }: InfoCardProps) => {
 
     // Otherwise, prepend "PICK UP @" to the delivery method
     return (
-      <div className="md:inline-flex flex-col">
-        <p>PICK UP @</p>
-        <p className="font-semibold">{`${deliveryMethod} - ${data?.deliveryDate}`}</p>
+      <div className="flex items-center gap-x-2">
+        <p className="text-xs md:text-sm">PICK UP @</p>
+        <p className="font-semibold text-xs md:text-sm lg:text-base">{`${deliveryMethod} - ${data?.deliveryDate}`}</p>
       </div>
     )
   }, [deliveryMethod])
@@ -163,11 +163,11 @@ const InfoCard = ({ data }: InfoCardProps) => {
       <Card className="h-fit md:h-full">
         <div className="flex flex-col gap-4">
           <div>
-            <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <h3 className="lg:text-xl text-sm font-bold text-gray-800 flex items-center gap-2">
               <FaMapMarkerAlt className="text-red-500" />
               Delivery Address
             </h3>
-            <div className="mt-2 space-y-1 text-gray-600">
+            <div className="mt-2 space-y-1 text-gray-600 text-xs md:text-base">
               <p>{data?.formData?.name || "No name"}</p>
               <p>
                 {data?.formData?.address || "No address"},{" "}
@@ -180,7 +180,7 @@ const InfoCard = ({ data }: InfoCardProps) => {
           </div>
           <Separator className="" />
           <div>
-            <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <h3 className="lg:text-xl text-sm font-bold text-gray-800 flex items-center gap-2">
               <FaTruck className="text-green-500" />
               Delivery Method
             </h3>
@@ -189,18 +189,20 @@ const InfoCard = ({ data }: InfoCardProps) => {
                 {deliveryMethodNew}
               </span>
             </p> */}
-            <p className="py-1">{deliveryMethodDisplay}</p>
+            <p className="py-1 text-xs md:text-sm lg:text-base">
+              {deliveryMethodDisplay}
+            </p>
           </div>
         </div>
       </Card>
       <Card>
         <div className="flex flex-col gap-4">
           <div>
-            <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <h3 className="lg:text-xl text-sm font-bold text-gray-800 flex items-center gap-2">
               <FaClipboardList className="text-purple-500" />
               Order Summary
             </h3>
-            <div className="mt-2 space-y-2 text-gray-600">
+            <div className="mt-2 space-y-2 text-gray-600 text-xs md:text-sm lg:text-base">
               <div className="flex justify-between">
                 <p>Order Created:</p>
                 <span className="font-medium">{date}</span>
@@ -227,8 +229,10 @@ const InfoCard = ({ data }: InfoCardProps) => {
           </div>
           <Separator className="my-2" />
           <div className="flex justify-between">
-            <h3 className="text-xl font-bold text-gray-800">Order Total</h3>
-            <p className="text-gray-600 font-bold">
+            <h3 className="lg:text-xl text-sm font-bold text-gray-800">
+              Order Total
+            </h3>
+            <p className=" font-bold text-xs md:text-sm lg:text-base">
               {formatCurrency(data?.total + deliveryFee, "GHS") || "No total"}
             </p>
           </div>

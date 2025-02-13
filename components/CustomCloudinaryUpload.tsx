@@ -48,7 +48,7 @@ const CustomCloudinaryUpload = ({
   }
 
   return (
-    <div className="h-44 w-full border-dotted border-2 mt-4 grid place-items-center bg-slate-100 rounded-md relative">
+    <div className="h-32 md:h-44 w-full border-dotted border-2 mt-4 grid place-items-center bg-slate-100 rounded-md relative">
       <label
         htmlFor="file-upload"
         className="flex flex-col items-center justify-center cursor-pointer"
@@ -65,7 +65,7 @@ const CustomCloudinaryUpload = ({
         ) : (
           <>
             <PhotoIcon className="h-6 w-6" />
-            <span className="text-sm">Upload Image</span>
+            <span className="text-xs md:text-sm">Upload Image</span>
           </>
         )}
         <input

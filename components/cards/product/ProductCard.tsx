@@ -130,7 +130,20 @@ const ProductCard: React.FC<ProductCardProps> = ({ data }) => {
         {/* Price and Add to Cart Section */}
         <div className="flex justify-between items-center w-full mt-auto">
           <p className="text-lg tracking-wide font-bold text-[#184532]">
-            {formatCurrency(data?.variants[0]?.price, "GHS")}
+            {data?.discount > 0 ? (
+              <span className="text-[#184532]">
+                {formatCurrency(
+                  data?.variants[0].price -
+                    data?.variants[0]?.price * (data?.discount / 100),
+                  "GHS"
+                )}
+                <span className="text-sm text-neutral-300 font-medium line-through ml-2.5">
+                  {formatCurrency(data?.variants[0]?.price, "GHS")}
+                </span>
+              </span>
+            ) : (
+              <span>{formatCurrency(data?.variants[0]?.price, "GHS")}</span>
+            )}
           </p>
           <button
             className={`rounded-full bg-[#184532] ${

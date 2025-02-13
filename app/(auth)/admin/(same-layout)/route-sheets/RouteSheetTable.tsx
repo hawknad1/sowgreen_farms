@@ -52,8 +52,6 @@ const RouteSheetTable = ({ loading, data }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
-  console.log(data, "DATAAAA")
-
   const table = useReactTable({
     data: data ?? [], // Added orders data
     columns,

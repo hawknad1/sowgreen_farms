@@ -5,12 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
-
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Form, FormControl, FormItem, FormLabel } from "@/components/ui/form"
 import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
-import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
 import toast from "react-hot-toast"
 
 // Updated Zod schema
@@ -47,6 +45,9 @@ export function PickupOptions() {
           setExistingPickupOptions(
             data.map((item: { location: string }) => item.location)
           )
+          // setAvailablePickupOptions(
+          //   data.map((item: { address: string }) => item.address)
+          // )
         }
       } catch (error) {
         console.error("Error fetching existing pickup options:", error)
@@ -104,7 +105,7 @@ export function PickupOptions() {
       const res = await fetch("/api/pickup-options", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pickupOptions: data.pickupOptions }),
+        body: JSON.stringify(data.pickupOptions),
       })
 
       if (res.ok) {
@@ -172,7 +173,11 @@ export function PickupOptions() {
           ))}
         </div>
 
-        <Button type="submit" className="w-full" disabled={isSaving}>
+        <Button
+          type="submit"
+          className="w-full bg-sowgren_Color hover:bg-sowgren_Color/85"
+          disabled={isSaving}
+        >
           {isSaving ? (
             <span className="loading loading-infinity loading-md"></span>
           ) : (

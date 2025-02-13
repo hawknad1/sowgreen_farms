@@ -37,7 +37,7 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl rounded-lg">
         <DialogHeader>
           <DialogTitle>Update Delivery Method</DialogTitle>
           <DialogDescription>

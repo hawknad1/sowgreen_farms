@@ -133,7 +133,7 @@ export async function GET(req: NextRequest) {
 // }
 
 export async function PUT(req: Request) {
-  const { pickupOptions } = await req.json()
+  const pickupOptions = await req.json()
 
   if (
     !pickupOptions ||

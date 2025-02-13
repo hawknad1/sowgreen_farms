@@ -201,12 +201,15 @@ export const AddProductModal = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary" className="flex gap-x-2">
+        <Button
+          variant="secondary"
+          className="flex gap-x-2 text-xs md:text-base"
+        >
           <SquaresPlusIcon className="h-4 w-4" />
           Add Product
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl p-6 bg-white">
+      <DialogContent className="max-w-2xl p-6 bg-white rounded-lg">
         <DialogHeader>
           <DialogTitle>Multi-Step Product Form</DialogTitle>
         </DialogHeader>
@@ -230,9 +233,15 @@ export const AddProductModal = () => {
                     name="title"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel>Product Name</FormLabel>
+                        <FormLabel className="text-sm md:text-base">
+                          Product Name
+                        </FormLabel>
                         <FormControl>
-                          <Input placeholder="Product name" {...field} />
+                          <Input
+                            placeholder="Product name"
+                            className="text-sm md:text-base"
+                            {...field}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -243,7 +252,9 @@ export const AddProductModal = () => {
                     name="categoryName"
                     render={({ field }) => (
                       <FormItem className="w-full">
-                        <FormLabel>Category</FormLabel>
+                        <FormLabel className="text-sm md:text-base">
+                          Category
+                        </FormLabel>
                         <Select
                           onValueChange={(value) => field.onChange(value)}
                         >
@@ -252,11 +263,14 @@ export const AddProductModal = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectLabel>Category</SelectLabel>
+                              <SelectLabel className="text-sm md:text-base">
+                                Category
+                              </SelectLabel>
                               {categories.map((cat) => (
                                 <SelectItem
                                   key={cat.id}
                                   value={cat.categoryName}
+                                  className="text-sm md:text-base"
                                 >
                                   {cat.categoryName}
                                 </SelectItem>
@@ -274,9 +288,15 @@ export const AddProductModal = () => {
                     name="quantity"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Quantity</FormLabel>
+                        <FormLabel className="text-sm md:text-base">
+                          Quantity
+                        </FormLabel>
                         <FormControl>
-                          <Input {...field} type="number" />
+                          <Input
+                            {...field}
+                            type="number"
+                            className="text-sm md:text-base"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -288,7 +308,9 @@ export const AddProductModal = () => {
                     name="isInStock"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>In Stock</FormLabel>
+                        <FormLabel className="text-sm md:text-base">
+                          In Stock
+                        </FormLabel>
                         <Select
                           onValueChange={field.onChange}
                           defaultValue={field.value}
@@ -298,7 +320,9 @@ export const AddProductModal = () => {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectGroup>
-                              <SelectLabel>In Stock</SelectLabel>
+                              <SelectLabel className="text-sm md:text-base">
+                                In Stock
+                              </SelectLabel>
                               <SelectItem value="in-stock">Yes</SelectItem>
                               <SelectItem value="out-of-stock">No</SelectItem>
                             </SelectGroup>
@@ -312,9 +336,15 @@ export const AddProductModal = () => {
                     name="discount"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Discount (%)</FormLabel>
+                        <FormLabel className="text-sm md:text-base">
+                          Discount (%)
+                        </FormLabel>
                         <FormControl>
-                          <Input {...field} type="number" />
+                          <Input
+                            {...field}
+                            type="number"
+                            className="text-sm md:text-base"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -327,11 +357,14 @@ export const AddProductModal = () => {
                     name="description"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Description</FormLabel>
+                        <FormLabel className="text-sm md:text-base">
+                          Description
+                        </FormLabel>
                         <FormControl>
                           <Textarea
                             placeholder="Product description"
                             {...field}
+                            className="text-sm md:text-base"
                           />
                         </FormControl>
                         <FormMessage />
@@ -356,9 +389,15 @@ export const AddProductModal = () => {
                         control={form.control}
                         render={({ field }) => (
                           <FormItem className="w-full">
-                            <FormLabel>Price</FormLabel>
+                            <FormLabel className="text-sm md:text-base">
+                              Price
+                            </FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter price" {...field} />
+                              <Input
+                                placeholder="Enter price"
+                                {...field}
+                                className="text-sm md:text-base"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -370,9 +409,15 @@ export const AddProductModal = () => {
                         control={form.control}
                         render={({ field }) => (
                           <FormItem className="w-full">
-                            <FormLabel>Weight</FormLabel>
+                            <FormLabel className="text-sm md:text-base">
+                              Weight
+                            </FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter weight" {...field} />
+                              <Input
+                                placeholder="Enter weight"
+                                {...field}
+                                className="text-sm md:text-base"
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -384,7 +429,9 @@ export const AddProductModal = () => {
                         name={`variants.${index}.unit`}
                         render={({ field }) => (
                           <FormItem className="w-full">
-                            <FormLabel>Unit</FormLabel>
+                            <FormLabel className="text-sm md:text-base">
+                              Unit
+                            </FormLabel>
                             <Select
                               onValueChange={(value) => field.onChange(value)}
                             >
@@ -393,7 +440,9 @@ export const AddProductModal = () => {
                               </SelectTrigger>
                               <SelectContent>
                                 <SelectGroup>
-                                  <SelectLabel>Unit</SelectLabel>
+                                  <SelectLabel className="text-sm md:text-base">
+                                    Unit
+                                  </SelectLabel>
                                   {units.map((u, index) => (
                                     <SelectItem key={index} value={u.unitSign}>
                                       {u.unitTitle}
@@ -411,7 +460,7 @@ export const AddProductModal = () => {
                           variant="default"
                           type="button"
                           onClick={addVariation}
-                          className="mt-7"
+                          className="mt-7 w-fit"
                         >
                           <SquaresPlusIcon className="h-4 w-4" />
                         </Button>
@@ -420,9 +469,9 @@ export const AddProductModal = () => {
                           variant="destructive"
                           type="button"
                           onClick={() => removeVariation(index)}
-                          className="mt-7"
+                          className="mt-7 w-fit"
                         >
-                          <TrashIcon className="w-5 h-4" />
+                          <TrashIcon className="w-4 h-4" />
                         </Button>
                       </div>
                     </div>
@@ -434,7 +483,9 @@ export const AddProductModal = () => {
             {currentStep === 3 && (
               <div>
                 {/* <h2 className="text-lg font-medium">{title}</h2> */}
-                <FormLabel>Product Image</FormLabel>
+                <FormLabel className="text-sm md:text-base">
+                  Product Image
+                </FormLabel>
                 <FormControl>
                   <>
                     <CustomCloudinaryUpload
@@ -467,7 +518,7 @@ export const AddProductModal = () => {
                               alt="Uploaded Image"
                               width={100}
                               height={100}
-                              className="object-contain rounded-md h-24 w-24 p-1.5"
+                              className="object-contain rounded-md h-20 w-20 lg:h-24 lg:w-24 p-1.5"
                             />
                             <button
                               type="button"
@@ -490,14 +541,25 @@ export const AddProductModal = () => {
                   type="button"
                   variant="outline"
                   onClick={handlePrevious}
+                  className="text-sm md:text-base text-white bg-sowgren_Color hover:bg-sowgren_Color/75"
                 >
                   Previous
                 </Button>
               )}
               {currentStep === 3 ? (
-                <Button type="submit">Submit</Button>
+                <Button
+                  type="submit"
+                  className="text-sm md:text-base bg-sowgren_Color over:bg-sowgren_Color/75"
+                >
+                  Submit
+                </Button>
               ) : (
-                <Button type="submit">Next</Button>
+                <Button
+                  type="submit"
+                  className="text-sm md:text-base bg-sowgren_Color over:bg-sowgren_Color/75"
+                >
+                  Next
+                </Button>
               )}
             </div>
           </form>

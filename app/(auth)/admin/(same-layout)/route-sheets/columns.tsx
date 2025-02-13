@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Order } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -44,11 +44,26 @@ export const columns: ColumnDef<Order>[] = [
   },
   {
     accessorKey: "orderNumber",
-    header: "Order Number",
+    header: "Order #",
     cell: ({ row }) => (
       <div className="capitalize">{row.original.orderNumber}</div>
     ),
     enableHiding: false,
+  },
+  {
+    accessorKey: "deliveryDate",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Delivery Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
+    cell: ({ row }) => <div>{row.getValue("deliveryDate")}</div>,
   },
   {
     accessorKey: "shippingAddress.name",

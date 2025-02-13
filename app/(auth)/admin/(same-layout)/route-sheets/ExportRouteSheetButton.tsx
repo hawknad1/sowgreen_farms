@@ -10,24 +10,12 @@ export default function ExportRouteSheetButton() {
   const { dateRange } = useDateRangeStore()
   const [isLoading, setIsLoading] = useState(false) // Loading state
 
-  // const handleExport = async () => {
-  //   setIsLoading(true) // Set loading state to true
-  //   try {
-  //     exportDispatchOrdersToExcel(dateRange[0], dateRange[1]) // Ensure downloadExcel is a promise
-  //     // window.location.reload() // Reload the page after download
-  //   } catch (error) {
-  //     console.error("Export failed:", error) // Handle errors if needed
-  //   } finally {
-  //     setIsLoading(false) // Reset loading state
-  //   }
-  // }
-
   const handleExport = async () => {
     setIsLoading(true) // Set loading state to true
     try {
       // Call the export function and wait for it to complete
       await exportDispatchOrdersToExcel(dateRange[0], dateRange[1])
-      window.location.reload()
+      // window.location.reload()
     } catch (error) {
       console.error("Export failed:", error) // Handle errors if needed
     } finally {

@@ -36,7 +36,7 @@ const ModifyShippingDialog = ({ order, className }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="rounded-lg">
         <DialogHeader>
           <DialogTitle>{`Modify address. `}</DialogTitle>
           <DialogDescription>

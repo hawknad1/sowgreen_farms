@@ -10,20 +10,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Order } from "@/types"
-import { PlusCircleIcon } from "@heroicons/react/20/solid"
 import { Button } from "@/components/ui/button"
-import LocationForm from "./LocationForm"
 import { SquareCheckBig } from "lucide-react"
 import { PickupOptions } from "../PickupOptions"
 
-interface Props {
-  order?: Order
-  children?: React.ReactNode
-  className?: string
-}
-
-const SelectLocationDialog = ({ order, children, className }: Props) => {
+const SelectLocationDialog = () => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -38,7 +29,7 @@ const SelectLocationDialog = ({ order, children, className }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl rounded-lg">
         <DialogHeader>
           <DialogTitle>Pickup Locations</DialogTitle>
           <DialogDescription>Select available locations.</DialogDescription>

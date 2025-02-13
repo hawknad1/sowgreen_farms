@@ -209,7 +209,11 @@ const EditOrderDetails = ({ order }: OrderProps) => {
         </div>
 
         {/* Submit Button */}
-        <Button type="submit" className="w-full" disabled={isSaving}>
+        <Button
+          type="submit"
+          className="w-full bg-sowgren_Color hover:bg-sowgren_Color/85"
+          disabled={isSaving}
+        >
           {isSaving ? (
             <span className="loading loading-infinity loading-md"></span>
           ) : (

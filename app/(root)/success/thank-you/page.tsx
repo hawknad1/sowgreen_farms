@@ -301,12 +301,12 @@ const ThankYouPage = () => {
   }
 
   return (
-    <div className="flex flex-col items-center w-full p-12 bg-gray-100 min-h-screen">
+    <div className="flex flex-col items-center w-full px-4 py-5 lg:p-12 bg-gray-100 min-h-screen">
       <div className="flex flex-col items-center gap-y-2 mb-3">
         <p className="font-semibold text-sm text-neutral-500/95">THANK YOU</p>
         <div className="flex items-center w-full space-x-2">
           <CircleCheckBigIcon className="h-6 w-6 text-green-700 " />
-          <h3 className="md:text-2xl text-xl font-bold">
+          <h3 className="md:text-2xl sm:text-xl text-base font-bold">
             Your Order Has Been Received
           </h3>
         </div>

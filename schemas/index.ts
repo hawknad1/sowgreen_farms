@@ -19,18 +19,47 @@ const schema = z.object({
   phone: z.string().regex(phoneRegex, "Invalid Number!"),
 })
 
-export const CheckoutSchema = z.object({
-  name: z.string().min(1, { message: "Name is required!" }),
-  email: z.string().email({ message: "Email is required!" }),
-  country: z.string({ message: "Country is required" }),
-  region: z.string().min(2, { message: "Region is required!" }),
-  city: z.string().min(2, { message: "City is required!" }),
-  address: z.string().min(5, { message: "Address is required!" }),
-  phone: z.string().regex(phoneRegex, "Invalid Number!"),
-  deliveryMethod: z
-    .string()
-    .min(1, { message: "Delivery method is required!" }),
-})
+// export const CheckoutSchema = z.object({
+//   name: z.string().min(1, { message: "Name is required!" }),
+//   email: z.string().email({ message: "Email is required!" }),
+//   country: z.string({ message: "Country is required" }),
+//   region: z.string().min(2, { message: "Region is required!" }),
+//   city: z.string().min(2, { message: "City is required!" }),
+//   address: z.string().min(5, { message: "Address is required!" }),
+//   phone: z.string().regex(phoneRegex, "Invalid Number!"),
+//   deliveryMethod: z
+//     .string()
+//     .min(1, { message: "Delivery method is required!" }),
+
+// })
+
+export const CheckoutSchema = z
+  .object({
+    name: z.string().min(1, { message: "Name is required!" }),
+    email: z.string().email({ message: "Email is required!" }),
+    country: z.string({ message: "Country is required" }),
+    region: z.string().min(2, { message: "Region is required!" }),
+    city: z.string().min(2, { message: "City is required!" }),
+    address: z.string().min(5, { message: "Address is required!" }),
+    phone: z.string().regex(phoneRegex, "Invalid Number!"),
+    deliveryMethod: z
+      .string()
+      .min(1, { message: "Delivery method is required!" }),
+    pickupOption: z.string().optional(), // Make pickupOption optional by default
+  })
+  .refine(
+    (data) => {
+      // Custom validation: If deliveryMethod is "schedule-pickup", pickupOption is required
+      if (data.deliveryMethod === "schedule-pickup" && !data.pickupOption) {
+        return false
+      }
+      return true
+    },
+    {
+      message: "Please select a pickup location!",
+      path: ["pickupOption"], // Attach the error to the pickupOption field
+    }
+  )
 
 export const PaymentRadioSchema = z.object({
   type: z.enum(["momo-pay", "credit-debit", "cash-on-delivery"], {

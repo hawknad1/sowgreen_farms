@@ -12,9 +12,11 @@ const MiddleCardAds = () => {
       <MiddleCard className="bg-[#004729] p-3">
         <div className="w-full lg:max-w-xl flex flex-col justify-center">
           <h1 className="text-base sm:text-2xl md:text-lg lg:text-3xl text-white font-bold md:mb-2">
-            All <span className="text-[#F9ED5D]">Fruits</span> &{" "}
-            <span className="text-[#F9ED5D]">Vegetables</span>
-            <br /> are 100% Organic
+            All <span className="text-[#F9ED5D]">Vegetables</span> &{" "}
+            <span className="text-[#F9ED5D]">
+              Fruits <span className="text-white">are 100% Organic</span>
+            </span>
+            {/* <br /> */}
           </h1>
         </div>
         <div className="w-full">

@@ -24,27 +24,6 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const router = useRouter()
 
-  // const handleDelete = async () => {
-  //   try {
-  //     const res = await fetch(`/api/products/${product.id}`, {
-  //       method: "DELETE",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //     })
-
-  //     if (!res.ok) {
-  //       throw new Error(`Failed to delete product. Status: ${res.status}`)
-  //     }
-
-  //     toast.success(`${product.title} deleted successfully!`)
-  //     router.replace("/admin/products") // Optional: Use replace to avoid history back
-  //   } catch (error) {
-  //     toast.error("Error deleting product.")
-  //     console.error("Delete product error:", error)
-  //   }
-  // }
-
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
@@ -84,7 +63,7 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="rounded-lg">
         <DialogHeader>
           <DialogTitle>Delete {product.title}</DialogTitle>
           <DialogDescription>
@@ -92,7 +71,7 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
             undone.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className="flex flex-col gap-y-3 md:inline-flex">
           <Button
             variant="outline"
             disabled={isDeleting}
@@ -108,7 +87,7 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
             {isDeleting ? (
               <span className="loading loading-spinner loading-md"></span>
             ) : (
-              "Confirm"
+              "Proceed"
             )}
           </Button>
         </DialogFooter>

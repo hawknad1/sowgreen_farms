@@ -220,7 +220,7 @@ export const columns: ColumnDef<any>[] = [
         month: "short",
         day: "numeric",
       }
-      return <div>{date.toLocaleDateString("en-US", options)}</div>
+      return <div>{date.toLocaleDateString("en-UK", options)}</div>
     },
     sortingFn: (rowA, rowB) => {
       const dateA = new Date(rowA.original.createdAt).getTime()

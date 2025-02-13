@@ -101,7 +101,9 @@ const CartDisplay = () => {
 
   return (
     <div className="bg-white py-6">
-      <h3 className="text-xl font-bold text-gray-800 mb-6">Cart Items</h3>
+      <h3 className="lg:text-xl text-base font-bold text-gray-800 mb-6">
+        Cart Items
+      </h3>
       <div className="max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
         <div className="space-y-4">
           {cart.map((item) => {
@@ -122,7 +124,7 @@ const CartDisplay = () => {
             return (
               <div
                 key={item.variantId}
-                className="flex items-center justify-between border p-4 rounded-lg "
+                className="flex items-center justify-between border p-2 lg:p-4 rounded-lg "
               >
                 <div className="flex items-center space-x-4">
                   <Image
@@ -130,19 +132,19 @@ const CartDisplay = () => {
                     alt={product?.title || "Product image"}
                     width={80}
                     height={80}
-                    className="h-20 w-20 object-contain bg-slate-50 rounded-lg p-2"
+                    className="lg:h-20 lg:w-20 h-16 w-16 object-contain bg-slate-50 rounded-lg p-1 lg:p-2"
                   />
                   <div>
-                    <p className="font-bold text-gray-800">
+                    <p className="font-bold text-gray-800 text-sm lg:text-base max-w-32 lg:max-w-full line-clamp-1 lg:line-clamp-none">
                       {product?.title || "Unnamed Product"}
                     </p>
-                    <div className="text-sm text-gray-600/65 flex items-center">
+                    <div className="text-xs lg:text-sm text-gray-600/65 flex items-center">
                       <p>
                         {formatCurrency(item?.price || 0, "GHS")}
                         {item?.weight === 0 || item?.weight === null ? (
                           ""
                         ) : (
-                          <span className="text-sm text-neutral-400">{` / ${
+                          <span className="lg:text-sm text-xs text-neutral-400">{` / ${
                             item?.weight < 1
                               ? item?.weight * 1000
                               : item?.weight
@@ -155,12 +157,14 @@ const CartDisplay = () => {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600">
+                  <p className="lg:text-sm text-xs text-gray-600">
                     QTY: {item?.quantity || 0}
                   </p>
                   <div className="flex-col sm:inline-flex gap-x-1.5">
-                    <p className="text-gray-600">Subtotal:</p>
-                    <p className="font-bold text-gray-800">
+                    <p className="text-gray-600 lg:text-sm text-xs">
+                      Subtotal:
+                    </p>
+                    <p className="font-bold text-gray-800 lg:text-sm text-xs">
                       {formatCurrency(
                         (item?.price || 0) * (item?.quantity || 0),
                         "GHS"
