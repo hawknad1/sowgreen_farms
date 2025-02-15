@@ -102,7 +102,7 @@ export function PickupOptions() {
       const res = await fetch("/api/pickup-options", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data.pickupOptions),
+        body: JSON.stringify({ pickupOptions: data.pickupOptions }),
       })
 
       const responseText = await res.text()

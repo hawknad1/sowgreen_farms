@@ -166,39 +166,27 @@ export async function GET(req: NextRequest) {
 // }
 
 export async function PUT(req: Request) {
-  let pickupOptions
+  console.log("PUT request received")
   try {
-    pickupOptions = await req.json()
-  } catch (error) {
-    return NextResponse.json({ message: "Invalid JSON body" }, { status: 400 })
-  }
+    // Expect an object with a `pickupOptions` key
+    const { pickupOptions } = await req.json() // Destructure the array from the request body
+    console.log("Request body:", pickupOptions)
 
-  if (!Array.isArray(pickupOptions)) {
-    return NextResponse.json(
-      { message: "Request body must be an array" },
-      { status: 400 }
-    )
-  }
+    // Validate that `pickupOptions` is an array
+    if (!Array.isArray(pickupOptions)) {
+      return NextResponse.json(
+        { message: "Request body must be an array" },
+        { status: 400 }
+      )
+    }
 
-  if (pickupOptions.length === 0) {
-    return NextResponse.json(
-      { message: "Please select at least one pickup location" },
-      { status: 400 }
-    )
-  }
+    if (pickupOptions.length === 0) {
+      return NextResponse.json(
+        { message: "Please select at least one pickup location" },
+        { status: 400 }
+      )
+    }
 
-  if (
-    !pickupOptions.every(
-      (option) => typeof option === "string" && option.trim()
-    )
-  ) {
-    return NextResponse.json(
-      { message: "Each pickup location must be a non-empty string" },
-      { status: 400 }
-    )
-  }
-
-  try {
     // Delete existing pickup options
     await prisma.pickupOptions.deleteMany({})
 
