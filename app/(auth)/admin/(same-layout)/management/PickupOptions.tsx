@@ -279,7 +279,7 @@ export function PickupOptions() {
     console.log("Updated pickup options:", data.pickupOptions)
     setIsSaving(true)
     try {
-      const res = await fetch("/api/pickup-options", {
+      const res = await fetch(`/api/pickup-options`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pickupOptions: data.pickupOptions }),

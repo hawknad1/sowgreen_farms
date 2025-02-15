@@ -1,6 +1,27 @@
 import prisma from "@/lib/prismadb"
 import { NextRequest, NextResponse } from "next/server"
 
+// Handle CORS manually
+async function handleCors(req: Request, res: NextResponse) {
+  res.headers.set("Access-Control-Allow-Origin", "http://localhost:3000")
+  res.headers.set(
+    "Access-Control-Allow-Methods",
+    "GET, PUT, POST, DELETE, OPTIONS"
+  )
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+  res.headers.set("Access-Control-Allow-Credentials", "true")
+
+  if (req.method === "OPTIONS") {
+    return NextResponse.json({}, { status: 200 })
+  }
+}
+
+export async function OPTIONS(req: Request, res: NextResponse) {
+  const response = NextResponse.json({}, { status: 200 })
+  await handleCors(req, response)
+  return response
+}
+
 // export async function GET(req: NextRequest) {
 //   try {
 //     const pickupOptions = await prisma.pickupOption.findMany()
@@ -167,6 +188,8 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: Request) {
   console.log("PUT request received")
+  const response = NextResponse.json({}, { status: 200 })
+  await handleCors(req, response)
   try {
     // Parse the request body
     const { pickupOptions } = await req.json()
