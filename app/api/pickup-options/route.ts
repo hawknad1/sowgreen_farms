@@ -132,16 +132,68 @@ export async function GET(req: NextRequest) {
 //   // })
 // }
 
-export async function PUT(req: Request) {
-  const pickupOptions = await req.json()
+// export async function PUT(req: Request) {
+//   const pickupOptions = await req.json()
 
-  if (
-    !pickupOptions ||
-    !Array.isArray(pickupOptions) ||
-    pickupOptions.length === 0
-  ) {
+//   if (
+//     !pickupOptions ||
+//     !Array.isArray(pickupOptions) ||
+//     pickupOptions.length === 0
+//   ) {
+//     return NextResponse.json(
+//       { message: "Please select at least one pickup location" },
+//       { status: 400 }
+//     )
+//   }
+
+//   try {
+//     // Delete existing pickup options
+//     await prisma.pickupOptions.deleteMany({})
+
+//     // Add the new pickup options
+//     const updatedLocations = await prisma.pickupOptions.createMany({
+//       data: pickupOptions.map((option: string) => ({ location: option })),
+//     })
+
+//     return NextResponse.json(updatedLocations, { status: 200 })
+//   } catch (error) {
+//     console.error("Error updating pickup locations:", error)
+//     return NextResponse.json(
+//       { message: "Couldn't update pickup locations" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
+export async function PUT(req: Request) {
+  let pickupOptions
+  try {
+    pickupOptions = await req.json()
+  } catch (error) {
+    return NextResponse.json({ message: "Invalid JSON body" }, { status: 400 })
+  }
+
+  if (!Array.isArray(pickupOptions)) {
+    return NextResponse.json(
+      { message: "Request body must be an array" },
+      { status: 400 }
+    )
+  }
+
+  if (pickupOptions.length === 0) {
     return NextResponse.json(
       { message: "Please select at least one pickup location" },
+      { status: 400 }
+    )
+  }
+
+  if (
+    !pickupOptions.every(
+      (option) => typeof option === "string" && option.trim()
+    )
+  ) {
+    return NextResponse.json(
+      { message: "Each pickup location must be a non-empty string" },
       { status: 400 }
     )
   }
@@ -155,7 +207,13 @@ export async function PUT(req: Request) {
       data: pickupOptions.map((option: string) => ({ location: option })),
     })
 
-    return NextResponse.json(updatedLocations, { status: 200 })
+    return NextResponse.json(
+      {
+        message: "Pickup locations updated successfully",
+        data: updatedLocations,
+      },
+      { status: 200 }
+    )
   } catch (error) {
     console.error("Error updating pickup locations:", error)
     return NextResponse.json(

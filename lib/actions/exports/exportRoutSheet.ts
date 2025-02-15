@@ -244,12 +244,11 @@ export default async function exportDispatchOrdersToExcel(
   }
 
   const workbook = new ExcelJS.Workbook()
-  const worksheet = workbook.addWorksheet("Dispatch Orders")
 
   // Group orders by delivery date
   const groupedOrders = orders.reduce((acc: any, order: any) => {
     const deliveryDate = order.deliveryDate || "No Date"
-    console.log(deliveryDate, "deliveryDatedeliveryDatedeliveryDate===")
+    console.log(deliveryDate, "deliveryDate")
     if (!acc[deliveryDate]) {
       acc[deliveryDate] = []
     }
@@ -257,9 +256,12 @@ export default async function exportDispatchOrdersToExcel(
     return acc
   }, {})
 
-  // Iterate over each group and add to the worksheet
+  // Iterate over each group and create a new worksheet for each delivery date
   Object.keys(groupedOrders).forEach((deliveryDate) => {
     const ordersForDate = groupedOrders[deliveryDate]
+
+    // Create a new worksheet for this delivery date
+    const worksheet = workbook.addWorksheet(deliveryDate)
 
     // Add delivery date as a title row
     const titleRow = worksheet.addRow([`Delivery Date: ${deliveryDate}`])
@@ -311,38 +313,35 @@ export default async function exportDispatchOrdersToExcel(
       ])
     })
 
-    // Add an empty row after each group for better readability
-    worksheet.addRow([])
-  })
+    // Adjust column widths
+    worksheet.columns = [
+      { width: 10 }, // Order #
+      { width: 20 }, // Customer Name
+      { width: 32 }, // Shipping Address
+      { width: 17 }, // Dispatch Rider Name
+      { width: 15 }, // Total Amount
+    ]
 
-  // Adjust column widths
-  worksheet.columns = [
-    { width: 10 }, // Order #
-    { width: 20 }, // Customer Name
-    { width: 32 }, // Shipping Address
-    { width: 17 }, // Dispatch Rider Name
-    { width: 15 }, // Total Amount
-  ]
-
-  // Add borders to all rows and columns
-  worksheet.eachRow((row) => {
-    row.eachCell((cell) => {
-      cell.border = {
-        top: { style: "thin" },
-        left: { style: "thin" },
-        bottom: { style: "thin" },
-        right: { style: "thin" },
-      }
+    // Add borders to all rows and columns
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.border = {
+          top: { style: "thin" },
+          left: { style: "thin" },
+          bottom: { style: "thin" },
+          right: { style: "thin" },
+        }
+      })
     })
-  })
 
-  // Freeze the header row
-  worksheet.views = [
-    {
-      state: "frozen",
-      ySplit: 2, // Freeze the title and header rows
-    },
-  ]
+    // Freeze the header row
+    worksheet.views = [
+      {
+        state: "frozen",
+        ySplit: 2, // Freeze the title and header rows
+      },
+    ]
+  })
 
   try {
     // Generate the file buffer

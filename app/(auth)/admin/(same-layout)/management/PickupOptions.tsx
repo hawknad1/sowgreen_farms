@@ -45,9 +45,6 @@ export function PickupOptions() {
           setExistingPickupOptions(
             data.map((item: { location: string }) => item.location)
           )
-          // setAvailablePickupOptions(
-          //   data.map((item: { address: string }) => item.address)
-          // )
         }
       } catch (error) {
         console.error("Error fetching existing pickup options:", error)
@@ -108,11 +105,16 @@ export function PickupOptions() {
         body: JSON.stringify(data.pickupOptions),
       })
 
+      const responseText = await res.text()
+      console.log("Response Text:", responseText)
+
       if (res.ok) {
+        const responseData = JSON.parse(responseText)
         toast.success("Pickup Options Updated Successfully")
         window.location.reload()
       } else {
-        console.log("Failed to submit data:", await res.json())
+        console.log("Failed to submit data:", responseText)
+        toast.error("Failed to update pickup options")
       }
     } catch (error) {
       console.error("Error submitting data:", error)

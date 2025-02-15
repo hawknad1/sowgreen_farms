@@ -9,6 +9,10 @@ export function formatDeliveryDate(dateString: Date) {
     date
   )
 
+  const year = new Intl.DateTimeFormat("en-US", { year: "numeric" }).format(
+    date
+  )
+
   // Get the day of the month (e.g., 30)
   const dayOfMonth = date.getDate()
 
@@ -27,5 +31,5 @@ export function formatDeliveryDate(dateString: Date) {
     }
   }
 
-  return `${day}, ${month} ${dayOfMonth}${ordinalSuffix(dayOfMonth)}`
+  return `${day}, ${month} ${dayOfMonth}${ordinalSuffix(dayOfMonth)}, ${year}`
 }

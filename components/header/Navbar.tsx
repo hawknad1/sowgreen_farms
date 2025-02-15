@@ -95,9 +95,9 @@ const Navbar = () => {
               <Image
                 src="/images/logo.png"
                 alt="logo"
-                width={80}
+                width={180}
                 height={80}
-                className="object-cover w-20 md:w-40"
+                className="object-cover w-32 md:w-48 filter brightness-105 saturate-150"
               />
             </a>
           </div>

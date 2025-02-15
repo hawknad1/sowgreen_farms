@@ -45,7 +45,6 @@ const LocationForm = () => {
 
   // Form submission handler
   const onSubmit = async (values: z.infer<typeof AddLocationSchema>) => {
-    console.log(values, "values---locATION")
     setIsSaving(true)
     try {
       const response = await fetch("/api/pickup-locations", {
