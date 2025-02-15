@@ -168,8 +168,8 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: Request) {
   console.log("PUT request received")
   try {
-    // Expect an object with a `pickupOptions` key
-    const { pickupOptions } = await req.json() // Destructure the array from the request body
+    // Parse the request body
+    const { pickupOptions } = await req.json()
     console.log("Request body:", pickupOptions)
 
     // Validate that `pickupOptions` is an array
