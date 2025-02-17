@@ -82,6 +82,7 @@ interface VariantState {
     price: number | null
     weight: number | null
     unit: string | ""
+    discountedPrice?: number | null
   }
   setSelectedVariant: (price: number, weight: number, unit: string) => void
 }
@@ -91,6 +92,7 @@ type Variant = {
   weight: number
   unit: string
   price: number
+  discountedPrice?: number
 }
 
 type CartItem = {

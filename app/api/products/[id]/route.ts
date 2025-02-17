@@ -78,6 +78,10 @@ export async function PUT(
 
       // Update or create variants
       for (const variant of variants) {
+        // Calculate discounted price if discount is greater than 0
+        const discountedPrice =
+          discount > 0 ? variant.price * (1 - discount / 100) : null
+
         if (variant.id) {
           // Update existing variant
           await prisma.productVariant.update({
@@ -86,6 +90,7 @@ export async function PUT(
               price: variant.price,
               weight: variant.weight,
               unit: variant.unit,
+              discountedPrice: discountedPrice ? discountedPrice : null,
             },
           })
         } else {
@@ -96,6 +101,7 @@ export async function PUT(
               price: variant.price,
               weight: variant.weight,
               unit: variant.unit,
+              discountedPrice: discountedPrice ? discountedPrice : null,
             },
           })
         }

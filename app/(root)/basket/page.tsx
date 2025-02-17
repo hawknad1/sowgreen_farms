@@ -17,6 +17,7 @@ const BasketPage = () => {
   const router = useRouter()
   const cart = useCartStore((state) => state.cart)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+  const { cartItemCount } = useCartStore()
 
   const handleClearCart = () => {
     clearCart()
@@ -51,11 +52,17 @@ const BasketPage = () => {
           <div className="overflow-y-auto scrollbar-sowgreen scrollbar-hide">
             <CartBasket />
           </div>
-          <div className="mt-4 hidden lg:inline-flex">
-            <Button className="w-fit" variant="destructive" onClick={clearCart}>
-              Clear basket
-            </Button>
-          </div>
+          {cartItemCount > 0 && (
+            <div className={`mt-4 hidden lg:inline-flex`}>
+              <Button
+                className="w-fit"
+                variant="destructive"
+                onClick={handleClearCart}
+              >
+                Clear basket
+              </Button>
+            </div>
+          )}
         </div>
 
         {/* Right Section */}

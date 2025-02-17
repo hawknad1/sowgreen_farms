@@ -118,6 +118,7 @@ export type Variant = {
   weight: number
   price: number
   unit: string
+  discountedPrice?: number
 }
 
 export type PaymentInfo = {

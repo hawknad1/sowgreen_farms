@@ -157,6 +157,7 @@ import {
 } from "@/components/ui/select"
 import ProductsHeroBanner from "./ProductsHeroBanner"
 import PaginationButtons from "@/components/sort/PaginationButtons"
+import { applyDiscountToProducts } from "@/lib/applyDiscountToProduct"
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([])
@@ -253,6 +254,9 @@ const Products = () => {
     setSortOption(value)
     setCurrentPage(1) // Reset to the first page when sorting changes
   }
+
+  // const checkDiscountProduct = applyDiscountToProducts(currentProducts)
+  // console.log(checkDiscountProduct, "checkDiscountProduct")
 
   return (
     <div className="px-4 md:px-8 lg:px-16 xl:px-20 2xl:px-64 relative py-5 mb-11">

@@ -39,7 +39,7 @@ const Add = ({ product }: { product: Product }) => {
         variantId: selectedVariant.id,
         productId: product.id,
         weight: selectedVariant.weight,
-        price: selectedVariant.price,
+        price: selectedVariant.discountedPrice || selectedVariant.price, // Use discountedPrice if available
         unit: selectedVariant.unit,
         product: product,
         quantity,

@@ -57,6 +57,8 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
     removeFromCart(variantId)
   }
 
+  console.log(cart, "cartProducts")
+
   return (
     <div className="mt-4 space-y-4 w-full">
       {cart.map((item) => {

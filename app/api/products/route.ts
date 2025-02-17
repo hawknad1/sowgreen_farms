@@ -69,6 +69,18 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Calculate discounted price if discount is greater than 0
+    const variantsWithDiscountedPrice = variants.map(
+      (variant: { price: number; weight?: number; unit?: string }) => {
+        const discountedPrice =
+          discount > 0 ? variant.price * (1 - discount / 100) : null
+        return {
+          ...variant,
+          discountedPrice: discountedPrice ? discountedPrice : null,
+        }
+      }
+    )
+
     // Create new product with nested variants
     const newProduct = await prisma.product.create({
       data: {
@@ -81,11 +93,17 @@ export async function POST(req: NextRequest) {
         discount: discount ?? null, // Set to null if not provided
         isInStock: isInStock || "out-of-stock", // Default to "out-of-stock" if not provided
         variants: {
-          create: variants.map(
-            (variant: { price: number; weight: number; unit: string }) => ({
+          create: variantsWithDiscountedPrice.map(
+            (variant: {
+              price: number
+              weight?: number
+              unit?: string
+              discountedPrice?: number
+            }) => ({
               price: variant.price,
               weight: variant?.weight,
               unit: variant?.unit,
+              discountedPrice: variant?.discountedPrice,
             })
           ),
         },

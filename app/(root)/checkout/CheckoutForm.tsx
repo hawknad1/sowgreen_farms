@@ -419,38 +419,6 @@ export function CheckoutForm() {
   const user = session?.data?.user as ExtendedUser
 
   // Fetch cities data and restore form data
-  // useEffect(() => {
-  //   async function getCityList() {
-  //     try {
-  //       const res = await fetch("/api/cities", {
-  //         method: "GET",
-  //         cache: "no-store",
-  //       })
-
-  //       if (res.ok) {
-  //         const cityList = await res.json()
-  //         setList(cityList)
-
-  //         // Restore form data from Zustand store
-  //         if (formValues.region) {
-  //           const filtered = cityList.filter(
-  //             (city: any) => city.region === formValues.region
-  //           )
-  //           setFilteredCities(filtered)
-  //           setSelectedRegion(formValues.region)
-  //           if (formValues.city) {
-  //             setSelectedCity(formValues.city)
-  //           }
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-
-  //   getCityList()
-  // }, [formValues])
-  // Fetch cities data and restore form data
   useEffect(() => {
     async function getCityList() {
       try {
