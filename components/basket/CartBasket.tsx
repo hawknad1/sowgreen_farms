@@ -47,7 +47,9 @@ const CartBasket = () => {
               <div className="w-[30%] text-right">Subtotal</div>{" "}
               {/* Adjusted width */}
             </div>
-            <BasketCartItems />
+            <div className="max-h-[470px]">
+              <BasketCartItems />
+            </div>
           </div>
         )}
       </>

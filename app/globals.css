@@ -139,3 +139,21 @@
     @apply scrollbar-thin scrollbar-thumb-neutral-400/80 scrollbar-track-neutral-100;
   }
 }
+
+/* Hide scrollbar by default */
+.scrollbar-hide::-webkit-scrollbar {
+  width: 0.5rem; /* Adjust scrollbar width */
+  background-color: transparent; /* Make scrollbar track transparent */
+}
+
+/* Show scrollbar thumb on hover */
+.scrollbar-hide:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Scrollbar thumb color */
+  border-radius: 0.25rem; /* Rounded corners */
+}
+
+/* Ensure scrollbar is visible when content overflows */
+.scrollbar-hide {
+  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* For Firefox */
+}

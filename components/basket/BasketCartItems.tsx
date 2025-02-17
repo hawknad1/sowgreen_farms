@@ -212,7 +212,7 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
                 {isCheckout ? (
                   <>
                     <p
-                      className="line-clamp-1 font-semibold text-sm hover:text-blue-600 transition-colors duration-200"
+                      className="line-clamp-1 font-semibold text-sm cursor-pointer hover:text-sowgren_Color transition-colors duration-200"
                       onClick={() => router.push(`/products/${product.id}`)}
                     >
                       {product?.title}
@@ -235,11 +235,11 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
                       {item?.weight && (
                         <>
                           <p className="text-neutral-500 text-sm">
-                            / {item.weight}
+                            / {`${item.weight}${item?.unit}`}
                           </p>
-                          <p className="text-neutral-500 text-sm">
+                          {/* <p className="text-neutral-500 text-sm">
                             {item?.unit}
-                          </p>
+                          </p> */}
                         </>
                       )}
                     </div>

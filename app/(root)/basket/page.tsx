@@ -46,8 +46,9 @@ const BasketPage = () => {
 
       <div className="grid lg:grid-cols-3 grid-cols-1 w-full gap-8 lg:gap-x-20">
         {/* Left Section */}
-        <div className="w-full lg:col-span-2 col-span-1 ">
-          <div className="overflow-y-scroll scrollbar-sowgreen">
+
+        <div className="w-full lg:col-span-2 col-span-1">
+          <div className="overflow-y-auto scrollbar-sowgreen scrollbar-hide">
             <CartBasket />
           </div>
           <div className="mt-4 hidden lg:inline-flex">
