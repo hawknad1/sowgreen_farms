@@ -72,7 +72,7 @@ const LocationDataTable = ({ loading, data }: LocationProps) => {
   })
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 ">
       <div className="md:flex md:items-center md:gap-x-5 md:justify-between mb-6">
         <Input
           placeholder="Filter location..."
@@ -83,7 +83,7 @@ const LocationDataTable = ({ loading, data }: LocationProps) => {
           className="w-full"
           aria-label="Filter riders"
         />
-        <div className="flex items-center justify-between gap-x-6 max-w-full">
+        <div className="flex items-center justify-between gap-x-3 lg:gap-x-6 max-w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

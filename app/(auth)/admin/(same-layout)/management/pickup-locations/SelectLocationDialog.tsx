@@ -22,9 +22,9 @@ const SelectLocationDialog = () => {
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          className="flex items-center gap-x-2 w-fit h-fit px-4 py-3"
+          className="flex text-xs md:text-sm lg:text-base items-center gap-x-2 w-fit h-fit px-4 py-3"
         >
-          <SquareCheckBig className="h-5 w-5" />
+          <SquareCheckBig className="md:h-5 md:w-5 h-4 w-4" />
           Available Locations
         </Button>
       </DialogTrigger>

@@ -264,7 +264,7 @@ export const sidebarLinks = {
     },
     {
       title: "Management",
-      url: "/admin/management",
+      url: "/admin/management/pickup-locations",
       icon: Users,
       items: [
         {
@@ -299,39 +299,35 @@ export const sidebarLinks = {
       url: "/admin/transactions",
       icon: LineChart,
     },
-    {
-      title: "Blog",
-      url: "/admin/blog",
-      icon: NotebookPenIcon,
-    },
-    {
-      title: "Settings",
-      url: "/admin/settings",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
+
+    // {
+    //   title: "Settings",
+    //   url: "/admin/settings",
+    //   icon: Settings2,
+    //   items: [
+    //     {
+    //       title: "General",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Team",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Billing",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Limits",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
   ],
   navSecondary: [
     {
       title: "Support",
-      url: "#",
+      url: "/admin/help",
       icon: LifeBuoy,
     },
     {

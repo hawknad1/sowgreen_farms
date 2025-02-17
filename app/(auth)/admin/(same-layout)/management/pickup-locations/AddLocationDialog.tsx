@@ -29,9 +29,9 @@ const AddLocationDialog = ({ order, children, className }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="default"
-          className="flex items-center gap-x-2 w-fit h-fit px-4 py-3"
+          className="flex items-center text-xs md:text-sm lg:text-base gap-x-2 w-fit h-fit px-3 lg:px-4 py-3"
         >
-          <PlusCircleIcon className="h-5 w-5" />
+          <PlusCircleIcon className="md:h-5 md:w-5 h-4 w-4" />
           Add Location
         </Button>
       </DialogTrigger>

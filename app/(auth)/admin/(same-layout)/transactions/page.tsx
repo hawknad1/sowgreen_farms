@@ -1,7 +1,14 @@
 import React from "react"
+import AreaChartTransaction from "./AreaChart"
+import { BarChartTransation } from "./BarChartTransation"
 
-const Transactions = () => {
-  return <div>Transactions</div>
+const TransactionPage = () => {
+  return (
+    <div>
+      <AreaChartTransaction />
+      <BarChartTransation />
+    </div>
+  )
 }
 
-export default Transactions
+export default TransactionPage
