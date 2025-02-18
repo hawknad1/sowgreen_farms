@@ -199,37 +199,8 @@ export const columns: ColumnDef<any>[] = [
     header: "Order Number",
     cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
   },
-
-  // {
-  //   accessorKey: "deliveryDate",
-  //   header: ({ column }) => {
-  //     return (
-  //       <Button
-  //         variant="ghost"
-  //         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //       >
-  //         Date
-  //         <ArrowUpDown className="ml-2 h-4 w-4" />
-  //       </Button>
-  //     )
-  //   },
-  //   cell: ({ row }) => {
-  //     const date = new Date(row.getValue("deliveryDate"))
-  //     const options: Intl.DateTimeFormatOptions = {
-  //       year: "numeric",
-  //       month: "short",
-  //       day: "numeric",
-  //     }
-  //     return <div>{date.toLocaleDateString("en-UK", options)}</div>
-  //   },
-  //   sortingFn: (rowA, rowB) => {
-  //     const dateA = new Date(rowA.original.deliveryDate).getTime()
-  //     const dateB = new Date(rowB.original.deliveryDate).getTime()
-  //     return dateA - dateB // Ascending order
-  //   },
-  // },
   {
-    accessorKey: "deliveryDate",
+    accessorKey: "createdAt",
     header: ({ column }) => {
       return (
         <Button
@@ -242,19 +213,7 @@ export const columns: ColumnDef<any>[] = [
       )
     },
     cell: ({ row }) => {
-      // Explicitly cast the value to a string
-      const dateString = row.getValue("deliveryDate") as string
-
-      // Preprocess the date string to make it parsable by the Date constructor
-      const formattedDateString = dateString.replace(/(\d+)(st|nd|rd|th)/, "$1")
-
-      // Append the current year to the date string (if not already present)
-      const dateWithYear = formattedDateString.includes(",")
-        ? `${formattedDateString}, ${new Date().getFullYear()}`
-        : formattedDateString
-
-      const date = new Date(dateWithYear)
-
+      const date = new Date(row.getValue("createdAt"))
       const options: Intl.DateTimeFormatOptions = {
         year: "numeric",
         month: "short",
@@ -263,21 +222,8 @@ export const columns: ColumnDef<any>[] = [
       return <div>{date.toLocaleDateString("en-UK", options)}</div>
     },
     sortingFn: (rowA, rowB) => {
-      // Helper function to preprocess date strings
-      const formatDateString = (dateString: string) => {
-        const formatted = dateString.replace(/(\d+)(st|nd|rd|th)/, "$1")
-        return formatted.includes(",")
-          ? `${formatted}, ${new Date().getFullYear()}`
-          : formatted
-      }
-
-      // Explicitly cast the values to strings
-      const dateA = new Date(
-        formatDateString(rowA.original.deliveryDate as string)
-      ).getTime()
-      const dateB = new Date(
-        formatDateString(rowB.original.deliveryDate as string)
-      ).getTime()
+      const dateA = new Date(rowA.original.createdAt).getTime()
+      const dateB = new Date(rowB.original.createdAt).getTime()
       return dateA - dateB // Ascending order
     },
   },

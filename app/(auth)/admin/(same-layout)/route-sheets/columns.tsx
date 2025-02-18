@@ -63,7 +63,45 @@ export const columns: ColumnDef<Order>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div>{row.getValue("deliveryDate")}</div>,
+    cell: ({ row }) => {
+      // Explicitly cast the value to a string
+      const dateString = row.getValue("deliveryDate") as string
+
+      // Preprocess the date string to make it parsable by the Date constructor
+      const formattedDateString = dateString.replace(/(\d+)(st|nd|rd|th)/, "$1")
+
+      // Append the current year to the date string (if not already present)
+      const dateWithYear = formattedDateString.includes(",")
+        ? `${formattedDateString}, ${new Date().getFullYear()}`
+        : formattedDateString
+
+      const date = new Date(dateWithYear)
+
+      const options: Intl.DateTimeFormatOptions = {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }
+      return <div>{date.toLocaleDateString("en-UK", options)}</div>
+    },
+    sortingFn: (rowA, rowB) => {
+      // Helper function to preprocess date strings
+      const formatDateString = (dateString: string) => {
+        const formatted = dateString.replace(/(\d+)(st|nd|rd|th)/, "$1")
+        return formatted.includes(",")
+          ? `${formatted}, ${new Date().getFullYear()}`
+          : formatted
+      }
+
+      // Explicitly cast the values to strings
+      const dateA = new Date(
+        formatDateString(rowA.original.deliveryDate as string)
+      ).getTime()
+      const dateB = new Date(
+        formatDateString(rowB.original.deliveryDate as string)
+      ).getTime()
+      return dateA - dateB // Ascending order
+    },
   },
   {
     accessorKey: "shippingAddress.name",
