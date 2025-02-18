@@ -282,16 +282,15 @@ const ConfirmOrderPage = () => {
         body: JSON.stringify({ products: transformedCart }),
       })
 
-      console.log(productIds, "productIdsIDDD")
       // console.log(newProductIds, "newProductIds")
 
       // sendWhatsAppMessage(ordersData)
       sendOrderReceived(ordersData)
       // sendOrderConfirmation(ordersData)
-      console.log(ordersData, "ordersData----ordersData")
+
+      router.push("/success/thank-you")
 
       clearCart() // Clear the cart after successful order processing
-      router.push("/success/thank-you")
 
       // Update user balance (if applicable)
       // await fetch("/api/balance", {

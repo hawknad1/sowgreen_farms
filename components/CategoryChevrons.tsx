@@ -51,7 +51,7 @@ const CategoryChevrons = ({ children }: ChevronProps) => {
       </div>
 
       <div
-        className="flex overflow-x-auto gap-x-2 scrollbar-hide overflow-hidden w-full"
+        className="flex overflow-x-auto gap-x-2 scrollbar-none overflow-hidden w-full"
         ref={containerRef}
       >
         {children}

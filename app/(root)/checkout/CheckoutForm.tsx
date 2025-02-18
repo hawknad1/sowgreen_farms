@@ -454,7 +454,7 @@ export function CheckoutForm() {
   // Initialize form with default values from Zustand store
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
-    defaultValues: formValues,
+    defaultValues: { ...formValues, deliveryMethod: "" },
   })
 
   // Set email if user is logged in
