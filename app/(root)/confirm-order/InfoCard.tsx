@@ -1,124 +1,11 @@
-// import { Separator } from "@/components/ui/separator"
-// import React, { useMemo } from "react"
-// import Card from "./Card"
-// import { date, formatCurrency } from "@/lib/utils"
-// import { useDeliveryStore } from "@/store"
-
-// interface InfoCardProps {
-//   data: any
-// }
-
-// const InfoCard = ({ data }: InfoCardProps) => {
-//   const deliveryMethod = data?.formData?.deliveryMethod?.trim()?.toUpperCase()
-//   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
-
-//   const deliveryMethodLabel = useMemo(() => {
-//     switch (deliveryMethod) {
-//       case "DZORWULU":
-//         return "Pick Up - DZORWULU"
-//       case "WEB DuBOIS CENTER":
-//         return `Pick Up - WEB DuBOIS CENTER`
-//       case `Home Delivery - ${deliveryMethod}`:
-//         return `Home Delivery - ${deliveryMethod}`
-//       default:
-//         console.warn("Unexpected delivery method:", deliveryMethod) // Debugging line
-//         return deliveryMethod || "Not specified"
-//     }
-//   }, [deliveryMethod])
-
-//   return (
-//     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:gap-6">
-//       <Card>
-//         <div className="flex flex-col gap-2 lg:gap-4">
-//           <div>
-//             <h3 className="text-lg font-semibold text-gray-700">
-//               Delivery Address
-//             </h3>
-//             <div className="flex flex-col items-end md:items-start">
-//               <p className="text-gray-600">
-//                 {data?.formData?.name || "No name"}
-//               </p>
-//               <p className="text-gray-600">
-//                 {data?.formData?.address || "No address"}
-//               </p>
-//               <p className="text-gray-600">
-//                 {data?.formData?.city || "No city"}
-//               </p>
-//               <p className="text-gray-600">
-//                 {data?.formData?.region || "No region"}
-//               </p>
-//               <p className="text-gray-600">
-//                 {data?.formData?.phone || "No phone"}
-//               </p>
-//               <p className="text-gray-600">
-//                 {data?.formData?.email || "No email"}
-//               </p>
-//             </div>
-//           </div>
-//           <Separator className="my-2" />
-//           <div className="w-full">
-//             <h3 className="text-lg font-semibold text-gray-700">
-//               Delivery Method
-//             </h3>
-//             <p className="text-gray-600 flex justify-end md:justify-start">
-//               {deliveryMethodLabel}
-//             </p>
-//           </div>
-//         </div>
-//       </Card>
-//       <Card>
-//         <div className="flex flex-col gap-2 lg:gap-4">
-//           <div className="">
-//             <h3 className="text-lg font-semibold text-gray-700">
-//               Order Summary
-//             </h3>
-//             <div className="flex flex-col gap-3.5 mt-2 items-start w-full">
-//               <div className="flex items-center justify-between w-full">
-//                 <p className="text-gray-600 font-medium">Order Created:</p>
-//                 <span className="font-medium">{date}</span>
-//               </div>
-
-//               <div className="flex items-center justify-between w-full">
-//                 <p className="text-gray-600 font-medium">Item(s) Ordered:</p>
-//                 <span className="font-medium">
-//                   {data?.cart?.length || 0} Items
-//                 </span>
-//               </div>
-//               <div className="flex items-center justify-between w-full">
-//                 <p className="text-gray-600 font-medium">Delivery Fee:</p>
-//                 <span className="font-medium">
-//                   {data?.formattedDelivery || "No delivery fee"}
-//                 </span>
-//               </div>
-//               <div className="flex items-center justify-between w-full">
-//                 <p className="text-gray-600 font-medium">Subtotal:</p>
-//                 <span className="font-medium">
-//                   {data?.formattedSubtotal || "No subtotal"}
-//                 </span>
-//               </div>
-//             </div>
-//           </div>
-//           <Separator className="my-2" />
-//           <div className="w-full flex items-center justify-between">
-//             <h3 className="text-lg font-semibold text-gray-700">Order Total</h3>
-//             <p className="text-gray-600 flex justify-end md:justify-start">
-//               {formatCurrency(data?.total + deliveryFee, "GHS") || "No total"}
-//             </p>
-//           </div>
-//         </div>
-//       </Card>
-//     </div>
-//   )
-// }
-
-// export default InfoCard
-
+"use client"
 import { Separator } from "@/components/ui/separator"
 import React, { useMemo } from "react"
 import Card from "./Card"
 import { date, formatCurrency } from "@/lib/utils"
-import { useDeliveryStore } from "@/store"
+import { useDeliveryStore, useUserStore } from "@/store"
 import { FaMapMarkerAlt, FaTruck, FaClipboardList } from "react-icons/fa"
+import { deductBalance } from "@/lib/actions/deductBalance"
 
 interface InfoCardProps {
   data: any
@@ -127,6 +14,21 @@ interface InfoCardProps {
 const InfoCard = ({ data }: InfoCardProps) => {
   const deliveryMethod = data?.formData?.deliveryMethod?.trim()?.toUpperCase()
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+  const { user } = useUserStore()
+
+  let total = data?.total + deliveryFee
+
+  const {
+    updatedBalance,
+    updatedOrderTotal,
+    remainingAmount,
+    proceedToPaystack,
+  } = deductBalance(user?.user?.balance, total)
+
+  console.log(updatedBalance, "updatedBalance")
+  console.log(updatedOrderTotal, "updatedOrderTotal")
+  console.log(remainingAmount, "remainingAmount")
+  console.log(proceedToPaystack, "proceedToPaystack")
 
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
@@ -225,6 +127,14 @@ const InfoCard = ({ data }: InfoCardProps) => {
                   {data?.formattedSubtotal || "No subtotal"}
                 </span>
               </div>
+              {user?.user?.balance > 0 && (
+                <div className="flex justify-between">
+                  <p>Credit Bal:</p>
+                  <span className="font-medium">
+                    {formatCurrency(user?.user?.balance, "GHS")}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
           <Separator className="my-2" />
@@ -232,9 +142,18 @@ const InfoCard = ({ data }: InfoCardProps) => {
             <h3 className="lg:text-xl text-sm font-bold text-gray-800">
               Order Total
             </h3>
-            <p className=" font-bold text-xs md:text-sm lg:text-base">
-              {formatCurrency(data?.total + deliveryFee, "GHS") || "No total"}
-            </p>
+            {user?.user?.balance > 0 ? (
+              <p className=" font-bold text-xs md:text-sm lg:text-base">
+                {formatCurrency(updatedOrderTotal, "GHS") || "No total"}
+                <span className="line-through text-neutral-400 font-medium ml-2">
+                  {formatCurrency(total, "GHS") || "No total"}
+                </span>
+              </p>
+            ) : (
+              <p className=" font-bold text-xs md:text-sm lg:text-base">
+                {formatCurrency(total, "GHS") || "No total"}
+              </p>
+            )}
           </div>
         </div>
       </Card>

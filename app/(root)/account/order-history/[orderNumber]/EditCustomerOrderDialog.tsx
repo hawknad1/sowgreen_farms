@@ -56,7 +56,7 @@ const EditCustomerOrderDialog = ({ order, className }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          className={`w-fit lg:w-full border border-x-slate-200 text-xs lg:text-sm tracking-wide disabled:cursor-not-allowed ${className}`}
+          className={`w-full border border-x-slate-200 text-xs lg:text-sm tracking-wide disabled:cursor-not-allowed ${className}`}
           disabled={buttonDisabled}
         >
           Edit Order

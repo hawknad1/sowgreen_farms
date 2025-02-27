@@ -14,7 +14,8 @@ export async function sendOrderConfirmation(order: Order) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: "+233204785693", // Customer's WhatsApp number
+        // to: "+233204785693", // Customer's WhatsApp number
+        to: order?.shippingAddress?.phone, // Customer's WhatsApp number
         message,
       }),
     })
@@ -39,7 +40,8 @@ export async function sendOrderReceived(order: any) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        to: "+233204785693", // Customer's WhatsApp number
+        // to: "+233204785693", // Customer's WhatsApp number
+        to: order?.shippingAddress?.phone, // Customer's WhatsApp number
         message,
       }),
     })

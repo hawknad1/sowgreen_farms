@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { createJSONStorage, devtools, persist } from "zustand/middleware"
-import { DispatchRider, Order, Product, ShippingAddress } from "./types"
+import { DispatchRider, Order, Product, ShippingAddress, User } from "./types"
 // import { CartItem } from "@/types"
 
 interface PaymentStore {
@@ -73,6 +73,8 @@ interface OrderDataState {
     deliveryDate: string
     referenceNumber: string
     total: number
+    creditAppliedTotal?: number
+    creditAppliedDeliveryFee?: number
   } | null
   setOrdersData: (data: any) => void
 }
@@ -560,4 +562,33 @@ export const useOrderDashboardStore = create<OrderDashboardStore>((set) => ({
       set({ loading: false })
     }
   },
+}))
+
+// Define the user type
+// type User = {
+//   id: string
+//   name: string
+//   email: string
+//   balance: number
+//   role: string
+//   image: string | null
+//   createdAt: string
+//   updatedAt: string
+//   emailVerified: string | null
+//   hashedPassword: string
+//   phone: string | null
+// }
+
+// Define the store type
+type UserStore = {
+  user: User | null
+  setUser: (user: User) => void
+  clearUser: () => void
+}
+
+// Create the store
+export const useUserStore = create<UserStore>((set) => ({
+  user: null, // Initial state
+  setUser: (user) => set({ user }), // Method to set the user
+  clearUser: () => set({ user: null }), // Method to clear the user
 }))

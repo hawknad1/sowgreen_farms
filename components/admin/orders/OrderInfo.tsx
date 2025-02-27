@@ -14,7 +14,7 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
     dispatchRider,
     shippingAddress,
     paymentMode,
-
+    creditAppliedTotal,
     paymentAction,
     last4Digits,
     cardType,
@@ -23,6 +23,8 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
   const orderTotal = total + deliveryFee
 
   if (!orders) return null
+
+  console.log(creditAppliedTotal, "creditAppliedTotal")
 
   const typeCard = cardType?.charAt(0).toUpperCase() + cardType?.slice(1)
   const modeOfPayment =
@@ -45,9 +47,19 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
         </p>
         <p className="flex justify-between text-sm lg:text-base">
           <span className=" text-neutral-600">Order Total:</span>
-          <span className="font-medium">
-            {formatCurrency(orderTotal, "GHS")}
-          </span>
+          {creditAppliedTotal > 0 ? (
+            <p className="font-medium">
+              {formatCurrency(creditAppliedTotal, "GHS")}
+              <span className="line-through text-neutral-400 ml-2">
+                {" "}
+                {formatCurrency(orderTotal, "GHS")}
+              </span>
+            </p>
+          ) : (
+            <span className="font-medium">
+              {formatCurrency(orderTotal, "GHS")}
+            </span>
+          )}
         </p>
         {cardType ? (
           <p className=" flex justify-between text-sm lg:text-base">

@@ -34,16 +34,6 @@ export type ShippingAddress = {
   orders?: Order[]
 }
 
-export type UserProps = {
-  id?: string
-  name?: string
-  email?: string
-  role?: string
-  emailVerified?: boolean
-  image?: string
-  balance?: number
-}
-
 export type MenuItem = {
   label: string
   href?: string // Optional for parent items
@@ -74,6 +64,8 @@ export type Order = {
   orderNumber: string
   referenceNumber: string
   total: number
+  creditAppliedTotal?: number
+  creditAppliedDeliveryFee?: number
   status: OrderStatus
   dispatchRider: DispatchRider
   deliveryMethod?: string
@@ -188,11 +180,29 @@ export type ProductOrder = {
 }
 
 export type User = {
-  id: string
-  name: string
-  role: string
-  balance: number
-  email: string
+  user: {
+    id: string
+    name?: string
+    email?: string
+    balance?: number
+    role: string
+    image?: string | null
+    createdAt: string
+    updatedAt: string
+    emailVerified?: string | null
+    phone?: string | null
+  }
+}
+
+export type UserProps = {
+  id?: string
+  name?: string
+  email?: string
+  role?: string
+  emailVerified?: boolean
+  image?: string
+  balance?: number
+  onUpdateSession?: () => void
 }
 
 export type CitiesWithFees = {
@@ -217,7 +227,3 @@ export type Location = {
   city: string
   address: string
 }
-
-// export type PaymentAction = {
-
-// }

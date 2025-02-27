@@ -20,44 +20,9 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
 
   const { cart, removeFromCart, setCartProducts, cartProducts } = useCartStore()
 
-  // const fetchProduct = async (id: string) => {
-  //   try {
-  //     const response = await fetch(`/api/products/${id}`)
-  //     if (!response.ok)
-  //       throw new Error(`Failed to fetch product with id: ${id}`)
-  //     return await response.json()
-  //   } catch (error) {
-  //     console.error("Error fetching product:", error)
-  //     return null
-  //   }
-  // }
-
-  // const fetchProducts = async () => {
-  //   setLoading(true)
-  //   const fetchedProducts: { [id: string]: Product } = {}
-  //   for (const item of cart) {
-  //     if (!cartProducts[item.productId]) {
-  //       const product = await fetchProduct(item.productId)
-  //       if (product) {
-  //         fetchedProducts[item.productId] = product
-  //       }
-  //     }
-  //   }
-  //   setCartProducts(fetchedProducts)
-  //   setLoading(false)
-  // }
-
-  // useEffect(() => {
-  //   if (cart.length > 0) {
-  //     fetchProducts()
-  //   }
-  // }, [cart])
-
   const handleRemoveItem = (variantId: string) => {
     removeFromCart(variantId)
   }
-
-  console.log(cart, "cartProducts")
 
   return (
     <div className="mt-4 space-y-4 w-full">
@@ -65,125 +30,6 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
         const product = item.product
 
         return (
-          // <div
-          //   key={item.variantId}
-          //   className={`my-2 border w-full ${
-          //     isCheckout
-          //       ? "p-1.5 w-full flex items-center"
-          //       : "p-2.5 flex gap-x-2"
-          //   } border-neutral-300/55 rounded-lg`}
-          // >
-          //   <div
-          //     className={`w-full ${
-          //       isCheckout
-          //         ? "flex items-center space-x-2 w-full "
-          //         : "flex items-center space-x-4 cursor-pointer"
-          //     }`}
-          //   >
-          //     <Image
-          //       src={product?.images[0]?.url}
-          //       alt={product?.title}
-          //       width={80}
-          //       height={80}
-          //       className={`${
-          //         isCheckout
-          //           ? "h-16 w-16 object-contain bg-gray-100 rounded-md p-1"
-          //           : "h-20 w-20 object-contain bg-gray-100 rounded-md p-1"
-          //       }`}
-          //     />
-          //     <div className="">
-          //       {isCheckout ? (
-          //         <>
-          //           <p
-          //             className="line-clamp-1 font-semibold max-w-[120px]"
-          //             onClick={() => router.push(`/products/${product.id}`)}
-          //           >
-          //             {product?.title}
-          //           </p>
-          //           <p className="text-sm text-neutral-400">
-          //             {formatCurrency(item?.price, "GHS")}
-          //           </p>
-          //         </>
-          //       ) : (
-          //         <>
-          //           <p className="line-clamp-2 font-semibold">
-          //             {product?.title}
-          //           </p>
-          //           <div className="md:inline-flex space-x-1 hidden">
-          //             {!isCheckout && (
-          //               <p
-          //                 className={`${
-          //                   isCheckout
-          //                     ? "text-xs"
-          //                     : " hidden md:inline-flex text-neutral-400 text-sm"
-          //                 }`}
-          //               >
-          //                 {formatCurrency(item?.price || 0, "GHS")}
-          //               </p>
-          //             )}{" "}
-          //             {item?.weight && (
-          //               <>
-          //                 <p className=" text-neutral-400 text-sm">
-          //                   / {item.weight}
-          //                 </p>
-          //                 <p className=" text-neutral-400 text-sm">
-          //                   {item?.unit}
-          //                 </p>
-          //               </>
-          //             )}
-          //           </div>
-          //         </>
-          //       )}
-          //     </div>
-          //   </div>
-
-          //   {/* add button */}
-          //   <div
-          //     className={`${
-          //       isCheckout && ""
-          //     } flex items-center justify-center w-2/3`}
-          //   >
-          //     <AddButton
-          //       product={product}
-          //       variantId={item.variantId}
-          //       isCheckout={true}
-          //       isCartIcon={true}
-          //     />
-          //   </div>
-          //   {/* subtotal -- remove cart */}
-          //   <div
-          //     className={`flex items-center justify-end w-2/3 ${
-          //       isCheckout && "w-fit"
-          //     }`}
-          //   >
-          //     <>
-          //       {!isCheckout && (
-          //         <p
-          //           className={`${
-          //             isCheckout ? "font-medium text-sm" : "font-semibold"
-          //           }`}
-          //         >
-          //           {formatCurrency(item?.price * item?.quantity, "GHS")}
-          //         </p>
-          //       )}
-
-          //       <button
-          //         className={`${
-          //           isCheckout
-          //             ? "p-1"
-          //             : "rounded-full w-fit h-fit p-2 hover:bg-gray-100"
-          //         }`}
-          //         onClick={() => handleRemoveItem(item.variantId)}
-          //       >
-          //         <XCircleIcon
-          //           className={`${
-          //             isCheckout ? "h-5 w-5" : "h-6 w-6 text-red-500/65"
-          //           }`}
-          //         />
-          //       </button>
-          //     </>
-          //   </div>
-          // </div>
           <div
             key={item.variantId}
             className={`my-2 border w-full ${
@@ -196,7 +42,7 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
               className={`w-full ${
                 isCheckout
                   ? "flex items-center space-x-4"
-                  : "flex items-center space-x-4 lg:space-x-6  cursor-pointer"
+                  : "sm:flex sm:items-center sm:space-x-4 lg:space-x-6 cursor-pointer"
               }`}
             >
               <Image
@@ -225,7 +71,7 @@ const BasketCartItems = ({ isCheckout, isCartIcon }: BasketCartItemsProps) => {
                   </>
                 ) : (
                   <>
-                    <p className="line-clamp-2 font-semibold text-sm lg:text-lg">
+                    <p className="line-clamp-1 w-full font-semibold text-sm lg:text-lg">
                       {product?.title}
                     </p>
                     <div className="md:inline-flex space-x-2 hidden mt-1">

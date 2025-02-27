@@ -34,10 +34,10 @@ const ChangeDeliveryMethodDialog = ({ order, className }: Props) => {
           variant="secondary"
           className={`${
             order?.status === "confirmed" &&
-            "bg-slate-800 text-white hover:text-black font-medium"
-          } text-xs lg:text-sm tracking-wide border border-slate-300`}
+            "bg-slate-800 text-white hover:text-black font-medium w-full md:w-fit"
+          } text-xs bg-sowgren_Color text-white hover:bg-sowgren_Color/85 lg:text-sm tracking-wide border border-slate-300 w-full md:w-fit`}
         >
-          Change Delivery Method
+          Change Delivery
         </Button>
       </DialogTrigger>
 

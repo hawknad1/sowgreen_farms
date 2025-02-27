@@ -8,7 +8,7 @@ const StatusCards = ({
   orderStatus?: typeof orderStatusCard
   orders?: Order
 }) => (
-  <div className="flex items-center gap-x-3 justify-between w-full overflow-scroll scrollbar-hide">
+  <div className="flex items-center gap-x-3 justify-between w-full overflow-scroll scrollbar-none">
     {orderStatus?.map(({ title, subTitle, status, icon: Icon }, index) => {
       const isCancelled = orders?.status === "cancelled"
       const isLastCard = index === orderStatus.length - 1

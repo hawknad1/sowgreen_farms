@@ -38,9 +38,6 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
   const [pickupOptions, setPickupOptions] = useState<string[]>([])
   const [wednesday, saturday] = getUpcomingDeliveryDates()
 
-  console.log(selectedPickupOption, "selectedPickupOption")
-  console.log(selectedDeliveryMethod, "selectedDeliveryMethod")
-
   // Fetch available pickup options
   useEffect(() => {
     const fetchPickupOptions = async () => {

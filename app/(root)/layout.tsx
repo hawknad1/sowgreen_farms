@@ -100,7 +100,11 @@ export default async function RootLayout({
 
   return (
     <html lang="en" className={`${jost.variable} `}>
-      <SessionProvider session={session}>
+      <SessionProvider
+        session={session}
+        refetchInterval={5 * 60}
+        refetchOnWindowFocus={true}
+      >
         <body className="min-h-screen flex flex-col">
           {/* Sticky Navbar */}
           <header className="sticky top-0 z-50 bg-white w-full shadow-sm border-b">

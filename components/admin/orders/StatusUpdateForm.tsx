@@ -227,40 +227,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     fetchDispatchRiders()
   }, [fetchDispatchRiders])
 
-  // API Call to Update Order
-  // const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
-  //   setIsSaving(true)
-  //   try {
-  //     const response = await fetch(`/api/orders/${orders.id}`, {
-  //       method: "PUT",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(values),
-  //     })
-
-  //     if (!response.ok) {
-  //       const error = await response.json()
-  //       throw new Error(error.message || "Failed to update order")
-  //     }
-
-  //     const updatedOrder = await response.json()
-  //     setOrderStatus(updatedOrder.status)
-
-  //     toast.success("Order status updated successfully!")
-
-  //     // Send WhatsApp message only if the status is "confirmed"
-  //     if (updatedOrder.status === "confirmed") {
-  //       await sendOrderConfirmation(orders)
-  //     }
-
-  //     closeModal()
-  //     window.location.reload()
-  //   } catch (error: any) {
-  //     toast.error(`Error: ${error.message || "Failed to update order"}`)
-  //   } finally {
-  //     setIsSaving(false)
-  //   }
-  // }
-
   // Handle form submission
 
   const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {

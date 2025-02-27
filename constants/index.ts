@@ -283,10 +283,10 @@ export const sidebarLinks = {
           title: "Dispatch Riders",
           url: "/admin/dispatch-riders",
         },
-        {
-          title: "Broadcast Message",
-          url: "/admin/broadcast-message",
-        },
+        // {
+        //   title: "Broadcast Message",
+        //   url: "/admin/broadcast-message",
+        // },
       ],
     },
     {

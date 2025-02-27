@@ -60,7 +60,7 @@ const CancelOrderDialog = ({ order, children, className }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="secondary"
-          className={`font-semibold text-xs lg:text-sm w-full hover:bg-slate-200 ${className} shadow-sm border border-neutral-200 `}
+          className={`font-semibold text-xs lg:text-sm w-fit hover:bg-slate-200 ${className} shadow-sm border border-neutral-200 `}
         >
           Cancel Order
         </Button>

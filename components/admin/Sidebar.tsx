@@ -43,7 +43,7 @@ const Sidebar = ({ children }: SidebarProps) => {
       <AppSidebar />
       <SidebarInset className="h-screen overflow-hidden">
         {/* Sticky Header */}
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between w-full px-4  bg-white  shadow-sm">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between w-full px-4  bg-white shadow-sm">
           <div className=" flex items-center gap-2">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />

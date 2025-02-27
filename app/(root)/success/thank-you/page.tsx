@@ -215,13 +215,14 @@
 import Image from "next/image"
 import OrderConfirmSkeleton from "@/components/skeletons/OrderConfirmSkeleton"
 import { Separator } from "@/components/ui/separator"
-import { useDeliveryStore, useOrderDataStore } from "@/store"
+import { useDeliveryStore, useOrderDataStore, useUserStore } from "@/store"
 import { useEffect, useMemo, useState } from "react"
 import { OrderInfo } from "./OrderInfo"
 import { ShippingAddress } from "./ShippingAddress"
 import { formatCurrency } from "@/lib/utils"
 import { Product } from "@/types"
 import { CircleCheckBigIcon } from "lucide-react"
+import { deductBalance } from "@/lib/actions/deductBalance"
 
 const ThankYouPage = () => {
   const [newProduct, setNewProduct] = useState<Product[]>([])
@@ -229,6 +230,7 @@ const ThankYouPage = () => {
   // Fetch state data
   const ordersData = useOrderDataStore((state) => state.ordersData)
   const { deliveryFee } = useDeliveryStore()
+  const { user } = useUserStore()
 
   // Extract order details
   const {
@@ -239,6 +241,15 @@ const ThankYouPage = () => {
     deliveryDate,
     deliveryMethod,
   } = ordersData || {}
+
+  const orderTotal = total + deliveryFee
+
+  const {
+    updatedBalance,
+    updatedOrderTotal,
+    remainingAmount,
+    proceedToPaystack,
+  } = deductBalance(user?.user?.balance, orderTotal)
 
   useEffect(() => {
     async function fetchProducts() {
@@ -299,6 +310,8 @@ const ThankYouPage = () => {
   if (!ordersData) {
     return <OrderConfirmSkeleton />
   }
+
+  console.log(ordersData?.creditAppliedTotal, "ordersData?.creditAppliedTotal")
 
   return (
     <div className="flex flex-col items-center w-full px-4 py-5 lg:p-12 bg-gray-100 min-h-screen">
@@ -410,11 +423,43 @@ const ThankYouPage = () => {
                   {formattedDelivery}
                 </p>
               </div>
+              {user?.user?.balance > 0 && (
+                <div className="flex justify-between">
+                  <p className="text-sm font-medium text-neutral-500/85">
+                    Credit Bal.
+                  </p>
+                  <p className="text-sm font-semibold text-neutral-500/85">
+                    {formatCurrency(user?.user?.balance, "GHS")}
+                  </p>
+                </div>
+              )}
               <div className="flex justify-between">
                 <p className="text-sm font-bold text-black">Total</p>
-                <p className="text-sm font-bold">
-                  {formatCurrency((total || 0) + (deliveryFee || 0), "GHS")}
-                </p>
+                {/* {ordersData?.creditAppliedTotal > 0 ? (
+                  <p className="text-sm font-bold">
+                    {formatCurrency(ordersData?.creditAppliedTotal, "GHS")}
+                    <span className="line-through ml-2 text-neutral-400">
+                      {" "}
+                      {formatCurrency(orderTotal, "GHS")}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="text-sm font-bold">
+                    {formatCurrency((total || 0) + (deliveryFee || 0), "GHS")}
+                  </p>
+                )} */}
+                {user?.user?.balance > 0 ? (
+                  <p className="text-xl font-bold">
+                    {formatCurrency(remainingAmount, "GHS")}
+                    <span className="line-through font-normal text-base text-neutral-400 ml-2">
+                      {formatCurrency(orderTotal, "GHS")}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="text-xl font-bold">
+                    {formatCurrency(orderTotal, "GHS")}
+                  </p>
+                )}
               </div>
             </div>
           </div>

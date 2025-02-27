@@ -34,6 +34,7 @@ import { confirmedColumns } from "../confirmed/confirmedColumns"
 import { columns } from "@/components/admin/orders/columns" // Corrected import for the columns
 import ExportDialog from "@/components/admin/Export"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
+import ExportDeliveredDialog from "./ExportDeliveredDialog"
 
 interface OrdersProps {
   loading: boolean
@@ -120,7 +121,7 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <ExportDialog />
+          <ExportDeliveredDialog />
         </div>
       </div>
 

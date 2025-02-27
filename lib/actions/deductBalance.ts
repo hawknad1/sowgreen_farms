@@ -23,7 +23,7 @@ export function deductBalance(
     updatedOrderTotal = 0
   }
   // Case 2: Balance covers part of the order
-  else if (updatedBalance > 0 && updatedBalance < orderTotal) {
+  else if (updatedBalance >= 0.1 && updatedBalance < orderTotal) {
     remainingAmount = parseFloat((orderTotal - updatedBalance).toFixed(2))
     updatedBalance = 0
     proceedToPaystack = true
@@ -32,7 +32,8 @@ export function deductBalance(
   // Case 3: No balance available
   else {
     proceedToPaystack = true
-    remainingAmount = orderTotal
+    remainingAmount = 0
+    // remainingAmount = orderTotal
   }
 
   return {

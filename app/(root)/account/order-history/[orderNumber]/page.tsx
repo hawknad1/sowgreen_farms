@@ -7,12 +7,23 @@ import { Order } from "@/types"
 import { useEffect, useState } from "react"
 import { formatCurrency } from "@/lib/utils"
 import { capitalizeName } from "@/lib/capitalizeName"
+import PaystackPayNow from "./PaystackPayNow"
+import { deductBalance } from "@/lib/actions/deductBalance"
+import { useUserStore } from "@/store"
 
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const { user } = useUserStore()
 
   const { orderNumber } = params
+  const orderTotal = orderDetails?.total + orderDetails?.deliveryFee
+  const balance = user?.user?.balance
+
+  const { remainingAmount, updatedBalance, updatedOrderTotal } = deductBalance(
+    balance,
+    orderTotal
+  )
 
   useEffect(() => {
     async function fetchOrderDetails() {
@@ -85,9 +96,30 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               <span> {deliveryMethod()}</span>
               <span>{orderDetails.deliveryDate}</span>
             </p>
-            <p className="text-xs md:text-sm lg:text-base">{`GHS ${(
-              orderDetails.total + orderDetails.deliveryFee
-            ).toFixed(2)}`}</p>
+            {orderDetails?.creditAppliedTotal === 0 &&
+            orderDetails?.paymentAction !== "paid" &&
+            balance > 0 ? (
+              <p className="text-xs md:text-sm lg:text-base">
+                {formatCurrency(updatedOrderTotal, "GHS")}
+                <span className="text-xs md:text-sm text-neutral-400 line-through lg:ml-2">
+                  {" "}
+                  {formatCurrency(orderTotal, "GHS")}
+                </span>
+              </p>
+            ) : orderDetails?.creditAppliedTotal > 0 ? (
+              <p className="text-xs md:text-sm lg:text-base">
+                {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
+                <span className="text-xs md:text-sm text-neutral-400 line-through lg:ml-2">
+                  {" "}
+                  {formatCurrency(orderTotal, "GHS")}
+                </span>
+              </p>
+            ) : (
+              <p className="text-xs md:text-sm lg:text-base">
+                {formatCurrency(orderTotal, "GHS")}
+              </p>
+            )}
+
             <p className="text-xs md:text-sm">{status}</p>
           </div>
         )}
@@ -136,27 +168,58 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               </div>
               <div className="flex justify-between">
                 <p className="font-medium text-sm lg:text-base">Order Total</p>
-                <p className="text-sm text-neutral-600 lg:text-base">{`GHS ${(
-                  orderDetails?.total + orderDetails?.deliveryFee
-                ).toFixed(2)}`}</p>
+                {orderDetails?.creditAppliedTotal === 0 &&
+                orderDetails?.paymentAction !== "paid" &&
+                balance > 0 ? (
+                  <p className="text-xs md:text-sm lg:text-base">
+                    {formatCurrency(updatedOrderTotal, "GHS")}
+                    <span className="text-xs md:text-sm text-neutral-400 line-through lg:ml-2">
+                      {" "}
+                      {formatCurrency(orderTotal, "GHS")}
+                    </span>
+                  </p>
+                ) : orderDetails?.creditAppliedTotal > 0 ? (
+                  <p className="text-sm text-neutral-600 lg:text-base">
+                    {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
+                    <span className="line-through text-sm text-neutral-400 ml-2">
+                      {" "}
+                      {formatCurrency(orderTotal, "GHS")}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="text-sm text-neutral-600 lg:text-base">
+                    {formatCurrency(orderTotal, "GHS")}
+                  </p>
+                )}
               </div>
             </div>
           </div>
         </div>
 
         <div className="space-y-4 mt-8 w-full">
-          <div className="flex items-center w-full justify-center md:justify-between">
-            <h2 className="font-bold text-lg hidden md:inline-flex ">
+          {/* <div className="flex items-center w-full justify-center md:justify-between"> */}
+          <div className="flex">
+            <h2 className="font-bold text-lg hidden sm:inline-flex w-1/4 ">
               Products
             </h2>
-            <div className="flex w-full gap-x-4 md:max-w-xl">
-              <EditCustomerOrderDialog order={orderDetails} />
-              <ChangeDeliveryMethodDialog order={orderDetails} />
-              <CancelCustomerOrderDialog order={orderDetails} />
+            <div className="w-full flex ">
+              <div className="w-full flex flex-col gap-y-3 sm:grid sm:grid-cols-2 sm:gap-x-3">
+                <div className="flex gap-x-3 w-full">
+                  <PaystackPayNow order={orderDetails} />
+                  <EditCustomerOrderDialog order={orderDetails} className="" />
+                  <CancelCustomerOrderDialog order={orderDetails} />
+                </div>
+                <div className="">
+                  <ChangeDeliveryMethodDialog
+                    order={orderDetails}
+                    className=""
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="space-y-4 overflow-auto max-h-96 border border-slate-300 rounded-lg">
+          <div className="space-y-4 overflow-auto scrollbar-thin max-h-96 border border-slate-300 rounded-lg">
             {orderDetails?.products.map((product, index) => {
               return (
                 <div
@@ -179,7 +242,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                       height={90}
                     />
                     <div className="flex flex-col space-y-1 max-w-xs">
-                      <p>
+                      <p className="text-sm md:text-base line-clamp-1">
                         <span
                           className={`font-semibold text-gray-800 text-base ${
                             product.available === false && "text-gray-500"
@@ -224,22 +287,41 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               <p className="text-neutral-500 text-sm lg:text-base">
                 Delivery Fee
               </p>
-              <p className="font-medium text-sm lg:text-base">{`GHS ${orderDetails?.deliveryFee.toFixed(
-                2
-              )}`}</p>
+              <p className="font-medium text-sm lg:text-base">
+                {formatCurrency(orderDetails?.deliveryFee, "GHS")}
+              </p>
             </div>
             <div className="flex justify-between">
               <p className="text-neutral-500 text-sm lg:text-base">Subtotal</p>
-              <p className="font-medium text-sm lg:text-base">{`GHS ${orderDetails?.total.toFixed(
-                2
-              )}`}</p>
+              <p className="font-medium text-sm lg:text-base">
+                {formatCurrency(orderDetails?.total, "GHS")}
+              </p>
             </div>
 
             <div className="flex justify-between">
               <p className="text-neutral-500 text-sm lg:text-base">Total</p>
-              <p className="font-medium text-sm lg:text-base">{`GHS ${(
-                orderDetails?.total + orderDetails?.deliveryFee
-              ).toFixed(2)}`}</p>
+              {orderDetails?.creditAppliedTotal === 0 &&
+              orderDetails?.paymentAction !== "paid" &&
+              balance > 0 ? (
+                <p className="text-xs md:text-sm lg:text-base">
+                  {formatCurrency(updatedOrderTotal, "GHS")}
+                  <span className="text-xs md:text-sm text-neutral-400 line-through lg:ml-2">
+                    {" "}
+                    {formatCurrency(orderTotal, "GHS")}
+                  </span>
+                </p>
+              ) : orderDetails?.creditAppliedTotal > 0 ? (
+                <p className="font-medium text-sm lg:text-base">
+                  {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
+                  <span className="line-through text-sm text-neutral-400 ml-2">
+                    {formatCurrency(orderTotal, "GHS")}
+                  </span>
+                </p>
+              ) : (
+                <p className="font-medium text-sm lg:text-base">
+                  {formatCurrency(orderTotal, "GHS")}
+                </p>
+              )}
             </div>
           </div>
         </div>

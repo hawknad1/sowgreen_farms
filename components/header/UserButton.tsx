@@ -1,4 +1,5 @@
 // "use client"
+
 // import React, { useEffect, useState } from "react"
 // import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 // import getInitials from "@/lib/getInitials"
@@ -10,38 +11,24 @@
 //   DropdownMenuSeparator,
 //   DropdownMenuTrigger,
 // } from "../ui/dropdown-menu"
-// import { logout } from "@/lib/actions/auth"
+// import { signOut } from "next-auth/react"
 // import { LogOut } from "lucide-react"
 // import { useRouter } from "next/navigation"
-
-// interface UserProps {
-//   name?: string
-//   email?: string
-//   role?: string
-//   emailVerified?: string
-//   image?: string
-//   balance?: number
-// }
-
-// export type User = {
-//   user: {
-//     id: string
-//     name: string
-//     role: string
-//     balance: number
-//     email: string
-//   }
-// }
+// import { Skeleton } from "../ui/skeleton"
+// import { formatCurrency } from "@/lib/utils"
+// import { UserProps } from "@/types"
 
 // const UserButton = ({ user }: { user: UserProps }) => {
-//   const [activeUser, setActiveUser] = useState<User | null>(null)
+//   const [activeUser, setActiveUser] = useState<UserProps | null>(null)
+//   const [isLoading, setIsLoading] = useState(false)
 //   const router = useRouter()
-//   const initials = getInitials(user?.name)
+//   const initials = getInitials(user?.name || "")
 
 //   // Fetch user details if email is provided
 //   useEffect(() => {
 //     const getUser = async () => {
 //       if (!user?.email) return
+//       setIsLoading(true)
 //       try {
 //         const res = await fetch(`/api/user/${user.email}`, {
 //           method: "GET",
@@ -50,9 +37,13 @@
 //         if (res.ok) {
 //           const active = await res.json()
 //           setActiveUser(active)
+//         } else {
+//           console.error("Failed to fetch user details:", res.statusText)
 //         }
 //       } catch (error) {
 //         console.error("Failed to fetch user details:", error)
+//       } finally {
+//         setIsLoading(false)
 //       }
 //     }
 //     getUser()
@@ -60,8 +51,9 @@
 
 //   // Handle Logout
 //   const handleLogout = async () => {
-//     await logout()
+//     await signOut({ redirect: false })
 //     router.push("/")
+//     router.refresh() // Force a refresh to update the session state
 //   }
 
 //   // Common menu items
@@ -69,32 +61,32 @@
 //     <>
 //       <DropdownMenuLabel>Account</DropdownMenuLabel>
 //       <DropdownMenuSeparator />
-//       <DropdownMenuItem
-//         onClick={() => router.push("/account/order-history")}
-//         className="text-sm focus:bg-accent focus:text-accent-foreground cursor-pointer"
-//       >
-//         Order History
-//       </DropdownMenuItem>
 //       {user.role !== "admin" && (
 //         <>
 //           <DropdownMenuItem
 //             onClick={() => router.push("/account/my-profile")}
-//             className="text-sm focus:bg-accent focus:text-accent-foreground cursor-pointer"
+//             className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
 //           >
 //             My Profile
 //           </DropdownMenuItem>
 //           <DropdownMenuItem
+//             onClick={() => router.push("/account/order-history")}
+//             className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
+//           >
+//             Order History
+//           </DropdownMenuItem>
+//           <DropdownMenuItem
 //             onClick={() => router.push("/account/wish-list")}
-//             className="text-sm focus:bg-accent focus:text-accent-foreground cursor-pointer"
+//             className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
 //           >
 //             My Wish List
 //           </DropdownMenuItem>
 //         </>
 //       )}
-//       {activeUser?.user?.balance > 0 && (
+//       {activeUser?.balance > 0 && (
 //         <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
 //           Balance
-//           <span>{`GHS ${activeUser?.user?.balance}`}</span>
+//           <span>{formatCurrency(activeUser.balance, "GHS")}</span>
 //         </DropdownMenuItem>
 //       )}
 //       <DropdownMenuItem
@@ -110,23 +102,40 @@
 //   return (
 //     <div className="cursor-pointer">
 //       <DropdownMenu>
-//         <DropdownMenuTrigger>
-//           <Avatar className="h-8 w-8 rounded-full">
-//             <AvatarImage src={user?.image} alt={user?.name} />
-//             <AvatarFallback>{initials}</AvatarFallback>
-//           </Avatar>
+//         <DropdownMenuTrigger aria-label="User menu">
+//           {isLoading ? (
+//             <Skeleton className="h-10 w-10 rounded-full" />
+//           ) : (
+//             <Avatar className="h-10 w-10 rounded-full">
+//               <AvatarImage src={user?.image} alt={user?.name || "User"} />
+//               <AvatarFallback>{initials}</AvatarFallback>
+//             </Avatar>
+//           )}
 //         </DropdownMenuTrigger>
 //         <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0 w-44">
 //           {user.role === "admin" ? (
-//             <>
-//               {commonMenuItems}
+//             <div className="flex flex-col gap-y-2">
+//               {/* {commonMenuItems} */}
+//               <DropdownMenuItem
+//                 onClick={() => router.push("/account/order-history")}
+//                 className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
+//               >
+//                 Order History
+//               </DropdownMenuItem>
 //               <DropdownMenuItem
 //                 onClick={() => router.push("/admin/dashboard")}
-//                 className="text-sm focus:bg-accent focus:text-accent-foreground"
+//                 className="text-sm cursor-pointer text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color"
 //               >
 //                 Admin Dashboard
 //               </DropdownMenuItem>
-//             </>
+//               <DropdownMenuItem
+//                 onClick={handleLogout}
+//                 className="text-red-500 flex gap-2.5 text-sm hover:bg-red-500/10 cursor-pointer mt-5 "
+//               >
+//                 <LogOut size={16} />
+//                 Logout
+//               </DropdownMenuItem>
+//             </div>
 //           ) : (
 //             commonMenuItems
 //           )}
@@ -136,10 +145,9 @@
 //   )
 // }
 
-// export default UserButton
+// export default React.memo(UserButton)
 
 "use client"
-
 import React, { useEffect, useState } from "react"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import getInitials from "@/lib/getInitials"
@@ -157,18 +165,23 @@ import { useRouter } from "next/navigation"
 import { Skeleton } from "../ui/skeleton"
 import { formatCurrency } from "@/lib/utils"
 import { UserProps } from "@/types"
+import { useUserStore } from "@/store"
 
 const UserButton = ({ user }: { user: UserProps }) => {
-  const [activeUser, setActiveUser] = useState<UserProps | null>(null)
+  const [activeUser, setActiveUser] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const initials = getInitials(user?.name || "")
+
+  const { setUser } = useUserStore() // Get the setUser method from the store
 
   // Fetch user details if email is provided
   useEffect(() => {
     const getUser = async () => {
       if (!user?.email) return
       setIsLoading(true)
+      setError(null)
       try {
         const res = await fetch(`/api/user/${user.email}`, {
           method: "GET",
@@ -177,10 +190,13 @@ const UserButton = ({ user }: { user: UserProps }) => {
         if (res.ok) {
           const active = await res.json()
           setActiveUser(active)
+          setUser(active)
         } else {
+          setError("Failed to fetch user details")
           console.error("Failed to fetch user details:", res.statusText)
         }
       } catch (error) {
+        setError("Failed to fetch user details")
         console.error("Failed to fetch user details:", error)
       } finally {
         setIsLoading(false)
@@ -188,6 +204,10 @@ const UserButton = ({ user }: { user: UserProps }) => {
     }
     getUser()
   }, [user?.email])
+
+  useEffect(() => {
+    console.log("Active User:", activeUser)
+  }, [activeUser])
 
   // Handle Logout
   const handleLogout = async () => {
@@ -255,7 +275,6 @@ const UserButton = ({ user }: { user: UserProps }) => {
         <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0 w-44">
           {user.role === "admin" ? (
             <div className="flex flex-col gap-y-2">
-              {/* {commonMenuItems} */}
               <DropdownMenuItem
                 onClick={() => router.push("/account/order-history")}
                 className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
@@ -268,6 +287,14 @@ const UserButton = ({ user }: { user: UserProps }) => {
               >
                 Admin Dashboard
               </DropdownMenuItem>
+              {activeUser?.user?.balance > 0 && (
+                <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
+                  Balance
+                  <span>
+                    {formatCurrency(activeUser?.user?.balance, "GHS")}
+                  </span>
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onClick={handleLogout}
                 className="text-red-500 flex gap-2.5 text-sm hover:bg-red-500/10 cursor-pointer mt-5 "

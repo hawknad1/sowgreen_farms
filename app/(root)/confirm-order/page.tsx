@@ -84,18 +84,14 @@ const ConfirmOrderPage = () => {
     fetchUser()
   }, [user?.email])
 
-  const total = cartTotal
-
-  const {
-    updatedBalance,
-    updatedOrderTotal,
-    remainingAmount,
-    proceedToPaystack,
-  } = deductBalance(balance, total)
+  let total = cartTotal
+  let conbinedTotal = total + deliveryFee
 
   const formattedSubtotal = formatCurrency(cartTotal, "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
+
+  // total = balance > 0 ? updatedOrderTotal : cartTotal
 
   const taxedOrders = orders.map((order) => ({
     ...order, // Spread the existing order object
@@ -105,6 +101,11 @@ const ConfirmOrderPage = () => {
     },
     total: (order.item.price * order.quantity).toFixed(2),
   }))
+
+  // console.log(updatedBalance, "updatedBalance")
+  // console.log(updatedOrderTotal, "updatedOrderTotal")
+  // console.log(remainingAmount, "remainingAmount")
+  console.log(cartTotal, "cartTotal")
 
   const { deliveryDate, ...newFormData } = formData
   const shippingInfo = {
@@ -134,7 +135,23 @@ const ConfirmOrderPage = () => {
 
   const transformedCart = transformCart(cart)
 
-  console.log(transformedCart, "transformedCart")
+  const dataProps = {
+    formData,
+    formattedDelivery,
+    cart,
+    formattedSubtotal,
+    formattedTotal,
+    total,
+    deliveryFee,
+    deliveryDate,
+  }
+
+  const {
+    updatedBalance,
+    updatedOrderTotal,
+    remainingAmount,
+    proceedToPaystack,
+  } = deductBalance(balance, conbinedTotal)
 
   const config = {
     reference: new Date().getTime().toString(),
@@ -156,16 +173,6 @@ const ConfirmOrderPage = () => {
       ],
     },
     publicKey: process.env.PAYSTACK_PUBLIC_TEST_KEY as string,
-  }
-  const dataProps = {
-    formData,
-    formattedDelivery,
-    cart,
-    formattedSubtotal,
-    formattedTotal,
-    total,
-    deliveryFee,
-    deliveryDate,
   }
 
   async function handlePaystackSuccessAction(reference?: any) {
@@ -225,6 +232,7 @@ const ConfirmOrderPage = () => {
         paymentMode: verifyData?.paymentMode,
         paymentAction: verifyData?.paymentAction,
         total: total,
+        creditAppliedTotal: remainingAmount,
       }
 
       setOrdersData(ordersData)
@@ -293,18 +301,17 @@ const ConfirmOrderPage = () => {
       clearCart() // Clear the cart after successful order processing
 
       // Update user balance (if applicable)
-      // await fetch("/api/balance", {
-      //   method: "PUT",
-      //   headers: { "Content-type": "application/json" },
-      //   body: JSON.stringify({
-      //     email: user?.email,
-      //     updatedBalance,
-      //     phone: ordersData?.shippingAddress?.phone,
-      //   }),
-      // })
+      await fetch("/api/balance", {
+        method: "PUT",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          email: user?.email,
+          updatedBalance,
+          phone: formData.phone,
+        }),
+      })
 
       // Update product quantities
-      console.log(ordersData.products, "ORDERS DATA PRODUCTS")
       const quantityResponse = await fetch("/api/products/updateQuantity", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

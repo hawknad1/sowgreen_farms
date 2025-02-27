@@ -17,8 +17,8 @@ export async function POST(req: Request) {
   try {
     const response = await client.messages.create({
       body: message, // The message you want to send
-      from: "whatsapp:+14155238886", // Twilio's WhatsApp sandbox number
-      to: "whatsapp:+233204785693", // Replace with your WhatsApp number
+      from: "whatsapp:+233553121737",
+      to: `whatsapp:+233${customerNumber}`,
     })
 
     return NextResponse.json(response, { status: 200 })

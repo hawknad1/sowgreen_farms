@@ -16,9 +16,11 @@ import {
 import { Input } from "@/components/ui/input"
 import { CreditSchema } from "@/schemas"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 const AddCreditForm = () => {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<z.infer<typeof CreditSchema>>({
     resolver: zodResolver(CreditSchema),
@@ -30,7 +32,7 @@ const AddCreditForm = () => {
   })
 
   const onSubmit = async (values: z.infer<typeof CreditSchema>) => {
-    console.log(values, "vvvvv")
+    setIsLoading(true)
     try {
       const response = await fetch("/api/balance", {
         method: "POST",
@@ -49,6 +51,8 @@ const AddCreditForm = () => {
       }
     } catch (error) {
       toast.error("An unexpected error occurred")
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -109,8 +113,12 @@ const AddCreditForm = () => {
           )}
         />
 
-        <Button type="submit" className="w-full">
-          Save Changes
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? (
+            <span className="loading loading-spinner loading-md"></span>
+          ) : (
+            "Save Changes"
+          )}
         </Button>
       </form>
     </Form>

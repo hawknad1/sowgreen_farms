@@ -122,6 +122,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { TableCell } from "@/components/ui/table"
+import { useUserStore } from "@/store"
 import { Order } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
@@ -170,7 +171,11 @@ const handlePaystackSuccessAction = async (reference: any, orderId: string) => {
 const generatePaystackConfig = (order: Order) => ({
   reference: new Date().getTime().toString(),
   email: order?.shippingAddress?.email || "",
-  amount: Math.round(((order.total || 0) + (order?.deliveryFee || 0)) * 100),
+  amount: Math.round(
+    order?.creditAppliedTotal > 0
+      ? order?.creditAppliedTotal * 100
+      : ((order.total || 0) + (order?.deliveryFee || 0)) * 100
+  ),
   currency: "GHS",
   metadata: {
     custom_fields: [
@@ -207,7 +212,7 @@ export const columns: ColumnDef<any>[] = [
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Date
+          Date Placed
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       )
@@ -251,10 +256,11 @@ export const columns: ColumnDef<any>[] = [
     cell: ({ row }) => {
       const total = parseFloat(row.getValue("total"))
       const orderTotal = row.original.deliveryFee + total
+      const creditAppliedTotal = row.original.creditAppliedTotal
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "GHS",
-      }).format(orderTotal)
+      }).format(creditAppliedTotal > 0 ? creditAppliedTotal : orderTotal)
       return <div className="text-right font-medium">{formatted}</div>
     },
   },

@@ -86,6 +86,8 @@ export async function POST(req: Request) {
       last4Digits,
       paymentMode,
       paymentAction,
+      creditAppliedDeliveryFee,
+      creditAppliedTotal,
     } = await req.json()
 
     // Validate required fields
@@ -185,6 +187,8 @@ export async function POST(req: Request) {
         total,
         deliveryFee,
         deliveryDate,
+        creditAppliedDeliveryFee,
+        creditAppliedTotal,
         status,
         dispatchRider,
         shippingAddress: {
