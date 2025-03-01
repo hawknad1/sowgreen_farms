@@ -1,6 +1,7 @@
 import "@/app/globals.css"
 import Header from "@/components/admin/Header"
 import Sidebar from "@/components/admin/Sidebar"
+import { Metadata } from "next"
 import { Jost } from "next/font/google"
 import { Toaster } from "react-hot-toast"
 
@@ -9,6 +10,12 @@ const jost = Jost({
   weight: ["400", "700"],
   variable: "--font-jost",
 })
+
+export const metadata: Metadata = {
+  title: "Sowgreen Farms",
+  description: "Get your organic farm produce",
+  viewport: "width=device-width, initial-scale=1.0",
+}
 
 export default async function RootLayout({
   children,

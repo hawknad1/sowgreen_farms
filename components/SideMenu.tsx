@@ -1,122 +1,7 @@
-// "use client"
-// import { sideMenuLinks } from "@/constants"
-// import { CircleHelp, Heart, Salad, Settings, UserRound } from "lucide-react"
-// import { useSession } from "next-auth/react"
-// import Link from "next/link"
-// import React from "react"
-
-// export const adminSideMenuLinks = [
-//   {
-//     label: "Account",
-//     icon: UserRound,
-//     items: [
-//       {
-//         label: "Profile",
-//         href: "/profile",
-//       },
-//       {
-//         label: "Orders",
-//         href: "/account/order-history",
-//       },
-//       {
-//         label: "Admin",
-//         href: "/admin/dashboard",
-//       },
-//     ],
-//   },
-//   {
-//     label: "Products",
-//     href: "/products",
-//     icon: Salad,
-//   },
-//   {
-//     label: "Wishlists",
-//     href: "/wishlists",
-//     icon: Heart,
-//   },
-// ]
-
-// const SideMenu = () => {
-//   const { data: session } = useSession()
-//   const user = session?.user
-
-//   if (!user) return null // Avoid rendering if user is not available.
-//   const links = user.role === "admin" ? adminSideMenuLinks : sideMenuLinks
-
-//   return (
-//     <div className="flow-root">
-//       <ul className="-my-2 divide-y divide-gray-100">
-//         {/* Render the main menu items */}
-//         {(user.role === "admin" ? adminSideMenuLinks : sideMenuLinks).map(
-//           (menu, index) => (
-//             <li key={index} className="py-2">
-//               {/* Check if the menu item has nested items */}
-//               {menu.items ? (
-//                 <div>
-//                   {/* Render the parent label */}
-//                   <span
-//                     className="block px-4 py-2 text-sm font-medium text-gray-600"
-//                     aria-haspopup="true"
-//                   >
-//                     {menu.label}
-//                   </span>
-//                   {/* Render the nested items */}
-//                   <ul className="space-y-1 pl-4">
-//                     {menu.items.map((item, itemIndex) => (
-//                       <Link
-//                         key={itemIndex}
-//                         href={item.href}
-//                         className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-//                       >
-//                         <menu.icon className="h-4 w-4" />
-//                         {item.label}
-//                       </Link>
-//                     ))}
-//                   </ul>
-//                 </div>
-//               ) : (
-//                 // Render a single link if no nested items exist
-//                 <Link
-//                   href={menu.href}
-//                   className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-//                 >
-//                   <menu.icon className="h-4 w-4" />
-//                   {menu.label}
-//                 </Link>
-//               )}
-//             </li>
-//           )
-//         )}
-
-//         {/* Additional static links */}
-//         <li className="py-2">
-//           <ul className="space-y-1">
-//             <Link
-//               href="/help"
-//               className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-//             >
-//               <CircleHelp className="h-4 w-4" />
-//               Help
-//             </Link>
-//             <Link
-//               href="/settings"
-//               className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-//             >
-//               <Settings className="h-4 w-4" />
-//               Settings
-//             </Link>
-//           </ul>
-//         </li>
-//       </ul>
-//     </div>
-//   )
-// }
-
-// export default SideMenu
-
 "use client"
 
-import { adminSideMenuLinks, sideMenuLinks } from "@/constants"
+import { getAdminSideMenuLinks, getSideMenuLinks } from "@/constants"
+import { useUserStore } from "@/store"
 import { MenuItem } from "@/types"
 import {
   CircleHelp,
@@ -135,19 +20,69 @@ import React, { useState } from "react"
 const SideMenu = () => {
   const { data: session } = useSession()
   const user = session?.user
+  const { user: activeUser } = useUserStore()
 
   if (!user) return null // Avoid rendering if user is not available.
 
+  // const links: MenuItem[] =
+  //   user.role === "admin" ? adminSideMenuLinks : sideMenuLinks
+
   const links: MenuItem[] =
-    user.role === "admin" ? adminSideMenuLinks : sideMenuLinks
+    user.role === "admin"
+      ? getAdminSideMenuLinks(activeUser?.user?.balance || 0)
+      : getSideMenuLinks(activeUser?.user?.balance || 0)
 
   return (
+    // <div className="flow-root">
+    //   <ul className="-my-2 divide-y divide-gray-100">
+    //     {/* Render the main menu items */}
+    //     {links.map((menu, index) => (
+    //       <li key={index} className="py-2">
+    //         {/* Check if the menu item has nested items */}
+    //         {menu.items ? (
+    //           <CollapsibleSection
+    //             label={menu.label}
+    //             icon={menu.icon}
+    //             items={menu.items}
+    //           />
+    //         ) : (
+    //           // Render a single link if no nested items exist
+    //           <Link
+    //             href={menu.href || "#"}
+    //             className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+    //           >
+    //             {menu.icon && <menu.icon className="h-4 w-4" />}
+    //             {menu.label}
+    //           </Link>
+    //         )}
+    //       </li>
+    //     ))}
+
+    //     {/* Additional static links */}
+    //     <li className="py-2">
+    //       <ul className="space-y-1">
+    //         <Link
+    //           href="/help"
+    //           className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+    //         >
+    //           <CircleHelp className="h-4 w-4" />
+    //           Help
+    //         </Link>
+    //         <Link
+    //           href="/settings"
+    //           className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+    //         >
+    //           <Settings className="h-4 w-4" />
+    //           Settings
+    //         </Link>
+    //       </ul>
+    //     </li>
+    //   </ul>
+    // </div>
     <div className="flow-root">
       <ul className="-my-2 divide-y divide-gray-100">
-        {/* Render the main menu items */}
         {links.map((menu, index) => (
           <li key={index} className="py-2">
-            {/* Check if the menu item has nested items */}
             {menu.items ? (
               <CollapsibleSection
                 label={menu.label}
@@ -155,7 +90,6 @@ const SideMenu = () => {
                 items={menu.items}
               />
             ) : (
-              // Render a single link if no nested items exist
               <Link
                 href={menu.href || "#"}
                 className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
@@ -166,26 +100,6 @@ const SideMenu = () => {
             )}
           </li>
         ))}
-
-        {/* Additional static links */}
-        <li className="py-2">
-          <ul className="space-y-1">
-            <Link
-              href="/help"
-              className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-            >
-              <CircleHelp className="h-4 w-4" />
-              Help
-            </Link>
-            <Link
-              href="/settings"
-              className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-            >
-              <Settings className="h-4 w-4" />
-              Settings
-            </Link>
-          </ul>
-        </li>
       </ul>
     </div>
   )
@@ -194,6 +108,7 @@ const SideMenu = () => {
 // CollapsibleSection Component
 const CollapsibleSection = ({ label, icon: ParentIcon, items }: MenuItem) => {
   const [isExpanded, setIsExpanded] = useState(false)
+  const { user: activeUser } = useUserStore()
 
   return (
     <div>
