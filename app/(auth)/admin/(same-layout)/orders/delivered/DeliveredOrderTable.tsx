@@ -79,7 +79,7 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
 
   return (
     <div className="w-full p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
+      {/* <div className="grid grid-cols-1 sm:grid-cols-2 items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
         <div className=" w-full">
           <Input
             placeholder="Filter order number..."
@@ -123,6 +123,55 @@ const DeliveredOrderTable = ({ order, loading }: OrdersProps) => {
           </DropdownMenu>
           <ExportDeliveredDialog />
         </div>
+      </div> */}
+      <div className="bg-white flex items-center justify-between gap-x-3 top-0 sticky inset-0 z-10">
+        <div className="w-full ">
+          <Input
+            placeholder="Filter order number..."
+            value={
+              (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("orderNumber")?.setFilterValue(event.target.value)
+            }
+            className="w-full md:max-w-md"
+            aria-label="Filter Order number"
+          />
+        </div>
+
+        <div>
+          <ExportDeliveredDialog />
+        </div>
+        {/* <div className="flex w-full justify-between lg:justify-end gap-x-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="lg:inline-flex items-center hidden "
+              >
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <ExportDeliveredDialog />
+        </div> */}
       </div>
 
       <div className="overflow-hidden rounded-md border">

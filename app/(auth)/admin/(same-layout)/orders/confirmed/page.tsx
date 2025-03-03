@@ -27,7 +27,7 @@ const ConfirmedPage = () => {
     getOrderDetail()
   }, [])
   return (
-    <div className="p-4">
+    <div className="py-4">
       <ConfirmedOrdersDataTable order={order} loading={loading} />
     </div>
   )

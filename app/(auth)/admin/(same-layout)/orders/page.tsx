@@ -28,7 +28,7 @@ const AdminOrders = () => {
   }, [])
 
   return (
-    <div className="h-screen overflow-scroll scrollbar-none">
+    <div className="h-screen overflow-scroll scrollbar-none px-3">
       <OrdersDataTable order={order} loading={loading} />
     </div>
   )

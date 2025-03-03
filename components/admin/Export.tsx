@@ -24,10 +24,10 @@ const ExportDialog = () => {
       onOpenChange={(open) => setIsOpen(open)} // Automatically handles dialog state
     >
       <DialogTrigger asChild>
-        <Button className="flex items-center gap-x-1.5 text-xs md:text-base px-2.5 py-1 md:px-4 md:py-2">
+        <button className="flex w-fit items-center gap-x-1.5 text-sm bg-sowgren_Color text-white hover:bg-sowgren_Color/85 md:text-base py-2.5 px-4 rounded-lg">
           <ArrowDownTrayIcon className="h-3 w-3 md:h-4 md:w-4" />
           Export
-        </Button>
+        </button>
       </DialogTrigger>
 
       <DialogContent>

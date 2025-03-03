@@ -78,8 +78,8 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
 
   return (
     <div className="w-full p-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
-        <div className="flex gap-x-2">
+      <div className="bg-white flex items-center justify-between gap-x-3 top-0 sticky inset-0 z-10">
+        <div className="w-full">
           <Input
             placeholder="Filter order number..."
             value={
@@ -92,7 +92,7 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
             aria-label="Filter Order number"
           />
         </div>
-        <div className="flex w-full justify-between lg:justify-end gap-x-4">
+        {/* <div className="flex w-full justify-between lg:justify-end gap-x-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -120,6 +120,8 @@ const InTransitOrderTable = ({ order, loading }: OrdersProps) => {
                 ))}
             </DropdownMenuContent>
           </DropdownMenu>
+        </div> */}
+        <div>
           <ExportDialog />
         </div>
       </div>
