@@ -15,6 +15,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
+import { format, parse } from "date-fns"
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -64,42 +65,38 @@ export const columns: ColumnDef<Order>[] = [
       )
     },
     cell: ({ row }) => {
-      // Explicitly cast the value to a string
       const dateString = row.getValue("deliveryDate") as string
 
-      // Preprocess the date string to make it parsable by the Date constructor
-      const formattedDateString = dateString.replace(/(\d+)(st|nd|rd|th)/, "$1")
+      // Remove the ordinal suffix (e.g., "nd" in "22nd")
+      const cleanedDateString = dateString.replace(/(\d+)(st|nd|rd|th)/, "$1")
 
-      // Append the current year to the date string (if not already present)
-      const dateWithYear = formattedDateString.includes(",")
-        ? `${formattedDateString}, ${new Date().getFullYear()}`
-        : formattedDateString
+      // Parse the date string into a Date object
+      const date = parse(cleanedDateString, "EEEE, MMM d, yyyy", new Date())
 
-      const date = new Date(dateWithYear)
+      // Format the date in a human-readable way (e.g., "22 Feb 2025")
+      const formattedDate = format(date, "dd MMM yyyy")
 
-      const options: Intl.DateTimeFormatOptions = {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      }
-      return <div>{date.toLocaleDateString("en-UK", options)}</div>
+      return <div>{formattedDate}</div>
     },
     sortingFn: (rowA, rowB) => {
-      // Helper function to preprocess date strings
       const formatDateString = (dateString: string) => {
-        const formatted = dateString.replace(/(\d+)(st|nd|rd|th)/, "$1")
-        return formatted.includes(",")
-          ? `${formatted}, ${new Date().getFullYear()}`
-          : formatted
+        // Remove the ordinal suffix
+        const cleanedDateString = dateString.replace(/(\d+)(st|nd|rd|th)/, "$1")
+        return cleanedDateString
       }
 
-      // Explicitly cast the values to strings
-      const dateA = new Date(
-        formatDateString(rowA.original.deliveryDate as string)
+      // Parse the date strings into Date objects
+      const dateA = parse(
+        formatDateString(rowA.original.deliveryDate as string),
+        "EEEE, MMM d, yyyy",
+        new Date()
       ).getTime()
-      const dateB = new Date(
-        formatDateString(rowB.original.deliveryDate as string)
+      const dateB = parse(
+        formatDateString(rowB.original.deliveryDate as string),
+        "EEEE, MMM d, yyyy",
+        new Date()
       ).getTime()
+
       return dateA - dateB // Ascending order
     },
   },

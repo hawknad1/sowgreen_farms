@@ -1,130 +1,9 @@
-// import { Button } from "@/components/ui/button"
-// import {
-//   DropdownMenu,
-//   DropdownMenuContent,
-//   DropdownMenuItem,
-//   DropdownMenuLabel,
-//   DropdownMenuSeparator,
-//   DropdownMenuTrigger,
-// } from "@/components/ui/dropdown-menu"
-// import { Order, ShippingAddress } from "@/types"
-// import { ColumnDef } from "@tanstack/react-table"
-// import { ArrowUpDown, MoreHorizontal } from "lucide-react"
-
-// export const columns: ColumnDef<ShippingAddress>[] = [
-//   {
-//     accessorKey: "orderNumber",
-//     header: ({ column }) => {
-//       return (
-//         <Button
-//           variant="ghost"
-//           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-//         >
-//           Order Number
-//           <ArrowUpDown className="ml-2 h-4 w-4" />
-//         </Button>
-//       )
-//     },
-//     cell: ({ row }) => <div>{row.getValue("orderNumber")}</div>,
-//   },
-//   {
-//     accessorKey: "status",
-//     header: "Date Placed",
-//     cell: ({ row }) => (
-//       <div className="capitalize">{row.getValue("status")}</div>
-//     ),
-//   },
-//   {
-//     accessorKey: "status",
-//     header: "Delivery Method",
-//     cell: ({ row }) => (
-//       <div className="capitalize">{row.getValue("status")}</div>
-//     ),
-//   },
-//   {
-//     accessorKey: "status",
-//     header: "Status",
-//     cell: ({ row }) => (
-//       <div className="capitalize">{row.getValue("status")}</div>
-//     ),
-//   },
-//   {
-//     accessorKey: "status",
-//     header: "Action",
-//     cell: ({ row }) => (
-//       <div className="capitalize">{row.getValue("status")}</div>
-//     ),
-//   },
-//   {
-//     accessorKey: "email",
-//     header: ({ column }) => {
-//       return (
-//         <Button
-//           variant="ghost"
-//           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-//         >
-//           Email
-//           <ArrowUpDown />
-//         </Button>
-//       )
-//     },
-//     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
-//   },
-//   {
-//     accessorKey: "amount",
-//     header: () => <div className="text-right">Amount</div>,
-//     cell: ({ row }) => {
-//       const amount = parseFloat(row.getValue("amount"))
-//       const formatted = new Intl.NumberFormat("en-US", {
-//         style: "currency",
-//         currency: "USD",
-//       }).format(amount)
-//       return <div className="text-right font-medium">{formatted}</div>
-//     },
-//   },
-//   {
-//     id: "actions",
-//     enableHiding: false,
-//     cell: ({ row }) => {
-//       const payment = row.original
-//       return (
-//         <DropdownMenu>
-//           <DropdownMenuTrigger asChild>
-//             <Button variant="ghost" className="h-8 w-8 p-0">
-//               <span className="sr-only">Open menu</span>
-//               <MoreHorizontal />
-//             </Button>
-//           </DropdownMenuTrigger>
-//           <DropdownMenuContent align="end">
-//             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-//             <DropdownMenuItem
-//               onClick={() => navigator.clipboard.writeText(payment.id)}
-//             >
-//               Copy payment ID
-//             </DropdownMenuItem>
-//             <DropdownMenuSeparator />
-//             <DropdownMenuItem>View customer</DropdownMenuItem>
-//             <DropdownMenuItem>View payment details</DropdownMenuItem>
-//           </DropdownMenuContent>
-//         </DropdownMenu>
-//       )
-//     },
-//   },
-// ]
-
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+
 import { TableCell } from "@/components/ui/table"
-import { useUserStore } from "@/store"
 import { Order } from "@/types"
 import { ColumnDef } from "@tanstack/react-table"
+import { format } from "date-fns"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import Link from "next/link"
 import toast from "react-hot-toast"
@@ -219,12 +98,15 @@ export const columns: ColumnDef<any>[] = [
     },
     cell: ({ row }) => {
       const date = new Date(row.getValue("createdAt"))
-      const options: Intl.DateTimeFormatOptions = {
+
+      // Format the date in a readable format (e.g., "22/02/2025")
+      const formattedDate = new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
         year: "numeric",
-        month: "short",
-        day: "numeric",
-      }
-      return <div>{date.toLocaleDateString("en-UK", options)}</div>
+      }).format(date)
+
+      return <div>{formattedDate}</div>
     },
     sortingFn: (rowA, rowB) => {
       const dateA = new Date(rowA.original.createdAt).getTime()
