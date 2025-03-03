@@ -87,7 +87,7 @@ export default function Home() {
       </Head>
 
       <HeroBanner />
-      <main className="container mx-auto py-8 flex-1">
+      <main className=" md:container md:mx-auto py-8 px-3 flex-1">
         <section className="my-10">
           <CategoryChevrons>
             <CategoryCards />

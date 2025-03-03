@@ -73,7 +73,7 @@ const OrdersDataTable = ({ order, loading }: OrdersProps) => {
   })
 
   return (
-    <div className="w-full p-4">
+    <div className="w-full py-4">
       <div className="grid grid-cols-1 md:grid-cols-2 items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
         <div className="flex gap-x-2">
           <Input

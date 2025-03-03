@@ -38,7 +38,7 @@ const CityListPage = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="py-4">
       <CityandFeeTable data={list} />
     </div>
   )

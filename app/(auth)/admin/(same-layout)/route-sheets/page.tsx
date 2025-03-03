@@ -70,7 +70,7 @@ const RiderListPage = () => {
   }
 
   return (
-    <div className="p-4">
+    <div className="py-4">
       <RouteSheetTable data={list} />
     </div>
   )
