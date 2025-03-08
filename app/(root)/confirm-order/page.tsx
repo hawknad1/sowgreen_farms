@@ -102,11 +102,6 @@ const ConfirmOrderPage = () => {
     total: (order.item.price * order.quantity).toFixed(2),
   }))
 
-  // console.log(updatedBalance, "updatedBalance")
-  // console.log(updatedOrderTotal, "updatedOrderTotal")
-  // console.log(remainingAmount, "remainingAmount")
-  console.log(cartTotal, "cartTotal")
-
   const { deliveryDate, ...newFormData } = formData
   const shippingInfo = {
     deliveryDate,
@@ -152,6 +147,10 @@ const ConfirmOrderPage = () => {
     remainingAmount,
     proceedToPaystack,
   } = deductBalance(balance, conbinedTotal)
+
+  console.log(updatedBalance, "updatedBalance")
+  console.log(updatedOrderTotal, "updatedOrderTotal")
+  console.log(remainingAmount, "remainingAmount")
 
   const config = {
     reference: new Date().getTime().toString(),
@@ -233,6 +232,9 @@ const ConfirmOrderPage = () => {
         paymentAction: verifyData?.paymentAction,
         total: total,
         creditAppliedTotal: remainingAmount,
+        updatedBalance,
+        updatedOrderTotal,
+        remainingAmount,
       }
 
       setOrdersData(ordersData)
@@ -301,15 +303,15 @@ const ConfirmOrderPage = () => {
       clearCart() // Clear the cart after successful order processing
 
       // Update user balance (if applicable)
-      await fetch("/api/balance", {
-        method: "PUT",
-        headers: { "Content-type": "application/json" },
-        body: JSON.stringify({
-          email: user?.email,
-          updatedBalance,
-          phone: formData.phone,
-        }),
-      })
+      // await fetch("/api/balance", {
+      //   method: "PUT",
+      //   headers: { "Content-type": "application/json" },
+      //   body: JSON.stringify({
+      //     email: user?.email,
+      //     updatedBalance,
+      //     phone: formData.phone,
+      //   }),
+      // })
 
       // Update product quantities
       const quantityResponse = await fetch("/api/products/updateQuantity", {

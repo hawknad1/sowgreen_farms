@@ -59,17 +59,20 @@ const OrderSummary = ({
           )}
           <div className="flex items-center justify-between text-lg">
             <p className="text-sm  md:text-base text-neutral-500">Total</p>
-            {user?.user?.balance > 0 ? (
-              <p className="text-xl font-bold">
-                {formatCurrency(remainingAmount, "GHS")}
-                <span className="line-through font-normal text-base text-neutral-400 ml-2">
-                  {formattedTotal}
-                </span>
-              </p>
-            ) : (
-              <p className="text-xl font-bold">{formattedTotal}</p>
-            )}
+            <span className="font-semibold text-sm">{formattedTotal}</span>
           </div>
+          {user?.user?.balance > 0 && (
+            <div className="flex items-center justify-between text-lg">
+              <>
+                <p className="text-sm  md:text-base text-red-500 font-bold">
+                  Total Due
+                </p>
+                <p className="text-xl font-bold text-red-500">
+                  {formatCurrency(remainingAmount, "GHS")}
+                </p>
+              </>
+            </div>
+          )}
         </div>
       </div>
     </div>

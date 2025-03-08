@@ -34,6 +34,7 @@ import { Product } from "@/types"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
 import Export from "@/components/admin/Export"
 import { AddProductModal } from "./AddProductModal"
+import ExportProductList from "./ExportProductList"
 
 interface ProductProps {
   products: Product[]
@@ -106,7 +107,7 @@ const ProductDataTable = ({ products, loading }: ProductProps) => {
         </DropdownMenu>
         <AddProductModal />
 
-        <Export />
+        <ExportProductList />
       </div>
       <div className="rounded-md border">
         <Table>

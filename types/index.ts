@@ -66,6 +66,9 @@ export type Order = {
   total: number
   creditAppliedTotal?: number
   creditAppliedDeliveryFee?: number
+  updatedOrderTotal?: number
+  remainingAmount?: number
+  updatedBalance?: number
   status: OrderStatus
   dispatchRider: DispatchRider
   deliveryMethod?: string

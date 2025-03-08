@@ -83,6 +83,9 @@ export async function POST(req: Request) {
       products,
       status,
       cardType,
+      updatedOrderTotal,
+      remainingAmount,
+      updatedBalance,
       last4Digits,
       paymentMode,
       paymentAction,
@@ -132,6 +135,25 @@ export async function POST(req: Request) {
       )
     }
 
+    // // find User
+    // const user = await prisma.user.findUnique({
+    //   where: { email: shippingAddress.email },
+    // })
+
+    // Find the user
+    const user = await prisma.user.findUnique({
+      where: { email: shippingAddress.email },
+    })
+
+    if (!user) {
+      return new NextResponse(JSON.stringify({ message: "User not found" }), {
+        status: 404,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    }
+
     // Create a new shipping address
     const shippingAddressRecord = await prisma.shippingAddress.create({
       data: {
@@ -143,6 +165,7 @@ export async function POST(req: Request) {
         country: shippingAddress.country || "",
         phone: shippingAddress.phone,
         deliveryMethod: shippingAddress.deliveryMethod || "Not Specified",
+        userId: user?.id,
       },
     })
 
@@ -188,9 +211,15 @@ export async function POST(req: Request) {
         deliveryFee,
         deliveryDate,
         creditAppliedDeliveryFee,
+        updatedOrderTotal,
+        remainingAmount,
+        updatedBalance,
         creditAppliedTotal,
         status,
         dispatchRider,
+        user: {
+          connect: { id: user?.id },
+        },
         shippingAddress: {
           connect: { id: shippingAddressRecord.id },
         },

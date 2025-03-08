@@ -7,21 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// model User {
+//   id             String          @id @default(auto()) @map("_id") @db.ObjectId
+//   name           String?
+//   email          String?         @unique
+//   hashedPassword String?
+//   emailVerified  DateTime?
+//   image          String?
+//   role           String?         @default("user")
+//   balance        Float?          @default(0.0)
+//   phone          String?
+//   accounts       Account[]
+//   sessions       Session[]
+//   customer Customer
+//   authenticators Authenticator[] // Renamed for consistency
+//   createdAt      DateTime        @default(now())
+//   updatedAt      DateTime        @updatedAt
+// }
+
 model User {
-  id             String          @id @default(auto()) @map("_id") @db.ObjectId
-  name           String?
-  email          String?         @unique
-  hashedPassword String?
-  emailVerified  DateTime?
-  image          String?
-  role           String?         @default("user")
-  balance        Float?          @default(0.0)
-  phone          String?
-  accounts       Account[]
-  sessions       Session[]
-  authenticators Authenticator[] // Renamed for consistency
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  name              String?
+  email             String?           @unique
+  hashedPassword    String?
+  emailVerified     DateTime?
+  image             String?
+  role              String            @default("user") // Default role is "user"
+  balance           Float             @default(0.0) // Default balance is 0.0
+  phone             String?
+  accounts          Account[] // A user can have multiple accounts
+  sessions          Session[] // A user can have multiple sessions
+  customer          Customer? // A user can have one customer profile
+  orders            Order[]           @relation("UserOrders") // A user can have multiple orders
+  shippingAddresses ShippingAddress[] @relation("UserShippingAddresses") // A user can have multiple shipping addresses
+  authenticators    Authenticator[] // A user can have multiple authenticators
+  createdAt         DateTime          @default(now()) // Automatically set on creation
+  updatedAt         DateTime          @updatedAt // Automatically updated on change
+}
+
+model Customer {
+  id                String            @id @default(auto()) @map("_id") @db.ObjectId
+  email             String            @unique
+  shippingAddresses ShippingAddress[]
+  orders            Order[]
+  userId            String            @unique @db.ObjectId // Unique userId for one-to-one relationship
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Account {
@@ -90,12 +120,15 @@ model Category {
   products     Product[]
 }
 
-model Customer {
-  id                String            @id @default(auto()) @map("_id") @db.ObjectId
-  email             String            @unique
-  shippingAddresses ShippingAddress[] // One customer can have multiple shipping addresses
-  orders            Order[] // One customer can have multiple orders
-}
+// model Customer {
+//   id                String            @id @default(auto()) @map("_id") @db.ObjectId
+//   email             String            @unique
+//   shippingAddresses ShippingAddress[] // One customer can have multiple shipping addresses
+//   orders            Order[] // One customer can have multiple orders
+//   userId            String  @db.ObjectId
+//   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+// }
 
 model ShippingAddress {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
@@ -110,6 +143,9 @@ model ShippingAddress {
   customerId     String?   @db.ObjectId
   customer       Customer? @relation(fields: [customerId], references: [id])
   orders         Order[] // Indicates a one-to-many relationship; can be empty
+  // Add relationship to User
+  userId         String?   @db.ObjectId
+  user           User?     @relation(fields: [userId], references: [id], name: "UserShippingAddresses")
 }
 
 model Product {
@@ -165,6 +201,9 @@ model Order {
   orderNumber              String           @unique
   total                    Float?
   creditAppliedTotal       Float?
+  updatedOrderTotal        Float?
+  remainingAmount          Float?
+  updatedBalance           Float?
   creditAppliedDeliveryFee Float?
   status                   String?          @default("processing")
   dispatchRiderId          String?          @db.ObjectId
@@ -181,6 +220,9 @@ model Order {
   last4Digits              String?
   paymentMode              String?
   paymentAction            String?
+  // Add relationship to User
+  userId                   String?          @db.ObjectId
+  user                     User?            @relation(fields: [userId], references: [id], name: "UserOrders")
   createdAt                DateTime         @default(now())
   updatedAt                DateTime         @updatedAt
 }
@@ -221,64 +263,3 @@ model DispatchRider {
   phone     String?
   orders    Order[]
 }
-
-// model DeliveryMethod {
-//   id                String           @id @default(auto()) @map("_id") @db.ObjectId
-//   label String
-//   tag String
-//   value String
-// }
-
-// model WeightPrice {
-//   id        String  @id @default(auto()) @map("_id") @db.ObjectId // MongoDB requires an @id field
-//   weight    Float?
-//   price     Int?
-//   product   Product @relation(fields: [productId], references: [id]) // Opposite relation field
-//   productId String  @db.ObjectId
-// }
-
-// model Order {
-//   id                String           @id @default(auto()) @map("_id") @db.ObjectId
-//   referenceNumber   String
-//   orderNumber       String           @unique
-//   total             Float?
-//   status            String?          @default("processing")
-//   dispatchRider     String?
-//   shippingAddressId String?          @db.ObjectId
-//   shippingAddress   ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
-//   products          ProductOrder[]   
-//   deliveryMethod    String
-//   deliveryFee       Int?
-//   cardType          String?
-//   last4Digits       String?
-//   paymentMode       String?
-//   paymentAction     String?
-//   createdAt         DateTime         @default(now())
-//   updatedAt         DateTime         @updatedAt
-// }
-
-// model ProductOrder {
-//   id            String  @id @default(auto()) @map("_id") @db.ObjectId
-//   productId     String  @db.ObjectId
-//   orderId       String  @db.ObjectId
-//   quantity      Int
-//   quantityTotal String
-//   product       Product @relation(fields: [productId], references: [id])
-//   order         Order   @relation(fields: [orderId], references: [id])
-// }
-
-// model DeliveryMethod {
-//   id              String         @id @default(auto()) @map("_id") @db.ObjectId
-//   label           String
-//   tag             String?
-//   price           String?
-//   value           String
-//   pickupOptions   PickupOption[] @relation("DeliveryMethodPickupOptions") // Establishing relation with PickupOption
-// }
-
-// model PickupOption {
-//   id               String         @id @default(auto()) @map("_id") @db.ObjectId
-//   label            String
-//   deliveryMethodId String         @db.ObjectId
-//   deliveryMethod   DeliveryMethod @relation("DeliveryMethodPickupOptions", fields: [deliveryMethodId], references: [id]) // Linking back to DeliveryMethod
-// }

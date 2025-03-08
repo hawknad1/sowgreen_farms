@@ -15,7 +15,6 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
   return (
     <div>
       {products?.map((ord: ProductOrder) => {
-        console.log(ord, "ord---")
         return (
           <div
             key={ord.productId}

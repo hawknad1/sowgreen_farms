@@ -311,8 +311,6 @@ const ThankYouPage = () => {
     return <OrderConfirmSkeleton />
   }
 
-  console.log(ordersData?.creditAppliedTotal, "ordersData?.creditAppliedTotal")
-
   return (
     <div className="flex flex-col items-center w-full px-4 py-5 lg:p-12 bg-gray-100 min-h-screen">
       <div className="flex flex-col items-center gap-y-2 mb-3">
@@ -406,7 +404,7 @@ const ThankYouPage = () => {
 
           <div className="flex flex-col gap-y-2 mt-3">
             <Separator />
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col py-1 gap-y-2 gap-x-1">
               <div className="flex justify-between">
                 <p className="text-sm font-medium text-neutral-500/85">
                   Subtotal
@@ -423,6 +421,14 @@ const ThankYouPage = () => {
                   {formattedDelivery}
                 </p>
               </div>
+              <div className="flex justify-between">
+                <p className="text-sm font-medium text-neutral-500/85">
+                  Order Total
+                </p>
+                <p className="text-sm font-semibold text-neutral-500/85">
+                  {formatCurrency(orderTotal, "GHS")}
+                </p>
+              </div>
               {user?.user?.balance > 0 && (
                 <div className="flex justify-between">
                   <p className="text-sm font-medium text-neutral-500/85">
@@ -433,27 +439,13 @@ const ThankYouPage = () => {
                   </p>
                 </div>
               )}
+
               <div className="flex justify-between">
-                <p className="text-sm font-bold text-black">Total</p>
-                {/* {ordersData?.creditAppliedTotal > 0 ? (
-                  <p className="text-sm font-bold">
-                    {formatCurrency(ordersData?.creditAppliedTotal, "GHS")}
-                    <span className="line-through ml-2 text-neutral-400">
-                      {" "}
-                      {formatCurrency(orderTotal, "GHS")}
-                    </span>
-                  </p>
-                ) : (
-                  <p className="text-sm font-bold">
-                    {formatCurrency((total || 0) + (deliveryFee || 0), "GHS")}
-                  </p>
-                )} */}
+                <p className="text-sm font-bold text-black">Total Due</p>
+
                 {user?.user?.balance > 0 ? (
-                  <p className="text-xl font-bold">
+                  <p className="text-xl font-bold text-green-600">
                     {formatCurrency(remainingAmount, "GHS")}
-                    <span className="line-through font-normal text-base text-neutral-400 ml-2">
-                      {formatCurrency(orderTotal, "GHS")}
-                    </span>
                   </p>
                 ) : (
                   <p className="text-xl font-bold">

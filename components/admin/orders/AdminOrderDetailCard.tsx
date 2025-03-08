@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import React, { useEffect, useState } from "react"
 import DisplayOrder from "./DisplayOrder"
 import StatusPopup from "./StatusPopup"
 import AddCredit from "./AddCredit"
@@ -8,18 +8,89 @@ import DeleteOrderDialog from "./dialogs/DeleteOrderDialog"
 import ModifyOrderDialog from "./dialogs/ModifyOrderDialog"
 import CancelOrderDialog from "./dialogs/CancelOrderDialog"
 
-import { Order } from "@/types"
+import { Order, User } from "@/types"
 import { ShippingInfo } from "./ShippingInfo"
 import { OrderInfo } from "./OrderInfo"
 import { formatCurrency } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import { orderStatusCard } from "@/constants"
 import { useUserStore } from "@/store"
+import { useSession } from "next-auth/react"
+import { deductBalance } from "@/lib/actions/deductBalance"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
-  const { user } = useUserStore()
+  // const { user } = useUserStore()
+  // const [user, setUser] = useState()
+  const [isLoading, setIsLoading] = useState(true)
+  const [activeUser, setActiveUser] = useState<User>(null)
+  const { data: session } = useSession()
+  const user = session?.user
 
   const orderTotal = orders?.total + orders?.deliveryFee
+  const balance = activeUser?.user?.balance
+
+  // const { remainingAmount, updatedBalance, updatedOrderTotal } = deductBalance(
+  //   activeUser?.user?.balance,
+  //   orderTotal
+  // )
+
+  // const balance = user?.user?.balance
+
+  // Fetch user details if email is provided
+  useEffect(() => {
+    const getUser = async () => {
+      if (!user?.email) return
+      setIsLoading(true)
+      try {
+        const res = await fetch(`/api/user/${user.email}`, {
+          method: "GET",
+          cache: "no-store",
+        })
+        if (res.ok) {
+          const active = await res.json()
+          setActiveUser(active)
+          // setUser(active)
+        } else {
+          console.error("Failed to fetch user details:", res.statusText)
+        }
+      } catch (error) {
+        console.error("Failed to fetch user details:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    getUser()
+  }, [user?.email])
+
+  // useEffect(() => {
+  //   const getUser = async () => {
+  //     if (!user?.email) return
+  //     setIsLoading(true)
+  //     // setError(null)
+  //     try {
+  //       const res = await fetch(`/api/user/${user.email}`, {
+  //         method: "GET",
+  //         cache: "no-store",
+  //       })
+  //       if (res.ok) {
+  //         const active = await res.json()
+  //         // setActiveUser(active)
+  //         setUser(active)
+  //       } else {
+  //         // setError("Failed to fetch user details")
+  //         console.error("Failed to fetch user details:", res.statusText)
+  //       }
+  //     } catch (error) {
+  //       // setError("Failed to fetch user details")
+  //       console.error("Failed to fetch user details:", error)
+  //     } finally {
+  //       setIsLoading(false)
+  //     }
+  //   }
+  //   getUser()
+  // }, [user?.email])
+
+  // console.log(user, "BALANCE")
 
   if (!orders)
     return (
@@ -82,7 +153,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               {/* Shipping and order details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <ShippingInfo order={orders} />
-                <OrderInfo orders={orders} />
+                <OrderInfo orders={orders} balance={balance} />
               </div>
 
               <Separator className="my-4" />
@@ -103,24 +174,29 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                 <h3 className="text-lg font-bold mb-2">Order Summary</h3>
                 <div className="flex justify-between">
                   <div>
-                    <p className="text-sm text-neutral-400">Subtotal</p>
-                    <p className="text-sm text-neutral-400">Delivery Fee</p>
+                    <p className="text-sm font-semibold">Subtotal</p>
+                    <p className="text-sm font-semibold">Delivery Fee</p>
                     {/* {orders?.creditAppliedTotal > 0 ? (
                       <p className="text-sm text-neutral-400">Credit</p>
                     ) : (
                       ""
                     )} */}
-                    <p className="text-sm font-semibold">Total</p>
+                    <p className="text-sm font-semibold">Order Total</p>
+                    {balance > 0 && (
+                      <p className="text-sm font-semibold text-red-500">
+                        Total Due
+                      </p>
+                    )}
                   </div>
 
                   <div className="flex flex-col items-end">
                     <div className="flex justify-between">
-                      <p className="font-semibold text-sm text-neutral-400">
+                      <p className="font-semibold text-sm">
                         {formatCurrency(orders?.total, "GHS")}
                       </p>
                     </div>
                     <div className="flex justify-between">
-                      <p className="font-semibold text-sm text-neutral-400">
+                      <p className="font-semibold text-sm ">
                         {formatCurrency(orders?.deliveryFee, "GHS")}
                       </p>
                     </div>
@@ -135,20 +211,17 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                       ""
                     )} */}
                     <div className="flex justify-between">
-                      {orders?.creditAppliedTotal > 0 ? (
-                        <p className="font-semibold text-sm">
-                          {formatCurrency(orders?.creditAppliedTotal, "GHS")}
-                          <span className="line-through text-neutral-400 text-sm ml-2">
-                            {" "}
-                            {formatCurrency(orderTotal, "GHS")}
-                          </span>
-                        </p>
-                      ) : (
-                        <p className="font-semibold text-sm">
-                          {formatCurrency(orderTotal, "GHS")}
-                        </p>
-                      )}
+                      <p className="font-semibold text-sm">
+                        {formatCurrency(orderTotal, "GHS")}
+                      </p>
                     </div>
+                    {balance > 0 && (
+                      <div className="flex justify-between">
+                        <p className="font-semibold text-sm text-red-500">
+                          {formatCurrency(orders?.updatedOrderTotal, "GHS")}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

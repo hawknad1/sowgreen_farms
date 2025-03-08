@@ -55,18 +55,17 @@ const BasketOrderSummery = () => {
         )}
 
         <div className="flex items-center justify-between">
-          <p className="text-sm text-zinc-400/80">Total</p>
-          {user?.user?.balance > 0 ? (
-            <p className="text-xl font-bold">
-              {formatCurrency(remainingAmount, "GHS")}
-              <span className="line-through font-normal text-base text-neutral-400 ml-2">
-                {formattedTotal}
-              </span>
-            </p>
-          ) : (
-            <p className="text-xl font-bold">{formattedTotal}</p>
-          )}
+          <p className="text-sm font-bold">Total</p>
+          <p className="text-sm font-bold">{formattedTotal}</p>
         </div>
+        {user?.user?.balance > 0 && (
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-red-500 font-semibold">Total Due</p>
+            <p className="text-sm text-red-500 font-semibold">
+              {formatCurrency(remainingAmount, "GHS")}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

@@ -16,6 +16,8 @@ const InfoCard = ({ data }: InfoCardProps) => {
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const { user } = useUserStore()
 
+  // console.log(user, "USER")
+
   let total = data?.total + deliveryFee
 
   const {
@@ -24,11 +26,6 @@ const InfoCard = ({ data }: InfoCardProps) => {
     remainingAmount,
     proceedToPaystack,
   } = deductBalance(user?.user?.balance, total)
-
-  console.log(updatedBalance, "updatedBalance")
-  console.log(updatedOrderTotal, "updatedOrderTotal")
-  console.log(remainingAmount, "remainingAmount")
-  console.log(proceedToPaystack, "proceedToPaystack")
 
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
@@ -105,10 +102,10 @@ const InfoCard = ({ data }: InfoCardProps) => {
               Order Summary
             </h3>
             <div className="mt-2 space-y-2 text-gray-600 text-xs md:text-sm lg:text-base">
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <p>Order Created:</p>
                 <span className="font-medium">{date}</span>
-              </div>
+              </div> */}
               <div className="flex justify-between">
                 <p>Item(s) Ordered:</p>
                 <span className="font-medium">
@@ -135,19 +132,22 @@ const InfoCard = ({ data }: InfoCardProps) => {
                   </span>
                 </div>
               )}
+              <div className="flex justify-between">
+                <p>Order Total:</p>
+                <span className="font-medium">
+                  {formatCurrency(total, "GHS")}
+                </span>
+              </div>
             </div>
           </div>
           <Separator className="my-2" />
           <div className="flex justify-between">
             <h3 className="lg:text-xl text-sm font-bold text-gray-800">
-              Order Total
+              Total Due
             </h3>
             {user?.user?.balance > 0 ? (
-              <p className=" font-bold text-xs md:text-sm lg:text-base">
+              <p className="font-bold text-xs md:text-sm lg:text-base">
                 {formatCurrency(updatedOrderTotal, "GHS") || "No total"}
-                <span className="line-through text-neutral-400 font-medium ml-2">
-                  {formatCurrency(total, "GHS") || "No total"}
-                </span>
               </p>
             ) : (
               <p className=" font-bold text-xs md:text-sm lg:text-base">

@@ -30,14 +30,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ShippingAddress } from "@/types"
+import { Order, ShippingAddress } from "@/types"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
 import Export from "@/components/admin/Export"
 import { useCustomerStore } from "@/store"
 
+export type UserType = {
+  balance: number
+  email: string
+  name: string
+  image: string
+  orders: Order[]
+  phone: string
+  role: string
+  id: string
+  emailVerified: string
+}
+
 const CustomerDataTable = () => {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const customerDetails = useCustomerStore((state) => state.customers)
+  const [users, setUsers] = React.useState<UserType[]>([])
   const setCustomerDetails = useCustomerStore(
     (state) => state.setCustomerDetails
   )
@@ -52,36 +65,58 @@ const CustomerDataTable = () => {
     Record<string, boolean>
   >({})
 
+  console.log(users, "TESTINNGGG")
+
+  // React.useEffect(() => {
+  //   const customerData = async () => {
+  //     try {
+  //       const res = await fetch("/api/address", {
+  //         method: "GET",
+  //         cache: "no-store",
+  //       })
+  //       if (res.ok) {
+  //         const address = await res.json()
+
+  //         const uniqueCustomers = address.filter(
+  //           ((seen) => (customer: any) => {
+  //             const uniqueKey = customer.email || customer.phone // Use email or phone as the key
+  //             return uniqueKey && !seen.has(uniqueKey) && seen.add(uniqueKey)
+  //           })(new Set())
+  //         )
+  //         setCustomerDetails(uniqueCustomers) // Set the customer details
+  //         setIsLoading(false) // Stop loading
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   customerData()
+  // }, [setCustomerDetails])
+
   React.useEffect(() => {
-    const customerData = async () => {
+    async function getUsers() {
       try {
-        const res = await fetch("/api/address", {
+        const res = await fetch("/api/user", {
           method: "GET",
           cache: "no-store",
         })
-        if (res.ok) {
-          const address = await res.json()
 
-          const uniqueCustomers = address.filter(
-            ((seen) => (customer: any) => {
-              const uniqueKey = customer.email || customer.phone // Use email or phone as the key
-              return uniqueKey && !seen.has(uniqueKey) && seen.add(uniqueKey)
-            })(new Set())
-          )
-          setCustomerDetails(uniqueCustomers) // Set the customer details
-          setIsLoading(false) // Stop loading
+        if (res.ok) {
+          const users = await res.json()
+          setUsers(users)
+          setIsLoading(false)
         }
       } catch (error) {
         console.log(error)
       }
     }
-    customerData()
-  }, [setCustomerDetails])
+    getUsers()
+  }, [])
 
   console.log(customerDetails, "customerDetails")
 
-  const table = useReactTable<ShippingAddress>({
-    data: customerDetails || [], // Ensure data is always an array
+  const table = useReactTable<UserType>({
+    data: users || [], // Ensure data is always an array
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,

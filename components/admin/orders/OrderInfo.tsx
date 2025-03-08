@@ -3,7 +3,12 @@ import { useMemo } from "react"
 import ModifyOrderDetailsDialog from "./dialogs/ModifyOrderDetailsDialog"
 import { formatCurrency } from "@/lib/utils"
 
-export const OrderInfo = ({ orders }: { orders: Order }) => {
+interface OrderInfoProps {
+  orders: Order
+  balance: number
+}
+
+export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
   const {
     orderNumber,
     referenceNumber,
@@ -23,8 +28,6 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
   const orderTotal = total + deliveryFee
 
   if (!orders) return null
-
-  console.log(creditAppliedTotal, "creditAppliedTotal")
 
   const typeCard = cardType?.charAt(0).toUpperCase() + cardType?.slice(1)
   const modeOfPayment =
@@ -47,20 +50,19 @@ export const OrderInfo = ({ orders }: { orders: Order }) => {
         </p>
         <p className="flex justify-between text-sm lg:text-base">
           <span className=" text-neutral-600">Order Total:</span>
-          {creditAppliedTotal > 0 ? (
-            <p className="font-medium">
-              {formatCurrency(creditAppliedTotal, "GHS")}
-              <span className="line-through text-neutral-400 ml-2">
-                {" "}
-                {formatCurrency(orderTotal, "GHS")}
-              </span>
-            </p>
-          ) : (
-            <span className="font-medium">
-              {formatCurrency(orderTotal, "GHS")}
-            </span>
-          )}
+          <span className="font-medium">
+            {formatCurrency(orderTotal, "GHS")}
+          </span>
         </p>
+        {balance > 0 && (
+          <p className="flex justify-between text-sm lg:text-base">
+            <span className=" text-red-500">Total Due:</span>
+            <p className="font-medium text-red-500">
+              {formatCurrency(orders?.updatedOrderTotal, "GHS")}
+            </p>
+          </p>
+        )}
+
         {cardType ? (
           <p className=" flex justify-between text-sm lg:text-base">
             <span className=" text-neutral-600">Payment Method:</span>
