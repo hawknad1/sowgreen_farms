@@ -5,9 +5,10 @@ import { PaystackButton } from "react-paystack"
 
 interface OrderProps {
   order: Order
+  updatedBalance: number
 }
 
-const PaystackPayNow = ({ order }: OrderProps) => {
+const PaystackPayNow = ({ order, updatedBalance }: OrderProps) => {
   const handlePaystackSuccessAction = async (
     reference: any,
     orderId: string
@@ -39,6 +40,16 @@ const PaystackPayNow = ({ order }: OrderProps) => {
       })
 
       if (!res.ok) throw new Error("Payment update failed")
+
+      await fetch("/api/balance", {
+        method: "PUT",
+        headers: { "Content-type": "application/json" },
+        body: JSON.stringify({
+          email: order?.shippingAddress?.email,
+          updatedBalance,
+          phone: order?.shippingAddress?.phone,
+        }),
+      })
 
       // Notify success
       toast.success("Payment was successful!")

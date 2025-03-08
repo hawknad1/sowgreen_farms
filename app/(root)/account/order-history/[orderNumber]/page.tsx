@@ -239,7 +239,10 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                       updatedBalance={updatedBalance}
                     />
                   ) : (
-                    <PaystackPayNow order={orderDetails} />
+                    <PaystackPayNow
+                      order={orderDetails}
+                      updatedBalance={updatedBalance}
+                    />
                   )}
                   <EditCustomerOrderDialog order={orderDetails} className="" />
                   <CancelCustomerOrderDialog order={orderDetails} />
