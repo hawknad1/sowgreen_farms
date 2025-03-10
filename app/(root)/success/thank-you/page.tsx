@@ -349,7 +349,10 @@ const ThankYouPage = () => {
                     className="flex items-start justify-between w-full"
                   >
                     <div className="flex gap-4 w-full">
-                      <div className="bg-gray-100 p-1.5 rounded-lg">
+                      <div
+                        className="bg-gray-100 p-1.5 rounded-lg
+                      "
+                      >
                         <Image
                           src={
                             order?.item?.product?.imageUrl ||
@@ -358,7 +361,7 @@ const ThankYouPage = () => {
                           alt={order?.item?.product?.title}
                           height={50}
                           width={50}
-                          className="h-14 w-14 object-contain"
+                          className="h-12 w-12 object-contain"
                           priority
                         />
                       </div>
@@ -367,12 +370,12 @@ const ThankYouPage = () => {
                           {order?.item?.product?.title}
                         </p>
 
-                        <p className="font-medium text-gray-600/65 text-sm">
+                        <p className="font-medium text-gray-600/65 text-xs md:text-sm">
                           {formatCurrency(order?.item?.price, "GHS")}
                           {order?.item?.weight === null ? (
                             ""
                           ) : (
-                            <span className="text-sm text-neutral-400">
+                            <span className="md:text-sm text-xs text-neutral-400">
                               {` / ${
                                 order?.item?.weight < 1
                                   ? order?.item?.weight * 1000
@@ -384,9 +387,9 @@ const ThankYouPage = () => {
                       </div>
                     </div>
                     <div className="text-right space-y-1 w-fit">
-                      <div className="text-sm text-neutral-600 space-x-2 flex flex-col">
-                        <span className="">{`QTY : ${order?.item?.quantity}`}</span>
-                        <span className="">{`Subtotal:  ${formatCurrency(
+                      <div className="md:text-sm text-xs text-neutral-600 space-x-2 flex flex-col">
+                        <span className="text-xs md:text-sm">{`QTY : ${order?.item?.quantity}`}</span>
+                        <span className="text-xs md:text-sm">{`Subtotal:  ${formatCurrency(
                           parseFloat(order?.total),
                           "GHS"
                         )}`}</span>
@@ -441,14 +444,16 @@ const ThankYouPage = () => {
               )}
 
               <div className="flex justify-between">
-                <p className="text-sm font-bold text-black">Total Due</p>
+                <p className="text-sm md:text-lg font-bold text-black">
+                  Total Due
+                </p>
 
                 {user?.user?.balance > 0 ? (
-                  <p className="text-xl font-bold text-green-600">
+                  <p className="text-sm md:text-lg font-bold text-green-600">
                     {formatCurrency(remainingAmount, "GHS")}
                   </p>
                 ) : (
-                  <p className="text-xl font-bold">
+                  <p className="md:text-lg text-sm font-bold">
                     {formatCurrency(orderTotal, "GHS")}
                   </p>
                 )}

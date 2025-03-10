@@ -1,14 +1,21 @@
+import PaystackButton from "@/components/paystackButton"
 import { Order } from "@/types"
 import React from "react"
 import toast from "react-hot-toast"
-import { PaystackButton } from "react-paystack"
+// import { PaystackButton } from "react-paystack"
 
 interface OrderProps {
   order: Order
   updatedBalance: number
+  disablePayNow: boolean
 }
 
-const PaystackPayNow = ({ order, updatedBalance }: OrderProps) => {
+const PaystackPayNow = ({
+  order,
+  updatedBalance,
+  disablePayNow,
+}: OrderProps) => {
+  console.log(disablePayNow, "disablePayNow")
   const handlePaystackSuccessAction = async (
     reference: any,
     orderId: string
@@ -97,7 +104,12 @@ const PaystackPayNow = ({ order, updatedBalance }: OrderProps) => {
       order?.status === "confirmed" ? (
         <PaystackButton
           {...generatePaystackConfig(order)}
-          className="bg-green-700 text-white w-full font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
+          disabled={disablePayNow}
+          className={`bg-green-700 text-white w-full ${
+            disablePayNow
+              ? "opacity-50 cursor-not-allowed rounded-lg"
+              : "font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
+          } `}
         />
       ) : order?.paymentAction === "paid" ? (
         <p className="bg-emerald-500/15 text-emerald-500 text-base font-medium w-fit flex items-center px-4 rounded-md">

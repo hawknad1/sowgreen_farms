@@ -311,28 +311,27 @@ const EditCustomerOrder = ({
       </div>
       <div className="flex flex-col gap-y-3 mt-4">
         <div className="flex justify-between text-black font-semibold">
-          <p className="text-xs md:text-base">
+          <p className="text-xs md:text-sm">
             <span className="text-neutral-500">Subtotal:</span>{" "}
             {formatCurrency(subtotal, "GHS")}
           </p>
-          <p className="text-xs md:text-base">
+          <p className="text-xs md:text-sm">
             <span className="text-neutral-500">Delivery Fee:</span>{" "}
             {formatCurrency(orderDetails.deliveryFee, "GHS")}
           </p>
-          <p className="text-xs md:text-base">
+
+          <p className="text-xs md:text-sm">
             <span className="text-neutral-500">Total:</span>{" "}
-            {checkTotal ? (
-              <>
-                {" "}
-                <span>{formatCurrency(total, "GHS")}</span>
-                <span className="line-through md:text-sm text-neutral-400 ml-2">
-                  {formatCurrency(subtotal + deliveryFee, "GHS")}
-                </span>
-              </>
-            ) : (
-              <span>{formatCurrency(total, "GHS")}</span>
-            )}
+            <span className="">
+              {formatCurrency(subtotal + deliveryFee, "GHS")}
+            </span>
           </p>
+          {checkTotal && (
+            <p className=" text-xs md:text-sm">
+              <span className="text-red-500">Total Due:</span>{" "}
+              <span>{formatCurrency(total, "GHS")}</span>
+            </p>
+          )}
         </div>
 
         <Button

@@ -71,6 +71,8 @@ interface OrderDataState {
     orderNumber: string
     deliveryMethod: string
     deliveryDate: string
+    updatedOrderTotal: number
+    updatedBalance: number
     referenceNumber: string
     total: number
     creditAppliedTotal?: number

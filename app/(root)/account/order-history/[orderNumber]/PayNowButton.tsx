@@ -18,7 +18,6 @@ const PayNowButton = ({
   const [isLoading, setIsLoading] = useState(false)
 
   const proceedToPay = async () => {
-    console.log(updatedBalance, "updatedBalance")
     setIsLoading(true)
     try {
       const res = await fetch(`/api/orders/${order?.id}`, {

@@ -3,14 +3,15 @@ import Image from "next/image"
 import ChangeDeliveryMethodDialog from "./DeliveryMethodDialog"
 import CancelCustomerOrderDialog from "./CancelCustomerOrderDialog"
 import EditCustomerOrderDialog from "./EditCustomerOrderDialog"
+import PaystackPayNow from "./PaystackPayNow"
+import PayNowButton from "./PayNowButton"
+
 import { Order } from "@/types"
 import { useEffect, useState } from "react"
 import { formatCurrency } from "@/lib/utils"
 import { capitalizeName } from "@/lib/capitalizeName"
-import PaystackPayNow from "./PaystackPayNow"
 import { deductBalance } from "@/lib/actions/deductBalance"
 import { useUserStore } from "@/store"
-import PayNowButton from "./PayNowButton"
 
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)
@@ -26,7 +27,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
     orderTotal
   )
 
-  console.log(updatedOrderTotal, "updatedOrderTotal")
   const checkPayNow = updatedOrderTotal === 0
 
   useEffect(() => {
@@ -76,6 +76,12 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
 
   const name = capitalizeName(orderDetails?.shippingAddress.name)
 
+  // const disablePayNow =
+  //   orderDetails?.status === "confirmed" &&
+  //   orderDetails?.paymentAction === "paid"
+
+  const disablePayNow =
+    orderDetails?.status === "confirmed" && updatedOrderTotal === 0
   return (
     <div className="min-h-screen flex flex-col items-center bg-white py-8">
       <div className="w-full max-w-5xl px-4 space-y-6">
@@ -100,30 +106,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               <span> {deliveryMethod()}</span>
               <span>{orderDetails.deliveryDate}</span>
             </p>
-            {/* {orderDetails?.creditAppliedTotal === 0 &&
-            orderDetails?.paymentAction !== "paid" &&
-            balance > 0 ? (
-              <p className="text-xs md:text-sm lg:text-base">
-                {formatCurrency(updatedOrderTotal, "GHS")}
-                <span className="text-xs md:text-sm text-neutral-400 line-through lg:ml-2">
-                  {" "}
-                  {formatCurrency(orderTotal, "GHS")}
-                </span>
-              </p>
-            ) : orderDetails?.creditAppliedTotal > 0 ? (
-              <p className="text-xs md:text-sm lg:text-base">
-                {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
-                <span className="text-xs md:text-sm text-neutral-400 line-through lg:ml-2">
-                  {" "}
-                  {formatCurrency(orderTotal, "GHS")}
-                </span>
-              </p>
-            ) : (
-              <p className="text-xs md:text-sm lg:text-base">
-                {formatCurrency(orderTotal, "GHS")}
-              </p>
-            )} */}
-
             <p className="text-xs md:text-sm lg:text-base">
               {formatCurrency(orderTotal, "GHS")}
             </p>
@@ -183,32 +165,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                     {formatCurrency(orderTotal, "GHS")}
                   </p>
                 </div>
-                {/* {orderDetails?.creditAppliedTotal === 0 &&
-                orderDetails?.paymentAction !== "paid" &&
-                balance > 0 ? (
-                  <div className="flex w-full justify-between">
-                    <p className="font-medium text-sm lg:text-base">
-                      Total Due
-                    </p>
-                    <p className="text-xs md:text-sm lg:text-base">
-                      {formatCurrency(updatedOrderTotal, "GHS")}
-                    </p>
-                  </div>
-                ) : orderDetails?.creditAppliedTotal > 0 ? (
-                  <div className="flex w-full justify-between">
-                    <p className="font-medium text-sm lg:text-base">
-                      Total Due
-                    </p>
-                    <p className="text-sm text-neutral-600 lg:text-base">
-                      {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
-                    </p>
-                  </div>
-                ) : (
-                  <p className="text-sm text-neutral-600 lg:text-base">
-                    {formatCurrency(orderTotal, "GHS")}
-                  </p>
-                )} */}
-
                 <div className="flex w-full justify-between">
                   <p className="text-sm lg:text-base text-red-500 font-semibold">
                     Total Due
@@ -231,7 +187,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
             <div className="w-full flex ">
               <div className="w-full flex flex-col gap-y-3 sm:grid sm:grid-cols-2 sm:gap-x-3">
                 <div className="flex gap-x-3 w-full">
-                  {updatedOrderTotal === 0 &&
+                  {/* {updatedOrderTotal === 0 &&
                   orderDetails?.status === "confirmed" ? (
                     <PayNowButton
                       order={orderDetails}
@@ -243,7 +199,13 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                       order={orderDetails}
                       updatedBalance={updatedBalance}
                     />
-                  )}
+                  )} */}
+
+                  <PaystackPayNow
+                    order={orderDetails}
+                    updatedBalance={updatedBalance}
+                    disablePayNow={disablePayNow}
+                  />
                   <EditCustomerOrderDialog order={orderDetails} className="" />
                   <CancelCustomerOrderDialog order={orderDetails} />
                 </div>
@@ -353,31 +315,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 {formatCurrency(orderDetails?.updatedOrderTotal, "GHS")}
               </p>
             </div>
-            {/* <div className="flex justify-between">
-              {orderDetails?.creditAppliedTotal === 0 &&
-              orderDetails?.paymentAction !== "paid" &&
-              balance > 0 ? (
-                <>
-                  <p className="text-neutral-500 text-sm lg:text-base">
-                    Total Due
-                  </p>
-                  <p className="text-xs md:text-sm lg:text-base">
-                    {formatCurrency(updatedOrderTotal, "GHS")}
-                  </p>
-                </>
-              ) : (
-                orderDetails?.creditAppliedTotal > 0 && (
-                  <>
-                    <p className="text-neutral-500 text-sm lg:text-base">
-                      Total Due
-                    </p>
-                    <p className="font-medium text-sm lg:text-base">
-                      {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
-                    </p>
-                  </>
-                )
-              )}
-            </div> */}
           </div>
         </div>
       </div>
