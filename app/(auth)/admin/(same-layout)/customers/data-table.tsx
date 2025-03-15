@@ -30,12 +30,26 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Order, ShippingAddress } from "@/types"
+import { Order, ShippingAddress, User } from "@/types"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
 import Export from "@/components/admin/Export"
 import { useCustomerStore } from "@/store"
 
-export type UserType = {
+// export type UserType = {
+//   user: {
+//     balance: number
+//     email: string
+//     name: string
+//     image: string
+//     orders: Order[]
+//     phone: string
+//     role: string
+//     id: string
+//     emailVerified: string
+//   }
+// }
+
+type UserType = {
   balance: number
   email: string
   name: string
@@ -47,7 +61,7 @@ export type UserType = {
   emailVerified: string
 }
 
-const CustomerDataTable = () => {
+const CustomerDataTable = ({ user }: User) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const customerDetails = useCustomerStore((state) => state.customers)
   const [users, setUsers] = React.useState<UserType[]>([])
@@ -64,8 +78,6 @@ const CustomerDataTable = () => {
   const [rowSelection, setRowSelection] = React.useState<
     Record<string, boolean>
   >({})
-
-  console.log(users, "TESTINNGGG")
 
   // React.useEffect(() => {
   //   const customerData = async () => {
@@ -112,8 +124,6 @@ const CustomerDataTable = () => {
     }
     getUsers()
   }, [])
-
-  console.log(customerDetails, "customerDetails")
 
   const table = useReactTable<UserType>({
     data: users || [], // Ensure data is always an array

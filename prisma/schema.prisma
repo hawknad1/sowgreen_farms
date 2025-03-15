@@ -200,6 +200,7 @@ model Order {
   referenceNumber          String
   orderNumber              String           @unique
   total                    Float?
+  totalDue                 Float?
   creditAppliedTotal       Float?
   updatedOrderTotal        Float?
   remainingAmount          Float?

@@ -34,7 +34,7 @@ const Sidebar = ({ children }: SidebarProps) => {
   const fullName = user?.name
   const firstName = fullName?.split(" ")[0] // Get the first name
   const capitalizedFirstName =
-    firstName?.charAt(0).toUpperCase() + firstName.slice(1) // Capitalize first letter
+    firstName?.charAt(0).toUpperCase() + firstName?.slice(1) // Capitalize first letter
 
   console.log(capitalizedFirstName) // Output: James
 

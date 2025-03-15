@@ -64,6 +64,7 @@ export type Order = {
   orderNumber: string
   referenceNumber: string
   total: number
+  totalDue?: number
   creditAppliedTotal?: number
   creditAppliedDeliveryFee?: number
   updatedOrderTotal?: number

@@ -8,6 +8,10 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import Link from "next/link"
 import toast from "react-hot-toast"
 import { PaystackButton } from "react-paystack"
+import PaystackPayNow from "./[orderNumber]/PaystackPayNow"
+import { deductBalance } from "@/lib/actions/deductBalance"
+import { useUserStore } from "@/store"
+import PaymentActionCell from "./PaymentActionCell"
 
 const handlePaystackSuccessAction = async (reference: any, orderId: string) => {
   try {
@@ -139,39 +143,55 @@ export const columns: ColumnDef<any>[] = [
       const total = parseFloat(row.getValue("total"))
       const orderTotal = row.original.deliveryFee + total
       const creditAppliedTotal = row.original.creditAppliedTotal
+      const updatedOrderTotal = row.original.updatedOrderTotal
+
+      // const formatted = new Intl.NumberFormat("en-US", {
+      //   style: "currency",
+      //   currency: "GHS",
+      // }).format(creditAppliedTotal > 0 ? creditAppliedTotal : orderTotal)
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "GHS",
-      }).format(creditAppliedTotal > 0 ? creditAppliedTotal : orderTotal)
+      }).format(updatedOrderTotal)
       return <div className="text-right font-medium">{formatted}</div>
     },
   },
-
   {
     header: "Action",
     id: "paymentAction", // Custom column for actions
     cell: ({ row }) => {
       const order = row.original // Access the original data for the row
-      return (
-        <TableCell align="center" onClick={(e) => e.stopPropagation()}>
-          {order?.paymentMode === "cash" &&
-          order?.paymentAction === "pending" &&
-          order?.status === "confirmed" ? (
-            <PaystackButton
-              {...generatePaystackConfig(order)}
-              className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
-            />
-          ) : order?.paymentAction === "paid" ? (
-            <p className="bg-emerald-500/15 text-emerald-500 rounded-full px-4 py-0.5 w-20 font-medium tracking-wide">
-              Paid
-            </p>
-          ) : (
-            <p className="bg-red-500/15 rounded-full px-4 py-0.5 font-medium tracking-wide text-red-500">
-              Pending
-            </p>
-          )}
-        </TableCell>
-      )
+      return <PaymentActionCell order={order} />
     },
   },
+  // {
+  //   header: "Action",
+  //   id: "paymentAction", // Custom column for actions
+  //   cell: ({ row }) => {
+  //     const order = row.original // Access the original data for the row
+  //     const { user } = useUserStore()
+  //     const { updatedBalance } = deductBalance(
+  //       user?.user?.balance,
+  //       order?.total + order?.deliveryFee
+  //     )
+
+  //     return (
+  //       <TableCell align="center" onClick={(e) => e.stopPropagation()}>
+  //         {order?.paymentMode === "cash" &&
+  //         order?.paymentAction === "pending" &&
+  //         order?.status === "confirmed" ? (
+  //           <PaystackPayNow order={order} updatedBalance={updatedBalance} />
+  //         ) : order?.paymentAction === "paid" ? (
+  //           <p className="bg-emerald-500/15 text-emerald-500 rounded-full px-4 py-0.5 w-20 font-medium tracking-wide">
+  //             Paid
+  //           </p>
+  //         ) : (
+  //           <p className="bg-red-500/15 rounded-full px-4 py-0.5 font-medium tracking-wide text-red-500">
+  //             Pending
+  //           </p>
+  //         )}
+  //       </TableCell>
+  //     )
+  //   },
+  // },
 ]

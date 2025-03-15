@@ -413,6 +413,7 @@ export async function PUT(
     shippingAddress,
     referenceNumber,
     creditAppliedTotal,
+    updatedOrderTotal,
     address,
     city,
     region,
@@ -590,6 +591,7 @@ export async function PUT(
         cardType,
         paymentMode,
         referenceNumber,
+        updatedOrderTotal,
         creditAppliedTotal,
         shippingAddress: {
           update: {

@@ -1,31 +1,89 @@
-// /pages/api/sendWhatsappMessage.js
+// import { NextApiRequest, NextApiResponse } from "next"
+// import { NextResponse } from "next/server"
+// import twilio from "twilio"
 
-import { NextApiRequest, NextApiResponse } from "next"
+// export async function POST(req: Request) {
+//   //   const message = req.json()
+//   const { message, customerNumber } = await req.json()
+
+//   // Twilio credentials
+//   const accountSid = process.env.TWILIO_ACCOUNT_SID
+//   const authToken = process.env.TWILIO_AUTH_TOKEN
+
+//   const client = twilio(accountSid, authToken)
+
+//   try {
+//     const response = await client.messages.create({
+//       body: message, // The message you want to send
+//       from: "whatsapp:+233553121737",
+//       to: `whatsapp:+233${548332807}`,
+//     })
+
+//     return NextResponse.json(response, { status: 200 })
+//   } catch (error) {
+//     console.log(error)
+//     return NextResponse.json(
+//       { message: "Couldnt send whatsapp message" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
 import { NextResponse } from "next/server"
 import twilio from "twilio"
 
 export async function POST(req: Request) {
-  //   const message = req.json()
+  // Parse the request body
   const { message, customerNumber } = await req.json()
 
-  // Twilio credentials
+  // Validate input
+  if (!message || !customerNumber) {
+    return NextResponse.json(
+      { message: "Message and customerNumber are required" },
+      { status: 400 }
+    )
+  }
+
+  // Validate Twilio credentials
   const accountSid = process.env.TWILIO_ACCOUNT_SID
   const authToken = process.env.TWILIO_AUTH_TOKEN
 
+  if (!accountSid || !authToken) {
+    return NextResponse.json(
+      { message: "Twilio credentials are missing" },
+      { status: 500 }
+    )
+  }
+
+  // Initialize Twilio client
   const client = twilio(accountSid, authToken)
 
   try {
+    // Send the WhatsApp message
     const response = await client.messages.create({
-      body: message, // The message you want to send
-      from: "whatsapp:+233553121737",
-      to: `whatsapp:+233${customerNumber}`,
+      body: message,
+      from: "whatsapp:+233553121737", // Your Twilio WhatsApp number
+      to: `whatsapp:+233${customerNumber}`, // Dynamic recipient number
     })
 
-    return NextResponse.json(response, { status: 200 })
-  } catch (error) {
-    console.log(error)
+    // Return success response
     return NextResponse.json(
-      { message: "Couldnt send whatsapp message" },
+      {
+        message: "WhatsApp message sent successfully",
+        sid: response.sid,
+      },
+      { status: 200 }
+    )
+  } catch (error) {
+    // Log the error for debugging
+    console.error("Error sending WhatsApp message:", error)
+
+    // Return error response
+    return NextResponse.json(
+      {
+        message: "Failed to send WhatsApp message",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     )
   }

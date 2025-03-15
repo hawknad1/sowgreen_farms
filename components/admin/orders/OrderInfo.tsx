@@ -54,14 +54,21 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
             {formatCurrency(orderTotal, "GHS")}
           </span>
         </p>
-        {balance > 0 && (
+        {/* {balance > 0 && (
           <p className="flex justify-between text-sm lg:text-base">
             <span className=" text-red-500">Total Due:</span>
             <p className="font-medium text-red-500">
               {formatCurrency(orders?.updatedOrderTotal, "GHS")}
             </p>
           </p>
-        )}
+        )} */}
+
+        <p className="flex justify-between text-sm lg:text-base">
+          <span className=" text-red-500">Total Due:</span>
+          <p className="font-medium text-red-500">
+            {formatCurrency(orders?.updatedOrderTotal, "GHS")}
+          </p>
+        </p>
 
         {cardType ? (
           <p className=" flex justify-between text-sm lg:text-base">

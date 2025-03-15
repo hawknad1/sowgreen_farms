@@ -4,7 +4,7 @@ import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { ShippingAddress } from "@/types"
+import { Order, ShippingAddress } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -14,9 +14,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { UserType } from "./data-table"
 import { formatCurrency } from "@/lib/utils"
 import Link from "next/link"
+import UpdateBalanceDialog from "./UpdateBalanceDialog"
+
+type UserType = {
+  balance: number
+  email: string
+  name: string
+  image: string
+  orders: Order[]
+  phone: string
+  role: string
+  id: string
+  emailVerified: string
+}
 
 export const columns: ColumnDef<UserType>[] = [
   {
@@ -67,6 +79,8 @@ export const columns: ColumnDef<UserType>[] = [
     header: "Address",
     cell: ({ row }) => {
       const orders = row.getValue("orders") as UserType["orders"]
+      // const orders = row.getValue("orders") as Order[]
+
       const address = orders[0]?.shippingAddress?.address || "N/A"
       return <div>{address}</div>
     },
@@ -115,6 +129,13 @@ export const columns: ColumnDef<UserType>[] = [
           <DropdownMenuContent align="end" className="gap-1.5 flex flex-col">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
+
+            <div onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem asChild>
+                <UpdateBalanceDialog customer={customer} />
+              </DropdownMenuItem>
+            </div>
+
             <Link href={`/admin/customers/${customer.email}`}>
               <Button
                 className="bg-black text-white"

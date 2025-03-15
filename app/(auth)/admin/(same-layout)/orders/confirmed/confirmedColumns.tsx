@@ -127,18 +127,6 @@ export const confirmedColumns: ColumnDef<Order>[] = [
   {
     accessorKey: "total",
     header: () => <div className="text-right">Total</div>,
-    // cell: ({ row }) => {
-    //   const amount = parseFloat(row.getValue("total"))
-    //   const orderTotal = row.original.deliveryFee + amount
-
-    //   // Format the amount as a currency
-    //   const formatted = new Intl.NumberFormat("en-US", {
-    //     style: "currency",
-    //     currency: "GHS", // Adjust the currency as needed
-    //   }).format(orderTotal)
-
-    //   return <div className="text-right font-medium">{formatted}</div>
-    // },
     cell: ({ row }) => {
       const total = parseFloat(row.getValue("total"))
       const orderTotal = row.original.deliveryFee + total

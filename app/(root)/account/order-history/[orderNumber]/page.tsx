@@ -76,10 +76,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
 
   const name = capitalizeName(orderDetails?.shippingAddress.name)
 
-  // const disablePayNow =
-  //   orderDetails?.status === "confirmed" &&
-  //   orderDetails?.paymentAction === "paid"
-
   const disablePayNow =
     orderDetails?.status === "confirmed" && updatedOrderTotal === 0
   return (

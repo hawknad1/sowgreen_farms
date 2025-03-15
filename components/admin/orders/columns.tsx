@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, CircleCheck, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Order, Payment } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -106,7 +106,7 @@ export const columns: ColumnDef<Order>[] = [
         } 
          ${
            row.original.status === "confirmed" &&
-           "text-emerald-500 bg-emerald-500/15 border border-emerald-300 tracking-wide"
+           "text-lime-700 bg-lime-700/15 border border-lime-500 tracking-wide"
          }
         ${
           row.original.status === "in-transit" &&
@@ -128,18 +128,7 @@ export const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "total",
     header: () => <div className="text-right">Total</div>,
-    // cell: ({ row }) => {
-    //   const amount = parseFloat(row.getValue("total"))
-    //   const orderTotal = row.original.deliveryFee + amount
 
-    //   // Format the amount as a currency
-    //   const formatted = new Intl.NumberFormat("en-US", {
-    //     style: "currency",
-    //     currency: "GHS", // Adjust the currency as needed
-    //   }).format(orderTotal)
-
-    //   return <div className="text-right font-medium">{formatted}</div>
-    // },
     cell: ({ row }) => {
       const total = parseFloat(row.getValue("total"))
       const orderTotal = row.original.deliveryFee + total
@@ -150,6 +139,25 @@ export const columns: ColumnDef<Order>[] = [
       }).format(creditAppliedTotal > 0 ? creditAppliedTotal : orderTotal)
       return <div className="text-right font-medium">{formatted}</div>
     },
+  },
+  {
+    accessorKey: "paymentAction",
+    header: "Action",
+    cell: ({ row }) => (
+      <div
+        className={`capitalize px-3 max-w-24 text-center py-0.5 rounded-3xl ${
+          row.original.paymentAction === "pending" &&
+          "text-red-500 bg-red-500/15 border border-red-300 tracking-wide"
+        } 
+         ${
+           row.original.paymentAction === "paid" &&
+           "text-emerald-500 bg-emerald-500/15 border border-emerald-300 tracking-wide"
+         }
+       `}
+      >
+        {row.getValue("paymentAction")}
+      </div>
+    ),
   },
   {
     id: "actions",

@@ -205,6 +205,7 @@ export const UpdateStatusSchema = z.object({
     "delivered",
     "cancelled",
   ]),
+  paymentAction: z.string().optional(),
   dispatchRider: z
     .union([
       z.string(),
@@ -246,12 +247,8 @@ export const CreditSchema = z
       .regex(/^[0-9]{10,15}$/, "Invalid phone number")
       .nullable()
       .optional(), // Allow null or undefined
-    amount: z
-      .string()
-      .transform((val) => parseFloat(val)) // Transform string to a number
-      .refine((val) => !isNaN(val) && val > 0, {
-        message: "Amount must be a valid number greater than 0",
-      }),
+    // amount: z.string(),
+    amount: z.coerce.number(),
   })
   .refine((data) => data.email || data.phone, {
     message: "Either email or phone number must be provided",

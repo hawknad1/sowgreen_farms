@@ -1,13 +1,13 @@
-import PaystackButton from "@/components/paystackButton"
+// import PaystackButton from "@/components/paystackButton"
 import { Order } from "@/types"
 import React from "react"
 import toast from "react-hot-toast"
-// import { PaystackButton } from "react-paystack"
+import { PaystackButton } from "react-paystack"
 
 interface OrderProps {
   order: Order
-  updatedBalance: number
-  disablePayNow: boolean
+  updatedBalance?: number
+  disablePayNow?: boolean
 }
 
 const PaystackPayNow = ({
@@ -15,7 +15,6 @@ const PaystackPayNow = ({
   updatedBalance,
   disablePayNow,
 }: OrderProps) => {
-  console.log(disablePayNow, "disablePayNow")
   const handlePaystackSuccessAction = async (
     reference: any,
     orderId: string
@@ -70,11 +69,7 @@ const PaystackPayNow = ({
   const generatePaystackConfig = (order: Order) => ({
     reference: new Date().getTime().toString(),
     email: order?.shippingAddress?.email || "",
-    amount: Math.round(
-      order?.creditAppliedTotal > 0
-        ? order?.creditAppliedTotal * 100
-        : ((order.total || 0) + (order?.deliveryFee || 0)) * 100
-    ),
+    amount: Math.round(order?.updatedOrderTotal * 100),
     currency: "GHS",
     metadata: {
       custom_fields: [
