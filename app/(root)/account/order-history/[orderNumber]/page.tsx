@@ -22,12 +22,16 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const orderTotal = orderDetails?.total + orderDetails?.deliveryFee
   const balance = user?.user?.balance
 
-  const { remainingAmount, updatedBalance, updatedOrderTotal } = deductBalance(
-    balance,
-    orderTotal
-  )
+  const {
+    remainingAmount,
+    updatedBalance,
+    updatedOrderTotal,
+    deductedBalance,
+  } = deductBalance(balance, orderTotal)
 
   const checkPayNow = updatedOrderTotal === 0
+
+  console.log(deductedBalance, "DEDUCTED BALANCE!!!")
 
   useEffect(() => {
     async function fetchOrderDetails() {

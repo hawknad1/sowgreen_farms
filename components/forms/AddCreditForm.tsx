@@ -27,11 +27,13 @@ const AddCreditForm = () => {
     defaultValues: {
       email: null, // Use null to match the schema
       phone: null,
-      amount: 0,
+      amount: "",
     },
   })
 
   const onSubmit = async (values: z.infer<typeof CreditSchema>) => {
+    const newBalance = parseFloat(values.amount) // Calculate new balance
+
     setIsLoading(true)
     try {
       const response = await fetch("/api/balance", {
@@ -39,7 +41,11 @@ const AddCreditForm = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          email: values.email,
+          amount: newBalance,
+          phone: values.phone,
+        }),
       })
 
       if (response.ok) {

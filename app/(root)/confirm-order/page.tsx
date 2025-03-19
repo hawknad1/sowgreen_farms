@@ -146,11 +146,8 @@ const ConfirmOrderPage = () => {
     updatedOrderTotal,
     remainingAmount,
     proceedToPaystack,
+    deductedBalance,
   } = deductBalance(balance, conbinedTotal)
-
-  console.log(updatedBalance, "updatedBalance")
-  console.log(updatedOrderTotal, "updatedOrderTotal")
-  console.log(remainingAmount, "remainingAmount")
 
   const config = {
     reference: new Date().getTime().toString(),

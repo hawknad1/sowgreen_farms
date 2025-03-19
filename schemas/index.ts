@@ -247,8 +247,8 @@ export const CreditSchema = z
       .regex(/^[0-9]{10,15}$/, "Invalid phone number")
       .nullable()
       .optional(), // Allow null or undefined
-    // amount: z.string(),
-    amount: z.coerce.number(),
+    amount: z.string().optional(),
+    // amount: z.coerce.number(),
   })
   .refine((data) => data.email || data.phone, {
     message: "Either email or phone number must be provided",

@@ -412,6 +412,8 @@ export async function PUT(
     deliveryFee,
     shippingAddress,
     referenceNumber,
+    balanceDeducted,
+    balanceApplied,
     creditAppliedTotal,
     updatedOrderTotal,
     address,
@@ -436,26 +438,7 @@ export async function PUT(
     }
 
     // Update or create the dispatch rider if provided
-    // Update or create the dispatch rider if provided
     let dispatchRiderId = existingOrder.dispatchRiderId
-
-    // if (dispatchRider) {
-    //   const { firstName, lastName, phone } = dispatchRider
-
-    //   if (dispatchRiderId) {
-    //     // Update existing dispatch rider
-    //     await prisma.dispatchRider.update({
-    //       where: { id: dispatchRiderId },
-    //       data: { firstName, lastName, phone },
-    //     })
-    //   } else {
-    //     // Create a new dispatch rider and get the ID
-    //     const newDispatchRider = await prisma.dispatchRider.create({
-    //       data: { firstName, lastName, phone },
-    //     })
-    //     dispatchRiderId = newDispatchRider.id
-    //   }
-    // }
 
     if (dispatchRider) {
       const { firstName, lastName, phone } = dispatchRider
@@ -586,6 +569,8 @@ export async function PUT(
           : undefined,
         paymentAction,
         deliveryDate,
+        balanceDeducted,
+        balanceApplied,
         deliveryFee,
         last4Digits,
         cardType,
