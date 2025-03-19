@@ -30,24 +30,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Order, ShippingAddress, User } from "@/types"
+import { Order, User } from "@/types"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
 import Export from "@/components/admin/Export"
-import { useCustomerStore } from "@/store"
-
-// export type UserType = {
-//   user: {
-//     balance: number
-//     email: string
-//     name: string
-//     image: string
-//     orders: Order[]
-//     phone: string
-//     role: string
-//     id: string
-//     emailVerified: string
-//   }
-// }
 
 type UserType = {
   balance: number
@@ -63,12 +48,7 @@ type UserType = {
 
 const CustomerDataTable = ({ user }: User) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const customerDetails = useCustomerStore((state) => state.customers)
   const [users, setUsers] = React.useState<UserType[]>([])
-  const setCustomerDetails = useCustomerStore(
-    (state) => state.setCustomerDetails
-  )
-
   const [loading, setIsLoading] = React.useState(true)
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -78,32 +58,6 @@ const CustomerDataTable = ({ user }: User) => {
   const [rowSelection, setRowSelection] = React.useState<
     Record<string, boolean>
   >({})
-
-  // React.useEffect(() => {
-  //   const customerData = async () => {
-  //     try {
-  //       const res = await fetch("/api/address", {
-  //         method: "GET",
-  //         cache: "no-store",
-  //       })
-  //       if (res.ok) {
-  //         const address = await res.json()
-
-  //         const uniqueCustomers = address.filter(
-  //           ((seen) => (customer: any) => {
-  //             const uniqueKey = customer.email || customer.phone // Use email or phone as the key
-  //             return uniqueKey && !seen.has(uniqueKey) && seen.add(uniqueKey)
-  //           })(new Set())
-  //         )
-  //         setCustomerDetails(uniqueCustomers) // Set the customer details
-  //         setIsLoading(false) // Stop loading
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  //   customerData()
-  // }, [setCustomerDetails])
 
   React.useEffect(() => {
     async function getUsers() {
@@ -124,6 +78,8 @@ const CustomerDataTable = ({ user }: User) => {
     }
     getUsers()
   }, [])
+
+  console.log(users, "BIG USERS")
 
   const table = useReactTable<UserType>({
     data: users || [], // Ensure data is always an array

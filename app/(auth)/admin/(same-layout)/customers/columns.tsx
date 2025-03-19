@@ -98,7 +98,11 @@ export const columns: ColumnDef<UserType>[] = [
     accessorKey: "balance",
     header: "Balance",
     cell: ({ row }) => {
-      const balance = parseFloat(row.getValue("balance"))
+      // const balance = parseFloat(row.getValue("balance"))
+      console.log(row, "ROWWWW")
+      console.log(row.original.balance, "Balance")
+      const balance = row.original.balance
+
       return (
         <div
           className={`capitalize rounded-full w-full flex justify-center items-center py-1 font-medium px-1 ${

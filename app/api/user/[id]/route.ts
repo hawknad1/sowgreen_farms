@@ -13,6 +13,9 @@ export async function GET(
       where: {
         email: userEmail,
       },
+      include:{
+        orders: true
+      }
     })
 
     // If user is not found, return a 404 response

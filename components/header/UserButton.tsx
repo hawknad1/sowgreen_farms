@@ -389,7 +389,7 @@ const UserButton = ({ user }: { user: UserProps }) => {
         </>
       )}
 
-      {isLoading || !activeUser?.user?.balance ? (
+      {isLoading ? (
         <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
           Balance
           <span className="loading loading-spinner loading-sm"></span>{" "}
@@ -398,7 +398,7 @@ const UserButton = ({ user }: { user: UserProps }) => {
       ) : (
         <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
           Balance
-          <span>{formatCurrency(activeUser.user.balance, "GHS")}</span>
+          <span>{formatCurrency(activeUser?.balance, "GHS")}</span>
         </DropdownMenuItem>
       )}
       <DropdownMenuItem
@@ -440,7 +440,7 @@ const UserButton = ({ user }: { user: UserProps }) => {
                 Admin Dashboard
               </DropdownMenuItem>
 
-              {isLoading || !activeUser?.user?.balance ? (
+              {isLoading ? (
                 <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
                   Balance
                   <span className="loading loading-spinner loading-sm"></span>{" "}
@@ -449,7 +449,9 @@ const UserButton = ({ user }: { user: UserProps }) => {
               ) : (
                 <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
                   Balance
-                  <span>{formatCurrency(activeUser.user.balance, "GHS")}</span>
+                  <span>
+                    {formatCurrency(activeUser?.user?.balance, "GHS")}
+                  </span>
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem
