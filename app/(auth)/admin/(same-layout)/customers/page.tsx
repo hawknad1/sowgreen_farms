@@ -1,50 +1,35 @@
 "use client"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import CustomerDataTable from "./data-table"
-import { useRouter } from "next/navigation"
-import getInitials from "@/lib/getInitials"
-import { useSession } from "next-auth/react"
 
 const Customers = () => {
-  const [activeUser, setActiveUser] = useState(null)
+  const [users, setUsers] = useState()
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
-  // const initials = getInitials(user?.name || "")
 
-  const { data: session } = useSession()
-  const user = session?.user
-
-  useEffect(() => {
-    const getUser = async () => {
-      if (!user?.email) return
+  React.useEffect(() => {
+    async function getUsers() {
       setIsLoading(true)
-      setError(null)
       try {
-        const res = await fetch(`/api/user/${user.email}`, {
+        const res = await fetch("/api/user", {
           method: "GET",
           cache: "no-store",
         })
+
         if (res.ok) {
-          const active = await res.json()
-          setActiveUser(active)
-        } else {
-          setError("Failed to fetch user details")
-          console.error("Failed to fetch user details:", res.statusText)
+          const users = await res.json()
+          setUsers(users)
+          setIsLoading(false)
         }
       } catch (error) {
-        setError("Failed to fetch user details")
-        console.error("Failed to fetch user details:", error)
-      } finally {
-        setIsLoading(false)
+        console.log(error)
       }
     }
-    getUser()
-  }, [user?.email])
+    getUsers()
+  }, [])
 
   return (
     <div className="h-screen overflow-scroll scrollbar-none">
-      <CustomerDataTable user={activeUser} />
+      <CustomerDataTable users={users} loading={isLoading} />
     </div>
   )
 }

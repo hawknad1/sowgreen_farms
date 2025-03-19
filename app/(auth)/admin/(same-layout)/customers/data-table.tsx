@@ -46,10 +46,15 @@ type UserType = {
   emailVerified: string
 }
 
-const CustomerDataTable = ({ user }: User) => {
+interface UserProps {
+  users?: UserType[]
+  loading?: boolean
+}
+
+const CustomerDataTable = ({ users,loading }: UserProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [users, setUsers] = React.useState<UserType[]>([])
-  const [loading, setIsLoading] = React.useState(true)
+  // const [users, setUsers] = React.useState<UserType[]>([])
+  // const [loading, setIsLoading] = React.useState(true)
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -59,30 +64,28 @@ const CustomerDataTable = ({ user }: User) => {
     Record<string, boolean>
   >({})
 
-  React.useEffect(() => {
-    async function getUsers() {
-      try {
-        const res = await fetch("/api/user", {
-          method: "GET",
-          cache: "no-store",
-        })
+  // React.useEffect(() => {
+  //   async function getUsers() {
+  //     try {
+  //       const res = await fetch("/api/user", {
+  //         method: "GET",
+  //         cache: "no-store",
+  //       })
 
-        if (res.ok) {
-          const users = await res.json()
-          setUsers(users)
-          setIsLoading(false)
-        }
-      } catch (error) {
-        console.log(error)
-      }
-    }
-    getUsers()
-  }, [])
-
-  console.log(users, "BIG USERS")
+  //       if (res.ok) {
+  //         const users = await res.json()
+  //         // setUsers(users)
+  //         setIsLoading(false)
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   }
+  //   getUsers()
+  // }, [])
 
   const table = useReactTable<UserType>({
-    data: users || [], // Ensure data is always an array
+    data: users ?? [], // Ensure data is always an array
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
