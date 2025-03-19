@@ -4,7 +4,7 @@ import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Order, ShippingAddress } from "@/types"
+import { Order } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -94,29 +94,6 @@ export const columns: ColumnDef<UserType>[] = [
       return <div>{phone}</div>
     },
   },
-  // {
-  //   accessorKey: "balance",
-  //   header: "Balance",
-  //   cell: ({ row }) => {
-  //     // const balance = parseFloat(row.getValue("balance"))
-  //     console.log(row, "ROWWWW")
-  //     console.log(row.original.balance, "Balance")
-  //     const balance = row.original.balance
-
-  //     return (
-  //       <div
-  //         className={`capitalize rounded-full w-full flex justify-center items-center py-1 font-medium px-1 ${
-  //           balance > 0
-  //             ? "text-emerald-500 bg-emerald-500/15"
-  //             : "bg-neutral-500/15 text-neutral-500"
-  //         }`}
-  //       >
-  //         {formatCurrency(balance, "GHS")}
-  //       </div>
-  //     )
-  //   },
-  // },
-
   {
     accessorKey: "balance",
     header: "Balance",

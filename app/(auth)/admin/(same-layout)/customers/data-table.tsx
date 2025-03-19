@@ -51,10 +51,8 @@ interface UserProps {
   loading?: boolean
 }
 
-const CustomerDataTable = ({ users,loading }: UserProps) => {
+const CustomerDataTable = ({ users, loading }: UserProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  // const [users, setUsers] = React.useState<UserType[]>([])
-  // const [loading, setIsLoading] = React.useState(true)
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -63,26 +61,6 @@ const CustomerDataTable = ({ users,loading }: UserProps) => {
   const [rowSelection, setRowSelection] = React.useState<
     Record<string, boolean>
   >({})
-
-  // React.useEffect(() => {
-  //   async function getUsers() {
-  //     try {
-  //       const res = await fetch("/api/user", {
-  //         method: "GET",
-  //         cache: "no-store",
-  //       })
-
-  //       if (res.ok) {
-  //         const users = await res.json()
-  //         // setUsers(users)
-  //         setIsLoading(false)
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //     }
-  //   }
-  //   getUsers()
-  // }, [])
 
   const table = useReactTable<UserType>({
     data: users ?? [], // Ensure data is always an array

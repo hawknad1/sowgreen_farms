@@ -1,12 +1,12 @@
 "use client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import CustomerDataTable from "./data-table"
 
 const Customers = () => {
   const [users, setUsers] = useState()
   const [isLoading, setIsLoading] = useState(false)
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function getUsers() {
       setIsLoading(true)
       try {
@@ -26,6 +26,8 @@ const Customers = () => {
     }
     getUsers()
   }, [])
+
+  console.log(users, "USERSSS!!!")
 
   return (
     <div className="h-screen overflow-scroll scrollbar-none">
