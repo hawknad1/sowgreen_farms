@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import { Order, UserDetailType } from "@/types"
-import CustomerDataTableList from "./CustomerDataTable"
+import CustomerDataTableList from "./CustomerDataTableList"
 
 const AdminCustomerPage = () => {
   const [userList, setUserList] = useState<UserDetailType[]>([])
