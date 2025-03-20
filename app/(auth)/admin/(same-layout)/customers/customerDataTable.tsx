@@ -1,6 +1,6 @@
 "use client"
 
-import React from "react"
+import * as React from "react"
 import {
   ColumnFiltersState,
   SortingState,
@@ -12,8 +12,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
-
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import {
   Table,
@@ -23,18 +29,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Order, UserDetailType } from "@/types"
 import ExportDialog from "@/components/admin/Export"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
-import { UserDetailType } from "./page"
-import { columns } from "@/app/(auth)/admin/(same-layout)/customers/customerColumns"
+import { columns } from "./customerColumns"
 
-interface UserProps {
+interface UsersProps {
   loading: boolean
   users: UserDetailType[]
 }
 
-const CustomerDataTableList = ({ users, loading }: UserProps) => {
+const CustomerDataTable = ({ users, loading }: UsersProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const [filterValue, setFilterValue] = React.useState<Order[]>([])
+
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -45,7 +53,7 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
   >({})
 
   const table = useReactTable({
-    data: users, // Use the filtered data here
+    data: users, // Added orders data
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -64,20 +72,62 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
   })
 
   return (
-    <div className="w-full p-4">
-      <div className="bg-white flex items-center justify-between gap-x-3 top-0 sticky inset-0 z-10">
-        <div className="w-full">
+    <div className="w-full py-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
+        <div className="flex gap-x-2">
           <Input
-            placeholder="Filter customers..."
-            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("name")?.setFilterValue(event.target.value)
+            placeholder="Filter order number..."
+            value={
+              (table.getColumn("orderNumber")?.getFilterValue() as string) ?? ""
             }
-            className="max-w-sm"
-            aria-label="Filter customers"
+            onChange={(event) =>
+              table.getColumn("orderNumber")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm w-full"
+            aria-label="Filter Order number"
+          />
+
+          <Input
+            placeholder="Filter Status..."
+            value={
+              (table.getColumn("status")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) => {
+              table.getColumn("status")?.setFilterValue(event.target.value)
+            }}
+            className="max-w-sm w-full"
+            aria-label="Filter Status"
           />
         </div>
-        <div>
+        <div className="flex w-full justify-between lg:justify-end gap-x-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="lg:inline-flex items-center hidden "
+              >
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {/* <Export action={handleExport} /> */}
           <ExportDialog />
         </div>
       </div>
@@ -103,7 +153,7 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={users.length} className="h-14">
+                <TableCell colSpan={columns.length} className="h-14">
                   <DataSkeletons />
                 </TableCell>
               </TableRow>
@@ -125,7 +175,10 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={users.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -162,4 +215,4 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
   )
 }
 
-export default CustomerDataTableList
+export default CustomerDataTable

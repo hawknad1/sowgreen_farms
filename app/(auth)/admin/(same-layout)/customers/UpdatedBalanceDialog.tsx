@@ -36,16 +36,6 @@ const UpdateBalanceDialog = forwardRef<HTMLDivElement, Props>(
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Update Customer Balance</DialogTitle>
-              {/* <DialogTitle className="text-base font-semibold">
-                Available Balance :{" "}
-                <span className="text-green-600 font-semibold">
-                  {formatCurrency(customer?.balance, "GHS")}
-                </span>
-              </DialogTitle> */}
-
-              {/* <DialogDescription>
-                Modify, remove, or add new details to the location.
-              </DialogDescription> */}
             </DialogHeader>
             <UpdateBalanceForm customer={customer} />
             <DialogFooter />

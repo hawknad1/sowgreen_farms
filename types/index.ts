@@ -198,6 +198,20 @@ export type User = {
   }
 }
 
+export type UserDetailType = {
+  id: string
+  name?: string
+  email?: string
+  balance?: number
+  orders?: Order[]
+  role: string
+  image?: string | null
+  createdAt: string
+  updatedAt: string
+  emailVerified?: string | null
+  phone?: string | null
+}
+
 export type UserProps = {
   id?: string
   name?: string

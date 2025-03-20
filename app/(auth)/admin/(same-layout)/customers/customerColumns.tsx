@@ -1,9 +1,9 @@
 "use client"
 
-import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Order, UserDetailType } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -14,10 +14,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation"
-import { UserDetailType } from "./page"
-import { formatCurrency } from "@/lib/utils"
 import Link from "next/link"
-import UpdateBalanceDialog from "./UpdateBalanceDialog"
+import UpdateBalanceDialog from "./UpdatedBalanceDialog"
+import { formatCurrency } from "@/lib/utils"
 
 export const columns: ColumnDef<UserDetailType>[] = [
   {
@@ -47,18 +46,16 @@ export const columns: ColumnDef<UserDetailType>[] = [
   },
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Customer Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div>{row.getValue("name")}</div>,
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Customer Name
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div className="capitalize">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "email",
@@ -88,21 +85,14 @@ export const columns: ColumnDef<UserDetailType>[] = [
   {
     accessorKey: "balance",
     header: "Balance",
-    cell: ({ row }) => {
-      // console.log(row.original.balance, "ROW BALLANCE")
-      return (
-        <div
-          className={`capitalize ${
-            row.original.balance > 0
-              ? "text-emerald-500 bg-emerald-500/15 border-emerald-300/15 "
-              : "bg-neutral-500/15 border-neutral-200"
-          }  rounded-full flex justify-start items-center px-3 w-fit border  tracking-wide`}
-        >
-          {formatCurrency(row.original.balance, "GHS")}
-        </div>
-      )
-    },
+    cell: ({ row }) => (
+      <div className="capitalize">
+        {formatCurrency(row.original.balance, "GHS")}
+      </div>
+    ),
+    enableHiding: false,
   },
+
   {
     id: "actions",
     enableHiding: false,

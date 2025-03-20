@@ -1,5 +1,37 @@
+// import prisma from "@/lib/prismadb"
+// import { NextResponse } from "next/server"
+
+// export async function GET(req: Request) {
+//   try {
+//     const users = await prisma.user.findMany({
+//       include: {
+//         customer: true,
+//         orders: {
+//           include: { shippingAddress: true },
+//         },
+//       },
+//     })
+//     // return NextResponse.json(users, { status: 200 })
+//     return NextResponse.json(users, {
+//       status: 200,
+//       headers: {
+//         "Cache-Control": "no-store, must-revalidate",
+//       },
+//     })
+//   } catch (error) {
+//     console.log(error)
+//     return NextResponse.json(
+//       { message: "Couldnt fetch users" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
 import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
+
+// Force dynamic rendering
+export const dynamic = "force-dynamic"
 
 export async function GET(req: Request) {
   try {
@@ -11,7 +43,7 @@ export async function GET(req: Request) {
         },
       },
     })
-    // return NextResponse.json(users, { status: 200 })
+
     return NextResponse.json(users, {
       status: 200,
       headers: {
@@ -21,7 +53,7 @@ export async function GET(req: Request) {
   } catch (error) {
     console.log(error)
     return NextResponse.json(
-      { message: "Couldnt fetch users" },
+      { message: "Couldn't fetch users" },
       { status: 500 }
     )
   }

@@ -1,7 +1,13 @@
 import { create } from "zustand"
 import { createJSONStorage, devtools, persist } from "zustand/middleware"
-import { DispatchRider, Order, Product, ShippingAddress, User } from "./types"
-import { UserDetailType } from "./app/(auth)/admin/(same-layout)/customers/page"
+import {
+  DispatchRider,
+  Order,
+  Product,
+  ShippingAddress,
+  User,
+  UserDetailType,
+} from "./types"
 // import { CartItem } from "@/types"
 
 interface PaymentStore {
