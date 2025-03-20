@@ -42,6 +42,8 @@
 import React, { useEffect, useState } from "react"
 import { Order } from "@/types"
 import CustomerDataTableList from "./customerDataTable"
+import { useUserListStore } from "@/store"
+import { getUserList } from "@/lib/getUserList"
 
 export type UserDetailType = {
   id: string
@@ -62,34 +64,23 @@ const CustomersPage = () => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    async function getUserList() {
+    async function fetchUserList() {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
-          {
-            method: "GET",
-            cache: "no-store",
-          }
-        )
-
-        if (res.ok) {
-          const userList = await res.json()
-          setUsers(userList)
-          setLoading(false)
-        }
+        const users = await getUserList()
+        setUsers(users)
       } catch (error) {
-        console.log(error)
+        console.error("Error fetching user list:", error)
+      } finally {
+        setLoading(false)
       }
     }
-    getUserList()
+    fetchUserList()
   }, [])
 
-  console.log(users, "USERS")
   return (
     <div className="py-4">
       <CustomerDataTableList users={users} loading={loading} />
     </div>
-    // <div>Hello</div>
   )
 }
 

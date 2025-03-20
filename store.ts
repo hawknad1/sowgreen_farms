@@ -1,6 +1,7 @@
 import { create } from "zustand"
 import { createJSONStorage, devtools, persist } from "zustand/middleware"
 import { DispatchRider, Order, Product, ShippingAddress, User } from "./types"
+import { UserDetailType } from "./app/(auth)/admin/(same-layout)/customers/page"
 // import { CartItem } from "@/types"
 
 interface PaymentStore {
@@ -593,4 +594,31 @@ export const useUserStore = create<UserStore>((set) => ({
   user: null, // Initial state
   setUser: (user) => set({ user }), // Method to set the user
   clearUser: () => set({ user: null }), // Method to clear the user
+}))
+
+// Define the type for a user
+// export type User = {
+//   id: string
+//   name?: string
+//   email?: string
+//   orders: Order[]
+//   balance?: number
+//   role: string
+//   image?: string | null
+//   createdAt: string
+//   updatedAt: string
+//   emailVerified?: string | null
+//   phone?: string | null
+// }
+
+// Define the type for the store
+type UserListStore = {
+  userList: UserDetailType[]
+  setUserList: (users: UserDetailType[]) => void
+}
+
+// Create the Zustand store
+export const useUserListStore = create<UserListStore>((set) => ({
+  userList: [],
+  setUserList: (users) => set({ userList: users }),
 }))
