@@ -253,7 +253,7 @@ const UserButton = ({ user }: { user: UserProps }) => {
       ) : (
         <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
           Balance
-          <span>{formatCurrency(activeUser?.balance, "GHS")}</span>
+          <span>{formatCurrency(activeUser?.user?.balance, "GHS")}</span>
         </DropdownMenuItem>
       )}
       <DropdownMenuItem
