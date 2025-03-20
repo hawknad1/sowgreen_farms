@@ -88,17 +88,20 @@ export const columns: ColumnDef<UserDetailType>[] = [
   {
     accessorKey: "balance",
     header: "Balance",
-    cell: ({ row }) => (
-      <div
-        className={`capitalize ${
-          row.original.balance > 0
-            ? "text-emerald-500 bg-emerald-500/15 border-emerald-300/15 "
-            : "bg-neutral-500/15 border-neutral-200"
-        }  rounded-full flex justify-start items-center px-3 w-fit border  tracking-wide`}
-      >
-        {formatCurrency(row.original.balance, "GHS")}
-      </div>
-    ),
+    cell: ({ row }) => {
+      // console.log(row.original.balance, "ROW BALLANCE")
+      return (
+        <div
+          className={`capitalize ${
+            row.original.balance > 0
+              ? "text-emerald-500 bg-emerald-500/15 border-emerald-300/15 "
+              : "bg-neutral-500/15 border-neutral-200"
+          }  rounded-full flex justify-start items-center px-3 w-fit border  tracking-wide`}
+        >
+          {formatCurrency(row.original.balance, "GHS")}
+        </div>
+      )
+    },
   },
   {
     id: "actions",

@@ -216,7 +216,7 @@ const UpdateBalanceForm = ({ customer }: CustomerProps) => {
 
     setIsLoading(true)
     try {
-      const response = await fetch("/api/balance", {
+      const response = await fetch(`/api/user/${values?.email}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -233,7 +233,7 @@ const UpdateBalanceForm = ({ customer }: CustomerProps) => {
         toast.success("Balance updated successfully!")
         setAvailableBalance(newBalance) // Update the available balance state
         form.reset({ amount: "" }) // Reset the "Enter Balance" field
-        window.location.reload()
+        // window.location.reload()
       } else {
         const error = await response.json()
         toast.error(error.message || "Failed to update balance")
@@ -243,6 +243,34 @@ const UpdateBalanceForm = ({ customer }: CustomerProps) => {
     } finally {
       setIsLoading(false)
     }
+    // try {
+    //   const response = await fetch("/api/balance", {
+    //     method: "PUT",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       email: values.email,
+    //       phone: values.phone,
+    //       updatedBalance: newBalance, // Send the accumulated balance
+    //     }),
+    //     cache: "no-store",
+    //   })
+
+    //   if (response.ok) {
+    //     toast.success("Balance updated successfully!")
+    //     setAvailableBalance(newBalance) // Update the available balance state
+    //     form.reset({ amount: "" }) // Reset the "Enter Balance" field
+    //     // window.location.reload()
+    //   } else {
+    //     const error = await response.json()
+    //     toast.error(error.message || "Failed to update balance")
+    //   }
+    // } catch (error) {
+    //   toast.error("An unexpected error occurred")
+    // } finally {
+    //   setIsLoading(false)
+    // }
   }
 
   useEffect(() => {
