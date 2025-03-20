@@ -226,6 +226,7 @@ const UpdateBalanceForm = ({ customer }: CustomerProps) => {
           phone: values.phone,
           updatedBalance: newBalance, // Send the accumulated balance
         }),
+        cache: "no-store",
       })
 
       if (response.ok) {
