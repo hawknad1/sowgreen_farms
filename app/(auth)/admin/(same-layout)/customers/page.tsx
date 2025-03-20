@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import CustomerDataTable from "./CustomerDataTable"
 import { Order, UserDetailType } from "@/types"
+import CustomerDataTableList from "./CustomerDataTable"
 
 const AdminCustomerPage = () => {
   const [userList, setUserList] = useState<UserDetailType[]>([])
@@ -29,7 +29,7 @@ const AdminCustomerPage = () => {
 
   return (
     <div className="h-screen overflow-scroll scrollbar-none px-3">
-      <CustomerDataTable users={userList} loading={loading} />
+      <CustomerDataTableList users={userList} loading={loading} />
     </div>
   )
 }
