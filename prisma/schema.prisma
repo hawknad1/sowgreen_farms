@@ -34,7 +34,7 @@ model User {
   image             String?
   role              String            @default("user") // Default role is "user"
   balance           Float             @default(0.0) // Default balance is 0.0
-  phone             String?           @unique
+  phone             String?           
   accounts          Account[] // A user can have multiple accounts
   sessions          Session[] // A user can have multiple sessions
   customer          Customer? // A user can have one customer profile

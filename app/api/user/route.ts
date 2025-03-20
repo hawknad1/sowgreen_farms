@@ -11,7 +11,13 @@ export async function GET(req: Request) {
         },
       },
     })
-    return NextResponse.json(users, { status: 200 })
+    // return NextResponse.json(users, { status: 200 })
+    return NextResponse.json(users, {
+      status: 200,
+      headers: {
+        "Cache-Control": "no-store, must-revalidate",
+      },
+    })
   } catch (error) {
     console.log(error)
     return NextResponse.json(
