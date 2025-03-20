@@ -12,9 +12,9 @@ import {
 import { Button } from "@/components/ui/button"
 import { CitiesWithFees } from "@/types"
 import React, { forwardRef, useState } from "react"
-import UpdateBalanceForm from "./UpdateBalanceForm"
 import AddCreditForm from "@/components/forms/AddCreditForm"
 import { formatCurrency } from "@/lib/utils"
+import UpdateBalanceForm from "./UpdateBalanceForm"
 
 interface Props {
   customer: any
