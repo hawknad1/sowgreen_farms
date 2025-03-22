@@ -40,25 +40,45 @@ const OrderSummary = ({
       <div className="bg-white flex flex-col py-4 border-t border-neutral-200">
         <div className="flex flex-col space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-sm  md:text-base text-neutral-500">Subtotal</p>
+            <p className="text-sm  md:text-base text-neutral-500 font-medium">
+              Subtotal
+            </p>
             <p className="font-semibold text-sm">{subtotal}</p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-sm  md:text-base text-neutral-500">Delivery</p>
+            <p className="text-sm  md:text-base text-neutral-500 font-medium">
+              Delivery
+            </p>
             <p className="font-semibold text-sm">{formattedDelivery}</p>
           </div>
-          {user?.user?.balance > 0 && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm  md:text-base text-neutral-500">
-                Credit Bal.
-              </p>
-              <p className="font-semibold text-sm">
-                {formatCurrency(user?.user.balance, "GHS")}
-              </p>
-            </div>
-          )}
+          <div
+            className={`flex items-center justify-between ${
+              user?.user?.balance < 0
+                ? "bg-red-500/15 text-red-500 py-1 rounded-sm font-medium px-2"
+                : user?.user?.balance >= 0
+                ? "text-emerald-500 bg-emerald-500/15 border-emerald-300/15 py-1 rounded-sm font-medium px-2"
+                : ""
+            }`}
+          >
+            <p
+              className={`text-sm md:text-base  ${
+                user?.user?.balance < 0
+                  ? "text-red-500"
+                  : user?.user?.balance >= 0
+                  ? "text-emerald-500"
+                  : "text-zinc-400/80"
+              } `}
+            >
+              Credit Bal.
+            </p>
+            <p className="font-semibold text-sm">
+              {formatCurrency(user?.user.balance, "GHS")}
+            </p>
+          </div>
           <div className="flex items-center justify-between text-lg">
-            <p className="text-sm  md:text-base text-neutral-500">Total</p>
+            <p className="text-sm  md:text-base text-neutral-500 font-medium">
+              Total
+            </p>
             <span className="font-semibold text-sm">{formattedTotal}</span>
           </div>
           {user?.user?.balance > 0 && (

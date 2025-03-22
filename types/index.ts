@@ -69,6 +69,7 @@ export type Order = {
   creditAppliedDeliveryFee?: number
   updatedOrderTotal?: number
   remainingAmount?: number
+  balanceDeducted?: number
   updatedBalance?: number
   status: OrderStatus
   dispatchRider: DispatchRider

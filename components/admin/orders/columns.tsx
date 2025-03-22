@@ -136,7 +136,7 @@ export const columns: ColumnDef<Order>[] = [
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "GHS",
-      }).format(creditAppliedTotal > 0 ? creditAppliedTotal : orderTotal)
+      }).format(orderTotal)
       return <div className="text-right font-medium">{formatted}</div>
     },
   },

@@ -91,8 +91,6 @@ const ConfirmOrderPage = () => {
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
 
-  // total = balance > 0 ? updatedOrderTotal : cartTotal
-
   const taxedOrders = orders.map((order) => ({
     ...order, // Spread the existing order object
     item: {
@@ -228,7 +226,8 @@ const ConfirmOrderPage = () => {
         paymentMode: verifyData?.paymentMode,
         paymentAction: verifyData?.paymentAction,
         total: total,
-        creditAppliedTotal: remainingAmount,
+        creditAppliedTotal: balance,
+        balanceDeducted: deductedBalance,
         updatedBalance,
         updatedOrderTotal,
         remainingAmount,
@@ -260,22 +259,6 @@ const ConfirmOrderPage = () => {
       })
       if (!email.ok) throw new Error("Email API failed")
 
-      // Update purchase counts for products
-      // const productIds = taxedOrders.map((product) => product.item?.id)
-      // const productIds = transformedCart.map(
-      //   (product) => product.item?.productId
-      // )
-
-      // const productQuantity = transformedCart.map(
-      //   (product) => product.item?.quantity
-      // )
-
-      // await fetch("/api/products/updatePurchaseCount", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ productIds, productQuantity }),
-      // })
-
       const productIds = transformedCart.map(
         (product) => product.item.productId
       )
@@ -289,8 +272,6 @@ const ConfirmOrderPage = () => {
         body: JSON.stringify({ products: transformedCart }),
       })
 
-      // console.log(newProductIds, "newProductIds")
-
       // sendWhatsAppMessage(ordersData)
       sendOrderReceived(ordersData)
       // sendOrderConfirmation(ordersData)
@@ -298,17 +279,6 @@ const ConfirmOrderPage = () => {
       router.push("/success/thank-you")
 
       clearCart() // Clear the cart after successful order processing
-
-      // Update user balance (if applicable)
-      // await fetch("/api/balance", {
-      //   method: "PUT",
-      //   headers: { "Content-type": "application/json" },
-      //   body: JSON.stringify({
-      //     email: user?.email,
-      //     updatedBalance,
-      //     phone: formData.phone,
-      //   }),
-      // })
 
       // Update product quantities
       const quantityResponse = await fetch("/api/products/updateQuantity", {

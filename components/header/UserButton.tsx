@@ -251,7 +251,13 @@ const UserButton = ({ user }: { user: UserProps }) => {
           {/* Loading spinner */}
         </DropdownMenuItem>
       ) : (
-        <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
+        <DropdownMenuItem
+          className={`font-bold flex justify-between ${
+            activeUser?.user?.balance >= 0
+              ? "bg-emerald-500/15 text-emerald-500"
+              : "bg-red-500/15 text-red-500"
+          }`}
+        >
           Balance
           <span>{formatCurrency(activeUser?.user?.balance, "GHS")}</span>
         </DropdownMenuItem>
@@ -302,7 +308,13 @@ const UserButton = ({ user }: { user: UserProps }) => {
                   {/* Loading spinner */}
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem className="font-bold flex justify-between bg-emerald-500/15 text-emerald-500">
+                <DropdownMenuItem
+                  className={`font-bold flex justify-between ${
+                    activeUser?.user?.balance >= 0
+                      ? "bg-emerald-500/15 text-emerald-500"
+                      : "bg-red-500/15 text-red-500"
+                  }`}
+                >
                   Balance
                   <span>
                     {formatCurrency(activeUser?.user?.balance, "GHS")}

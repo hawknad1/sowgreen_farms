@@ -16,16 +16,9 @@ const InfoCard = ({ data }: InfoCardProps) => {
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const { user } = useUserStore()
 
-  // console.log(user, "USER")
-
   let total = data?.total + deliveryFee
 
-  const {
-    updatedBalance,
-    updatedOrderTotal,
-    remainingAmount,
-    proceedToPaystack,
-  } = deductBalance(user?.user?.balance, total)
+  const { updatedOrderTotal } = deductBalance(user?.user?.balance, total)
 
   const deliveryMethodLabel = useMemo(() => {
     switch (deliveryMethod) {
@@ -102,10 +95,6 @@ const InfoCard = ({ data }: InfoCardProps) => {
               Order Summary
             </h3>
             <div className="mt-2 space-y-2 text-gray-600 text-xs md:text-sm lg:text-base">
-              {/* <div className="flex justify-between">
-                <p>Order Created:</p>
-                <span className="font-medium">{date}</span>
-              </div> */}
               <div className="flex justify-between">
                 <p>Item(s) Ordered:</p>
                 <span className="font-medium">
@@ -124,14 +113,27 @@ const InfoCard = ({ data }: InfoCardProps) => {
                   {data?.formattedSubtotal || "No subtotal"}
                 </span>
               </div>
-              {user?.user?.balance > 0 && (
-                <div className="flex justify-between">
-                  <p>Credit Bal:</p>
-                  <span className="font-medium">
-                    {formatCurrency(user?.user?.balance, "GHS")}
-                  </span>
-                </div>
-              )}
+
+              <div className="flex justify-between">
+                <p
+                  className={`${
+                    user?.user?.balance >= 0
+                      ? "text-emerald-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  Credit Bal:
+                </p>
+                <span
+                  className={`${
+                    user?.user?.balance >= 0
+                      ? "text-emerald-500"
+                      : "text-red-500"
+                  } font-medium`}
+                >
+                  {formatCurrency(user?.user?.balance, "GHS")}
+                </span>
+              </div>
               <div className="flex justify-between">
                 <p>Order Total:</p>
                 <span className="font-medium">

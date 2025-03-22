@@ -29,8 +29,10 @@ import {
 } from "@/components/ui/select"
 import { cityDeliveryPrices, regions } from "@/constants"
 import { useEffect, useState } from "react"
-import { CitiesWithFees, Order } from "@/types"
+import { CitiesWithFees, Order, User } from "@/types"
 import { useDeliveryStore } from "@/store"
+import { deductBalance } from "@/lib/actions/deductBalance"
+import { useSession } from "next-auth/react"
 
 interface ShippingProps {
   order: Order
@@ -42,11 +44,46 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
   const [filteredCities, setFilteredCities] = useState<CitiesWithFees[]>([])
   const [list, setList] = useState<CitiesWithFees[]>([])
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [activeUser, setActiveUser] = useState<User>(null)
   const [selectedPickupOption, setSelectedPickupOption] = useState("")
   const [pickupOptions, setPickupOptions] = useState<string[]>([])
+  const { data: session } = useSession()
+  const user = session?.user
 
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+
+  const orderTotal = order?.total + deliveryFee
+
+  const balance = activeUser?.user?.balance
+
+  const { updatedOrderTotal } = deductBalance(balance, orderTotal)
+
+  useEffect(() => {
+    const getUser = async () => {
+      if (!user?.email) return
+      setIsLoading(true)
+      try {
+        const res = await fetch(`/api/user/${user.email}`, {
+          method: "GET",
+          cache: "no-store",
+        })
+        if (res.ok) {
+          const active = await res.json()
+          setActiveUser(active)
+          // setUser(active)
+        } else {
+          console.error("Failed to fetch user details:", res.statusText)
+        }
+      } catch (error) {
+        console.error("Failed to fetch user details:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    getUser()
+  }, [user?.email])
 
   // Fetch cities data
   useEffect(() => {
@@ -164,7 +201,7 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
       }
 
       const data = await res.json()
-      window.location.reload()
+      // window.location.reload()
       toast.success("Delivery method updated!")
     } catch (error) {
       console.log("Error updating order:", error)
@@ -173,6 +210,25 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
       setIsSaving(false)
     }
   }
+
+  useEffect(() => {
+    async function updateOrderTotal() {
+      try {
+        const res = await fetch(`/api/orders/${order?.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            updatedOrderTotal,
+          }),
+        })
+
+        if (!res.ok) throw new Error(res.statusText)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    updateOrderTotal()
+  }, [deliveryFee])
 
   const onSubmit = (values: z.infer<typeof CheckoutSchema>) =>
     updateShippingAddress(values)

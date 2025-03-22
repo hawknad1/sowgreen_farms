@@ -33,6 +33,13 @@ export function deductBalance(
     updatedOrderTotal = remainingAmount
     deductedBalance = updatedBalance
   }
+
+  // If balance is negative, convert it to positive and add to the order total
+  else if (balance < 0) {
+    updatedBalance = 0
+    updatedOrderTotal = parseFloat((orderTotal + Math.abs(balance)).toFixed(2))
+  }
+
   // Case 3: No balance available
   else {
     proceedToPaystack = true

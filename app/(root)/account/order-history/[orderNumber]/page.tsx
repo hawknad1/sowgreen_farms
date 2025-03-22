@@ -4,7 +4,6 @@ import ChangeDeliveryMethodDialog from "./DeliveryMethodDialog"
 import CancelCustomerOrderDialog from "./CancelCustomerOrderDialog"
 import EditCustomerOrderDialog from "./EditCustomerOrderDialog"
 import PaystackPayNow from "./PaystackPayNow"
-import PayNowButton from "./PayNowButton"
 
 import { Order } from "@/types"
 import { useEffect, useState } from "react"
@@ -30,8 +29,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   } = deductBalance(balance, orderTotal)
 
   const checkPayNow = updatedOrderTotal === 0
-
-  console.log(deductedBalance, "DEDUCTED BALANCE!!!")
 
   useEffect(() => {
     async function fetchOrderDetails() {
@@ -187,20 +184,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
             <div className="w-full flex ">
               <div className="w-full flex flex-col gap-y-3 sm:grid sm:grid-cols-2 sm:gap-x-3">
                 <div className="flex gap-x-3 w-full">
-                  {/* {updatedOrderTotal === 0 &&
-                  orderDetails?.status === "confirmed" ? (
-                    <PayNowButton
-                      order={orderDetails}
-                      updatedOrderTotal={updatedOrderTotal}
-                      updatedBalance={updatedBalance}
-                    />
-                  ) : (
-                    <PaystackPayNow
-                      order={orderDetails}
-                      updatedBalance={updatedBalance}
-                    />
-                  )} */}
-
                   <PaystackPayNow
                     order={orderDetails}
                     updatedBalance={updatedBalance}
@@ -306,7 +289,26 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 {formatCurrency(orderTotal, "GHS")}
               </p>
             </div>
-
+            <div className="flex justify-between">
+              <p
+                className={`text-sm lg:text-base font-semibold ${
+                  orderDetails?.creditAppliedTotal >= 0
+                    ? "text-emerald-500"
+                    : "text-red-500"
+                }`}
+              >
+                Credit Bal.
+              </p>
+              <p
+                className={`text-xs md:text-sm lg:text-base font-semibold ${
+                  orderDetails?.creditAppliedTotal >= 0
+                    ? "text-emerald-500"
+                    : "text-red-500"
+                }`}
+              >
+                {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
+              </p>
+            </div>
             <div className="flex justify-between">
               <p className="text-sm lg:text-base text-red-500 font-semibold">
                 Total Due

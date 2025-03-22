@@ -35,6 +35,8 @@ interface UserProps {
 
 const CustomerDataTableList = ({ users, loading }: UserProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
+  // const [users, setUsers] = React.useState<UserType[]>([])
+  // const [loading, setIsLoading] = React.useState(true)
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -45,7 +47,7 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
   >({})
 
   const table = useReactTable({
-    data: users, // Use the filtered data here
+    data: users ?? [], // Ensure data is always an array
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -65,8 +67,8 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
 
   return (
     <div className="w-full p-4">
-      <div className="bg-white flex items-center justify-between gap-x-3 top-0 sticky inset-0 z-10">
-        <div className="w-full">
+      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white">
+        <div className="flex w-full justify-between items-center">
           <Input
             placeholder="Filter customers..."
             value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -76,13 +78,11 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
             className="max-w-sm"
             aria-label="Filter customers"
           />
-        </div>
-        <div>
+
           <ExportDialog />
         </div>
       </div>
-
-      <div className="overflow-hidden rounded-md border">
+      <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -103,7 +103,7 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
           <TableBody>
             {loading ? (
               <TableRow>
-                <TableCell colSpan={users.length} className="h-14">
+                <TableCell colSpan={columns.length} className="h-14">
                   <DataSkeletons />
                 </TableCell>
               </TableRow>
@@ -125,7 +125,10 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={users.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
                   No results.
                 </TableCell>
               </TableRow>
@@ -133,13 +136,12 @@ const CustomerDataTableList = ({ users, loading }: UserProps) => {
           </TableBody>
         </Table>
       </div>
-
-      <div className="flex items-center justify-between py-4">
-        <div className="text-sm text-muted-foreground">
+      <div className="flex items-center justify-end space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="flex space-x-2">
+        <div className="space-x-2">
           <Button
             variant="outline"
             size="sm"

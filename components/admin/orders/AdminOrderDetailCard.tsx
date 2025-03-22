@@ -14,27 +14,29 @@ import { OrderInfo } from "./OrderInfo"
 import { formatCurrency } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import { orderStatusCard } from "@/constants"
-import { useUserStore } from "@/store"
+import { useDeliveryStore, useUserStore } from "@/store"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
-  // const { user } = useUserStore()
-  // const [user, setUser] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [activeUser, setActiveUser] = useState<User>(null)
   const { data: session } = useSession()
+  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+
+  console.log(orders, "ORDERS==== ADMIN")
+
   const user = session?.user
 
-  const orderTotal = orders?.total + orders?.deliveryFee
+  // const orderTotal = orders?.total + orders?.deliveryFee
+  const orderTotal = orders?.total + deliveryFee
   const balance = activeUser?.user?.balance
 
-  // const { remainingAmount, updatedBalance, updatedOrderTotal } = deductBalance(
-  //   activeUser?.user?.balance,
-  //   orderTotal
-  // )
-
-  // const balance = user?.user?.balance
+  // deductBalance()
+  const { remainingAmount, updatedBalance, updatedOrderTotal } = deductBalance(
+    activeUser?.user?.balance,
+    orderTotal
+  )
 
   // Fetch user details if email is provided
   useEffect(() => {
@@ -61,36 +63,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
     }
     getUser()
   }, [user?.email])
-
-  // useEffect(() => {
-  //   const getUser = async () => {
-  //     if (!user?.email) return
-  //     setIsLoading(true)
-  //     // setError(null)
-  //     try {
-  //       const res = await fetch(`/api/user/${user.email}`, {
-  //         method: "GET",
-  //         cache: "no-store",
-  //       })
-  //       if (res.ok) {
-  //         const active = await res.json()
-  //         // setActiveUser(active)
-  //         setUser(active)
-  //       } else {
-  //         // setError("Failed to fetch user details")
-  //         console.error("Failed to fetch user details:", res.statusText)
-  //       }
-  //     } catch (error) {
-  //       // setError("Failed to fetch user details")
-  //       console.error("Failed to fetch user details:", error)
-  //     } finally {
-  //       setIsLoading(false)
-  //     }
-  //   }
-  //   getUser()
-  // }, [user?.email])
-
-  // console.log(user, "BALANCE")
 
   if (!orders)
     return (
@@ -176,17 +148,20 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                   <div>
                     <p className="text-sm font-semibold">Subtotal</p>
                     <p className="text-sm font-semibold">Delivery Fee</p>
-                    {/* {orders?.creditAppliedTotal > 0 ? (
-                      <p className="text-sm text-neutral-400">Credit</p>
-                    ) : (
-                      ""
-                    )} */}
                     <p className="text-sm font-semibold">Order Total</p>
-                    {balance > 0 && (
-                      <p className="text-sm font-semibold text-red-500">
-                        Total Due
-                      </p>
-                    )}
+                    <p
+                      className={`font-semibold text-sm  ${
+                        orders?.creditAppliedTotal >= 0
+                          ? "text-emerald-500"
+                          : "text-red-500 "
+                      }`}
+                    >
+                      Credit Bal.
+                    </p>
+
+                    <p className="text-sm font-semibold text-red-500">
+                      Total Due
+                    </p>
                   </div>
 
                   <div className="flex flex-col items-end">
@@ -200,28 +175,28 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                         {formatCurrency(orders?.deliveryFee, "GHS")}
                       </p>
                     </div>
-                    {/* {orders?.creditAppliedTotal > 0 ? (
-                      <div className="flex justify-between">
-                        <p className="font-semibold text-sm text-neutral-400">
-                          {formatCurrency(orders?.deliveryFee, "GHS")}
-                          <span></span>
-                        </p>
-                      </div>
-                    ) : (
-                      ""
-                    )} */}
+
                     <div className="flex justify-between">
                       <p className="font-semibold text-sm">
                         {formatCurrency(orderTotal, "GHS")}
                       </p>
                     </div>
-                    {balance > 0 && (
-                      <div className="flex justify-between">
-                        <p className="font-semibold text-sm text-red-500">
-                          {formatCurrency(orders?.updatedOrderTotal, "GHS")}
-                        </p>
-                      </div>
-                    )}
+                    <div className={`flex justify-between `}>
+                      <p
+                        className={`font-semibold text-sm  ${
+                          orders?.creditAppliedTotal >= 0
+                            ? "text-emerald-500"
+                            : "text-red-500 "
+                        }`}
+                      >
+                        {formatCurrency(orders?.creditAppliedTotal, "GHS")}
+                      </p>
+                    </div>
+                    <div className="flex justify-between">
+                      <p className="font-semibold text-sm text-red-500">
+                        {formatCurrency(orders?.updatedOrderTotal, "GHS")}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
