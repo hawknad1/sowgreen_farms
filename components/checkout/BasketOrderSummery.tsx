@@ -78,15 +78,13 @@ const BasketOrderSummery = () => {
           <p className="text-sm font-bold">Total</p>
           <p className="text-sm font-bold">{formattedTotal}</p>
         </div>
-        {balance > 0 ||
-          (balance < 0 && (
-            <div className="flex items-center justify-between px-2">
-              <p className="text-sm text-red-500 font-semibold">Total Due</p>
-              <p className="text-sm text-red-500 font-semibold">
-                {formatCurrency(updatedOrderTotal, "GHS")}
-              </p>
-            </div>
-          ))}
+
+        <div className="flex items-center justify-between px-2">
+          <p className="text-sm text-red-500 font-semibold">Total Due</p>
+          <p className="text-sm text-red-500 font-semibold">
+            {formatCurrency(updatedOrderTotal, "GHS")}
+          </p>
+        </div>
       </div>
     </div>
   )

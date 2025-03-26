@@ -82,19 +82,17 @@ const OrderSummary = ({
             </p>
             <span className="font-semibold text-sm">{formattedTotal}</span>
           </div>
-          {balance > 0 ||
-            (balance < 0 && (
-              <div className="flex items-center justify-between text-lg">
-                <>
-                  <p className="text-sm  md:text-base text-red-500 font-bold">
-                    Total Due
-                  </p>
-                  <p className="text-xl font-bold text-red-500">
-                    {formatCurrency(updatedOrderTotal, "GHS")}
-                  </p>
-                </>
-              </div>
-            ))}
+
+          <div className="flex items-center justify-between text-lg">
+            <>
+              <p className="text-sm  md:text-base text-red-500 font-bold">
+                Total Due
+              </p>
+              <p className=" font-bold text-red-500">
+                {formatCurrency(updatedOrderTotal, "GHS")}
+              </p>
+            </>
+          </div>
         </div>
       </div>
     </div>

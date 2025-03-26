@@ -236,16 +236,6 @@ const ThankYouPage = () => {
                   {formatCurrency(orderTotal, "GHS")}
                 </p>
               </div>
-              {balance > 0 && (
-                <div className="flex justify-between">
-                  <p className="text-sm font-medium text-neutral-500/85">
-                    Credit Bal.
-                  </p>
-                  <p className="text-sm font-semibold text-neutral-500/85">
-                    {formatCurrency(balance, "GHS")}
-                  </p>
-                </div>
-              )}
 
               <div className="flex justify-between">
                 <p className="text-sm md:text-lg font-bold text-black">
