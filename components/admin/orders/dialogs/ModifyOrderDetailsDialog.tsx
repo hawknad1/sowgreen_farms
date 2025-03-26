@@ -14,6 +14,8 @@ import {
   DialogTrigger,
 } from "../../../ui/dialog"
 import EditOrderDetails from "../EditOrderDetails"
+import { SquarePenIcon } from "lucide-react"
+import { PencilSquareIcon } from "@heroicons/react/24/outline"
 
 interface Props {
   order?: Order
@@ -29,11 +31,10 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className=""
+          className="w-fit h-fit p-2"
           disabled={order?.status === "delivered"}
         >
-          {/* <PencilSquareIcon className="h-5 w-5" /> */}
-          Change Delivery Method
+          <PencilSquareIcon className="h-5 w-5" />
         </Button>
       </DialogTrigger>
 

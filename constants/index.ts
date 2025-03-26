@@ -408,35 +408,6 @@ export const units = [
   },
 ]
 
-// export const sideMenuLinks = [
-//   {
-//     label: "Account",
-//     icon: UserRound,
-//     items: [
-//       {
-//         label: "Profile",
-//         href: "/profile",
-//         icon: UserRound, // Add individual icons for sub-items if needed
-//       },
-//       {
-//         label: "Order History",
-//         href: "/account/order-history",
-//         icon: ListOrdered, // Add individual icons for sub-items if needed
-//       },
-//     ],
-//   },
-//   {
-//     label: "Products",
-//     href: "/products",
-//     icon: Salad,
-//   },
-//   {
-//     label: "Wishlists",
-//     href: "/wishlists",
-//     icon: Heart,
-//   },
-// ]
-
 export const getSideMenuLinks = (balance: number): MenuItem[] => {
   const baseLinks: MenuItem[] = [
     {
@@ -478,40 +449,6 @@ export const getSideMenuLinks = (balance: number): MenuItem[] => {
 
   return baseLinks
 }
-
-// export const adminSideMenuLinks: MenuItem[] = [
-//   {
-//     label: "Account",
-//     icon: UserRound,
-//     items: [
-//       {
-//         label: "Profile",
-//         href: "/profile",
-//         icon: UserRound, // Add individual icons for sub-items if needed
-//       },
-//       {
-//         label: "Order History",
-//         href: "/account/order-history",
-//         icon: ListOrdered, // Add individual icons for sub-items if needed
-//       },
-//       {
-//         label: "Admin Dashboard",
-//         href: "/admin/dashboard",
-//         icon: LayoutDashboard, // Example of adding a specific icon for "Admin"
-//       },
-//     ],
-//   },
-//   {
-//     label: "Products",
-//     href: "/products",
-//     icon: Salad,
-//   },
-//   {
-//     label: "Wishlists",
-//     href: "/wishlists",
-//     icon: Heart,
-//   },
-// ]
 
 export const getAdminSideMenuLinks = (balance: number): MenuItem[] => {
   const baseLinks: MenuItem[] = [

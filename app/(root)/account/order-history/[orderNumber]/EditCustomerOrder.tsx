@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/select"
 import { deductBalance } from "@/lib/actions/deductBalance"
 import { useSession } from "next-auth/react"
+import { useUserListStore } from "@/store"
 
 interface EditOrderProps {
   orders: Order
@@ -39,12 +40,16 @@ const EditCustomerOrder = ({
   const [updatedOrderTotal, setUpdatedOrderTotal] = useState(0)
   const [getUpdatedBalance, setGetUpdatedBalance] = useState(0)
   const [isSaving, setIsSaving] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const { data: session } = useSession()
   const user = session?.user
+  const { balance: userlistBalance, setBalance } = useUserListStore()
 
   const balance = activeUser?.user?.balance
   const checkTotal = orderDetails?.paymentAction !== "paid" && balance > 0
+
+  console.log(balance, "BALANCE")
+  console.log(userlistBalance, "userlistBalance")
 
   useEffect(() => {
     const getUser = async () => {
@@ -71,6 +76,8 @@ const EditCustomerOrder = ({
   }, [user?.email])
 
   useEffect(() => {
+    if (isLoading) return // Don't calculate if still loading
+
     const newSubtotal = orderDetails.products.reduce(
       (sum, item) => sum + item.price * item.quantity,
       0
@@ -87,7 +94,7 @@ const EditCustomerOrder = ({
 
     setUpdatedOrderTotal(newUpdatedOrderTotal)
     setTotal(checkTotal ? Math.max(0, newTotal - balance) : newTotal)
-    setGetUpdatedBalance(updatedBalance)
+    // setTotal(checkTotal ? Math.max(0, newTotal - balance) : updatedOrderTotal)
   }, [orderDetails.products, orderDetails.deliveryFee, balance, checkTotal])
 
   const handleQuantityChange = (productId: string, quantity: number) => {
@@ -112,8 +119,6 @@ const EditCustomerOrder = ({
     setOrderItems((prev) => prev.filter((item) => item.id !== productOrderId))
   }
 
-  console.log(getUpdatedBalance, "getUpdatedBalance")
-
   const handleSaveChanges = async () => {
     setIsSaving(true)
     try {
@@ -124,9 +129,7 @@ const EditCustomerOrder = ({
           products: orderDetails.products,
           total: subtotal,
           deliveryFee: deliveryFee,
-          // creditAppliedTotal: updatedOrderTotal,
-          updatedBalance: getUpdatedBalance,
-          updatedOrderTotal: total,
+          updatedOrderTotal,
         }),
       })
 
@@ -280,12 +283,25 @@ const EditCustomerOrder = ({
               {formatCurrency(subtotal + deliveryFee, "GHS")}
             </span>
           </p>
-          {checkTotal && (
-            <p className=" text-xs md:text-sm">
+          <p className="text-xs md:text-sm flex items-center gap-x-2">
+            <span className="text-red-500">Total Due:</span>{" "}
+            {/* <span>{formatCurrency(updatedOrderTotal, "GHS")}</span> */}
+            {isLoading ? (
+              <span className="loading loading-spinner loading-xs"></span>
+            ) : (
+              <p className="text-xs md:text-sm">
+                {formatCurrency(updatedOrderTotal, "GHS")}{" "}
+              </p>
+            )}
+          </p>
+          {/* {!isLoading ? (
+            <span className="loading loading-spinner loading-xs"></span>
+          ) : (
+            <p className="text-xs md:text-sm">
               <span className="text-red-500">Total Due:</span>{" "}
               <span>{formatCurrency(updatedOrderTotal, "GHS")}</span>
             </p>
-          )}
+          )} */}
         </div>
 
         <Button

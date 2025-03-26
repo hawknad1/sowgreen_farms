@@ -76,3 +76,26 @@ export async function sendUpdatedDeliveryMethod() {
     console.error("Error sending message:", error)
   }
 }
+
+export async function sendSms(order: Order) {
+  const message = generateOrderConfirmationMessage(order)
+
+  try {
+    const response = await fetch("/api/sendWhatsapp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        to: order?.shippingAddress?.phone, // Customer's WhatsApp number
+        message,
+      }),
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+    }
+  } catch (error) {
+    console.error("Error sending message:", error)
+  }
+}

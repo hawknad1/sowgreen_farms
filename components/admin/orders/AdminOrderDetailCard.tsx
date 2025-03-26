@@ -14,17 +14,18 @@ import { OrderInfo } from "./OrderInfo"
 import { formatCurrency } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import { orderStatusCard } from "@/constants"
-import { useDeliveryStore, useUserStore } from "@/store"
+import { useDeliveryStore, useUserListStore, useUserStore } from "@/store"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
+import { MiddleOrderInfo } from "./MiddleOrderInfo"
+import Card from "@/app/(root)/confirm-order/Card"
+import AdminMiddleCards from "./AdminMiddleCards"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [activeUser, setActiveUser] = useState<User>(null)
   const { data: session } = useSession()
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
-
-  console.log(orders, "ORDERS==== ADMIN")
 
   const user = session?.user
 
@@ -77,7 +78,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
     firstName && lastName ? `${firstName} ${lastName}` : "Not Assigned"
 
   return (
-    <div className="p-4">
+    <div className="p-4 w-full">
       <div className="flex flex-col">
         <div className="flex justify-between sticky top-0 z-10  h-16 items-center gap-2 bg-white px-4">
           <div>
@@ -92,7 +93,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
           <div className="flex items-center gap-x-3">
             <CancelOrderDialog order={orders} className="" />
 
-            <AddCredit />
+            {/* <AddCredit /> */}
             <DeleteOrderDialog
               order={orders}
               className="hidden lg:inline-flex"
@@ -123,10 +124,22 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               <Separator className="my-4" />
 
               {/* Shipping and order details */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <ShippingInfo order={orders} />
-                <OrderInfo orders={orders} balance={balance} />
-              </div>
+
+              {/* <div className="w-full overflow-x-auto scrollbar-none snap-x snap-mandatory">
+                <div className="flex gap-4 px-4">
+                  <div className="flex-shrink-0 snap-start">
+                    <ShippingInfo order={orders} />
+                  </div>
+                  <div className="flex-shrink-0 w-[calc(100vw-32px)] snap-start">
+                    <MiddleOrderInfo orders={orders} balance={balance} />
+                  </div>
+                  <div className="flex-shrink-0 w-[calc(100vw-32px)] snap-start">
+                    <OrderInfo orders={orders} balance={balance} />
+                  </div>
+                </div>
+              </div> */}
+
+              <AdminMiddleCards orders={orders} />
 
               <Separator className="my-4" />
 
@@ -148,7 +161,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                   <div>
                     <p className="text-sm font-semibold">Subtotal</p>
                     <p className="text-sm font-semibold">Delivery Fee</p>
-                    <p className="text-sm font-semibold">Order Total</p>
+                    <p className="text-sm font-semibold">Total</p>
                     <p
                       className={`font-semibold text-sm  ${
                         orders?.creditAppliedTotal >= 0

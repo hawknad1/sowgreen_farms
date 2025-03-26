@@ -1,4 +1,5 @@
 // import PaystackButton from "@/components/paystackButton"
+import { useUserListStore } from "@/store"
 import { Order } from "@/types"
 import React from "react"
 import toast from "react-hot-toast"
@@ -15,6 +16,7 @@ const PaystackPayNow = ({
   updatedBalance,
   disablePayNow,
 }: OrderProps) => {
+  const { setBalance } = useUserListStore()
   const handlePaystackSuccessAction = async (
     reference: any,
     orderId: string
@@ -56,6 +58,8 @@ const PaystackPayNow = ({
           phone: order?.shippingAddress?.phone,
         }),
       })
+
+      setBalance(updatedBalance)
 
       // Notify success
       toast.success("Payment was successful!")

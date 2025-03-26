@@ -7,6 +7,7 @@ import {
   useOrderDataStore,
   useOrdersStore,
   usePaymentStore,
+  useUserListStore,
 } from "@/store"
 
 import CartDisplay from "./CartDisplay"
@@ -27,6 +28,7 @@ import {
   sendOrderConfirmation,
   sendOrderReceived,
 } from "@/lib/actions/sendWhatsappMessage"
+import { sendSms } from "@/lib/actions/sendSms"
 
 export type User = {
   user: {
@@ -52,10 +54,11 @@ const ConfirmOrderPage = () => {
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setCartProducts = useCartStore((state) => state.setCartProducts)
   const [isConfirming, setIsConfirming] = useState(false)
+  const { balance } = useUserListStore()
 
   const session = useSession()
   const user = session?.data?.user
-  const balance = activeUser?.user?.balance
+  // const balance = activeUser?.user?.balance
 
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -128,6 +131,14 @@ const ConfirmOrderPage = () => {
 
   const transformedCart = transformCart(cart)
 
+  const {
+    updatedBalance,
+    updatedOrderTotal,
+    remainingAmount,
+    proceedToPaystack,
+    deductedBalance,
+  } = deductBalance(balance, conbinedTotal)
+
   const dataProps = {
     formData,
     formattedDelivery,
@@ -137,15 +148,8 @@ const ConfirmOrderPage = () => {
     total,
     deliveryFee,
     deliveryDate,
-  }
-
-  const {
-    updatedBalance,
     updatedOrderTotal,
-    remainingAmount,
-    proceedToPaystack,
-    deductedBalance,
-  } = deductBalance(balance, conbinedTotal)
+  }
 
   const config = {
     reference: new Date().getTime().toString(),
@@ -228,7 +232,7 @@ const ConfirmOrderPage = () => {
         total: total,
         creditAppliedTotal: balance,
         balanceDeducted: deductedBalance,
-        updatedBalance,
+        // updatedBalance,
         updatedOrderTotal,
         remainingAmount,
       }
@@ -273,12 +277,12 @@ const ConfirmOrderPage = () => {
       })
 
       // sendWhatsAppMessage(ordersData)
-      sendOrderReceived(ordersData)
+      // sendOrderReceived(ordersData)
       // sendOrderConfirmation(ordersData)
 
-      router.push("/success/thank-you")
+      sendSms(ordersData)
 
-      clearCart() // Clear the cart after successful order processing
+      router.push("/success/thank-you")
 
       // Update product quantities
       const quantityResponse = await fetch("/api/products/updateQuantity", {
@@ -287,6 +291,8 @@ const ConfirmOrderPage = () => {
         body: JSON.stringify({ products: ordersData.products }),
       })
       if (!quantityResponse.ok) throw new Error("Quantity update API failed")
+
+      clearCart() // Clear the cart after successful order processing
     } catch (error) {
       console.error("Payment processing error:", error)
     } finally {

@@ -32,6 +32,7 @@ import { cityDeliveryPrices, regions } from "@/constants"
 import { DeliveryMethod } from "./DeliveryMethod"
 import OrderSummary from "./OrderSummary"
 import { CitiesWithFees } from "@/types"
+import { WhatsappOptIn } from "./WhatsAppOptIn"
 
 interface ExtendedUser {
   email: string
@@ -341,6 +342,8 @@ export function CheckoutForm() {
                 setSelectedDeliveryDate={setSelectedDeliveryDate}
                 selectedDeliveryDate={selectedDeliveryDate}
               />
+              {/* <WhatsappOptIn /> */}
+              {/* <WhatsAppOrderLink orderId="2872629" phoneNumber="03738363638" /> */}
             </div>
           </div>
           <div className="w-full lg:max-w-sm md:max-w-xs mt-4 md:mt-0">

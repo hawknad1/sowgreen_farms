@@ -1,7 +1,7 @@
 "use client"
 import React from "react"
 import { formatCurrency } from "@/lib/utils"
-import { useCartStore, useUserStore } from "@/store"
+import { useCartStore, useUserListStore, useUserStore } from "@/store"
 import BasketCartItems from "@/components/basket/BasketCartItems"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
@@ -17,6 +17,7 @@ const OrderSummary = ({
 }) => {
   const { cartTotal } = useCartStore()
   const { user } = useUserStore()
+  const { balance } = useUserListStore()
 
   const total = cartTotal + deliveryFee
   const subtotal = formatCurrency(cartTotal, "GHS")
@@ -28,7 +29,7 @@ const OrderSummary = ({
     updatedOrderTotal,
     remainingAmount,
     proceedToPaystack,
-  } = deductBalance(user?.user?.balance, total)
+  } = deductBalance(balance, total)
 
   return (
     <div className="flex flex-col justify-between h-fit rounded-md">
@@ -47,7 +48,7 @@ const OrderSummary = ({
           </div>
           <div className="flex items-center justify-between">
             <p className="text-sm  md:text-base text-neutral-500 font-medium">
-              Delivery
+              Delivery Fee
             </p>
             <p className="font-semibold text-sm">{formattedDelivery}</p>
           </div>
@@ -62,9 +63,9 @@ const OrderSummary = ({
           >
             <p
               className={`text-sm md:text-base  ${
-                user?.user?.balance < 0
+                balance < 0
                   ? "text-red-500"
-                  : user?.user?.balance >= 0
+                  : balance >= 0
                   ? "text-emerald-500"
                   : "text-zinc-400/80"
               } `}
@@ -72,7 +73,7 @@ const OrderSummary = ({
               Credit Bal.
             </p>
             <p className="font-semibold text-sm">
-              {formatCurrency(user?.user.balance, "GHS")}
+              {formatCurrency(balance, "GHS")}
             </p>
           </div>
           <div className="flex items-center justify-between text-lg">
@@ -81,18 +82,19 @@ const OrderSummary = ({
             </p>
             <span className="font-semibold text-sm">{formattedTotal}</span>
           </div>
-          {user?.user?.balance > 0 && (
-            <div className="flex items-center justify-between text-lg">
-              <>
-                <p className="text-sm  md:text-base text-red-500 font-bold">
-                  Total Due
-                </p>
-                <p className="text-xl font-bold text-red-500">
-                  {formatCurrency(remainingAmount, "GHS")}
-                </p>
-              </>
-            </div>
-          )}
+          {balance > 0 ||
+            (balance < 0 && (
+              <div className="flex items-center justify-between text-lg">
+                <>
+                  <p className="text-sm  md:text-base text-red-500 font-bold">
+                    Total Due
+                  </p>
+                  <p className="text-xl font-bold text-red-500">
+                    {formatCurrency(updatedOrderTotal, "GHS")}
+                  </p>
+                </>
+              </div>
+            ))}
         </div>
       </div>
     </div>

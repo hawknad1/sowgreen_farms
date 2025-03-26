@@ -5,6 +5,7 @@ import {
   useCartStore,
   useDeliveryStore,
   useOrderDataStore,
+  useUserListStore,
   useUserStore,
 } from "@/store"
 import { Separator } from "../ui/separator"
@@ -16,16 +17,20 @@ const BasketOrderSummery = () => {
   const { ordersData } = useOrderDataStore()
   const { cartTotal } = useCartStore()
   const { user } = useUserStore()
+  const { balance } = useUserListStore()
 
   const total = cartTotal + deliveryFee
+
+  console.log(balance, "balance---basket")
 
   const {
     updatedBalance,
     updatedOrderTotal,
     remainingAmount,
     proceedToPaystack,
-  } = deductBalance(user?.user?.balance, total)
+  } = deductBalance(balance, total)
 
+  console.log(updatedOrderTotal, "updatedOrderTotal--basket")
   // formatCurrency
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
@@ -42,47 +47,46 @@ const BasketOrderSummery = () => {
           <p className="text-sm">{formatCurrency(cartTotal, "GHS")}</p>
         </div>
         <div className="flex items-center justify-between px-2">
-          <p className="text-sm text-zinc-400/80">Delivery</p>
+          <p className="text-sm text-zinc-400/80">Delivery Fee</p>
           <p className="text-sm">{formattedDelivery}</p>
         </div>
 
         <div
           className={`flex items-center justify-between ${
-            user?.user?.balance < 0
+            balance < 0
               ? "bg-red-500/15 text-red-500 py-1 rounded-sm font-medium px-2"
-              : user?.user?.balance >= 0
+              : balance >= 0
               ? "text-emerald-500 bg-emerald-500/15 border-emerald-300/15 py-1 rounded-sm font-medium px-2"
               : ""
           }`}
         >
           <p
             className={`text-sm  ${
-              user?.user?.balance < 0
+              balance < 0
                 ? "text-red-500"
-                : user?.user?.balance >= 0
+                : balance >= 0
                 ? "text-emerald-500"
                 : "text-zinc-400/80"
             } `}
           >
             Credit Bal.
           </p>
-          <p className="text-sm">
-            {formatCurrency(user?.user?.balance, "GHS")}
-          </p>
+          <p className="text-sm">{formatCurrency(balance, "GHS")}</p>
         </div>
 
         <div className="flex items-center justify-between px-2">
           <p className="text-sm font-bold">Total</p>
           <p className="text-sm font-bold">{formattedTotal}</p>
         </div>
-        {user?.user?.balance > 0 && (
-          <div className="flex items-center justify-between px-2">
-            <p className="text-sm text-red-500 font-semibold">Total Due</p>
-            <p className="text-sm text-red-500 font-semibold">
-              {formatCurrency(remainingAmount, "GHS")}
-            </p>
-          </div>
-        )}
+        {balance > 0 ||
+          (balance < 0 && (
+            <div className="flex items-center justify-between px-2">
+              <p className="text-sm text-red-500 font-semibold">Total Due</p>
+              <p className="text-sm text-red-500 font-semibold">
+                {formatCurrency(updatedOrderTotal, "GHS")}
+              </p>
+            </div>
+          ))}
       </div>
     </div>
   )

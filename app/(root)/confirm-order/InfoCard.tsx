@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator"
 import React, { useMemo } from "react"
 import Card from "./Card"
 import { date, formatCurrency } from "@/lib/utils"
-import { useDeliveryStore, useUserStore } from "@/store"
+import { useDeliveryStore, useUserListStore, useUserStore } from "@/store"
 import { FaMapMarkerAlt, FaTruck, FaClipboardList } from "react-icons/fa"
 import { deductBalance } from "@/lib/actions/deductBalance"
 
@@ -15,6 +15,7 @@ const InfoCard = ({ data }: InfoCardProps) => {
   const deliveryMethod = data?.formData?.deliveryMethod?.trim()?.toUpperCase()
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const { user } = useUserStore()
+  const { balance } = useUserListStore()
 
   let total = data?.total + deliveryFee
 
@@ -101,19 +102,19 @@ const InfoCard = ({ data }: InfoCardProps) => {
                   {data?.cart?.length || 0} Items
                 </span>
               </div>
-              <div className="flex justify-between">
-                <p>Delivery Fee:</p>
-                <span className="font-medium">
-                  {data?.formattedDelivery || "No delivery fee"}
-                </span>
-              </div>
+
               <div className="flex justify-between">
                 <p>Subtotal:</p>
                 <span className="font-medium">
                   {data?.formattedSubtotal || "No subtotal"}
                 </span>
               </div>
-
+              <div className="flex justify-between">
+                <p>Delivery Fee:</p>
+                <span className="font-medium">
+                  {data?.formattedDelivery || "No delivery fee"}
+                </span>
+              </div>
               <div className="flex justify-between">
                 <p
                   className={`${
@@ -135,7 +136,7 @@ const InfoCard = ({ data }: InfoCardProps) => {
                 </span>
               </div>
               <div className="flex justify-between">
-                <p>Order Total:</p>
+                <p>Total:</p>
                 <span className="font-medium">
                   {formatCurrency(total, "GHS")}
                 </span>
@@ -147,7 +148,7 @@ const InfoCard = ({ data }: InfoCardProps) => {
             <h3 className="lg:text-xl text-sm font-bold text-gray-800">
               Total Due
             </h3>
-            {user?.user?.balance > 0 ? (
+            {balance > 0 || balance < 0 ? (
               <p className="font-bold text-xs md:text-sm lg:text-base">
                 {formatCurrency(updatedOrderTotal, "GHS") || "No total"}
               </p>

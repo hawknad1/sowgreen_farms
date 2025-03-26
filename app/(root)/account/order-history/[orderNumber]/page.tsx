@@ -10,30 +10,40 @@ import { useEffect, useState } from "react"
 import { formatCurrency } from "@/lib/utils"
 import { capitalizeName } from "@/lib/capitalizeName"
 import { deductBalance } from "@/lib/actions/deductBalance"
-import { useUserStore } from "@/store"
+import { useUserListStore, useUserStore } from "@/store"
 
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const { user } = useUserStore()
+  // const { user } = useUserStore()
+  const { balance } = useUserListStore()
 
   const { orderNumber } = params
   const orderTotal = orderDetails?.total + orderDetails?.deliveryFee
-  const balance = user?.user?.balance
+  // const balance = user?.user?.balance
 
-  const {
-    remainingAmount,
-    updatedBalance,
-    updatedOrderTotal,
-    deductedBalance,
-  } = deductBalance(balance, orderTotal)
+  const { updatedBalance, updatedOrderTotal } = deductBalance(
+    balance,
+    orderTotal
+  )
 
   const checkPayNow = updatedOrderTotal === 0
+
+  console.log(updatedBalance, "updatedBalance---BALANCE INQUI")
+  console.log(balance, "---BALANCE INQUI ==BANKUE")
+
+  console.log(
+    orderDetails?.total,
+    "orderDetails?.total---orderDetails?.total INQUI"
+  )
 
   useEffect(() => {
     async function fetchOrderDetails() {
       try {
-        const res = await fetch(`/api/order-history/${orderNumber}`)
+        const res = await fetch(`/api/order-history/${orderNumber}`, {
+          method: "GET",
+          cache: "no-store",
+        })
         if (!res.ok) throw new Error(res.statusText)
         const data = await res.json()
         setOrderDetails(data)
@@ -134,13 +144,19 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               Order Details
             </h2>
             <div className="flex flex-col">
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <p className="font-medium text-sm lg:text-base">
                   Item(s) Ordered
                 </p>
                 <p className="text-sm text-neutral-600 lg:text-base">{`${orderDetails?.products.length} Items`}</p>
-              </div>
+              </div> */}
 
+              <div className="flex justify-between">
+                <p className="font-medium text-sm lg:text-base">Subtotal</p>
+                <p className="text-sm text-neutral-600 lg:text-base">{`GHS ${orderDetails?.total.toFixed(
+                  2
+                )}`}</p>
+              </div>
               <div className="flex justify-between">
                 <p className="font-medium text-sm lg:text-base">Delivery Fee</p>
                 <p className="text-sm text-neutral-600 lg:text-base">{`GHS ${orderDetails?.deliveryFee.toFixed(
@@ -148,16 +164,14 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 )}`}</p>
               </div>
               <div className="flex justify-between">
-                <p className="font-medium text-sm lg:text-base">Subtotal</p>
-                <p className="text-sm text-neutral-600 lg:text-base">{`GHS ${orderDetails?.total.toFixed(
-                  2
-                )}`}</p>
+                <p className="font-medium text-sm lg:text-base">Credit Bal.</p>
+                <p className="text-sm text-neutral-600 lg:text-base">
+                  {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
+                </p>
               </div>
               <div className="flex flex-col justify-between">
                 <div className="flex w-full justify-between">
-                  <p className="font-medium text-sm lg:text-base">
-                    Order Total
-                  </p>
+                  <p className="font-medium text-sm lg:text-base">Total</p>
                   <p className="text-sm text-neutral-600 lg:text-base">
                     {formatCurrency(orderTotal, "GHS")}
                   </p>
@@ -267,6 +281,12 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
           </div>
           <div className="flex flex-col gap-y-0.5 border border-slate-300 rounded-lg p-2">
             <div className="flex justify-between">
+              <p className="text-neutral-500 text-sm lg:text-base">Subtotal</p>
+              <p className="font-medium text-sm lg:text-base">
+                {formatCurrency(orderDetails?.total, "GHS")}
+              </p>
+            </div>
+            <div className="flex justify-between">
               <p className="text-neutral-500 text-sm lg:text-base">
                 Delivery Fee
               </p>
@@ -274,17 +294,9 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 {formatCurrency(orderDetails?.deliveryFee, "GHS")}
               </p>
             </div>
-            <div className="flex justify-between">
-              <p className="text-neutral-500 text-sm lg:text-base">Subtotal</p>
-              <p className="font-medium text-sm lg:text-base">
-                {formatCurrency(orderDetails?.total, "GHS")}
-              </p>
-            </div>
 
             <div className="flex justify-between">
-              <p className="text-neutral-500 text-sm lg:text-base">
-                Order Total
-              </p>
+              <p className="text-neutral-500 text-sm lg:text-base">Total</p>
               <p className="font-medium text-sm lg:text-base">
                 {formatCurrency(orderTotal, "GHS")}
               </p>

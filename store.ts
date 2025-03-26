@@ -158,102 +158,6 @@ export const useDispatchRidersStore = create<DispatchRidersStore>((set) => ({
   },
 }))
 
-// export const useCartStore = create<CartState>()(
-//   persist(
-//     (set, get) => ({
-//       selectedVariant: null,
-//       quantity: 1,
-//       cart: [],
-//       cartTotal: 0, // Initialize total to 0
-//       cartItemCount: 0, // Initialize count to 0
-//       cartProducts: {},
-
-//       setSelectedVariant: (variant) =>
-//         set(() => ({ selectedVariant: variant })),
-//       setQuantity: (quantity) => set(() => ({ quantity })),
-
-//       addToCart: (item) =>
-//         set((state) => {
-//           const updatedCart = [...state.cart, item]
-//           const updatedTotal = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-//             0
-//           )
-//           const updatedItemCount = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.quantity,
-//             0
-//           )
-//           return {
-//             cart: updatedCart,
-//             cartTotal: updatedTotal,
-//             cartItemCount: updatedItemCount,
-//           }
-//         }),
-
-//       updateCartItem: (variantId, quantity) =>
-//         set((state) => {
-//           const updatedCart = state.cart.map((item) =>
-//             item.variantId === variantId
-//               ? { ...item, quantity: Math.max(0, item.quantity + quantity) }
-//               : item
-//           )
-//           const updatedTotal = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-//             0
-//           )
-//           const updatedItemCount = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.quantity,
-//             0
-//           )
-//           return {
-//             cart: updatedCart,
-//             cartTotal: updatedTotal,
-//             cartItemCount: updatedItemCount,
-//           }
-//         }),
-
-//       removeFromCart: (variantId) =>
-//         set((state) => {
-//           const updatedCart = state.cart.filter(
-//             (item) => item.variantId !== variantId
-//           )
-//           const updatedTotal = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.price * cartItem.quantity,
-//             0
-//           )
-//           const updatedItemCount = updatedCart.reduce(
-//             (acc, cartItem) => acc + cartItem.quantity,
-//             0
-//           )
-//           return {
-//             cart: updatedCart,
-//             cartTotal: updatedTotal,
-//             cartItemCount: updatedItemCount,
-//           }
-//         }),
-
-//       clearCart: () =>
-//         set(() => ({
-//           cart: [],
-//           cartTotal: 0, // Reset total to 0 when cart is cleared
-//           cartItemCount: 0, // Reset item count to 0
-//         })),
-//       setCartProducts: (products) =>
-//         set((state) => ({
-//           cartProducts: { ...state.cartProducts, ...products },
-//         })),
-//     }),
-//     {
-//       name: "cart-storage", // Name of the localStorage key
-//       partialize: (state) => ({
-//         cart: state.cart,
-//         cartTotal: state.cartTotal,
-//         cartItemCount: state.cartItemCount, // Persist cart item count
-//       }),
-//     }
-//   )
-// )
-
 interface CheckoutFormValues {
   name: string
   email: string
@@ -574,21 +478,6 @@ export const useOrderDashboardStore = create<OrderDashboardStore>((set) => ({
   },
 }))
 
-// Define the user type
-// type User = {
-//   id: string
-//   name: string
-//   email: string
-//   balance: number
-//   role: string
-//   image: string | null
-//   createdAt: string
-//   updatedAt: string
-//   emailVerified: string | null
-//   hashedPassword: string
-//   phone: string | null
-// }
-
 // Define the store type
 type UserStore = {
   user: User | null
@@ -622,10 +511,29 @@ export const useUserStore = create<UserStore>((set) => ({
 type UserListStore = {
   userList: UserDetailType[]
   setUserList: (users: UserDetailType[]) => void
+  balance: number
+  setBalance: (balance: number) => void
 }
 
 // Create the Zustand store
-export const useUserListStore = create<UserListStore>((set) => ({
-  userList: [],
-  setUserList: (users) => set({ userList: users }),
-}))
+// export const useUserListStore = create<UserListStore>((set) => ({
+//   userList: [],
+//   setUserList: (users) => set({ userList: users }),
+//   balance: 0,
+//   // setBalance: (balance) => set({ balance }),
+//   setBalance: (updatedBalance) => set({ balance: updatedBalance }),
+// }))
+
+export const useUserListStore = create<UserListStore>()(
+  persist(
+    (set) => ({
+      userList: [],
+      setUserList: (users) => set({ userList: users }),
+      balance: 0,
+      setBalance: (updatedBalance) => set({ balance: updatedBalance }),
+    }),
+    {
+      name: "user-list-store", // Unique name for the localStorage key
+    }
+  )
+)

@@ -189,8 +189,6 @@ const Navbar = () => {
                 // Show UserButton if authenticated
                 <UserButton user={user} />
               ) : (
-                // <UserButton user={user} onUpdateSession={update} />
-
                 // Show SignInButton and SignUpButton if unauthenticated
                 <div className="hidden md:flex items-center gap-3 lg:gap-4">
                   <SignInButton />

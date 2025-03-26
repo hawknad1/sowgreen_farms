@@ -1,6 +1,11 @@
 "use client"
 
-import { useCustomerStore, useOrdersStore, useProductStore } from "@/store"
+import {
+  useCustomerStore,
+  useOrdersStore,
+  useProductStore,
+  useUserListStore,
+} from "@/store"
 import React, { useEffect, useState } from "react"
 import Head from "next/head"
 import ProductCards from "@/components/cards/product/ProductCards"
@@ -13,6 +18,7 @@ import CategoryChevrons from "@/components/CategoryChevrons"
 import ProductChevrons from "@/components/ProductChevrons"
 import MiddleCardAds from "@/components/cards/middle-cards/MiddleCardAds"
 import HeroBanner from "./HeroBanner"
+import { useBalance } from "@/context/BalanceContext"
 
 export default function Home() {
   const { setProductDetails, products, setLoading } = useProductStore()
@@ -21,6 +27,9 @@ export default function Home() {
 
   const [productList, setProductList] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+
+  // const { balance } = useUserListStore()
+  const { balance } = useBalance()
 
   useEffect(() => {
     async function getProductList() {

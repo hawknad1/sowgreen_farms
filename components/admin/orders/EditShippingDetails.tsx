@@ -201,7 +201,7 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
       }
 
       const data = await res.json()
-      // window.location.reload()
+      window.location.reload()
       toast.success("Delivery method updated!")
     } catch (error) {
       console.log("Error updating order:", error)

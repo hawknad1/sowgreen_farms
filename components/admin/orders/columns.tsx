@@ -133,10 +133,12 @@ export const columns: ColumnDef<Order>[] = [
       const total = parseFloat(row.getValue("total"))
       const orderTotal = row.original.deliveryFee + total
       const creditAppliedTotal = row.original.creditAppliedTotal
+      const updatedOrderTotal = row.original.updatedOrderTotal
+
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "GHS",
-      }).format(orderTotal)
+      }).format(updatedOrderTotal)
       return <div className="text-right font-medium">{formatted}</div>
     },
   },

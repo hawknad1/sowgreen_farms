@@ -13,6 +13,8 @@ import {
 import { Button } from "../../../ui/button"
 import { Order, ShippingAddress } from "@/types"
 import EditShippingDetails from "../EditShippingDetails"
+import { SquarePen, SquarePenIcon } from "lucide-react"
+import { PencilSquareIcon } from "@heroicons/react/24/outline"
 
 interface Props {
   shippingAddress?: ShippingAddress
@@ -29,10 +31,11 @@ const ModifyShippingDialog = ({ order, className }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          className="w-fit h-fit"
+          className="w-fit h-fit p-2"
           disabled={order?.status === "delivered"}
         >
-          Change Order Details
+          {/* Change Order Details */}
+          <PencilSquareIcon className="h-5 w-5" />
         </Button>
       </DialogTrigger>
 

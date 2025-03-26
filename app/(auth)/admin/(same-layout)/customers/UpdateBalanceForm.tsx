@@ -18,6 +18,7 @@ import { CreditSchema } from "@/schemas"
 import { useEffect, useState } from "react"
 import { getUserList } from "@/lib/getUserList"
 import { useUserListStore } from "@/store"
+import { useBalance } from "@/context/BalanceContext"
 
 interface CustomerProps {
   customer: any
@@ -31,7 +32,8 @@ const UpdateBalanceForm = ({ customer }: CustomerProps) => {
   )
 
   // Use Zustand store for userList
-  const { userList, setUserList } = useUserListStore()
+  const { userList, setUserList, balance, setBalance } = useUserListStore()
+  // const { balance, setBalance } = useBalance()
 
   const form = useForm<z.infer<typeof CreditSchema>>({
     resolver: zodResolver(CreditSchema),
@@ -51,6 +53,8 @@ const UpdateBalanceForm = ({ customer }: CustomerProps) => {
   const onSubmit = async (values: z.infer<typeof CreditSchema>) => {
     const newBalance = availableBalance + parseFloat(values.amount) // Calculate new balance
 
+    console.log("New balance calculated:", newBalance) // Debug log
+
     setIsLoading(true)
     try {
       const response = await fetch(`/api/user/${values?.email}`, {
@@ -69,8 +73,10 @@ const UpdateBalanceForm = ({ customer }: CustomerProps) => {
       if (response.ok) {
         toast.success("Balance updated successfully!")
         setAvailableBalance(newBalance) // Update the available balance state
+        setBalance(newBalance)
+
         form.reset({ amount: "" }) // Reset the "Enter Balance" field
-        // window.location.reload()
+        window.location.reload()
       } else {
         const error = await response.json()
         toast.error(error.message || "Failed to update balance")

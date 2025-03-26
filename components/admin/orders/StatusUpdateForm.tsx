@@ -252,9 +252,9 @@ import {
   sendOrderConfirmation,
   sendOrderReceived,
 } from "@/lib/actions/sendWhatsappMessage"
-import { useDispatchRidersStore } from "@/store"
+import { useDispatchRidersStore, useUserListStore } from "@/store"
 import { status } from "@/constants"
-import { updateBalance } from "@/lib/updatedCreditBalance"
+import { deductBalance } from "@/lib/actions/deductBalance"
 
 interface StatusUpdateFormProps {
   orders: Order
@@ -268,6 +268,15 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
   const [orderStatus, setOrderStatus] = useState(orders.status)
   const [isSaving, setIsSaving] = useState(false)
   const { dispatchRiders, fetchDispatchRiders } = useDispatchRidersStore()
+  const { balance, setBalance } = useUserListStore()
+
+  const { updatedBalance } = deductBalance(
+    balance,
+    orders?.total + orders?.deliveryFee
+  )
+
+  console.log(balance, "BALANCE HERE")
+  console.log(updatedBalance, "UPDATED BALANCE HERE----")
 
   const form = useForm<z.infer<typeof UpdateStatusSchema>>({
     resolver: zodResolver(UpdateStatusSchema),
@@ -284,6 +293,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
   }, [fetchDispatchRiders])
 
   const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
+    console.log(values, "VALUES")
+    console.log(orders, "ORDERS- STATUS")
+
     setIsSaving(true)
     try {
       // Map the dispatch rider's name to their ID before sending the request
@@ -315,6 +327,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
         body: JSON.stringify({
           ...values,
           dispatchRider: dispatchRiderData, // Pass the full dispatch rider object
+          updatedBalance,
           dispatchRiderId, // Pass the ID if needed
           ...(paymentAction !== orders.paymentAction && { paymentAction }), // Only include if changed
         }),
@@ -334,7 +347,26 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 
       // Use updated order data for operations
       if (isAutoPay) {
-        await updateBalance(orders)
+        // await updateBalance(orders)
+
+        const balanceResponse = await fetch("/api/balance", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: orders?.shippingAddress.email,
+            updatedBalance,
+            phone: orders.shippingAddress.phone,
+          }),
+        })
+
+        if (balanceResponse.ok) {
+          setBalance(updatedBalance)
+        }
+
+        if (!balanceResponse.ok) {
+          const error = await balanceResponse.json()
+          throw new Error(error.message || "Failed to update balance")
+        }
       }
 
       closeModal()

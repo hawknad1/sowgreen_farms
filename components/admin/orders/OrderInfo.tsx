@@ -2,6 +2,8 @@ import { Order } from "@/types"
 import { useMemo } from "react"
 import ModifyOrderDetailsDialog from "./dialogs/ModifyOrderDetailsDialog"
 import { formatCurrency } from "@/lib/utils"
+import Card from "@/app/(root)/confirm-order/Card"
+import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
 
 interface OrderInfoProps {
   orders: Order
@@ -23,9 +25,13 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
     paymentAction,
     last4Digits,
     cardType,
+    createdAt,
   } = orders
 
   const orderTotal = total + deliveryFee
+
+  const date = new Date(createdAt)
+  const dateplaced = formatDeliveryDate(date)
 
   if (!orders) return null
 
@@ -37,37 +43,27 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
     paymentAction?.charAt(0).toUpperCase() + paymentAction?.slice(1)
 
   return (
-    <div className="w-full border border-neutral-200 px-6 py-4 rounded-lg">
+    <Card className="min-h-[210px]">
       <div className="flex justify-between flex-wrap">
-        <h3 className="text-base lg:text-lg font-bold mb-2">Order Details</h3>
+        <h3 className="text-base lg:text-lg font-bold mb-2">
+          Modify Order Details
+        </h3>
 
         <ModifyOrderDetailsDialog order={orders} />
       </div>
       <div className="flex flex-col gap-y-1 mt-2 lg:mt-1">
         <p className="flex justify-between text-sm lg:text-base">
-          <span className=" text-neutral-600">Order Number: </span>{" "}
-          <span className="font-medium">{orderNumber}</span>
+          <span className=" text-neutral-600">Date Placed:</span>
+          <span className="font-medium">{dateplaced}</span>
         </p>
         <p className="flex justify-between text-sm lg:text-base">
-          <span className=" text-neutral-600">Order Total:</span>
-          <span className="font-medium">
-            {formatCurrency(orderTotal, "GHS")}
-          </span>
+          <span className=" text-neutral-600">Delivery Date:</span>
+          <span className="font-medium">{deliveryDate}</span>
         </p>
-        {/* {balance > 0 && (
-          <p className="flex justify-between text-sm lg:text-base">
-            <span className=" text-red-500">Total Due:</span>
-            <p className="font-medium text-red-500">
-              {formatCurrency(orders?.updatedOrderTotal, "GHS")}
-            </p>
-          </p>
-        )} */}
 
         <p className="flex justify-between text-sm lg:text-base">
-          <span className=" text-red-500">Total Due:</span>
-          <p className="font-medium text-red-500">
-            {formatCurrency(orders?.updatedOrderTotal, "GHS")}
-          </p>
+          <span className=" text-neutral-600">Delivery Method: </span>{" "}
+          {shippingAddress?.deliveryMethod}
         </p>
 
         {cardType ? (
@@ -104,16 +100,7 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
             </span>
           </p>
         )}
-        <p className="flex justify-between text-sm lg:text-base">
-          <span className=" text-neutral-600">Delivery Date:</span>
-          <span className="font-medium">{deliveryDate}</span>
-        </p>
-
-        <p className="flex justify-between text-sm lg:text-base">
-          <span className=" text-neutral-600">Delivery Method: </span>{" "}
-          {shippingAddress?.deliveryMethod}
-        </p>
       </div>
-    </div>
+    </Card>
   )
 }
