@@ -78,8 +78,6 @@ export async function POST(req: Request) {
       ? `+233${to.substring(1)}`
       : `+233${to}`
 
-    console.log(`Attempting to send to: ${formattedTo}`)
-
     // 3. Send with delivery tracking
     const messageResponse = await client.messages.create({
       body: message,
