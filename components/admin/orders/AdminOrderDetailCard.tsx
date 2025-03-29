@@ -161,7 +161,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                   <div>
                     <p className="text-sm font-semibold">Subtotal</p>
                     <p className="text-sm font-semibold">Delivery Fee</p>
-                    <p className="text-sm font-semibold">Total</p>
                     <p
                       className={`font-semibold text-sm  ${
                         orders?.creditAppliedTotal >= 0
@@ -171,6 +170,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                     >
                       Credit Bal.
                     </p>
+                    <p className="text-sm font-semibold">Total</p>
 
                     <p className="text-sm font-semibold text-red-500">
                       Total Due
@@ -188,12 +188,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                         {formatCurrency(orders?.deliveryFee, "GHS")}
                       </p>
                     </div>
-
-                    <div className="flex justify-between">
-                      <p className="font-semibold text-sm">
-                        {formatCurrency(orderTotal, "GHS")}
-                      </p>
-                    </div>
                     <div className={`flex justify-between `}>
                       <p
                         className={`font-semibold text-sm  ${
@@ -205,6 +199,12 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                         {formatCurrency(orders?.creditAppliedTotal, "GHS")}
                       </p>
                     </div>
+                    <div className="flex justify-between">
+                      <p className="font-semibold text-sm">
+                        {formatCurrency(orderTotal, "GHS")}
+                      </p>
+                    </div>
+
                     <div className="flex justify-between">
                       <p className="font-semibold text-sm text-red-500">
                         {formatCurrency(orders?.updatedOrderTotal, "GHS")}

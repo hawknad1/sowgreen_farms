@@ -77,6 +77,7 @@ interface OrderDataState {
     shippingAddress: Record<string, any>
     orderNumber: string
     deliveryMethod: string
+    whatsappOptIn: boolean
     deliveryDate: string
     balanceDeducted: number
     updatedOrderTotal: number

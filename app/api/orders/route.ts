@@ -80,6 +80,7 @@ export async function POST(req: Request) {
       dispatchRider,
       deliveryFee,
       deliveryDate,
+      userWhatsappOptIn,
       products,
       status,
       cardType,
@@ -90,8 +91,11 @@ export async function POST(req: Request) {
       paymentMode,
       paymentAction,
       creditAppliedDeliveryFee,
+      whatsappOptIn,
       creditAppliedTotal,
     } = await req.json()
+
+    const whatsappOptInBool = Boolean(whatsappOptIn)
 
     // Validate required fields
     if (!shippingAddress || !shippingAddress.address) {
@@ -213,8 +217,10 @@ export async function POST(req: Request) {
         creditAppliedDeliveryFee,
         updatedOrderTotal,
         remainingAmount,
+        userWhatsappOptIn,
         updatedBalance,
         creditAppliedTotal,
+        whatsappOptIn: whatsappOptInBool,
         status,
         dispatchRider,
         user: {

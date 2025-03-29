@@ -238,16 +238,16 @@ const ThankYouPage = () => {
               </div>
 
               <div className="flex justify-between">
-                <p className="text-sm md:text-lg font-bold text-black">
+                <p className="text-sm md:text-lg font-bold text-red-500">
                   Total Due
                 </p>
 
                 {balance > 0 || balance < 0 ? (
-                  <p className="text-sm md:text-lg font-bold text-green-600">
+                  <p className="text-sm md:text-lg font-bold text-red-500">
                     {formatCurrency(updatedOrderTotal, "GHS")}
                   </p>
                 ) : (
-                  <p className="md:text-lg text-sm font-bold">
+                  <p className="md:text-lg text-sm font-bold text-red-500">
                     {formatCurrency(orderTotal, "GHS")}
                   </p>
                 )}

@@ -29,6 +29,7 @@ export async function POST(req: Request) {
       country,
       phone,
       deliveryMethod,
+      whatsappOptIn
     } = await req.json()
 
     const validation = CheckoutSchema.safeParse({
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
       country,
       phone,
       deliveryMethod,
+      whatsappOptIn
     })
 
     if (!validation.success) {
@@ -59,6 +61,7 @@ export async function POST(req: Request) {
         country,
         phone,
         deliveryMethod,
+        whatsappOptIn,
       },
     })
 

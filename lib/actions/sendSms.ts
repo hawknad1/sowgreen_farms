@@ -24,12 +24,12 @@
 //   }
 // }
 
-import { Order } from "@/types"
 import { whatsAppOrderLink } from "@/app/(root)/checkout/WhatsappOrderLink"
 
 export async function sendSms(order: any) {
   // Fix: Pass the order as an object with the expected structure
   const message = whatsAppOrderLink({ order })
+  console.log(message, "WHATSAPP LINK")
 
   try {
     const response = await fetch("/api/sendSms", {

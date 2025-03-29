@@ -140,6 +140,7 @@ model ShippingAddress {
   country        String?
   email          String?
   deliveryMethod String?
+  whatsappOptIn  Boolean?
   customerId     String?   @db.ObjectId
   customer       Customer? @relation(fields: [customerId], references: [id])
   orders         Order[] // Indicates a one-to-many relationship; can be empty
@@ -203,8 +204,9 @@ model Order {
   totalDue                 Float?
   creditAppliedTotal       Float?
   balanceApplied           Boolean?
-  whatsappOptIn            Boolean?         @default(false)
+  whatsappOptIn            Boolean?
   updatedOrderTotal        Float?
+  userWhatsappOptIn        Json?
   balanceDeducted          Float?
   remainingAmount          Float?
   updatedBalance           Float?

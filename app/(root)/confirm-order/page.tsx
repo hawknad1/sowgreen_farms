@@ -12,23 +12,12 @@ import {
 
 import CartDisplay from "./CartDisplay"
 import { Button } from "@/components/ui/button"
-import { PaystackButton } from "react-paystack"
 import { date, formatCurrency, time } from "@/lib/utils"
 import { CartItem, PaymentInfo, ProductOrder, VariantCartItem } from "@/types"
 import { generateOrderNumber } from "@/lib/actions/whatsAppMessages/generateOrderNumber"
-import { addTax } from "@/lib/addTax"
 import InfoCard from "./InfoCard"
-import { updatePurchaseCounts } from "@/lib/actions/updatePurchaseCount"
-import { updateProductQuantities } from "@/lib/actions/updateProductQuantity"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
-import { verifyTransaction } from "@/lib/actions/verifyTransaction"
-import { generateOrderReceivedMessage } from "@/lib/actions/whatsAppMessages/generateOrderReceivedMessage"
-import {
-  sendOrderConfirmation,
-  sendOrderReceived,
-} from "@/lib/actions/sendWhatsappMessage"
-import { sendSms } from "@/lib/actions/sendSms"
 
 export type User = {
   user: {
@@ -94,20 +83,34 @@ const ConfirmOrderPage = () => {
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
 
-  const taxedOrders = orders.map((order) => ({
-    ...order, // Spread the existing order object
-    item: {
-      ...order.item,
-      price: order.item.price,
-    },
-    total: (order.item.price * order.quantity).toFixed(2),
-  }))
-
   const { deliveryDate, ...newFormData } = formData
+  const whatsappOptIn = formData.whatsappOptIn === "true"
+
   const shippingInfo = {
     deliveryDate,
     ...formData,
+    whatsappOptIn, // Convert string to boolean
     deliveryMethod: formData.deliveryMethod.split("-")[0],
+  }
+
+  const { deliveryMethod, ...addressData } = formData
+  const cleanDeliveryMethod = deliveryMethod.split("-")[0].trim()
+
+  const addressPayload = {
+    ...addressData,
+    deliveryDate,
+    whatsappOptIn, // Convert string to boolean
+    deliveryMethod: cleanDeliveryMethod,
+  }
+
+  console.log(addressPayload, "addressPayload")
+  console.log(formData, "formData")
+
+  const userWhatsappOptIn = {
+    customerPhone: `+233${formData.phone.substring(1)}`,
+    whatsappOptIn: whatsappOptIn,
+    timestamp: new Date(),
+    method: "checkbox",
   }
 
   // Order number generator
@@ -131,13 +134,10 @@ const ConfirmOrderPage = () => {
 
   const transformedCart = transformCart(cart)
 
-  const {
-    updatedBalance,
-    updatedOrderTotal,
-    remainingAmount,
-    proceedToPaystack,
-    deductedBalance,
-  } = deductBalance(balance, conbinedTotal)
+  const { updatedOrderTotal, remainingAmount, deductedBalance } = deductBalance(
+    balance,
+    conbinedTotal
+  )
 
   const dataProps = {
     formData,
@@ -207,7 +207,6 @@ const ConfirmOrderPage = () => {
         verifyData = {
           status: "success",
           paymentMode: "cash",
-          // paymentAction: "cash-on-delivery",
           paymentAction: "pending",
           cardType: null,
           last4Digits: null,
@@ -232,7 +231,8 @@ const ConfirmOrderPage = () => {
         total: total,
         creditAppliedTotal: balance,
         balanceDeducted: deductedBalance,
-        // updatedBalance,
+        whatsappOptIn: whatsappOptIn,
+        userWhatsappOptIn,
         updatedOrderTotal,
         remainingAmount,
       }
@@ -243,7 +243,7 @@ const ConfirmOrderPage = () => {
       const shippingResponse = await fetch("/api/address", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newFormData),
+        body: JSON.stringify(addressPayload),
       })
       if (!shippingResponse.ok) throw new Error("Shipping API failed")
 
@@ -280,7 +280,22 @@ const ConfirmOrderPage = () => {
       // sendOrderReceived(ordersData)
       // sendOrderConfirmation(ordersData)
 
-      sendSms(ordersData)
+      // whatsapp -- send- api
+      // await fetch("/api/sendWhatsapp", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({
+      //     customerName: formData.name,
+      //     orderNumber,
+      //     customerPhone: formData.phone,
+      //     deliveryDate: formData.deliveryDate,
+      //     deliveryMethod: formData.deliveryMethod,
+      //     address: formData.address,
+      //     products: transformedCart, // Ensure this is an array of objects with product details
+      //     deliveryFee,
+      //     total,
+      //   }),
+      // })
 
       router.push("/success/thank-you")
 
@@ -357,24 +372,3 @@ const ConfirmOrderPage = () => {
 }
 
 export default ConfirmOrderPage
-
-{
-  /* {proceedToPaystack ? (
-            <PaystackButton
-              {...componentProps}
-              className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
-            />
-          ) : (
-            <Button
-              onClick={() =>
-                handlePaystackSuccessAction({
-                  status: "success",
-                  reference: "balance-only",
-                })
-              }
-              className="bg-green-700 text-white font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
-            >
-              Pay with Balance
-            </Button>
-          )} */
-}

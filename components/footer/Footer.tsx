@@ -10,39 +10,53 @@ import Link from "next/link"
 import React from "react"
 import Subscribe from "./Subscribe"
 import Socials from "./Socials"
+import { Separator } from "../ui/separator"
 
 const Footer = () => {
   return (
-    <footer className="bg-green-50 py-8">
-      <div className="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-        <div className="lg:flex lg:items-start lg:gap-8">
-          <div>
-            <Image
-              src="/images/logo.png"
-              height={100}
-              width={100}
-              className="h-56 w-56 object-contain"
-              alt="logo"
-            />
-          </div>
+    <>
+      <footer className="bg-sowgren_Color">
+        <div className="container px-6 py-10 mx-auto">
+          <div className="md:flex md:-mx-3 md:items-center md:justify-between ">
+            <h1 className="text-xl font-semibold tracking-tight text-gray-300 md:mx-3 xl:text-2xl">
+              Subscribe our newsletter to get update.
+            </h1>
+            <div className="mt-6 md:mx-3 shrink-0 md:mt-0 md:w-auto">
+              <a
+                href="#"
+                className="inline-flex items-center justify-center w-full px-4 py-2 text-sm text-sowgren_Color duration-300 bg-gray-200 rounded-lg gap-x-3 hover:bg-gray-300 focus:ring focus:ring-gray-300 focus:ring-opacity-80"
+              >
+                <span>Sign Up Now</span>
 
-          <div className="mt-8 grid grid-cols-2 gap-8 lg:mt-0 lg:grid-cols-4 lg:gap-y-8 lg:w-full">
-            <div className="col-span-2">
-              <p className="mt-4 text-gray-500 max-w-[200px]">
-                Sowgreen Farms - DZORWULU - ACCRA.
-              </p>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
+                  />
+                </svg>
+              </a>
             </div>
-
-            <Subscribe />
-
-            <div className="col-span-2 sm:col-span-1">
-              <p className="font-medium text-gray-900">Account</p>
+          </div>
+          {/* <hr className="my-6 border-neutral-50 md:my-7 " /> */}
+          <div className="my-6 border-neutral-50 md:my-7 " />
+          {/* <Separator className="border-neutral-50" /> */}
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div className="">
+              <p className="font-semibold text-gray-300">Account</p>
               <div className="gap-3 mt-4 flex flex-col">
                 {accountLinks.map((acc) => (
                   <Link
                     key={acc.id}
                     href={acc.href}
-                    className="text-sm text-gray-700 transition hover:opacity-75"
+                    className=" text-gray-300 transition-colors duration-300 hover:underline hover:text-gray-500"
                   >
                     {acc.title}
                   </Link>
@@ -50,14 +64,14 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="col-span-2 sm:col-span-1">
-              <p className="font-medium text-gray-900">Company</p>
+            <div className="">
+              <p className="font-semibold text-gray-300">Company</p>
               <div className="gap-3 mt-4 flex flex-col">
                 {companyLinks.map((com) => (
                   <Link
                     key={com.id}
                     href={com.href}
-                    className=" text-sm text-gray-700 transition hover:opacity-75"
+                    className=" text-gray-300 transition-colors duration-300 hover:underline hover:text-gray-500"
                   >
                     {com.title}
                   </Link>
@@ -65,14 +79,14 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="col-span-2 sm:col-span-1">
-              <p className="font-medium text-gray-900">Helpful Links</p>
+            <div className="">
+              <p className="font-semibold text-gray-300">Helpful Links</p>
               <div className="gap-3 mt-4 flex flex-col">
                 {helpfulLinks.map((com) => (
                   <Link
                     key={com.id}
                     href={com.href}
-                    className=" text-sm text-gray-700 transition hover:opacity-75"
+                    className=" text-gray-300 transition-colors duration-300 hover:underline hover:text-gray-500"
                   >
                     {com.title}
                   </Link>
@@ -80,13 +94,13 @@ const Footer = () => {
               </div>
             </div>
 
-            <div className="col-span-2 sm:col-span-1">
-              <p className="font-medium text-gray-900">Payment Methods</p>
-              <div className="gap-2 mt-4 grid grid-cols-2">
+            <div className="">
+              <p className="font-medium text-gray-300">Payment Methods</p>
+              <div className="gap-y-2 mt-4 grid grid-cols-2">
                 {paymentLinks.map((pay) => (
                   <div
                     key={pay.id}
-                    className="border-slate-300 border rounded-md w-20"
+                    className="border-slate-300 bg-gray-200 border rounded-md w-20"
                   >
                     <Image
                       src={pay.image}
@@ -99,33 +113,102 @@ const Footer = () => {
                 ))}
               </div>
             </div>
-
-            <Socials />
           </div>
-        </div>
+          {/* <hr className="my-6 border-gray-200 dark:border-gray-700" /> */}
+          <div className="my-6 border-neutral-50 md:my-7 " />
 
-        <div className="mt-4 border-t border-gray-100 pt-4">
-          <div className="sm:flex sm:justify-between">
-            <p className="text-xs text-gray-500">
-              Copyright © 2024. ZOROASTIQUE Limited. All rights reserved.
+          <div className="flex flex-col items-center justify-between sm:flex-row">
+            <a href="/">
+              <Image
+                src="/images/logo.png"
+                height={100}
+                width={100}
+                className="w-[200px] object-contain"
+                alt="logo"
+              />
+            </a>
+
+            <p className="mt-4 text-sm text-gray-400 sm:mt-0 dark:text-gray-300">
+              © Copyright 2021. All Rights Reserved.
             </p>
-
-            <div className="mt-8 flex flex-wrap justify-start gap-4 text-xs sm:mt-0 lg:justify-end">
-              {footerLeftLinks.map((link) => (
-                <Link
-                  key={link.id}
-                  href={link.href}
-                  className="text-gray-500 transition hover:opacity-75"
-                >
-                  {link.title}
-                </Link>
-              ))}
-            </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   )
 }
 
 export default Footer
+
+{
+  /* <footer className="bg-white dark:bg-gray-900">
+    <div className="container px-6 py-12 mx-auto">
+        <div className="md:flex md:-mx-3 md:items-center md:justify-between">
+            <h1 className="text-xl font-semibold tracking-tight text-gray-800 md:mx-3 xl:text-2xl dark:text-white">Subscribe our newsletter to get update.</h1>
+            
+            <div className="mt-6 md:mx-3 shrink-0 md:mt-0 md:w-auto">
+                <a href="#" className="inline-flex items-center justify-center w-full px-4 py-2 text-sm text-white duration-300 bg-gray-800 rounded-lg gap-x-3 hover:bg-gray-700 focus:ring focus:ring-gray-300 focus:ring-opacity-80">
+                    <span>Sign Up Now</span>
+
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+        
+        <hr className="my-6 border-gray-200 md:my-10 dark:border-gray-700">
+
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <div>
+                <p className="font-semibold text-gray-800 dark:text-white">Quick Link</p>
+
+                <div className="flex flex-col items-start mt-5 space-y-2">
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Home</a>
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Who We Are</a>
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Our Philosophy</a>
+                </div>
+            </div>
+
+            <div>
+                <p className="font-semibold text-gray-800 dark:text-white">Industries</p>
+
+                <div className="flex flex-col items-start mt-5 space-y-2">
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Retail & E-Commerce</a>
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Information Technology</a>
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Finance & Insurance</a>
+                </div>
+            </div>
+
+            <div>
+                <p className="font-semibold text-gray-800 dark:text-white">Services</p>
+
+                <div className="flex flex-col items-start mt-5 space-y-2">
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Translation</a>
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Proofreading & Editing</a>
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">Content Creation</a>
+                </div>
+            </div>
+
+            <div>
+                <p className="font-semibold text-gray-800 dark:text-white">Contact Us</p>
+
+                <div className="flex flex-col items-start mt-5 space-y-2">
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">+880 768 473 4978</a>
+                    <a href="#" className="text-gray-600 transition-colors duration-300 dark:text-gray-300 dark:hover:text-blue-400 hover:underline hover:text-blue-500">info@merakiui.com</a>
+                </div>
+            </div>
+        </div>
+        
+        <hr className="my-6 border-gray-200 md:my-10 dark:border-gray-700">
+        
+        <div className="flex flex-col items-center justify-between sm:flex-row">
+            <a href="#">
+                <img className="w-auto h-7" src="https://merakiui.com/images/full-logo.svg" alt="">
+            </a>
+
+            <p className="mt-4 text-sm text-gray-500 sm:mt-0 dark:text-gray-300">© Copyright 2021. All Rights Reserved.</p>
+        </div>
+    </div>
+</footer> */
+}

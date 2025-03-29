@@ -409,6 +409,7 @@ export async function PUT(
     paymentMode,
     deliveryDate,
     deliveryMethod,
+    whatsappOptIn,
     deliveryFee,
     shippingAddress,
     referenceNumber,
@@ -426,6 +427,8 @@ export async function PUT(
   } = await req.json()
 
   const orderId = params.id
+
+  const whatsappOptInBool = Boolean(whatsappOptIn)
 
   try {
     // Fetch the existing order with related products
@@ -578,6 +581,7 @@ export async function PUT(
         paymentMode,
         referenceNumber,
         updatedOrderTotal,
+        whatsappOptIn: whatsappOptInBool,
         updatedBalance,
         creditAppliedTotal,
         shippingAddress: {

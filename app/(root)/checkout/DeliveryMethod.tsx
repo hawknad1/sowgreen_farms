@@ -97,7 +97,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                 {deliveryMethods.map((option) => (
                   <div key={option.value}>
                     <FormItem
-                      className={`flex items-center space-x-3 space-y-0 p-3 rounded-lg ${
+                      className={`flex items-center space-x-3 space-y-0 px-3 py-2 rounded-lg ${
                         selectedDeliveryMethod === option.value
                           ? "border border-neutral-400"
                           : "border border-transparent"
@@ -109,10 +109,10 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                           onClick={() => setSelectedDeliveryDate(option.date)}
                         />
                       </FormControl>
-                      <FormLabel className="font-semibold flex items-center gap-x-2">
+                      <FormLabel className="font-semibold flex items-center gap-x-2 text-xs md:text-sm lg:text-base">
                         {option.label}
                         {option.tag && (
-                          <span className="font-medium text-green-600">
+                          <span className="font-medium text-green-600 ">
                             {option.tag}
                           </span>
                         )}
@@ -135,7 +135,7 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                               form.clearErrors("deliveryMethod") // Clear error when a pickup option is selected
                             }}
                             value={selectedPickupOption}
-                            className="flex flex-col space-y-2"
+                            className="flex flex-col"
                           >
                             {pickupOptions.map((pickupOption, index) => {
                               const normalizedOption = pickupOption
@@ -171,10 +171,10 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                                       }
                                     />
                                   </FormControl>
-                                  <FormLabel className="flex flex-col">
+                                  <FormLabel className="flex flex-col text-xs md:text-sm">
                                     <span>{pickupOption}</span>
                                     {date && (
-                                      <span className="text-gray-500 text-sm">
+                                      <span className="text-gray-500 text-xs md:text-sm">
                                         {`${date} - 11AM - 5PM`}
                                       </span>
                                     )}

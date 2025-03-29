@@ -57,6 +57,7 @@ export function CheckoutForm() {
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
   const cart = useCartStore((state) => state.cart)
   const { formValues, setFormValues } = useCheckoutStore()
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false)
 
   const user = session?.data?.user as ExtendedUser
 
@@ -96,7 +97,11 @@ export function CheckoutForm() {
   // Initialize form with default values from Zustand store
   const form = useForm<z.infer<typeof CheckoutSchema>>({
     resolver: zodResolver(CheckoutSchema),
-    defaultValues: { ...formValues, deliveryMethod: "" },
+    defaultValues: {
+      ...formValues,
+      deliveryMethod: "",
+      whatsappOptIn: false, // Now this is acceptable
+    },
   })
 
   // Set email if user is logged in
@@ -150,17 +155,6 @@ export function CheckoutForm() {
     setDeliveryFee,
   ])
 
-  // Handle form submission
-  // const handleFormSubmit = async (values: z.infer<typeof CheckoutSchema>) => {
-  //   const formData = {
-  //     ...values,
-  //     deliveryMethod: selectedDelivery,
-  //     deliveryDate: selectedDeliveryDate,
-  //   }
-  //   const query = new URLSearchParams(formData).toString()
-  //   router.push(`/confirm-order?${query}`)
-  // }
-
   const handleFormSubmit = async (values: z.infer<typeof CheckoutSchema>) => {
     // Validate pickup option if "Schedule Pickup" is selected
     if (selectedDeliveryMethod === "schedule-pickup" && !selectedPickupOption) {
@@ -177,19 +171,26 @@ export function CheckoutForm() {
       deliveryMethod: selectedDelivery,
       // pickupOption: selectedPickupOption, // Add pickup option
       deliveryDate: selectedDeliveryDate,
+      whatsappOptIn: values.whatsappOptIn, // Ensure this is included
     }
 
-    // Log the form data for debugging
-    console.log("Form Data:", formData)
+    console.log(values.whatsappOptIn, "values.whatsappOptIn")
 
-    // Construct the query string
-    const query = new URLSearchParams(formData).toString()
+    // Create URLSearchParams with proper string conversion
+    const params = new URLSearchParams()
+    for (const [key, value] of Object.entries(formData)) {
+      if (value !== undefined) {
+        params.append(key, String(value))
+      }
+    }
 
-    // Log the query string for debugging
-    console.log("Query String:", query)
+    router.push(`/confirm-order?${params.toString()}`)
 
-    // Navigate to the next page
-    router.push(`/confirm-order?${query}`)
+    // // Construct the query string
+    // const query = new URLSearchParams(formData).toString()
+
+    // // Navigate to the next page
+    // router.push(`/confirm-order?${query}`)
   }
 
   return (
@@ -331,8 +332,8 @@ export function CheckoutForm() {
                 />
               </div>
             </div>
-            <div className="mt-4">
-              <h2 className="font-bold text-lg mb-4">Schedule Delivery</h2>
+            <div className="mt-4 flex flex-col gap-y-4">
+              <h2 className="font-bold text-lg">Schedule Delivery</h2>
               <DeliveryMethod
                 form={form}
                 setSelectedDeliveryMethod={setSelectedDeliveryMethod}
@@ -342,7 +343,7 @@ export function CheckoutForm() {
                 setSelectedDeliveryDate={setSelectedDeliveryDate}
                 selectedDeliveryDate={selectedDeliveryDate}
               />
-              {/* <WhatsappOptIn /> */}
+              <WhatsappOptIn />
               {/* <WhatsAppOrderLink orderId="2872629" phoneNumber="03738363638" /> */}
             </div>
           </div>

@@ -31,6 +31,7 @@ export type ShippingAddress = {
   country: string
   phone: string
   deliveryMethod?: string
+  whatsappOptIn?: boolean
   orders?: Order[]
 }
 
@@ -71,6 +72,12 @@ export type Order = {
   remainingAmount?: number
   balanceDeducted?: number
   updatedBalance?: number
+  userWhatsappOptIn?: {
+    customerPhone: string
+    whatsappOptIn: boolean
+    timestamp: Date
+    method: "checkbox"
+  }
   status: OrderStatus
   dispatchRider: DispatchRider
   deliveryMethod?: string
@@ -81,6 +88,7 @@ export type Order = {
   paymentMode?: string
   paymentAction?: string
   shippingAddress: ShippingAddress
+  whatsappOptIn?: boolean
   products: ProductOrder[] // Change from Product[] to ProductOrder[]
   createdAt: string
 }

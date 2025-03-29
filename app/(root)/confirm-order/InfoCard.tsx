@@ -145,15 +145,15 @@ const InfoCard = ({ data }: InfoCardProps) => {
           </div>
           <Separator className="my-2" />
           <div className="flex justify-between">
-            <h3 className="lg:text-xl text-sm font-bold text-gray-800">
+            <h3 className="lg:text-xl text-sm font-bold text-red-500">
               Total Due
             </h3>
             {balance > 0 || balance < 0 ? (
-              <p className="font-bold text-xs md:text-sm lg:text-base">
+              <p className="font-bold text-xs md:text-sm text-red-500 lg:text-base">
                 {formatCurrency(updatedOrderTotal, "GHS") || "No total"}
               </p>
             ) : (
-              <p className=" font-bold text-xs md:text-sm lg:text-base">
+              <p className=" font-bold text-red-500 text-xs md:text-sm lg:text-base">
                 {formatCurrency(total, "GHS") || "No total"}
               </p>
             )}
