@@ -28,12 +28,24 @@ export const CheckoutSchema = z.object({
   address: z.string().min(1, "Address is required"),
   deliveryMethod: z.string().min(1, "Delivery method is required"),
   pickupOption: z.string().optional(), // Add pickupOption as optional
-  // whatsappOptIn: z.boolean().refine((val) => val, {
-  //   message: "You must agree to receive WhatsApp updates",
-  // }),
   whatsappOptIn: z.boolean().refine((val) => val, {
     message: "You must agree to receive WhatsApp updates",
   }),
+})
+
+export const DeliveryMethodSchema = z.object({
+  address: z.string().min(1, "Address is required"),
+  region: z.string().min(1, "Region is required"),
+  city: z.string().min(1, "City is required"),
+  deliveryMethod: z.string().min(1, "Delivery method is required"),
+  pickupOption: z.string().optional(),
+})
+
+export const ShippingInfoMethodSchema = z.object({
+  name: z.string().min(1, "Address is required"),
+  address: z.string().min(1, "Address is required"),
+  region: z.string().min(1, "Region is required"),
+  city: z.string().min(1, "City is required"),
 })
 
 export const PaymentRadioSchema = z.object({

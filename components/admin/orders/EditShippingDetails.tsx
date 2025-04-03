@@ -17,6 +17,7 @@ import {
   CheckoutSchema,
   editDeliveryMethod,
   EditProductSchema,
+  ShippingInfoMethodSchema,
 } from "@/schemas"
 import {
   Select,
@@ -157,8 +158,8 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
   }, [])
 
   // Initialize form with default values
-  const form = useForm<z.infer<typeof CheckoutSchema>>({
-    resolver: zodResolver(CheckoutSchema),
+  const form = useForm<z.infer<typeof ShippingInfoMethodSchema>>({
+    resolver: zodResolver(ShippingInfoMethodSchema),
     defaultValues: order?.shippingAddress,
   })
 
@@ -232,6 +233,9 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
 
   const onSubmit = (values: z.infer<typeof CheckoutSchema>) =>
     updateShippingAddress(values)
+  // const onSubmit = (values: z.infer<typeof ShippingInfoMethodSchema>) => {
+  //   console.log(values, "ADMIN VALUES")
+  // }
 
   return (
     <Form {...form}>

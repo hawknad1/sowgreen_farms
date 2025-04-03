@@ -21,7 +21,11 @@ import { deductBalance } from "@/lib/actions/deductBalance"
 import { generateUpdatedDeliveryMethod } from "@/lib/actions/whatsAppMessages/generateUpdatedDeliveryMethod"
 import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
 import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
-import { CheckoutSchema, editDeliveryMethod } from "@/schemas"
+import {
+  CheckoutSchema,
+  DeliveryMethodSchema,
+  editDeliveryMethod,
+} from "@/schemas"
 import { useDeliveryStore } from "@/store"
 import { CitiesWithFees, Order, User } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -56,20 +60,33 @@ const ChangeDeliveryMethodForm = ({ order }: Props) => {
   const { data: session } = useSession()
   const user = session?.user
 
-  const form = useForm<z.infer<typeof CheckoutSchema>>({
-    resolver: zodResolver(CheckoutSchema),
+  // const form = useForm<z.infer<typeof CheckoutSchema>>({
+  //   resolver: zodResolver(CheckoutSchema),
+  //   defaultValues: {
+  //     ...order?.shippingAddress,
+  //     address: order?.shippingAddress?.address,
+  //     city: order?.shippingAddress?.city,
+  //     deliveryMethod: order?.shippingAddress?.deliveryMethod,
+  //   },
+  // })
+
+  // const total = deliveryFee + order?.total
+  // const { updatedOrderTotal } = deductBalance(user?.balance, total)
+
+  const form = useForm<z.infer<typeof DeliveryMethodSchema>>({
+    resolver: zodResolver(DeliveryMethodSchema),
     defaultValues: {
-      ...order?.shippingAddress,
-      address: order?.shippingAddress?.address,
-      city: order?.shippingAddress?.city,
-      deliveryMethod: order?.shippingAddress?.deliveryMethod,
+      address: order?.shippingAddress?.address || "",
+      city: order?.shippingAddress?.city || "",
+      region: order?.shippingAddress?.region || "",
+      deliveryMethod: order?.shippingAddress?.deliveryMethod || "",
+      pickupOption: "",
     },
   })
 
   const orderTotal = order?.total + deliveryFee
 
   const balance = activeUser?.user?.balance
-
   const { updatedOrderTotal } = deductBalance(balance, orderTotal)
 
   // Watch the `city` field and update `selectedCity` state
@@ -187,6 +204,7 @@ const ChangeDeliveryMethodForm = ({ order }: Props) => {
           region,
           deliveryMethod,
           deliveryDate,
+          updatedOrderTotal,
         }),
       })
 
@@ -251,7 +269,7 @@ const ChangeDeliveryMethodForm = ({ order }: Props) => {
     updateOrderTotal()
   }, [deliveryFee])
 
-  const onSubmit = (values: z.infer<typeof CheckoutSchema>) =>
+  const onSubmit = (values: z.infer<typeof DeliveryMethodSchema>) =>
     updateShippingAddress(values)
 
   // Create a unique identifier for the current delivery method

@@ -306,7 +306,7 @@ const EditCustomerOrder = ({
 
         <Button
           onClick={handleSaveChanges}
-          disabled={isSaving}
+          disabled={isSaving || isLoading}
           className="bg-sowgren_Color hover:bg-sowgren_Color/85"
         >
           {isSaving ? (

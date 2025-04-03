@@ -15,7 +15,6 @@ import { useUserListStore, useUserStore } from "@/store"
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  // const { user } = useUserStore()
   const { balance } = useUserListStore()
 
   const { orderNumber } = params
@@ -29,13 +28,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
 
   const checkPayNow = updatedOrderTotal === 0
 
-  console.log(updatedBalance, "updatedBalance---BALANCE INQUI")
-  console.log(balance, "---BALANCE INQUI ==BANKUE")
-
-  console.log(
-    orderDetails?.total,
-    "orderDetails?.total---orderDetails?.total INQUI"
-  )
+  console.log(orderDetails, "ORDERS")
 
   useEffect(() => {
     async function fetchOrderDetails() {
@@ -144,13 +137,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               Order Details
             </h2>
             <div className="flex flex-col">
-              {/* <div className="flex justify-between">
-                <p className="font-medium text-sm lg:text-base">
-                  Item(s) Ordered
-                </p>
-                <p className="text-sm text-neutral-600 lg:text-base">{`${orderDetails?.products.length} Items`}</p>
-              </div> */}
-
               <div className="flex justify-between">
                 <p className="font-medium text-sm lg:text-base">Subtotal</p>
                 <p className="text-sm text-neutral-600 lg:text-base">{`GHS ${orderDetails?.total.toFixed(
@@ -207,10 +193,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                   <CancelCustomerOrderDialog order={orderDetails} />
                 </div>
                 <div className="">
-                  <ChangeDeliveryMethodDialog
-                    order={orderDetails}
-                    className=""
-                  />
+                  <ChangeDeliveryMethodDialog order={orderDetails} />
                 </div>
               </div>
             </div>

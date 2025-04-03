@@ -103,9 +103,6 @@ const ConfirmOrderPage = () => {
     deliveryMethod: cleanDeliveryMethod,
   }
 
-  console.log(addressPayload, "addressPayload")
-  console.log(formData, "formData")
-
   const userWhatsappOptIn = {
     customerPhone: `+233${formData.phone.substring(1)}`,
     whatsappOptIn: whatsappOptIn,
@@ -231,7 +228,7 @@ const ConfirmOrderPage = () => {
         total: total,
         creditAppliedTotal: balance,
         balanceDeducted: deductedBalance,
-        whatsappOptIn: whatsappOptIn,
+        // whatsappOptIn: whatsappOptIn,
         userWhatsappOptIn,
         updatedOrderTotal,
         remainingAmount,

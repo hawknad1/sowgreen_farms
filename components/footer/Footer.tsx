@@ -11,6 +11,8 @@ import React from "react"
 import Subscribe from "./Subscribe"
 import Socials from "./Socials"
 import { Separator } from "../ui/separator"
+import { ChevronRight } from "lucide-react"
+import { ArrowLongRightIcon } from "@heroicons/react/24/outline"
 
 const Footer = () => {
   return (
@@ -23,12 +25,13 @@ const Footer = () => {
             </h1>
             <div className="mt-6 md:mx-3 shrink-0 md:mt-0 md:w-auto">
               <a
-                href="#"
+                href="/sign-up"
                 className="inline-flex items-center justify-center w-full px-4 py-2 text-sm text-sowgren_Color duration-300 bg-gray-200 rounded-lg gap-x-3 hover:bg-gray-300 focus:ring focus:ring-gray-300 focus:ring-opacity-80"
               >
                 <span>Sign Up Now</span>
+                <ArrowLongRightIcon className="h-6 w-6" />
 
-                <svg
+                {/* <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -41,7 +44,7 @@ const Footer = () => {
                     stroke-linejoin="round"
                     d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"
                   />
-                </svg>
+                </svg> */}
               </a>
             </div>
           </div>
@@ -107,7 +110,7 @@ const Footer = () => {
                       width={100}
                       height={100}
                       alt="Payment Logo"
-                      className="h-9 w-full object-contain"
+                      className="h-9 w-full object-contain rounded-lg"
                     />
                   </div>
                 ))}

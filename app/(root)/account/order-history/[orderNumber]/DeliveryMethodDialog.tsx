@@ -20,7 +20,7 @@ interface Props {
   className?: string
 }
 
-const ChangeDeliveryMethodDialog = ({ order, className }: Props) => {
+const ChangeDeliveryMethodDialog = ({ order }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
 
   const buttonDisabled =
