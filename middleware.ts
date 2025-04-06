@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "./auth"
+// import { auth } from "./auth"
 import { LOGIN, ROOT } from "./lib/routes"
+import { auth } from "@/auth"
 
 export default async function middleware(req: NextRequest) {
   let session

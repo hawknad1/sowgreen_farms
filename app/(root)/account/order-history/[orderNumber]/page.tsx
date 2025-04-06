@@ -28,8 +28,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
 
   const checkPayNow = updatedOrderTotal === 0
 
-  console.log(orderDetails, "ORDERS")
-
   useEffect(() => {
     async function fetchOrderDetails() {
       try {
