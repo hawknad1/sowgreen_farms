@@ -275,13 +275,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 {formatCurrency(orderDetails?.deliveryFee, "GHS")}
               </p>
             </div>
-
-            <div className="flex justify-between">
-              <p className="text-neutral-500 text-sm lg:text-base">Total</p>
-              <p className="font-medium text-sm lg:text-base">
-                {formatCurrency(orderTotal, "GHS")}
-              </p>
-            </div>
             <div className="flex justify-between">
               <p
                 className={`text-sm lg:text-base font-semibold ${
@@ -302,6 +295,14 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
               </p>
             </div>
+
+            <div className="flex justify-between">
+              <p className="text-neutral-500 text-sm lg:text-base">Total</p>
+              <p className="font-medium text-sm lg:text-base">
+                {formatCurrency(orderTotal, "GHS")}
+              </p>
+            </div>
+
             <div className="flex justify-between">
               <p className="text-sm lg:text-base text-red-500 font-semibold">
                 Total Due

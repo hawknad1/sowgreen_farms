@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import toast from "react-hot-toast"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -27,7 +26,8 @@ import {
   newDeliveryMethod,
   paymentActionList,
 } from "@/constants"
-import { useDeliveryStore } from "@/store"
+import toast from "react-hot-toast"
+import { deductBalance } from "@/lib/actions/deductBalance"
 
 interface OrderProps {
   order: Order
@@ -36,32 +36,35 @@ interface OrderProps {
 const EditOrderDetails = ({ order }: OrderProps) => {
   const [isSaving, setIsSaving] = useState(false)
   const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
-    order?.shippingAddress?.deliveryMethod || ""
+    order?.shippingAddress?.deliveryMethod.trim() || ""
   )
 
-  // Initialize with order's delivery method
+  // Initialize deliveryFee with order's value, but will be updated based on method/city
+  const [deliveryFee, setDeliveryFee] = useState<number>(
+    order?.deliveryFee || 0
+  )
+
   const [selectedCity, setSelectedCity] = useState(
     order?.shippingAddress?.city || ""
   )
 
-  // Initialize with order's city
-  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
-  const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
+  const total = order?.total + deliveryFee
+  const { updatedOrderTotal } = deductBalance(order?.creditAppliedTotal, total)
 
   // Update delivery fee whenever the selected delivery method or city changes
   useEffect(() => {
-    let newDeliveryFee = 0
+    // Only update if the delivery method is "Home Delivery"
+    if (selectedDeliveryMethod !== "Home Delivery") {
+      setDeliveryFee(0)
+    } else {
+      let newDeliveryFee = 0
 
-    if (
-      selectedDeliveryMethod === "Home Delivery" &&
-      selectedCity &&
-      cityDeliveryPrices[selectedCity]
-    ) {
-      newDeliveryFee = cityDeliveryPrices[selectedCity]
+      if (selectedCity && cityDeliveryPrices[selectedCity]) {
+        newDeliveryFee = cityDeliveryPrices[selectedCity]
+      }
+      setDeliveryFee(newDeliveryFee)
     }
-
-    setDeliveryFee(newDeliveryFee)
-  }, [selectedDeliveryMethod, selectedCity, setDeliveryFee])
+  }, [deliveryFee, selectedDeliveryMethod])
 
   const form = useForm<z.infer<typeof EditOrderDetailSchema>>({
     resolver: zodResolver(EditOrderDetailSchema),
@@ -98,6 +101,7 @@ const EditOrderDetails = ({ order }: OrderProps) => {
         body: JSON.stringify({
           deliveryDate: values.deliveryDate,
           deliveryFee,
+          updatedOrderTotal,
           paymentAction: values.paymentAction,
         }),
       })

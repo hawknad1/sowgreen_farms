@@ -10,7 +10,6 @@ interface AdminMiddleCardsProps {
 }
 
 const AdminMiddleCards = ({ orders, balance }: AdminMiddleCardsProps) => {
-  console.log(orders, "ORDERS")
   return (
     <div className="w-full overflow-x-auto scrollbar-none snap-x snap-mandatory">
       <div className="flex justify-between w-full gap-4">
