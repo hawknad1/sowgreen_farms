@@ -3,23 +3,18 @@
 import React, { useEffect, useState } from "react"
 import DisplayOrder from "./DisplayOrder"
 import StatusPopup from "./StatusPopup"
-import AddCredit from "./AddCredit"
 import DeleteOrderDialog from "./dialogs/DeleteOrderDialog"
 import ModifyOrderDialog from "./dialogs/ModifyOrderDialog"
 import CancelOrderDialog from "./dialogs/CancelOrderDialog"
+import AdminMiddleCards from "./AdminMiddleCards"
 
 import { Order, User } from "@/types"
-import { ShippingInfo } from "./ShippingInfo"
-import { OrderInfo } from "./OrderInfo"
 import { formatCurrency } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import { orderStatusCard } from "@/constants"
-import { useDeliveryStore, useUserListStore, useUserStore } from "@/store"
+import { useDeliveryStore } from "@/store"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
-import { MiddleOrderInfo } from "./MiddleOrderInfo"
-import Card from "@/app/(root)/confirm-order/Card"
-import AdminMiddleCards from "./AdminMiddleCards"
 
 const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -124,21 +119,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               <Separator className="my-4" />
 
               {/* Shipping and order details */}
-
-              {/* <div className="w-full overflow-x-auto scrollbar-none snap-x snap-mandatory">
-                <div className="flex gap-4 px-4">
-                  <div className="flex-shrink-0 snap-start">
-                    <ShippingInfo order={orders} />
-                  </div>
-                  <div className="flex-shrink-0 w-[calc(100vw-32px)] snap-start">
-                    <MiddleOrderInfo orders={orders} balance={balance} />
-                  </div>
-                  <div className="flex-shrink-0 w-[calc(100vw-32px)] snap-start">
-                    <OrderInfo orders={orders} balance={balance} />
-                  </div>
-                </div>
-              </div> */}
-
               <AdminMiddleCards orders={orders} />
 
               <Separator className="my-4" />

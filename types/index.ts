@@ -88,6 +88,8 @@ export type Order = {
   paymentMode?: string
   paymentAction?: string
   shippingAddress: ShippingAddress
+  items?: number
+  data?: string
   whatsappOptIn?: boolean
   products: ProductOrder[] // Change from Product[] to ProductOrder[]
   createdAt: string
@@ -224,7 +226,9 @@ export type UserDetailType = {
 export type UserProps = {
   id?: string
   name?: string
+  phone?: string
   email?: string
+  birthdate?: Date
   role?: string
   emailVerified?: boolean
   image?: string

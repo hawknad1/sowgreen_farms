@@ -57,11 +57,23 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL(ROOT, req.url))
   }
 
+  // Redirect logged-in users away from auth pages
+  if (
+    isAuthenticate &&
+    (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up"))
+  ) {
+    return NextResponse.redirect(new URL("/", req.url)) // Or ROOT
+  }
+
   // Allow the request to proceed for admins and regular users at root
   return NextResponse.next()
 }
 
 // Apply middleware only to specific routes
+
 export const config = {
-  matcher: ["/admin/:path*", "/checkout", "/"],
+  matcher: ["/admin/:path*", "/checkout", "/", "/sign-in", "/sign-up"],
 }
+// export const config = {
+//   matcher: ["/admin/:path*", "/checkout", "/"],
+// }

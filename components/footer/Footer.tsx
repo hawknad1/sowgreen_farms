@@ -132,7 +132,8 @@ const Footer = () => {
             </a>
 
             <p className="mt-4 text-sm text-gray-400 sm:mt-0 dark:text-gray-300">
-              © Copyright 2021. All Rights Reserved.
+              {/* © Copyright 2021. All Rights Reserved. */}
+              Copyright © 2025. ZOROASTIQUE Limited. All rights reserved.
             </p>
           </div>
         </div>

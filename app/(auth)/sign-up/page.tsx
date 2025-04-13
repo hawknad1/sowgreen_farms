@@ -74,13 +74,13 @@ const Signup = () => {
   return (
     <div className="flex flex-col justify-center items-center min-h-screen p-6 bg-gray-50">
       {/* Logo Section */}
-      <div className="flex items-center justify-center mb-6">
+      <div className="flex items-center justify-center">
         <Image
-          src="/images/sowgreen.png"
+          src="/images/logo.png"
           alt="Sowgreen Logo"
           height={100}
           width={100}
-          className="object-contain"
+          className="object-contain h-fit w-48"
           priority // Ensures the logo loads quickly
         />
       </div>

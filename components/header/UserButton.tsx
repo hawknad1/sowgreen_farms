@@ -57,9 +57,9 @@ const UserButton = ({ user }: { user: UserProps }) => {
     getUser()
   }, [user?.email, balance])
 
-  useEffect(() => {
-    console.log("Active User:", activeUser)
-  }, [activeUser])
+  // useEffect(() => {
+  //   console.log("Active User:", activeUser)
+  // }, [activeUser])
 
   // Handle Logout
   const handleLogout = async () => {
@@ -140,7 +140,13 @@ const UserButton = ({ user }: { user: UserProps }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="outline-none focus-visible:ring-0 ring-0 w-44">
           {user.role === "admin" ? (
-            <div className="flex flex-col gap-y-2">
+            <div className="flex flex-col gap-y-1">
+              <DropdownMenuItem
+                onClick={() => router.push("/account/profile")}
+                className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
+              >
+                My Profile
+              </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => router.push("/account/order-history")}
                 className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"

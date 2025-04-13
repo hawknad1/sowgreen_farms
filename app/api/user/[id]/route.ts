@@ -14,7 +14,9 @@ export async function GET(
         email: userEmail,
       },
       include: {
-        orders: true,
+        orders: {
+          include: { shippingAddress: true, products: true },
+        },
       },
     })
 

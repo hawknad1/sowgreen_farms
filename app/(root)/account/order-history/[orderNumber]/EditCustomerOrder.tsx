@@ -38,18 +38,13 @@ const EditCustomerOrder = ({
   const [total, setTotal] = useState(0)
   const [deliveryFee, setDeliveryFee] = useState(orderDetails.deliveryFee)
   const [updatedOrderTotal, setUpdatedOrderTotal] = useState(0)
-  const [getUpdatedBalance, setGetUpdatedBalance] = useState(0)
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const { data: session } = useSession()
   const user = session?.user
-  const { balance: userlistBalance, setBalance } = useUserListStore()
 
   const balance = activeUser?.user?.balance
   const checkTotal = orderDetails?.paymentAction !== "paid" && balance > 0
-
-  console.log(balance, "BALANCE")
-  console.log(userlistBalance, "userlistBalance")
 
   useEffect(() => {
     const getUser = async () => {
@@ -78,19 +73,25 @@ const EditCustomerOrder = ({
   useEffect(() => {
     if (isLoading) return // Don't calculate if still loading
 
-    const newSubtotal = orderDetails.products.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    )
+    // const newSubtotal = orderDetails.products.reduce(
+    //   (sum, item) => sum + item.price * item.quantity,
+    //   0
+    // )
+    const newSubtotal = orderDetails.products.reduce((sum, item) => {
+      // Only add to subtotal if product is available and in stock
+      if (item.available && item?.product?.isInStock !== "out-of-stock") {
+        return sum + item.price * item.quantity
+      }
+      return sum
+    }, 0)
     const newTotal = newSubtotal + orderDetails.deliveryFee
     setSubtotal(parseFloat(newSubtotal.toFixed(2)))
 
     // Recalculate the updatedOrderTotal whenever orderDetails change
-    const {
-      remainingAmount,
-      updatedBalance,
-      updatedOrderTotal: newUpdatedOrderTotal,
-    } = deductBalance(balance, newTotal)
+    const { updatedOrderTotal: newUpdatedOrderTotal } = deductBalance(
+      balance,
+      newTotal
+    )
 
     setUpdatedOrderTotal(newUpdatedOrderTotal)
     setTotal(checkTotal ? Math.max(0, newTotal - balance) : newTotal)
@@ -150,121 +151,133 @@ const EditCustomerOrder = ({
   return (
     <div className="flex flex-col justify-between max-h-[400px]">
       <div className="h-[300px] overflow-y-scroll scrollbar-thin">
-        {[...orderDetails.products].reverse().map((item) => (
-          <div
-            key={item.id}
-            className="flex items-center justify-between border-b py-2"
-          >
-            <div className="flex gap-x-3 items-center">
-              <Image
-                src={item?.product?.imageUrl || item?.product?.images[0]?.url}
-                alt={item?.product?.title}
-                height={40}
-                width={40}
-                className="object-contain h-10 w-10 md:h-16 md:w-16 bg-gray-100 p-1 rounded-md"
-              />
-              <div>
-                <p className={` `}>
-                  <span
-                    className={`font-semibold max-w-[120px] md:max-w-none line-clamp-1 md:line-clamp-none w-36 md:w-full text-xs md:text-base text-black ${
-                      !item?.available && "line-through text-red-500"
-                    }`}
-                  >
-                    {" "}
-                    {item?.product?.title}
-                  </span>
-                  {!item?.available && <span> - N/A</span>}
-                </p>
-                <p className="text-xs md:text-sm">
-                  {formatCurrency(item?.price, "GHS")}{" "}
-                  {item?.weight === 0 || item?.weight === null ? (
-                    ""
-                  ) : (
-                    <span className="text-xs md:text-sm text-neutral-400">{`/ ${
-                      item?.weight < 1 ? item?.weight * 1000 : item?.weight
-                    }${item?.unit}`}</span>
-                  )}{" "}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              {!customer && (
-                <Select
-                  onValueChange={(value) => {
-                    const isAvailable = value === "instock"
-                    setOrderDetails((prev) => ({
-                      ...prev,
-                      products: prev.products.map((prod) =>
-                        prod.productId === item.productId
-                          ? { ...prod, available: isAvailable }
-                          : prod
-                      ),
-                    }))
-                    setOrderItems((prev) =>
-                      prev.map((prod) =>
-                        prod.productId === item.productId
-                          ? { ...prod, available: isAvailable }
-                          : prod
-                      )
-                    )
-                  }}
-                >
-                  <SelectTrigger className="w-[120px]">
-                    <SelectValue
-                      placeholder={item.available ? "Instock" : "Outofstock"}
-                    />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Availability</SelectLabel>
-                      <SelectItem value="instock">Instock</SelectItem>
-                      <SelectItem value="outofstock">Outofstock</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              )}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() =>
-                    handleQuantityChange(
-                      item.productId,
-                      Math.max(0, item.quantity - 1)
-                    )
-                  }
-                  className="px-2.5 py-1 border rounded bg-gray-200"
-                  disabled={item.quantity <= 0}
-                >
-                  -
-                </button>
-                <Input
-                  value={item.quantity}
-                  onChange={(e) => {
-                    const newValue = Math.max(0, Number(e.target.value))
-                    handleQuantityChange(item.productId, newValue)
-                  }}
-                  className="w-10 h-8 md:w-14 text-center"
-                  min="0"
-                  disabled={!item.available && customer}
-                />
-                <button
-                  onClick={() =>
-                    handleQuantityChange(item.productId, item.quantity + 1)
-                  }
-                  className="px-2.5 py-1 border rounded bg-gray-200"
-                >
-                  +
-                </button>
-              </div>
+        {[...orderDetails.products].reverse().map((item) => {
+          const outOfStock = item?.product?.isInStock === "out-of-stock"
 
-              <button
-                onClick={() => handleRemoveItem(item.id)}
-                className="bg-red-500 p-1.5 md:p-2 rounded-md"
-              >
-                <TrashIcon className="h-4 w-4 md:h-5 md:w-5 text-white" />
-              </button>
+          return (
+            <div
+              key={item.id}
+              className="flex items-center justify-between border-b py-2"
+            >
+              <div className="flex gap-x-3 items-center">
+                <Image
+                  src={item?.product?.imageUrl || item?.product?.images[0]?.url}
+                  alt={item?.product?.title}
+                  height={40}
+                  width={40}
+                  className="object-contain h-10 w-10 md:h-16 md:w-16 bg-gray-100 p-1 rounded-md"
+                />
+                <div>
+                  <p className={` `}>
+                    <span
+                      className={`font-semibold max-w-[120px] md:max-w-none line-clamp-1 md:line-clamp-none w-36 md:w-full text-xs md:text-base text-black ${
+                        !item?.available ||
+                        (outOfStock && "line-through text-red-500")
+                      }`}
+                    >
+                      {" "}
+                      {item?.product?.title}
+                    </span>
+                    {!item?.available || (outOfStock && <span> - N/A</span>)}
+                  </p>
+                  <p className="text-xs md:text-sm">
+                    {formatCurrency(item?.price, "GHS")}{" "}
+                    {item?.weight === 0 || item?.weight === null ? (
+                      ""
+                    ) : (
+                      <span className="text-xs md:text-sm text-neutral-400">{`/ ${
+                        item?.weight < 1 ? item?.weight * 1000 : item?.weight
+                      }${item?.unit}`}</span>
+                    )}{" "}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                {!customer && (
+                  <Select
+                    onValueChange={(value) => {
+                      const isAvailable = value === "instock"
+                      setOrderDetails((prev) => ({
+                        ...prev,
+                        products: prev.products.map((prod) =>
+                          prod.productId === item.productId
+                            ? { ...prod, available: isAvailable }
+                            : prod
+                        ),
+                      }))
+                      setOrderItems((prev) =>
+                        prev.map((prod) =>
+                          prod.productId === item.productId
+                            ? { ...prod, available: isAvailable }
+                            : prod
+                        )
+                      )
+                    }}
+                    defaultValue={
+                      item?.product?.isInStock === "out-of-stock"
+                        ? "outofstock"
+                        : item.available
+                        ? "instock"
+                        : "outofstock"
+                    }
+                  >
+                    <SelectTrigger className="w-[120px]">
+                      <SelectValue
+                        placeholder={item.available ? "Instock" : "Outofstock"}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Availability</SelectLabel>
+                        <SelectItem value="instock">Instock</SelectItem>
+                        <SelectItem value="outofstock">Outofstock</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() =>
+                      handleQuantityChange(
+                        item.productId,
+                        Math.max(0, item.quantity - 1)
+                      )
+                    }
+                    className="px-2.5 py-1 border rounded bg-gray-200"
+                    disabled={item.quantity <= 0}
+                  >
+                    -
+                  </button>
+                  <Input
+                    value={item.quantity}
+                    onChange={(e) => {
+                      const newValue = Math.max(0, Number(e.target.value))
+                      handleQuantityChange(item.productId, newValue)
+                    }}
+                    className="w-10 h-8 md:w-14 text-center"
+                    min="0"
+                    disabled={!item.available && customer}
+                  />
+                  <button
+                    onClick={() =>
+                      handleQuantityChange(item.productId, item.quantity + 1)
+                    }
+                    className="px-2.5 py-1 border rounded bg-gray-200"
+                  >
+                    +
+                  </button>
+                </div>
+
+                <button
+                  onClick={() => handleRemoveItem(item.id)}
+                  className="bg-red-500 p-1.5 md:p-2 rounded-md"
+                >
+                  <TrashIcon className="h-4 w-4 md:h-5 md:w-5 text-white" />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
       <div className="flex flex-col gap-y-3 mt-4">
         <div className="flex justify-between text-black font-semibold">
@@ -285,7 +298,6 @@ const EditCustomerOrder = ({
           </p>
           <p className="text-xs md:text-sm flex items-center gap-x-2">
             <span className="text-red-500">Total Due:</span>{" "}
-            {/* <span>{formatCurrency(updatedOrderTotal, "GHS")}</span> */}
             {isLoading ? (
               <span className="loading loading-spinner loading-xs"></span>
             ) : (
@@ -294,14 +306,6 @@ const EditCustomerOrder = ({
               </p>
             )}
           </p>
-          {/* {!isLoading ? (
-            <span className="loading loading-spinner loading-xs"></span>
-          ) : (
-            <p className="text-xs md:text-sm">
-              <span className="text-red-500">Total Due:</span>{" "}
-              <span>{formatCurrency(updatedOrderTotal, "GHS")}</span>
-            </p>
-          )} */}
         </div>
 
         <Button
