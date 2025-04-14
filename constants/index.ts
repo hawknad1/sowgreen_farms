@@ -440,13 +440,11 @@ export const getSideMenuLinks = (balance: number): MenuItem[] => {
   ]
 
   // Add a new menu item if the balance is greater than 0
-  if (balance > 0) {
-    baseLinks.push({
-      label: `Balance : ${balance}`,
-      href: "/balance",
-      icon: Settings, // Use an appropriate icon
-    })
-  }
+  baseLinks.push({
+    label: `Balance : ${balance}`,
+    href: "/balance",
+    icon: Settings, // Use an appropriate icon
+  })
 
   return baseLinks
 }
@@ -487,14 +485,6 @@ export const getAdminSideMenuLinks = (balance: number): MenuItem[] => {
   ]
 
   // Add a new menu item if the balance is greater than 0
-  // if (balance) {
-  //   baseLinks.push({
-  //     label: `Credit Balance : ${balance}`,
-  //     href: "",
-  //     icon: CreditCardIcon, // Use an appropriate icon
-  //   })
-  // }
-
   baseLinks.push({
     label: `Credit Balance : ${formatCurrency(balance, "GHS")}`,
     href: "",
