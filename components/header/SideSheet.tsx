@@ -45,9 +45,9 @@ const SideSheet = () => {
         </button>
       </SheetTrigger>
       <SheetContent>
-        <SheetHeader>
+        {/* <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
-        </SheetHeader>
+        </SheetHeader> */}
         <SideMenu />
         <SheetFooter className="mt-8">
           <SheetClose asChild>

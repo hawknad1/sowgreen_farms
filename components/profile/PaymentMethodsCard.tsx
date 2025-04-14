@@ -31,7 +31,7 @@ const PaymentMethodsCard = ({
 }: PaymentMethodsCardProps) => {
   const [methods, setMethods] = useState<PaymentMethod[]>(paymentMethods)
 
-  const recentOrders = orders.slice(-2)[0]
+  const recentOrders = orders.slice(-1)[0]
 
   const handleAddMethod = () => {
     const newMethod: PaymentMethod = {
@@ -94,7 +94,7 @@ const PaymentMethodsCard = ({
   const formatCardNumber = (cardNumber: string) => {
     if (!cardNumber) return ""
     const lastFour = cardNumber.slice(-4)
-    return `•••• •••• •••• ${recentOrders?.last4Digits}`
+    return `•••• •••• •••• ${recentOrders?.last4Digits || "0000"}`
   }
 
   // Format input card number with spaces
@@ -230,7 +230,7 @@ const PaymentMethodsCard = ({
                     <div className="flex items-center">
                       <span className="font-medium">
                         {/* {identifyCardType(method.cardNumber)} */}
-                        {recentOrders?.cardType.toUpperCase()}
+                        {recentOrders?.cardType?.toUpperCase()}
                       </span>
                       {method.isDefault && (
                         <span className="ml-2 text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
