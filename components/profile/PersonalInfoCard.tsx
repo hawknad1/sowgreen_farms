@@ -11,7 +11,7 @@ interface PersonalInfoProps {
     name: string
     email: string
     phone: string
-    birthdate?: string
+    dateOfBirth?: string
   }
   isEditing: boolean
   onSave: (updatedInfo: any) => void
@@ -22,7 +22,7 @@ const PersonalInfoCard = ({ user, isEditing, onSave }: PersonalInfoProps) => {
     name: user.name,
     email: user.email,
     phone: user.phone,
-    birthdate: user.birthdate || "",
+    dateOfBirth: user.dateOfBirth || "",
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,10 +32,11 @@ const PersonalInfoCard = ({ user, isEditing, onSave }: PersonalInfoProps) => {
     })
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     onSave(formData)
     toast.success("Personal information updated successfully!")
+    // console.log("Personal information updated successfully!")
   }
 
   return (
@@ -66,6 +67,7 @@ const PersonalInfoCard = ({ user, isEditing, onSave }: PersonalInfoProps) => {
                 name="email"
                 type="email"
                 value={formData.email}
+                defaultValue={user?.email}
                 onChange={handleChange}
                 required
               />
@@ -86,7 +88,7 @@ const PersonalInfoCard = ({ user, isEditing, onSave }: PersonalInfoProps) => {
                 id="birthdate"
                 name="birthdate"
                 type="date"
-                value={formData.birthdate}
+                value={formData.dateOfBirth}
                 onChange={handleChange}
               />
             </div>
@@ -121,14 +123,14 @@ const PersonalInfoCard = ({ user, isEditing, onSave }: PersonalInfoProps) => {
                 <p>{user.phone}</p>
               </div>
             </div>
-            {user.birthdate && (
+            {user.dateOfBirth && (
               <div className="flex gap-2">
                 <div className="h-5 w-5 text-gray-400 flex items-center justify-center">
                   🎂
                 </div>
                 <div>
                   <p className="text-sm font-medium">Date of Birth</p>
-                  <p>{new Date(user.birthdate).toLocaleDateString()}</p>
+                  <p>{new Date(user.dateOfBirth).toLocaleDateString()}</p>
                 </div>
               </div>
             )}

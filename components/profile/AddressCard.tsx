@@ -2,29 +2,52 @@ import React, { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { MapPin } from "lucide-react"
 import { toast } from "sonner"
-import { ShippingAddress } from "@/types"
+import { Order, ShippingAddress } from "@/types"
 import AddressForm from "./adresses/AddressForm"
 import EmptyAddressPlaceholder from "./adresses/EmptyAddressPlaceholder"
 import AddressDisplay from "./adresses/AddressDisplay"
 
+interface UserType {
+  id?: string
+  name: string
+  email: string
+  phone?: string | null
+  address?: string
+  city?: string
+  country?: string
+  dateOfBirth?: string
+  avatar?: string
+  orders?: Array<Order>
+  role?: string
+  balance?: number
+}
+
 interface AddressCardProps {
   address?: ShippingAddress
+  activeUser: any
   isEditing: boolean
   onSave: (address: ShippingAddress) => void
 }
 
-const AddressCard = ({ address, isEditing, onSave }: AddressCardProps) => {
+const AddressCard = ({
+  address,
+  activeUser,
+  isEditing,
+  onSave,
+}: AddressCardProps) => {
   const [currentAddress, setCurrentAddress] = useState<ShippingAddress>({
     id: "",
-    name: "",
-    email: "",
-    address: "",
-    city: "",
-    region: "",
-    country: "",
-    phone: "",
+    name: activeUser?.name || "",
+    email: activeUser?.email || "",
+    address: activeUser?.address || "",
+    city: activeUser?.city || "",
+    region: activeUser?.region || "",
+    country: activeUser?.country || "",
+    phone: activeUser?.phone || "",
     deliveryMethod: "Delivery Method",
   })
+
+  console.log(activeUser, "activeUser===address")
 
   useEffect(() => {
     if (address) {
@@ -77,7 +100,7 @@ const AddressCard = ({ address, isEditing, onSave }: AddressCardProps) => {
       <CardHeader>
         <CardTitle className="flex items-center">
           <MapPin className="mr-2 h-5 w-5 text-green-500" />
-          Delivery Address
+          Home Address
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -88,12 +111,13 @@ const AddressCard = ({ address, isEditing, onSave }: AddressCardProps) => {
           />
         ) : isEditing ? (
           <AddressForm
+            activeUser={activeUser}
             address={currentAddress}
             onChange={handleChange}
             onSave={handleSave}
           />
         ) : (
-          <AddressDisplay address={currentAddress} />
+          <AddressDisplay address={currentAddress} activeUser={activeUser} />
         )}
       </CardContent>
     </Card>

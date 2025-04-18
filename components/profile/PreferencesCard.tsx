@@ -96,6 +96,31 @@ const PreferencesCard = ({
               </span>
             )}
           </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <h4 className="font-medium">Whatsapp Notifications</h4>
+              <p className="text-sm text-gray-500">
+                Receive order updates via whatsapp message
+              </p>
+            </div>
+            {isEditing ? (
+              <Switch
+                checked={prefs.smsNotifications}
+                onCheckedChange={(checked) =>
+                  handleChange("smsNotifications", checked)
+                }
+                className="data-[state=checked]:bg-green-500"
+              />
+            ) : (
+              <span
+                className={`text-sm ${
+                  prefs.smsNotifications ? "text-green-600" : "text-gray-500"
+                }`}
+              >
+                {prefs.smsNotifications ? "Enabled" : "Disabled"}
+              </span>
+            )}
+          </div>
 
           <div className="flex items-center justify-between">
             <div>
@@ -149,7 +174,7 @@ const PreferencesCard = ({
             )}
           </div>
 
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <div>
               <h4 className="font-medium">Order Updates</h4>
               <p className="text-sm text-gray-500">
@@ -173,7 +198,7 @@ const PreferencesCard = ({
                 {prefs.orderUpdates ? "Enabled" : "Disabled"}
               </span>
             )}
-          </div>
+          </div> */}
 
           {isEditing && (
             <Button

@@ -17,20 +17,11 @@ const BasketOrderSummery = () => {
   const { ordersData } = useOrderDataStore()
   const { cartTotal } = useCartStore()
   const { user } = useUserStore()
-  const { balance } = useUserListStore()
-
+  const balance = user?.user?.balance
   const total = cartTotal + deliveryFee
 
-  console.log(balance, "balance---basket")
+  const { updatedOrderTotal } = deductBalance(balance, total)
 
-  const {
-    updatedBalance,
-    updatedOrderTotal,
-    remainingAmount,
-    proceedToPaystack,
-  } = deductBalance(balance, total)
-
-  console.log(updatedOrderTotal, "updatedOrderTotal--basket")
   // formatCurrency
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")

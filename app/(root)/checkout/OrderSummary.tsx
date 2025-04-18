@@ -17,19 +17,17 @@ const OrderSummary = ({
 }) => {
   const { cartTotal } = useCartStore()
   const { user } = useUserStore()
-  const { balance } = useUserListStore()
+  // const { balance } = useUserListStore()
 
   const total = cartTotal + deliveryFee
   const subtotal = formatCurrency(cartTotal, "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
   const formattedTotal = formatCurrency(total, "GHS")
+  const balance = user?.user?.balance
 
-  const {
-    updatedBalance,
-    updatedOrderTotal,
-    remainingAmount,
-    proceedToPaystack,
-  } = deductBalance(balance, total)
+  console.log(user, "user==000")
+
+  const { updatedOrderTotal } = deductBalance(balance, total)
 
   return (
     <div className="flex flex-col justify-between h-fit rounded-md">

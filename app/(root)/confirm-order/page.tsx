@@ -43,7 +43,7 @@ const ConfirmOrderPage = () => {
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setCartProducts = useCartStore((state) => state.setCartProducts)
   const [isConfirming, setIsConfirming] = useState(false)
-  const { balance } = useUserListStore()
+  // const { balance } = useUserListStore()
 
   const session = useSession()
   const user = session?.data?.user
@@ -78,6 +78,7 @@ const ConfirmOrderPage = () => {
 
   let total = cartTotal
   let conbinedTotal = total + deliveryFee
+  const balance = user?.balance
 
   const formattedSubtotal = formatCurrency(cartTotal, "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")

@@ -275,9 +275,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     orders?.total + orders?.deliveryFee
   )
 
-  console.log(balance, "BALANCE HERE")
-  console.log(updatedBalance, "UPDATED BALANCE HERE----")
-
   const form = useForm<z.infer<typeof UpdateStatusSchema>>({
     resolver: zodResolver(UpdateStatusSchema),
     defaultValues: {
@@ -293,9 +290,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
   }, [fetchDispatchRiders])
 
   const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
-    console.log(values, "VALUES")
-    console.log(orders, "ORDERS- STATUS")
-
     setIsSaving(true)
     try {
       // Map the dispatch rider's name to their ID before sending the request
