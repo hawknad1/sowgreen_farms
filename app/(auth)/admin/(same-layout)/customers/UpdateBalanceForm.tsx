@@ -53,8 +53,6 @@ const UpdateBalanceForm = ({ customer }: CustomerProps) => {
   const onSubmit = async (values: z.infer<typeof CreditSchema>) => {
     const newBalance = availableBalance + parseFloat(values.amount) // Calculate new balance
 
-    console.log("New balance calculated:", newBalance) // Debug log
-
     setIsLoading(true)
     try {
       const response = await fetch(`/api/user/${values?.email}`, {

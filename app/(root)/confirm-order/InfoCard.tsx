@@ -15,9 +15,10 @@ const InfoCard = ({ data }: InfoCardProps) => {
   const deliveryMethod = data?.formData?.deliveryMethod?.trim()?.toUpperCase()
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const { user } = useUserStore()
-  const { balance } = useUserListStore()
+  // const { balance } = useUserListStore()
 
   let total = data?.total + deliveryFee
+  const balance = user?.user?.balance
 
   const { updatedOrderTotal } = deductBalance(user?.user?.balance, total)
 

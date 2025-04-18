@@ -174,8 +174,6 @@ export function CheckoutForm() {
       whatsappOptIn: values.whatsappOptIn, // Ensure this is included
     }
 
-    console.log(values.whatsappOptIn, "values.whatsappOptIn")
-
     // Create URLSearchParams with proper string conversion
     const params = new URLSearchParams()
     for (const [key, value] of Object.entries(formData)) {

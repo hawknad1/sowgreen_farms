@@ -80,3 +80,7 @@ export async function PUT(req: Request) {
     )
   }
 }
+
+// export async function POST(req: Request) {
+//   const { name, address, city, country, dateOfBirth, phone } = await req.json()
+// }

@@ -13,10 +13,10 @@ import {
 import { Button } from "@/components/ui/button"
 import { toast } from "react-hot-toast"
 import { ChevronLeft, ChevronRight } from "lucide-react"
-import EditCustomerOrder from "./EditCustomerOrder"
-import SearchProduct from "@/components/admin/orders/SearchProduct"
 import { Order, ProductOrder } from "@/types"
 import { AlertDestructive } from "@/components/alerts/AlertDestructive"
+import EditCustomerOrder from "./EditCustomerOrder"
+import SearchProduct from "@/components/admin/orders/SearchProduct"
 import AddedProducts from "./AddedProducts"
 
 interface Props {
@@ -50,6 +50,8 @@ const EditCustomerOrderDialog = ({ order, className }: Props) => {
 
   const buttonDisabled =
     order?.status === "cancelled" || order?.paymentAction === "paid"
+
+  console.log(order, "order from edit")
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

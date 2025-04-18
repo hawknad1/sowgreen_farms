@@ -417,7 +417,7 @@ export const getSideMenuLinks = (balance: number): MenuItem[] => {
       items: [
         {
           label: "Profile",
-          href: "/profile",
+          href: "/account/profile",
           icon: UserRound, // Add individual icons for sub-items if needed
         },
         {
@@ -457,7 +457,7 @@ export const getAdminSideMenuLinks = (balance: number): MenuItem[] => {
       items: [
         {
           label: "Profile",
-          href: "/profile",
+          href: "/account/profile",
           icon: UserRound,
         },
         {

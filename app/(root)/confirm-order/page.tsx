@@ -43,7 +43,7 @@ const ConfirmOrderPage = () => {
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setCartProducts = useCartStore((state) => state.setCartProducts)
   const [isConfirming, setIsConfirming] = useState(false)
-  const { balance } = useUserListStore()
+  // const { balance } = useUserListStore()
 
   const session = useSession()
   const user = session?.data?.user
@@ -78,6 +78,7 @@ const ConfirmOrderPage = () => {
 
   let total = cartTotal
   let conbinedTotal = total + deliveryFee
+  const balance = user?.balance
 
   const formattedSubtotal = formatCurrency(cartTotal, "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")
@@ -295,6 +296,7 @@ const ConfirmOrderPage = () => {
       // })
 
       router.push("/success/thank-you")
+      clearCart() // Clear the cart after successful order processing
 
       // Update product quantities
       const quantityResponse = await fetch("/api/products/updateQuantity", {
@@ -303,8 +305,6 @@ const ConfirmOrderPage = () => {
         body: JSON.stringify({ products: ordersData.products }),
       })
       if (!quantityResponse.ok) throw new Error("Quantity update API failed")
-
-      clearCart() // Clear the cart after successful order processing
     } catch (error) {
       console.error("Payment processing error:", error)
     } finally {

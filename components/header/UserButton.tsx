@@ -76,7 +76,7 @@ const UserButton = ({ user }: { user: UserProps }) => {
       {user.role !== "admin" && (
         <>
           <DropdownMenuItem
-            onClick={() => router.push("/account/my-profile")}
+            onClick={() => router.push("/account/profile")}
             className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
           >
             My Profile

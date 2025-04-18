@@ -7,15 +7,21 @@ import { ShippingAddress } from "@/types"
 
 interface AddressFormProps {
   address: ShippingAddress
+  activeUser: any
   onChange: (field: keyof ShippingAddress, value: string | boolean) => void
   onSave: () => void
 }
 
-const AddressForm = ({ address, onChange, onSave }: AddressFormProps) => {
+const AddressForm = ({
+  address,
+  activeUser,
+  onChange,
+  onSave,
+}: AddressFormProps) => {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <Label htmlFor="name">Full Name</Label>
           <Input
             id="name"
@@ -33,7 +39,7 @@ const AddressForm = ({ address, onChange, onSave }: AddressFormProps) => {
             placeholder="Your email address"
             type="email"
           />
-        </div>
+        </div> */}
         <div className="space-y-2">
           <Label htmlFor="address">Address</Label>
           <Input
@@ -82,7 +88,7 @@ const AddressForm = ({ address, onChange, onSave }: AddressFormProps) => {
             placeholder="Phone number"
           />
         </div>
-        <div className="space-y-2">
+        {/* <div className="space-y-2">
           <Label htmlFor="deliveryMethod">Delivery Method</Label>
           <Input
             id="deliveryMethod"
@@ -90,7 +96,7 @@ const AddressForm = ({ address, onChange, onSave }: AddressFormProps) => {
             onChange={(e) => onChange("deliveryMethod", e.target.value)}
             placeholder="Home Delivery, Pickup, etc."
           />
-        </div>
+        </div> */}
       </div>
 
       <Button onClick={onSave} className="mt-4 bg-green-500 hover:bg-green-600">

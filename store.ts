@@ -8,6 +8,7 @@ import {
   User,
   UserDetailType,
 } from "./types"
+import { fetchUserBalance } from "./lib/actions/fetchUserBalance"
 // import { CartItem } from "@/types"
 
 interface PaymentStore {
@@ -532,9 +533,27 @@ export const useUserListStore = create<UserListStore>()(
       setUserList: (users) => set({ userList: users }),
       balance: 0,
       setBalance: (updatedBalance) => set({ balance: updatedBalance }),
+      fetchAndSetBalance: async (email: string) => {
+        const balance = await fetchUserBalance(email)
+        set({ balance })
+      },
     }),
     {
-      name: "user-list-store", // Unique name for the localStorage key
+      name: "user-list-store",
     }
   )
 )
+
+// export const useUserListStore = create<UserListStore>()(
+//   persist(
+//     (set) => ({
+//       userList: [],
+//       setUserList: (users) => set({ userList: users }),
+//       balance: 0,
+//       setBalance: (updatedBalance) => set({ balance: updatedBalance }),
+//     }),
+//     {
+//       name: "user-list-store", // Unique name for the localStorage key
+//     }
+//   )
+// )
