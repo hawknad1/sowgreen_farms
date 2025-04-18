@@ -212,6 +212,8 @@ export const orderStatusCard = [
   },
 ]
 
+const [wednesday, saturday] = getUpcomingDeliveryDates()
+
 export const sidebarLinks = {
   user: {
     name: "shadcn",
@@ -333,13 +335,11 @@ export const sidebarLinks = {
     },
     {
       title: "Feedback",
-      url: "#",
+      url: "",
       icon: Send,
     },
   ],
 }
-
-const [wednesday, saturday] = getUpcomingDeliveryDates()
 
 export const deliveryMethods = [
   {
@@ -441,8 +441,8 @@ export const getSideMenuLinks = (balance: number): MenuItem[] => {
 
   // Add a new menu item if the balance is greater than 0
   baseLinks.push({
-    label: `Balance : ${balance}`,
-    href: "/balance",
+    label: `Credit Balance : ${formatCurrency(balance, "GHS")}`,
+    href: "",
     icon: Settings, // Use an appropriate icon
   })
 

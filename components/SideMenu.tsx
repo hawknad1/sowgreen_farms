@@ -22,6 +22,8 @@ const SideMenu = () => {
   const { user: activeUser } = useUserStore()
   const user = session?.user
 
+  const balance = user?.balance
+
   if (!user) return null // Avoid rendering if user is not available.
 
   const links: MenuItem[] =
@@ -43,7 +45,13 @@ const SideMenu = () => {
             ) : (
               <Link
                 href={menu.href || "#"}
-                className="flex items-center gap-x-2 rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                className={`flex items-center gap-x-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-lg px-4 py-2 text-sm font-medium ${
+                  menu.label.includes("Credit Balance") && balance >= 0
+                    ? "bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-700"
+                    : menu.label.includes("Credit Balance") && balance < 0
+                    ? "bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-700"
+                    : ""
+                }`}
               >
                 {menu.icon && <menu.icon className="h-4 w-4" />}
                 {menu.label}
