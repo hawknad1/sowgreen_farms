@@ -296,6 +296,7 @@ const ConfirmOrderPage = () => {
       // })
 
       router.push("/success/thank-you")
+      clearCart() // Clear the cart after successful order processing
 
       // Update product quantities
       const quantityResponse = await fetch("/api/products/updateQuantity", {
@@ -304,8 +305,6 @@ const ConfirmOrderPage = () => {
         body: JSON.stringify({ products: ordersData.products }),
       })
       if (!quantityResponse.ok) throw new Error("Quantity update API failed")
-
-      clearCart() // Clear the cart after successful order processing
     } catch (error) {
       console.error("Payment processing error:", error)
     } finally {

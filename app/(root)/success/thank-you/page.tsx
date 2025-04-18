@@ -24,7 +24,7 @@ const ThankYouPage = () => {
   const ordersData = useOrderDataStore((state) => state.ordersData)
   const { deliveryFee } = useDeliveryStore()
   const { user } = useUserStore()
-  const { balance } = useUserListStore()
+  // const { balance } = useUserListStore()
 
   // Extract order details
   const {
@@ -37,13 +37,14 @@ const ThankYouPage = () => {
   } = ordersData || {}
 
   const orderTotal = total + deliveryFee
+  const balance = user?.user.balance
 
   const {
     updatedBalance,
     updatedOrderTotal,
     remainingAmount,
     proceedToPaystack,
-  } = deductBalance(user?.user?.balance, orderTotal)
+  } = deductBalance(balance, orderTotal)
 
   useEffect(() => {
     async function fetchProducts() {
