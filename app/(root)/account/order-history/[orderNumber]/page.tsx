@@ -5,28 +5,37 @@ import CancelCustomerOrderDialog from "./CancelCustomerOrderDialog"
 import EditCustomerOrderDialog from "./EditCustomerOrderDialog"
 import PaystackPayNow from "./PaystackPayNow"
 
-import { Order } from "@/types"
+import { Order, User, UserProps } from "@/types"
 import { useEffect, useState } from "react"
 import { formatCurrency } from "@/lib/utils"
 import { capitalizeName } from "@/lib/capitalizeName"
 import { deductBalance } from "@/lib/actions/deductBalance"
 import { useUserListStore, useUserStore } from "@/store"
+import { useSession } from "next-auth/react"
+import { getUser } from "@/lib/actions/getUser"
 
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)
+  const [userData, setUserData] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const { balance } = useUserListStore()
-
+  const { data: session } = useSession()
+  const user = session?.user as UserProps
   const { orderNumber } = params
-  const orderTotal = orderDetails?.total + orderDetails?.deliveryFee
-  // const balance = user?.user?.balance
 
-  const { updatedBalance, updatedOrderTotal } = deductBalance(
-    balance,
-    orderTotal
-  )
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!user?.email) return
 
-  const checkPayNow = updatedOrderTotal === 0
+      setIsLoading(true) // Start loading
+
+      const data = await getUser(user.email)
+      if (data) setUserData(data)
+
+      setIsLoading(false) // Done loading
+    }
+
+    fetchUser()
+  }, [user?.email])
 
   useEffect(() => {
     async function fetchOrderDetails() {
@@ -46,6 +55,14 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
     }
     fetchOrderDetails()
   }, [orderNumber])
+
+  const orderTotal = orderDetails?.total + orderDetails?.deliveryFee
+  const balance = userData?.user?.balance
+  const { updatedBalance, updatedOrderTotal } = deductBalance(
+    balance,
+    orderTotal
+  )
+  const checkPayNow = updatedOrderTotal === 0
 
   if (isLoading)
     return (

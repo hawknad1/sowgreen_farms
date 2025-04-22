@@ -107,7 +107,7 @@ export default function Home() {
           <MiddleCardAds />
         </section>
 
-        <section className="my-8">
+        <section className="my-8 ">
           <ProductChevrons message="Farm fresh products">
             <ProductCards data={productList} isLoading={isLoading} />
           </ProductChevrons>

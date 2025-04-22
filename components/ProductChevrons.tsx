@@ -28,7 +28,7 @@ const ProductChevrons = ({ children, message }: ChevronProps) => {
     }
   }
   return (
-    <div className="flex flex-col items-center gap-x-6">
+    <div className="flex flex-col items-center gap-x-6 ">
       <div className="flex items-center justify-between w-full">
         <h2 className="text-xl flex items-center text-sowgren_Color self-center sm:text-2xl md:text-3xl font-bold mb-4">
           {message}

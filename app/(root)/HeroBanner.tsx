@@ -100,7 +100,7 @@ const HeroBanner = () => {
 
               <Button
                 variant="ghost"
-                className="w-fit text-white flex shadow-sm items-center gap-x-2 mt-4 max-w-64 font-semibold text-sm bg-sowgren_Color"
+                className="w-fit text-white rounded-full px-8 flex shadow-sm items-center gap-x-2 mt-4 max-w-64 font-semibold text-sm bg-sowgren_Color"
                 onClick={() => router.push("/products")}
               >
                 Shop Now

@@ -20,13 +20,17 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   const [isLoading, setIsLoading] = useState(true)
   const [activeUser, setActiveUser] = useState<User>(null)
   const { data: session } = useSession()
-  const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
-
   const user = session?.user
+
+  // const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
+  const deliveryFee = orders?.deliveryFee
 
   // const orderTotal = orders?.total + orders?.deliveryFee
   const orderTotal = orders?.total + deliveryFee
-  const balance = activeUser?.user?.balance
+
+  console.log(orderTotal, "orderTotal")
+  console.log(deliveryFee, "deliveryFee")
+  console.log(orders, "orders")
 
   // deductBalance()
   const { remainingAmount, updatedBalance, updatedOrderTotal } = deductBalance(

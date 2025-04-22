@@ -10,14 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
-import { signOut } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { LogOut } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Skeleton } from "../ui/skeleton"
 import { formatCurrency } from "@/lib/utils"
 import { UserProps } from "@/types"
-import { useUserListStore, useUserStore } from "@/store"
-import { useBalance } from "@/context/BalanceContext"
+import { useUserStore } from "@/store"
 
 const UserButton = ({ user }: { user: UserProps }) => {
   const [activeUser, setActiveUser] = useState(null)
@@ -25,8 +24,9 @@ const UserButton = ({ user }: { user: UserProps }) => {
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
   const initials = getInitials(user?.name || "")
-  const { balance } = useUserListStore()
   const { setUser } = useUserStore() // Get the setUser method from the store
+
+  const balance = activeUser?.user?.balance
 
   // Fetch user details if email is provided
   useEffect(() => {
@@ -55,11 +55,7 @@ const UserButton = ({ user }: { user: UserProps }) => {
       }
     }
     getUser()
-  }, [user?.email, balance])
-
-  // useEffect(() => {
-  //   console.log("Active User:", activeUser)
-  // }, [activeUser])
+  }, [user?.email])
 
   // Handle Logout
   const handleLogout = async () => {
@@ -88,7 +84,7 @@ const UserButton = ({ user }: { user: UserProps }) => {
             Order History
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => router.push("/account/wish-list")}
+            onClick={() => router.push("/account/wishlist")}
             className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
           >
             My Wish List
@@ -152,6 +148,12 @@ const UserButton = ({ user }: { user: UserProps }) => {
                 className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
               >
                 Order History
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => router.push("/account/wishlist")}
+                className="text-sm text-sowgren_Color tracking-wide hover:text-white hover:bg-sowgren_Color cursor-pointer"
+              >
+                My Wish List
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => router.push("/admin/dashboard")}

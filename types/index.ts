@@ -200,6 +200,7 @@ export type User = {
     name?: string
     email?: string
     balance?: number
+    orders?: Order[]
     role: string
     image?: string | null
     createdAt: string

@@ -78,7 +78,8 @@ const ConfirmOrderPage = () => {
 
   let total = cartTotal
   let conbinedTotal = total + deliveryFee
-  const balance = user?.balance
+  const balance = activeUser?.user?.balance
+  // const balance = user?.balance
 
   const formattedSubtotal = formatCurrency(cartTotal, "GHS")
   const formattedDelivery = formatCurrency(deliveryFee, "GHS")

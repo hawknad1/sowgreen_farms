@@ -32,7 +32,7 @@ const CategoryCards = () => {
       {isLoading ? (
         <HomeCategorySkeleton />
       ) : (
-        <div className="flex items-center space-x-4 p-4 w-max">
+        <div className="flex items-center space-x-4 w-max">
           {categoryList.map((card) => (
             <CategoryCard data={card} key={card.id} />
           ))}

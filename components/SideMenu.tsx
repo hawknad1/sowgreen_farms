@@ -1,28 +1,50 @@
 "use client"
 
 import { getAdminSideMenuLinks, getSideMenuLinks } from "@/constants"
+import { getUser } from "@/lib/actions/getUser"
 import { useUserStore } from "@/store"
 import { MenuItem } from "@/types"
-import {
-  CircleHelp,
-  Heart,
-  LayoutDashboard,
-  Salad,
-  Settings,
-  UserRound,
-  ListOrdered,
-} from "lucide-react"
 import { useSession } from "next-auth/react"
 import Link from "next/link"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+
+interface UserData {
+  user: {
+    id: string
+    name?: string
+    email?: string
+    balance?: number
+    role: string
+    image?: string | null
+    createdAt: string
+    updatedAt: string
+    emailVerified?: string | null
+    phone?: string | null
+  }
+}
 
 // Define the type for menu items with nested structure
 const SideMenu = () => {
   const { data: session } = useSession()
   const { user: activeUser } = useUserStore()
+  const [userData, setUserData] = useState<UserData | null>(null)
+  const [loading, setLoading] = useState(false)
   const user = session?.user
 
-  const balance = user?.balance
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!user?.email) return
+
+      setLoading(true) // Start loading
+
+      const data = await getUser(user.email)
+      if (data) setUserData(data)
+
+      setLoading(false) // Done loading
+    }
+
+    fetchUser()
+  }, [user?.email])
 
   if (!user) return null // Avoid rendering if user is not available.
 
@@ -42,16 +64,29 @@ const SideMenu = () => {
                 icon={menu.icon}
                 items={menu.items}
               />
+            ) : menu.label.includes("Credit Balance") ? (
+              loading ? (
+                <span className="flex items-center gap-x-2 text-sm text-gray-400 px-4 py-2 animate-pulse">
+                  {menu.icon && <menu.icon className="h-4 w-4" />}
+                  Loading balance...
+                </span>
+              ) : (
+                <Link
+                  href={menu.href || "#"}
+                  className={`flex items-center gap-x-2 text-sm font-medium rounded-lg px-4 py-2 hover:bg-gray-100 ${
+                    userData?.user?.balance >= 0
+                      ? "bg-green-50 text-green-700 hover:text-green-700"
+                      : "bg-red-50 text-red-700 hover:text-red-700"
+                  }`}
+                >
+                  {menu.icon && <menu.icon className="h-4 w-4" />}
+                  {menu.label}
+                </Link>
+              )
             ) : (
               <Link
                 href={menu.href || "#"}
-                className={`flex items-center gap-x-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-lg px-4 py-2 text-sm font-medium ${
-                  menu.label.includes("Credit Balance") && balance >= 0
-                    ? "bg-green-50 text-green-700 hover:bg-green-100 hover:text-green-700"
-                    : menu.label.includes("Credit Balance") && balance < 0
-                    ? "bg-red-50 text-red-700 hover:bg-red-100 hover:text-red-700"
-                    : ""
-                }`}
+                className="flex items-center gap-x-2 text-sm text-gray-500 hover:bg-gray-100 hover:text-gray-700 rounded-lg px-4 py-2 font-medium"
               >
                 {menu.icon && <menu.icon className="h-4 w-4" />}
                 {menu.label}
