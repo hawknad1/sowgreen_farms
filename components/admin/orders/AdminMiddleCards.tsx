@@ -15,7 +15,7 @@ const AdminMiddleCards = ({ orders, balance }: AdminMiddleCardsProps) => {
       <div className="flex justify-between w-full gap-4">
         {/* First component - shows with second component initially */}
         <div className="flex-shrink-0 snap-start w-full lg:w-[calc(50%-0.5rem)]">
-          <ShippingInfo order={orders} />
+          <ShippingInfo order={orders} balance={balance} />
         </div>
 
         {/* Second component - shows with first or third component depending on scroll */}

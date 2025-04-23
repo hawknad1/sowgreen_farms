@@ -13,7 +13,6 @@ import {
 import { Button } from "../../../ui/button"
 import { Order, ShippingAddress } from "@/types"
 import EditShippingDetails from "../EditShippingDetails"
-import { SquarePen, SquarePenIcon } from "lucide-react"
 import { PencilSquareIcon } from "@heroicons/react/24/outline"
 
 interface Props {
@@ -21,9 +20,10 @@ interface Props {
   children?: React.ReactNode
   className?: string
   order: Order
+  balance?: number
 }
 
-const ModifyShippingDialog = ({ order, className }: Props) => {
+const ModifyShippingDialog = ({ order, balance }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -46,7 +46,7 @@ const ModifyShippingDialog = ({ order, className }: Props) => {
             Update customer's delivery address
           </DialogDescription>
         </DialogHeader>
-        <EditShippingDetails order={order} />
+        <EditShippingDetails order={order} balance={balance} />
         <DialogFooter></DialogFooter>
       </DialogContent>
     </Dialog>

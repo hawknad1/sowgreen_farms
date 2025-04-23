@@ -255,10 +255,26 @@ import {
 import { useDispatchRidersStore, useUserListStore } from "@/store"
 import { status } from "@/constants"
 import { deductBalance } from "@/lib/actions/deductBalance"
+import { getUser } from "@/lib/actions/getUser"
 
 interface StatusUpdateFormProps {
   orders: Order
   closeModal: () => void
+}
+
+interface UserData {
+  user: {
+    id: string
+    name?: string
+    email?: string
+    balance?: number
+    role: string
+    image?: string | null
+    createdAt: string
+    updatedAt: string
+    emailVerified?: string | null
+    phone?: string | null
+  }
 }
 
 const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
@@ -267,8 +283,30 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 }) => {
   const [orderStatus, setOrderStatus] = useState(orders.status)
   const [isSaving, setIsSaving] = useState(false)
+  const [userData, setUserData] = useState<UserData | null>(null)
+  const [loading, setLoading] = useState(false)
+
   const { dispatchRiders, fetchDispatchRiders } = useDispatchRidersStore()
-  const { balance, setBalance } = useUserListStore()
+  // const { balance, setBalance } = useUserListStore()
+
+  const email = orders?.shippingAddress?.email
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!email) return
+
+      setLoading(true) // Start loading
+
+      const data = await getUser(email)
+      if (data) setUserData(data)
+
+      setLoading(false) // Done loading
+    }
+
+    fetchUser()
+  }, [email])
+
+  const balance = userData?.user?.balance
 
   const { updatedBalance } = deductBalance(
     balance,
@@ -353,9 +391,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           }),
         })
 
-        if (balanceResponse.ok) {
-          setBalance(updatedBalance)
-        }
+        // if (balanceResponse.ok) {
+        //   setBalance(updatedBalance)
+        // }
 
         if (!balanceResponse.ok) {
           const error = await balanceResponse.json()

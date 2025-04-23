@@ -85,7 +85,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
         </>
       )
     }
-    return orderDetails.shippingAddress.deliveryMethod
+    return orderDetails?.shippingAddress.deliveryMethod
   }
 
   const status = orderDetails?.status
@@ -215,7 +215,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
           </div>
 
           <div className="space-y-4 overflow-auto scrollbar-thin max-h-96 border border-slate-300 rounded-lg">
-            {orderDetails?.products.map((product, index) => {
+            {orderDetails?.products?.map((product, index) => {
               return (
                 <div
                   key={index}
@@ -226,12 +226,12 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                   <div className="flex items-center space-x-4">
                     <Image
                       src={
-                        product.product.images[0]?.url ||
-                        product?.product.imageUrl
+                        product?.product?.images[0]?.url ||
+                        product?.product?.imageUrl
                       }
                       alt={product.product.title}
                       className={`h-20 w-20 object-contain rounded-md bg-slate-100/85 p-0.5 ${
-                        product.available === false && "grayscale"
+                        product?.available === false && "grayscale"
                       }`}
                       width={90}
                       height={90}
@@ -240,15 +240,15 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                       <p className="text-sm md:text-base line-clamp-1">
                         <span
                           className={`font-semibold text-gray-800 text-base ${
-                            product.available === false && "text-gray-500"
+                            product?.available === false && "text-gray-500"
                           }`}
                         >
-                          {product.product.title}
+                          {product?.product?.title}
                         </span>
                         {product?.available === false && <span> - N/A</span>}
                       </p>
                       <p className="font-medium text-gray-600/65 text-sm">
-                        {formatCurrency(product.price, "GHS")}
+                        {formatCurrency(product?.price, "GHS")}
                         {product?.weight === null ? (
                           ""
                         ) : (
@@ -266,7 +266,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
 
                   <div className="text-right space-y-1">
                     <div className="text-sm text-neutral-600 space-x-2 flex flex-col">
-                      <span className="font-semibold">{`QTY : ${product.quantity}`}</span>
+                      <span className="font-semibold">{`QTY : ${product?.quantity}`}</span>
                       <span>{`Subtotal:  ${formatCurrency(
                         parseFloat(product?.quantityTotal),
                         "GHS"

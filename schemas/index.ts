@@ -231,11 +231,6 @@ export const CreditSchema = z
     path: ["email"], // Show the error on the email field
   })
 
-// // Define the main schema that includes an array of images
-// export const AddImagesSchema = z.object({
-//   images: z.array(ProductImageSchema), // Array of image objects
-// })
-
 export const EditOrderDetailSchema = z.object({
   deliveryMethod: z.string(),
   paymentAction: z.string(),

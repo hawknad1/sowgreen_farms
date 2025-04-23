@@ -28,7 +28,7 @@ const EditCustomerOrderDialog = ({ order, className }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [orderItems, setOrderItems] = useState<ProductOrder[]>(
-    order.products || []
+    order?.products || []
   )
 
   const handleNextStep = () => setCurrentStep((prev) => prev + 1)
@@ -37,7 +37,7 @@ const EditCustomerOrderDialog = ({ order, className }: Props) => {
   const handleAddProduct = (newProductOrder: ProductOrder) => {
     // console.log("Current Order Items:", orderItems)
     if (
-      orderItems.some((item) => item.productId === newProductOrder.productId)
+      orderItems?.some((item) => item?.productId === newProductOrder?.productId)
     ) {
       toast.error("Product already exists in the order!")
       return
@@ -50,8 +50,6 @@ const EditCustomerOrderDialog = ({ order, className }: Props) => {
 
   const buttonDisabled =
     order?.status === "cancelled" || order?.paymentAction === "paid"
-
-  console.log(order, "order from edit")
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

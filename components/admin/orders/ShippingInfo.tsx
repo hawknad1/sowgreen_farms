@@ -2,7 +2,13 @@ import { Order } from "@/types"
 import ModifyShippingDialog from "./dialogs/ModifyShippingDialog"
 import Card from "@/app/(root)/confirm-order/Card"
 
-export const ShippingInfo = ({ order }: { order: Order }) => {
+export const ShippingInfo = ({
+  order,
+  balance,
+}: {
+  order: Order
+  balance: number
+}) => {
   if (!order?.shippingAddress) return <p>No shipping address available</p>
 
   const { name, address, city, region, email, phone } = order?.shippingAddress
@@ -13,7 +19,7 @@ export const ShippingInfo = ({ order }: { order: Order }) => {
           Shipping Address
         </h3>
 
-        <ModifyShippingDialog order={order} />
+        <ModifyShippingDialog order={order} balance={balance} />
       </div>
       <div className="flex flex-col gap-y-1 mt-2 lg:mt-1 ">
         <p className="text-sm lg:text-base text-neutral-600">{name}</p>

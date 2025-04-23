@@ -32,11 +32,19 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   console.log(deliveryFee, "deliveryFee")
   console.log(orders, "orders")
 
+  const balance = activeUser?.user?.balance
+
   // deductBalance()
   const { remainingAmount, updatedBalance, updatedOrderTotal } = deductBalance(
-    activeUser?.user?.balance,
+    balance,
     orderTotal
   )
+
+  const email = orders?.shippingAddress?.email
+
+  console.log(orders?.shippingAddress?.email, "email")
+  console.log(updatedOrderTotal, "updatedOrderTotal")
+  console.log(activeUser?.user?.balance, "activeUser?.user?.balance")
 
   // Fetch user details if email is provided
   useEffect(() => {
@@ -44,7 +52,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
       if (!user?.email) return
       setIsLoading(true)
       try {
-        const res = await fetch(`/api/user/${user.email}`, {
+        const res = await fetch(`/api/user/${email}`, {
           method: "GET",
           cache: "no-store",
         })
@@ -62,7 +70,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
       }
     }
     getUser()
-  }, [user?.email])
+  }, [email])
 
   if (!orders)
     return (
@@ -123,7 +131,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
               <Separator className="my-4" />
 
               {/* Shipping and order details */}
-              <AdminMiddleCards orders={orders} />
+              <AdminMiddleCards orders={orders} balance={balance} />
 
               <Separator className="my-4" />
 

@@ -37,9 +37,10 @@ import { useSession } from "next-auth/react"
 
 interface ShippingProps {
   order: Order
+  balance: number
 }
 
-const EditShippingDetails = ({ order }: ShippingProps) => {
+const EditShippingDetails = ({ order, balance }: ShippingProps) => {
   const [isSaving, setIsSaving] = useState(false)
   const [selectedCity, setSelectedCity] = useState("")
   const [filteredCities, setFilteredCities] = useState<CitiesWithFees[]>([])
@@ -54,19 +55,15 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
 
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const setDeliveryFee = useDeliveryStore((state) => state.setDeliveryFee)
-
   const orderTotal = order?.total + deliveryFee
-
-  const balance = activeUser?.user?.balance
-
-  const { updatedOrderTotal } = deductBalance(balance, orderTotal)
+  const email = order?.shippingAddress?.email
 
   useEffect(() => {
     const getUser = async () => {
-      if (!user?.email) return
+      if (email) return
       setIsLoading(true)
       try {
-        const res = await fetch(`/api/user/${user.email}`, {
+        const res = await fetch(`/api/user/${email}`, {
           method: "GET",
           cache: "no-store",
         })
@@ -84,7 +81,11 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
       }
     }
     getUser()
-  }, [user?.email])
+  }, [email])
+
+  // const balance = activeUser?.user?.balance
+
+  const { updatedOrderTotal } = deductBalance(balance, orderTotal)
 
   // Fetch cities data
   useEffect(() => {
@@ -233,9 +234,6 @@ const EditShippingDetails = ({ order }: ShippingProps) => {
 
   const onSubmit = (values: z.infer<typeof CheckoutSchema>) =>
     updateShippingAddress(values)
-  // const onSubmit = (values: z.infer<typeof ShippingInfoMethodSchema>) => {
-  //   console.log(values, "ADMIN VALUES")
-  // }
 
   return (
     <Form {...form}>
