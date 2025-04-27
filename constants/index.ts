@@ -142,7 +142,7 @@ export const footerLeftLinks = [
 
 export const paymentLinks = [
   { id: 1, image: "/images/mtn.png" },
-  { id: 2, image: "/images/telecel.jpg" },
+  { id: 2, image: "/images/telecel1.jpg" },
   { id: 3, image: "/images/visa.png" },
   { id: 4, image: "/images/mastercard.png" },
 ]

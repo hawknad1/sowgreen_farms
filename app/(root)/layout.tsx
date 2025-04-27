@@ -31,7 +31,6 @@ export const metadata: Metadata = {
     template: "%s | Sowgreen Organic Farms",
   },
   description: "Get your organic farm produce delivered to your doorstep.",
-  viewport: "width=device-width, initial-scale=1.0",
 }
 
 export default async function RootLayout({

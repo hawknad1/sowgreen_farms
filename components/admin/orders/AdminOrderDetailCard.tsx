@@ -28,10 +28,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   // const orderTotal = orders?.total + orders?.deliveryFee
   const orderTotal = orders?.total + deliveryFee
 
-  console.log(orderTotal, "orderTotal")
-  console.log(deliveryFee, "deliveryFee")
-  console.log(orders, "orders")
-
   const balance = activeUser?.user?.balance
 
   // deductBalance()
@@ -41,10 +37,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   )
 
   const email = orders?.shippingAddress?.email
-
-  console.log(orders?.shippingAddress?.email, "email")
-  console.log(updatedOrderTotal, "updatedOrderTotal")
-  console.log(activeUser?.user?.balance, "activeUser?.user?.balance")
 
   // Fetch user details if email is provided
   useEffect(() => {

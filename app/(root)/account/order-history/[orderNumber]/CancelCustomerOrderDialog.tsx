@@ -28,7 +28,7 @@ const CancelCustomerOrderDialog = ({ order, className }: Props) => {
   const handleCancel = async () => {
     setIsCancelling(true)
     try {
-      const res = await fetch(`/api/orders/${order.id}`, {
+      const res = await fetch(`/api/orders/${order?.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -88,7 +88,7 @@ const CancelCustomerOrderDialog = ({ order, className }: Props) => {
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>{`Cancel Order No. ${order.orderNumber}`}</DialogTitle>
+              <DialogTitle>{`Cancel Order No. ${order?.orderNumber}`}</DialogTitle>
               <DialogDescription>
                 Are you sure you want to cancel this order?
               </DialogDescription>

@@ -29,7 +29,7 @@ const OrderHistoryPage = () => {
     async function getOrderList() {
       if (!user?.email) return
       try {
-        const res = await fetch(`/api/address/${user.email}`, {
+        const res = await fetch(`/api/address/${user?.email}`, {
           method: "GET",
           cache: "no-store",
         })
@@ -53,7 +53,7 @@ const OrderHistoryPage = () => {
     async function getOrders() {
       try {
         // Construct the URL with the email as a query parameter
-        const url = `/api/orders?email=${encodeURIComponent(user.email)}`
+        const url = `/api/orders?email=${encodeURIComponent(user?.email)}`
 
         const ordRes = await fetch(url, {
           method: "GET",
@@ -74,7 +74,7 @@ const OrderHistoryPage = () => {
       }
     }
 
-    if (user && user.email) {
+    if (user && user?.email) {
       getOrders() // Call the function only if the user has an email
     }
   }, [user]) // Dependency array includes `user` to re-run if `user` changes

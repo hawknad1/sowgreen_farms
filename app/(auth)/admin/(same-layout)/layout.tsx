@@ -14,7 +14,6 @@ const jost = Jost({
 export const metadata: Metadata = {
   title: "Sowgreen Farms",
   description: "Get your organic farm produce",
-  viewport: "width=device-width, initial-scale=1.0",
 }
 
 export default async function RootLayout({

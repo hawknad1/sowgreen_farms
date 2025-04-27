@@ -90,7 +90,7 @@ const OrderHistoryTable = ({ orders }: Props) => {
                   key={row.id}
                   onClick={() =>
                     router.push(
-                      `/account/order-history/${row.original.orderNumber}`
+                      `/account/order-history/${row?.original?.orderNumber}`
                     )
                   }
                   className="cursor-pointer hover:bg-gray-100"
