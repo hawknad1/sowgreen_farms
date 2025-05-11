@@ -147,9 +147,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       const updatedOrder = await response.json()
       setOrderStatus(updatedOrder.status)
 
-      // if (updatedOrder.status === "confirmed") {
-      //   await sendOrderConfirmation(orders)
-      // }
+      if (updatedOrder.status === "confirmed") {
+        await sendOrderConfirmation(orders)
+      }
 
       // Use updated order data for operations
       if (isAutoPay) {
