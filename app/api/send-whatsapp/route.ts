@@ -1,5 +1,6 @@
 // app/api/send-whatsapp/route.js
 
+import { sowgreenWorkers } from "@/constants"
 import { formatCurrency } from "@/lib/utils"
 import { NextResponse } from "next/server"
 import twilio from "twilio"
@@ -12,97 +13,269 @@ const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID!
 
 const client = twilio(accountSid, authToken)
 
-// export async function POST(request: Request) {
+// export async function POST(req: Request) {
+//   const order: Order = await req.json()
+
+//   const shipping = order.shippingAddress
+//   const customerName = shipping.name
+//   const orderNumber = order.orderNumber
+//   const deliveryDate = order.deliveryDate
+//   const deliveryMethod = shipping.deliveryMethod || "Pickup"
+//   const address = `${shipping.address}, ${shipping.city}, ${shipping.region}`
+//   const phone = shipping.phone
+//   const totalDue = formatCurrency(order?.updatedOrderTotal, "GHS")
+//   const total_amount = order?.total + order?.deliveryFee
+//   const credit_balance = order?.creditAppliedTotal
+
+//   // Create order summary with bullet points using template literals
+//   //   const orderSummary = order.products
+//   //     .map((item: any) => {
+//   //       const weight = item.weight ? `${item.weight}${item.unit}` : ""
+//   //       return `• ${item.quantity} x ${
+//   //         item.product.title
+//   //       } ${weight} - ${formatCurrency(item?.quantityTotal, "GHS")}`.trim()
+//   //     })
+//   //     .join(",") // Use comma as separator but keep bullet points
+
+//   const orderSummary = order.products.map((item: any) => {
+//     const weight = item.weight ? `${item.weight}${item.unit}` : ""
+//     const productList = `• ${item.quantity} x ${
+//       item.product.title
+//     } ${weight} - ${formatCurrency(item?.quantityTotal, "GHS")}\n`.trim()
+//     return productList
+//   })
+
+//   //   const orderSummary = order.products.map((item: any) => {
+//   //     const weight = item.weight ? `${item.weight}${item.unit}` : ""
+//   //     const productList = `• ${item.quantity} x ${
+//   //       item.product.title
+//   //     } ${weight} - ${formatCurrency(item?.quantityTotal, "GHS")}`.trim()
+//   //     return productList
+//   //   })
+
+//   const itemsList = order.products
+//     .map((item: any) => {
+//       if (!item?.product) {
+//         return "- Product details missing"
+//       }
+
+//       if (item?.available === false) {
+//         return `• ${item?.product.title}: *N/A*`
+//       }
+
+//       const productWeight = item?.weight
+//         ? `${item?.weight < 1 ? item?.weight * 1000 : item?.weight}${
+//             item?.unit || ""
+//           }`
+//         : "N/A"
+
+//       return `• ${item.quantity} x ${
+//         item.product.title
+//       } ${productWeight} - ${formatCurrency(item?.quantityTotal, "GHS")}`.trim()
+//     })
+//     .slice(0, 15) // Only take the first 5 items
+
+//   // Fill up to 5 lines in case there are fewer than 5 products
+//   while (itemsList.length < 15) {
+//     itemsList.push("") // or push(" ") or some default like "-")
+//   }
+
+//   //   const itemsList = order.products.map((item: any) => {
+//   //     if (!item?.product) {
+//   //       return "- Product details missing" // Handle missing product details
+//   //     }
+
+//   //     if (item?.available === false) {
+//   //       return `• ${item?.product.title}: *N/A*` // Show product as unavailable
+//   //     }
+
+//   //     const productWeight = item?.weight
+//   //       ? `${item?.weight < 1 ? item?.weight * 1000 : item?.weight}${
+//   //           item?.unit || ""
+//   //         }`
+//   //       : "N/A" // Format weight if available
+
+//   //     return ` • ${item.quantity} x ${
+//   //       item.product.title
+//   //     } ${productWeight} - ${formatCurrency(item?.quantityTotal, "GHS")}`.trim()
+//   //   })
+
+//   const deliveryFee = formatCurrency(order.deliveryFee ?? 0, "GHS")
+
+//   const totalAmount = formatCurrency(order?.total + order?.deliveryFee, "GHS")
+//   //   const total = formatCurrency(totalAmount ?? 0, "GHS")
+
+//   const creditBalance = formatCurrency(order?.creditAppliedTotal, "GHS")
+//   const subtotal = formatCurrency(order?.total, "GHS")
+//   const supportEmail = "support@sowgreen.com"
+//   const worker_one = `${sowgreenWorkers[0].name} - ${sowgreenWorkers[0].phone}`
+//   const worker_two = `${sowgreenWorkers[1].name} - ${sowgreenWorkers[1].phone}`
+
+//   //   const variables = {
+//   //     "1": customerName,
+//   //     "2": orderNumber,
+//   //     "3": deliveryDate,
+//   //     "4": deliveryMethod,
+//   //     "5": address,
+//   //     "6": phone,
+//   //     "7": orderSummary, // This now has bullet points but no line breaks
+//   //     "8": creditBalance,
+//   //     "9": subtotal,
+//   //     "10": deliveryFee,
+//   //     "11": total,
+//   //     "12": supportEmail,
+//   //   }
+
+//   const variables = {
+//     "1": customerName,
+//     "2": orderNumber,
+//     "3": deliveryDate,
+//     "4": deliveryMethod,
+//     "5": address,
+//     "6": phone,
+//     "7": itemsList[0], // This now has bullet points but no line breaks
+//     "8": itemsList[1],
+//     "9": itemsList[2],
+//     "10": itemsList[3],
+//     "11": itemsList[4],
+//     "12": itemsList[5],
+//     "13": itemsList[6],
+//     "14": itemsList[7],
+//     "15": itemsList[8],
+//     "16": itemsList[9],
+//     "17": itemsList[10],
+//     "18": itemsList[11],
+//     "19": itemsList[12],
+//     "20": itemsList[13],
+//     "21": itemsList[14],
+//     "22": subtotal,
+//     "23": deliveryFee,
+//     "24": creditBalance,
+//     "25": totalAmount,
+//     "26": totalDue,
+//     "27": worker_one,
+//     "28": worker_two,
+//   }
+
+//   console.log(orderSummary, "orderSummary")
+//   console.log(variables, "variables")
+
 //   try {
-//     const { order } = await request.json()
-//     console.log(order, "here at endpoint...")
-
-//     const customerPhone = order?.shippingAddress?.phone
-
-//     // if (!order || !customerPhone) {
-//     //   return NextResponse.json(
-//     //     { error: "Missing required fields: order and customerPhone" },
-//     //     { status: 400 }
-//     //   )
-//     // }
-
-//     if (!order) {
-//       return NextResponse.json(
-//         { error: "Missing required fields: order and customerPhone" },
-//         { status: 400 }
-//       )
-//     }
-
-//     const address = `${order.shippingAddress.address}, ${order.shippingAddress.city}, ${order.shippingAddress.region}`
-
-//     const to = `whatsapp:${
-//       customerPhone.startsWith("+")
-//         ? customerPhone
-//         : `+233${customerPhone.replace(/^0/, "")}`
-//     }`
-
-//     // const orderSummary = order.products
-//     //   .map((item: any) => {
-//     //     const weight = item.weight ? `${item.weight}${item.unit}` : ""
-//     //     return `${item.quantity} x ${item.product.title} ${weight}`.trim()
-//     //   })
-//     //   .join("\n")
-
-//     const orderSummary = order.products
-//       .map((item: any) => {
-//         const weight = item.weight ? `${item.weight}${item.unit}` : ""
-//         return `${item.quantity} x ${item.product.title} ${weight}`.trim()
-//       })
-//       .join(", ") // No line breaks, more stable
-
-//     const contentVariables = {
-//       "1": order?.shippingAddress.name,
-//       "2": order?.orderNumber,
-//       "3": order?.deliveryDate,
-//       "4": order?.shippingAddress.deliveryMethod,
-//       "5": address,
-//       "6": order?.shippingAddress.phone,
-//       "7": orderSummary,
-//       "8": order?.deliveryFee,
-//       "9": order?.total,
-//       "10": process.env.SUPPORT_EMAIL || "support@sowgreen.com",
-//     }
-
-//     const variables = {
-//       "1": "Test User",
-//       "2": "SG123456",
-//       "3": "May 14",
-//       "4": "Home Delivery",
-//       "5": "123 Some Street, City, Region",
-//       "6": "0540000000",
-//       "7": "- 1 x Pineapple",
-//       "8": "30",
-//       "9": "150",
-//       "10": "support@sowgreen.com",
-//     }
-
 //     const message = await client.messages.create({
-//       from: "whatsapp:+15557258086",
-//       to: "whatsapp:+233548332803",
-//       contentSid: "HX89473c1feec5985aee30a08a57f165c1", // your approved template SID
-//       contentVariables: JSON.stringify(contentVariables), // ✅ THIS is the key line
+//       from: `whatsapp:${whatsappNumber}`,
+//       to: `whatsapp:${order.userWhatsappOptIn.customerPhone}`,
+//       contentSid,
+//       contentVariables: JSON.stringify(variables),
 //     })
 
-//     console.log(contentVariables, "contentVariables")
-//     console.log(variables, "variables")
-
-//     return NextResponse.json({ success: true, messageId: message.sid })
-//   } catch (error) {
-//     console.error("Error sending WhatsApp message:", error)
+//     return NextResponse.json({ success: true, messageSid: message.sid })
+//   } catch (error: any) {
+//     console.error("Twilio Error:", error.message)
 //     return NextResponse.json(
-//       { error: "Failed to send WhatsApp message" },
+//       { success: false, error: error.message },
+//       { status: 500 }
+//     )
+//   }
+// }
+
+interface Order {
+  shippingAddress: {
+    name: string
+    deliveryMethod?: string
+    address: string
+    city: string
+    region: string
+    phone: string
+  }
+  orderNumber: string
+  deliveryDate: string
+  products: Array<{
+    product: {
+      title: string
+    }
+    quantity: number
+    weight?: number
+    unit?: string
+    quantityTotal: number
+    available?: boolean
+  }>
+  deliveryFee?: number
+  total: number
+  updatedOrderTotal: number
+  creditAppliedTotal: number
+  userWhatsappOptIn: {
+    customerPhone: string
+  }
+}
+// export async function POST(req: Request) {
+//   const order: Order = await req.json()
+
+//   const shipping = order.shippingAddress
+//   const customerName = shipping.name
+//   const orderNumber = order.orderNumber
+//   const deliveryDate = order.deliveryDate
+//   const deliveryMethod = shipping.deliveryMethod || "Pickup"
+//   const address = `${shipping.address}, ${shipping.city}, ${shipping.region}`
+//   const phone = shipping.phone
+//   const totalDue = formatCurrency(order?.updatedOrderTotal, "GHS")
+//   const total_amount = order?.total + order?.deliveryFee
+//   const credit_balance = order?.creditAppliedTotal
+
+//   // Create order summary with bullet points using template literals
+//   const orderSummary = order.products
+//     .map((item: any) => {
+//       const weight = item.weight ? `${item.weight}${item.unit}` : ""
+//       return `• ${item.quantity} x ${
+//         item.product.title
+//       } ${weight} - ${formatCurrency(item?.quantityTotal, "GHS")}`.trim()
+//     })
+//     .join(",") // Use comma as separator but keep bullet points
+
+//   const deliveryFee = formatCurrency(order.deliveryFee ?? 0, "GHS")
+
+//   const totalAmount = formatCurrency(order?.total + order?.deliveryFee, "GHS")
+
+//   const creditBalance = formatCurrency(order?.creditAppliedTotal, "GHS")
+//   const subtotal = formatCurrency(order?.total, "GHS")
+//   const supportEmail = "support@sowgreen.com"
+//   const worker_one = `${sowgreenWorkers[0].name} - ${sowgreenWorkers[0].phone}`
+//   const worker_two = `${sowgreenWorkers[1].name} - ${sowgreenWorkers[1].phone}`
+
+//   const variables = {
+//     "1": customerName,
+//     "2": orderNumber,
+//     "3": deliveryDate,
+//     "4": deliveryMethod,
+//     "5": address,
+//     "6": phone,
+//     "7": orderSummary, // This now has bullet points but no line breaks
+//     "8": creditBalance,
+//     "9": subtotal,
+//     "10": deliveryFee,
+//     "11": totalAmount,
+//     "12": supportEmail,
+//   }
+
+//   try {
+//     const message = await client.messages.create({
+//       from: `whatsapp:${whatsappNumber}`,
+//       to: `whatsapp:${order.userWhatsappOptIn.customerPhone}`,
+//       contentSid,
+//       contentVariables: JSON.stringify(variables),
+//     })
+
+//     return NextResponse.json({ success: true, messageSid: message.sid })
+//   } catch (error: any) {
+//     console.error("Twilio Error:", error.message)
+//     return NextResponse.json(
+//       { success: false, error: error.message },
 //       { status: 500 }
 //     )
 //   }
 // }
 
 export async function POST(req: Request) {
-  const order = await req.json()
+  const order: Order = await req.json()
 
   const shipping = order.shippingAddress
   const customerName = shipping.name
@@ -111,31 +284,60 @@ export async function POST(req: Request) {
   const deliveryMethod = shipping.deliveryMethod || "Pickup"
   const address = `${shipping.address}, ${shipping.city}, ${shipping.region}`
   const phone = shipping.phone
+  const totalDue = formatCurrency(order?.updatedOrderTotal, "GHS")
+  const total_amount = order?.total + order?.deliveryFee
+  const credit_balance = order?.creditAppliedTotal
 
-  // Create order summary with bullet points using template literals
+  // In your API route or config file
+  const TEMPLATE_MAP = (() => {
+    try {
+      const jsonStr = process.env.TWILIO_TEMPLATE_MAP_JSON
+      return jsonStr ? JSON.parse(jsonStr) : {}
+    } catch (e) {
+      console.error("Failed to parse TWILIO_TEMPLATE_MAP_JSON")
+      return {}
+    }
+  })()
+
+  console.log(TEMPLATE_MAP, "TEMPLATE_MAP")
+
+  // Create formatted order summary as a single string with newlines
   const orderSummary = order.products
-    .map((item: any) => {
-      const weight = item.weight ? `${item.weight}${item.unit}` : ""
+    .slice(0, 10) // Limit to 10 items to avoid message being too long
+    .map((item) => {
+      if (!item?.product) {
+        return "- Product details missing"
+      }
+
+      if (item?.available === false) {
+        return `• ${item?.product.title}: *N/A*`
+      }
+
+      const productWeight = item?.weight
+        ? `${item?.weight < 1 ? item?.weight * 1000 : item?.weight}${
+            item?.unit || ""
+          }`
+        : ""
+
       return `• ${item.quantity} x ${
         item.product.title
-      } ${weight} - ${formatCurrency(item?.quantityTotal, "GHS")}`.trim()
+      } ${productWeight} - ${formatCurrency(item?.quantityTotal, "GHS")}`
     })
-    .join(",") // Use comma as separator but keep bullet points
+    .join("\n") // Join with newlines to create single string
 
-  const deliveryFee = formatCurrency(
-    order.deliveryFee?.toString() ?? "0",
-    "GHS"
-  )
+  // Add note if there are more items not shown
+  const extraItemsNote =
+    order.products.length > 10
+      ? `\n\n+ ${order.products.length - 10} more items`
+      : ""
 
-  const totalAmount = order?.total + order?.deliveryFee
-  const total = formatCurrency(totalAmount?.toString() ?? "0", "GHS")
-
-  const creditBalance = formatCurrency(
-    order?.creditAppliedTotal?.toString(),
-    "GHS"
-  )
-  const subtotal = formatCurrency(order?.total?.toString(), "GHS")
-  const supportEmail = "support@sowgreen.com"
+  console.log(orderSummary, "orderSummary")
+  const deliveryFee = formatCurrency(order.deliveryFee ?? 0, "GHS")
+  const totalAmount = formatCurrency(order?.total + order?.deliveryFee, "GHS")
+  const creditBalance = formatCurrency(order?.creditAppliedTotal, "GHS")
+  const subtotal = formatCurrency(order?.total, "GHS")
+  const worker_one = `${sowgreenWorkers[0].name} - ${sowgreenWorkers[0].phone}`
+  const worker_two = `${sowgreenWorkers[1].name} - ${sowgreenWorkers[1].phone}`
 
   const variables = {
     "1": customerName,
@@ -144,36 +346,21 @@ export async function POST(req: Request) {
     "4": deliveryMethod,
     "5": address,
     "6": phone,
-    "7": orderSummary, // This now has bullet points but no line breaks
-    "8": creditBalance,
-    "9": subtotal,
-    "10": deliveryFee,
-    "11": total,
-    "12": supportEmail,
+    "7": orderSummary, // Combined string
+    "8": subtotal,
+    "9": deliveryFee,
+    "10": creditBalance,
+    "11": totalAmount,
+    "12": totalDue,
+    "13": worker_one,
+    "14": worker_two,
   }
-
-  console.log(orderSummary, "orderSummary")
-  console.log(variables, "variables")
 
   try {
     const message = await client.messages.create({
       from: `whatsapp:${whatsappNumber}`,
       to: `whatsapp:${order.userWhatsappOptIn.customerPhone}`,
       contentSid,
-      //   contentVariables: JSON.stringify({
-      //     "1": customerName,
-      //     "2": orderNumber,
-      //     "3": deliveryDate,
-      //     "4": deliveryMethod,
-      //     "5": address,
-      //     "6": phone,
-      //     "7": orderSummary, // This now has bullet points but no line breaks
-      //     "8": creditBalance,
-      //     "9": subtotal,
-      //     "10": deliveryFee,
-      //     "11": total,
-      //     "12": supportEmail,
-      //   }),
       contentVariables: JSON.stringify(variables),
     })
 
@@ -188,57 +375,95 @@ export async function POST(req: Request) {
 }
 
 // export async function POST(req: Request) {
-//   const order = await req.json()
-
-//   const shipping = order.shippingAddress
-//   const customerName = shipping.name
-//   const orderNumber = order.orderNumber
-//   const deliveryDate = order.deliveryDate
-//   const deliveryMethod = shipping.deliveryMethod || "Pickup"
-//   const address = `${shipping.address}, ${shipping.city}, ${shipping.region}`
-//   const phone = shipping.phone
-
-//   const orderSummary = order.products
-//     .map((item: any) => {
-//       const weight = item.weight ? `${item.weight}${item.unit}` : ""
-//       return `${item.quantity} x ${item.product.title} ${weight}`.trim()
-//     })
-//     .join(",") // No line breaks, more stable
-
-//   const deliveryFee = formatCurrency(
-//     order.deliveryFee?.toString() ?? "0",
-//     "GHS"
-//   )
-
-//   const totalAmount = order?.total + order?.deliveryFee
-//   const total = formatCurrency(totalAmount?.toString() ?? "0", "GHS")
-
-//   const creditBalance = formatCurrency(
-//     order?.creditAppliedTotal?.toString(),
-//     "GHS"
-//   )
-//   const subtotal = formatCurrency(order?.total?.toString(), "GHS")
-//   const supportEmail = "support@sowgreen.com"
-
 //   try {
+//     const order = await req.json()
+
+//     const shipping = order.shippingAddress
+//     const customerName = shipping.name
+//     const orderNumber = order.orderNumber
+//     const deliveryDate = order.deliveryDate
+//     const deliveryMethod = shipping.deliveryMethod || "Pickup"
+//     const address = `${shipping.address}, ${shipping.city}, ${shipping.region}`
+//     const phone = shipping.phone
+//     const totalDue = formatCurrency(order?.updatedOrderTotal, "GHS")
+
+//     const deliveryFee = formatCurrency(order.deliveryFee ?? 0, "GHS")
+//     const totalAmount = formatCurrency(order.total + order.deliveryFee, "GHS")
+//     const creditBalance = formatCurrency(order.creditAppliedTotal, "GHS")
+//     const subtotal = formatCurrency(order.total, "GHS")
+//     const worker_one = `${sowgreenWorkers[0].name} - ${sowgreenWorkers[0].phone}`
+//     const worker_two = `${sowgreenWorkers[1].name} - ${sowgreenWorkers[1].phone}`
+
+//     // Create product list (max 15 items)
+//     const itemsList = order.products.map((item: any) => {
+//       if (!item?.product) return "- Product details missing"
+//       if (item.available === false) return `• ${item.product.title}: *N/A*`
+
+//       const productWeight = item.weight
+//         ? `${item.weight < 1 ? item.weight * 1000 : item.weight}${
+//             item.unit || ""
+//           }`
+//         : "N/A"
+
+//       return `• ${item.quantity} x ${
+//         item.product.title
+//       } ${productWeight} - ${formatCurrency(item.quantityTotal, "GHS")}`
+//     })
+
+//     // Fill up to 15 items with empty strings if needed
+//     while (itemsList.length < 15) {
+//       itemsList.push("")
+//     }
+
+//     // Create default contentVariables object with all keys from '1' to '28'
+//     const defaultVars = Array.from({ length: 28 }, (_, i) =>
+//       String(i + 1)
+//     ).reduce((acc, key) => {
+//       acc[key] = ""
+//       return acc
+//     }, {} as Record<string, string>)
+
+//     // Merge defaults with real data
+//     const contentVariables = {
+//       ...defaultVars,
+//       "1": customerName,
+//       "2": orderNumber,
+//       "3": deliveryDate,
+//       "4": deliveryMethod,
+//       "5": address,
+//       "6": phone,
+//       "7": itemsList[0],
+//       "8": itemsList[1],
+//       "9": itemsList[2],
+//       "10": itemsList[3],
+//       "11": itemsList[4],
+//       "12": itemsList[5],
+//       "13": itemsList[6],
+//       "14": itemsList[7],
+//       "15": itemsList[8],
+//       "16": itemsList[9],
+//       "17": itemsList[10],
+//       "18": itemsList[11],
+//       "19": itemsList[12],
+//       "20": itemsList[13],
+//       "21": itemsList[14],
+//       "22": subtotal,
+//       "23": deliveryFee,
+//       "24": creditBalance,
+//       "25": totalAmount,
+//       "26": totalDue,
+//       "27": worker_one,
+//       "28": worker_two,
+//     }
+
+//     console.log(contentVariables, "contentVariables")
+
+//     // Send WhatsApp message
 //     const message = await client.messages.create({
-//       from: "whatsapp:+15557258086",
+//       from: `whatsapp:${whatsappNumber}`,
 //       to: `whatsapp:${order.userWhatsappOptIn.customerPhone}`,
-//       contentSid, // e.g., 'HXxxxx'
-//       contentVariables: JSON.stringify({
-//         "1": customerName,
-//         "2": orderNumber,
-//         "3": deliveryDate,
-//         "4": deliveryMethod,
-//         "5": address,
-//         "6": phone,
-//         "7": orderSummary, // properly escaped
-//         "8": creditBalance,
-//         "9": subtotal,
-//         "10": deliveryFee,
-//         "11": total,
-//         "12": supportEmail,
-//       }),
+//       contentSid,
+//       contentVariables: JSON.stringify(contentVariables),
 //     })
 
 //     return NextResponse.json({ success: true, messageSid: message.sid })

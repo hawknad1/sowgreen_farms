@@ -30,7 +30,7 @@ import { sowgreenWorkers } from "@/constants"
 
 export async function sendOrderConfirmation(order: Order) {
   try {
-    const response = await fetch("/api/send-whatsapp", {
+    const response = await fetch("/api/send-whatsapp-message", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
