@@ -1,29 +1,3 @@
-// import { Order } from "@/types"
-// import { whatsAppOrderLink } from "@/app/(root)/checkout/WhatsappOrderLink"
-
-// export async function sendSms(order: Order) {
-//   const message = whatsAppOrderLink(order)
-
-//   try {
-//     const response = await fetch("/api/sendSms", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         to: order?.shippingAddress?.phone, // Customer's WhatsApp number
-//         message,
-//       }),
-//     })
-
-//     if (response.ok) {
-//       const data = await response.json()
-//     }
-//   } catch (error) {
-//     console.error("Error sending message:", error)
-//   }
-// }
-
 import { whatsAppOrderLink } from "@/app/(root)/checkout/WhatsappOrderLink"
 
 export async function sendSms(order: any) {

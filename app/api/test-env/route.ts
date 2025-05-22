@@ -70,6 +70,7 @@ console.log(
   Buffer.from(
     JSON.stringify({
       "14var": "HX6435b0695a4a0421350e2b5d4a66d038",
+      "14var_btn": "HX2c9563f5dd1e5c104c7bd14a1d70d96d",
       "15var": "HX9d7972f796060c86a4040f2cf46635b7",
       "16var": "HX710e906ed824a2b992751d840da94762",
       "17var": "HX865f9e52a710e9a397a85eb669b9c69d",
@@ -89,6 +90,7 @@ console.log(
       "31var": "HX3b3d008e83ccb48e687224d652d665a2",
       "32var": "HXb37c92b362f4126cb65bb687cb0ce70d",
       "33var": "HX1db5b20fbd2977e170d0296a1f5919e6",
+      full_product_list: "HXee8aaff32f6965b947ee2fa507948302",
     })
   ).toString("base64")
 )

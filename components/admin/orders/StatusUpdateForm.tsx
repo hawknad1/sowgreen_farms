@@ -22,10 +22,7 @@ import {
 } from "@/components/ui/select"
 import { Order, OrderStatus } from "@/types"
 import { UpdateStatusSchema } from "@/schemas"
-import {
-  sendOrderConfirmation,
-  sendOrderReceived,
-} from "@/lib/actions/sendWhatsappMessage"
+import { sendOrderConfirmation } from "@/lib/actions/sendWhatsappMessage"
 import { useDispatchRidersStore, useUserListStore } from "@/store"
 import { status } from "@/constants"
 import { deductBalance } from "@/lib/actions/deductBalance"

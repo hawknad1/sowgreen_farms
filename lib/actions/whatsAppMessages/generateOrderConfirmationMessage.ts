@@ -1,6 +1,6 @@
 import { sowgreenWorkers } from "@/constants"
 import { formatCurrency } from "@/lib/utils"
-import { Order } from "@/types"
+import { Order, ShippingAddress } from "@/types"
 
 interface OrderItem {
   product: string
@@ -13,105 +13,105 @@ interface Contact {
   phone: string
 }
 
+// export type ProductOrder = {
+//   item: {
+//     id: string
+//     title: string
+//     categoryName: string
+//     description: string
+//     imageUrl: string
+//     price: number
+//     weight: number
+//     unit: string
+//     isInStock: string
+//     discount: number
+//     quantity: number
+//     purchaseCount: number
+//     createdAt: string
+//     updatedAt: string
+//   }
+//   total: number
+//   quantity: number
+// }
+
+// export type ProductOrder = {
+//   product: {
+//     id: string
+//     title: string
+//     categoryName: string
+//     description: string
+//     imageUrl: string
+//     price: number
+//     weight: number
+//     unit: string
+//     isInStock: string
+//     discount: number
+//     quantity: number
+//     purchaseCount: number
+//     createdAt: string
+//     updatedAt: string
+//   }
+//   total: number
+//   quantity: number
+// }
+
+// interface Product {
+//   quantity: number
+//   quantityTotal: number
+//   available: boolean
+//   weight?: number
+//   unit?: string
+//   price?: number
+//   product: {
+//     title: string
+//   }
+// }
+
+// export type Order = {
+//   id?: string
+//   orderNumber: string
+//   referenceNumber?: string
+//   total: number
+//   status?: "processing" | "shipped" | "delivered"
+//   dispatchRider?: string
+//   deliveryMethod: string
+//   deliveryFee: number
+//   cardType?: string
+//   last4Digits?: string
+//   paymentMode?: string
+//   paymentAction?: string
+//   shippingAddress: ShippingAddress
+//   products: Product[] // Change from Product[] to ProductOrder[]
+//   createdAt?: string
+// }
+
 export function generateOrderConfirmationMessage(order: Order): string {
-  // Generate list of ordered products
   const itemsList = order.products
-    .map(({ product, quantity, weight, unit, price, available }) => {
-      if (!product) {
-        return "- Product details missing" // Handle missing product details
+    .map((p) => {
+      if (!p) {
+        return "- Product details missing"
       }
 
-      if (available === false) {
-        return `- ${product.title}: *N/A*` // Show product as unavailable
+      if (p.available === false) {
+        return `❌ ${p.product.title} : *N/A*` // Show product as unavailable
       }
-
-      const productWeight = weight
-        ? `${weight < 1 ? weight * 1000 : weight}${unit || ""}`
-        : "N/A" // Format weight if available
-
-      return `- ${productWeight} ${product.title}: GHS ${price.toFixed(
-        2
-      )} (Qty: ${quantity})`
+      const weight = p.weight ? `${p.weight}${p.unit}` : ""
+      return `✅ ${p.quantity}x ${
+        p.product.title
+      } - ${weight} - ${formatCurrency(Number(p.quantityTotal), "GHS")}`
     })
     .join("\n")
 
-  // Generate delivery details
-  const deliveryMethod =
-    order?.shippingAddress?.deliveryMethod || "Not specified"
-  const deliveryAddress = `${order?.shippingAddress?.address}, ${order?.shippingAddress?.city}`
-
-  // Contact list placeholder (update with actual contacts)
   const contactList = sowgreenWorkers
-    .map(({ name, phone }) => `- ${name}: ${phone}`)
+    .map((contact) => `- ${contact.name}: ${contact.phone}`)
     .join("\n")
 
-  // Generate final message
   return `
-Hello *${order?.shippingAddress?.name}*,
+Hello *${order.shippingAddress.name}*,
 
-Your order ${order?.orderNumber} is confirmed and ready for delivery!
-Visit our website under Order History and complete your payment through your preferred method. 
-
-📅 *Delivery Date:* ${order?.deliveryDate || "Not specified"}.
-🚚 *Delivery Method:* ${deliveryMethod}.
-📍 *Delivery Address:* ${deliveryAddress}.
+Below is the complete list of products for Order #${order?.orderNumber}
 
 *Order Summary:*
 ${itemsList}
-
-*Total:* ${formatCurrency(
-    order?.total + order.deliveryFee,
-    "GHS"
-  )} (incl. ${formatCurrency(order?.deliveryFee, "GHS")})
-
-For questions, contact ${contactList[0]} or ${contactList[1]}
-
-Thank you for choosing *SowGreen Organic Farms*!
-`.trim()
+    `.trim()
 }
-
-// Hello *${order.shippingAddress.name}*,
-
-// Your order is ready for delivery! Please visit *sowgreen.com*,
-// go to *Order History*, and click *Pay* on your order.
-// We accept Mobile Money, Card, or Cash on Delivery.
-
-// *Delivery Date:* ${order.deliveryDate || "Not specified"}
-// *Delivery Method:* ${deliveryMethod}
-// *Delivery Address:* ${deliveryAddress}
-// *Contact:* ${order.shippingAddress.phone}
-
-// *Order Summary:*
-// ${itemsList}
-
-// *Delivery Fee:* ${formatCurrency(order.deliveryFee, "GHS")}
-// *Total Amount:* ${formatCurrency(order.total + order.deliveryFee, "GHS")}
-
-// If you have any questions or need assistance, please contact:
-// ${contactList}
-
-// Thank you for choosing *SowGreen Organic Farms*.
-// We look forward to serving you!
-// `.trim()
-
-// Hello Thomas,
-
-// Your order #SG12345 is ready for delivery!
-
-// Visit our website under Order History and complete your payment through your preferred method.
-
-// 📅 *Delivery Date:* Wednesday, Jan 22nd.
-// 🚚 *Delivery Method:* Home Delivery.
-// 🏠 *Delivery Address:* 175th Harrison Rd
-// 📞 *Contact:* 0245847649
-
-// 🛒 *Order Summary:*
-// 1kg Avocado (QTY :1) GHC 45.00
-
-// 💰 *Delivery Fee:* GHC 45.00
-// 💳 *Total Amount:* GHC 90.00
-
-// For assistance, reach out to our support team at 0245847649.
-
-// Thank you for choosing *SowGreen Organic Farms*! 🌱
-// We look forward to serving you.

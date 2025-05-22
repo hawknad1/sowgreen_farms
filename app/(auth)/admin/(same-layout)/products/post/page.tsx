@@ -1,11 +1,7 @@
 import { AddProductForm } from "@/components/forms/AddProductForm"
-import { createMessage } from "@/lib/sendSMS"
 import React from "react"
 
 const PostProduct = () => {
-  // createMessage()
-  // console.log("message")
-
   return (
     <div className="container mx-auto flex justify-center overflow-scroll h-screen scrollbar-hide">
       <div className="mt-4">

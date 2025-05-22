@@ -40,28 +40,48 @@ export type Order = {
   createdAt?: string
 }
 
-interface OrderItem {
-  product: string
-  quantity: string
-  price: string
-}
+export function generateOrderReceivedMessage(order: Order): string {
+  const itemsList = order.products
+    .map(({ item, quantity }) => {
+      if (!item) {
+        return "- Product details missing" // Handle missing product details
+      }
+      const weight = item.weight ? `${item.weight}${item.unit}` : "" // Include weight if available
+      return `- ${weight} ${item.title}: GHS ${item.price} (Qty: ${quantity})`
+    })
+    .join("\n")
 
-interface Contact {
-  name: string
-  phone: string
+  const contactList = sowgreenWorkers
+    .map((contact) => `- ${contact.name}: ${contact.phone}`)
+    .join("\n")
+
+  return `
+*Your order has been received: ${order.orderNumber}*
+
+Hello *${order.shippingAddress.name}*,
+
+Thank you for your order! Here are the details:
+
+*Delivery Date:* ${order.deliveryMethod}
+
+*Delivery Address:* ${order.shippingAddress.address}, ${
+    order.shippingAddress.city
+  }
+*Contact:* ${order.shippingAddress.phone}
+
+*Order Summary:*
+${itemsList}
+
+*Total Amount:* GHS ${(order.total + order.deliveryFee).toFixed(2)}
+
+If you have any questions or need assistance, please contact:
+${contactList}
+
+Thank you for choosing SowGreen Organic Farms. We look forward to serving you!
+    `.trim()
 }
 
 // export function generateOrderReceivedMessage(order: Order): string {
-//   const itemsList = order.products
-//     .map(({ item, quantity }) => {
-//       if (!item) {
-//         return "- Product details missing" // Handle missing product details
-//       }
-//       const weight = item.weight ? `${item.weight}${item.unit}` : "" // Include weight if available
-//       return `- ${weight} ${item.title}: GHS ${item.price} (Qty: ${quantity})`
-//     })
-//     .join("\n")
-
 //   const contactList = sowgreenWorkers
 //     .map((contact) => `- ${contact.name}: ${contact.phone}`)
 //     .join("\n")
@@ -71,19 +91,10 @@ interface Contact {
 
 // Hello *${order.shippingAddress.name}*,
 
-// Thank you for your order! Here are the details:
+// We’ve successfully received your order, and it’s now being processed.
 
-// *Delivery Date:* ${order.deliveryMethod}
-
-// *Delivery Address:* ${order.shippingAddress.address}, ${
-//     order.shippingAddress.city
-//   }
-// *Contact:* ${order.shippingAddress.phone}
-
-// *Order Summary:*
-// ${itemsList}
-
-// *Total Amount:* GHS ${(order.total + order.deliveryFee).toFixed(2)}
+// Please note that once your order is confirmed, it cannot be modified.
+// Rest assured, our team is working on confirming your order as quickly as possible.
 
 // If you have any questions or need assistance, please contact:
 // ${contactList}
@@ -91,24 +102,3 @@ interface Contact {
 // Thank you for choosing SowGreen Organic Farms. We look forward to serving you!
 //     `.trim()
 // }
-export function generateOrderReceivedMessage(order: Order): string {
-  const contactList = sowgreenWorkers
-    .map((contact) => `- ${contact.name}: ${contact.phone}`)
-    .join("\n")
-
-  return `
-*Your order has been received: ${order.orderNumber}*
-  
-Hello *${order.shippingAddress.name}*,
-  
-We’ve successfully received your order, and it’s now being processed.
-
-Please note that once your order is confirmed, it cannot be modified.
-Rest assured, our team is working on confirming your order as quickly as possible.
-
-If you have any questions or need assistance, please contact:  
-${contactList}
-  
-Thank you for choosing SowGreen Organic Farms. We look forward to serving you!
-    `.trim()
-}

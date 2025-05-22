@@ -2,30 +2,43 @@ import { Order } from "@/types"
 import { generateOrderConfirmationMessage } from "./whatsAppMessages/generateOrderConfirmationMessage"
 import { generateOrderReceivedMessage } from "./whatsAppMessages/generateOrderReceivedMessage"
 import { generateUpdatedDeliveryMethod } from "./whatsAppMessages/generateUpdatedDeliveryMethod"
-import { sowgreenWorkers } from "@/constants"
 
-// export async function sendOrderConfirmation(order: Order) {
-//   const message = generateOrderConfirmationMessage(order)
-//   console.log("Generated message:", message)
-
-//   try {
-//     const response = await fetch("/api/sendWhatsapp", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({
-//         customerPhone: order?.shippingAddress?.phone, // Customer's WhatsApp number
-//         message,
-//       }),
-//     })
-
-//     if (response.ok) {
-//       const data = await response.json()
-//     }
-//   } catch (error) {
-//     console.error("Error sending message:", error)
+// interface Product {
+//   quantity: number
+//   quantityTotal: number
+//   available: boolean
+//   weight?: number
+//   unit?: string
+//   product: {
+//     title: string
 //   }
+// }
+
+// interface ShippingAddress {
+//   name: string
+//   address: string
+//   city: string
+//   region: string
+//   phone: string
+//   deliveryMethod?: string
+// }
+
+// export type Order = {
+//   id?: string
+//   orderNumber: string
+//   referenceNumber?: string
+//   total: number
+//   status?: "processing" | "shipped" | "delivered"
+//   dispatchRider?: string
+//   deliveryMethod: string
+//   deliveryFee: number
+//   cardType?: string
+//   last4Digits?: string
+//   paymentMode?: string
+//   paymentAction?: string
+//   shippingAddress: ShippingAddress
+//   products: Product[] // Change from Product[] to ProductOrder[]
+//   createdAt?: string
 // }
 
 export async function sendOrderConfirmation(order: Order) {
@@ -52,32 +65,6 @@ export async function sendOrderConfirmation(order: Order) {
   }
 }
 
-// export async function sendOrderConfirmation(order: Order) {
-//   const workersName = sowgreenWorkers.map((worker) => worker.name)
-//   const workersNumber = sowgreenWorkers.map((worker) => worker.phone)
-//   const workerOne = `${workersName[0]} - ${workersNumber[0]}`
-//   const workerTwo = `${workersName[1]} - ${workersNumber[1]}`
-
-//   try {
-//     const response = await fetch("/api/send-whatsapp", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify(order),
-//     })
-
-//     if (response.ok) {
-//       const data = await response.json()
-//       return data
-//     }
-//     throw new Error("Failed to send message")
-//   } catch (error) {
-//     console.error("Error sending message:", error)
-//     throw error
-//   }
-// }
-
 export async function sendOrderReceived(order: any) {
   const message = generateOrderReceivedMessage(order)
   // const message = generateOrderConfirmationMessage(order)
@@ -90,7 +77,6 @@ export async function sendOrderReceived(order: any) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        // to: "+233204785693", // Customer's WhatsApp number
         to: order?.shippingAddress?.phone, // Customer's WhatsApp number
         message,
       }),
@@ -127,25 +113,25 @@ export async function sendUpdatedDeliveryMethod() {
   }
 }
 
-export async function sendSms(order: Order) {
-  const message = generateOrderConfirmationMessage(order)
+// export async function sendSms(order: Order) {
+//   const message = generateOrderConfirmationMessage(order)
 
-  try {
-    const response = await fetch("/api/sendWhatsapp", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        to: order?.shippingAddress?.phone, // Customer's WhatsApp number
-        message,
-      }),
-    })
+//   try {
+//     const response = await fetch("/api/sendWhatsapp", {
+//       method: "POST",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({
+//         to: order?.shippingAddress?.phone, // Customer's WhatsApp number
+//         message,
+//       }),
+//     })
 
-    if (response.ok) {
-      const data = await response.json()
-    }
-  } catch (error) {
-    console.error("Error sending message:", error)
-  }
-}
+//     if (response.ok) {
+//       const data = await response.json()
+//     }
+//   } catch (error) {
+//     console.error("Error sending message:", error)
+//   }
+// }
