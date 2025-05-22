@@ -103,9 +103,6 @@ export async function POST(req: NextRequest) {
       allVariables.map((value, index) => [(index + 1).toString(), value])
     )
 
-    console.log(allVariables, "allVariables")
-    console.log(twilioVariables, "twilioVariables")
-
     // 7. Send message
     const message = await client.messages.create({
       from: `whatsapp:${whatsappNumber}`,

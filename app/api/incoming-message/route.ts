@@ -1,5 +1,5 @@
 import { generateOrderConfirmationMessage } from "@/lib/actions/whatsAppMessages/generateOrderConfirmationMessage"
-import { Order, ShippingAddress } from "@/types"
+import { Order } from "@/types"
 import { NextRequest, NextResponse } from "next/server"
 import { Twilio } from "twilio"
 
@@ -9,76 +9,15 @@ const whatsappNumber = process.env.TWILIO_WHATSAPP_NUMBER!
 
 const twilioClient = new Twilio(accountSid, authToken)
 
-interface Product {
-  id: string
-  name: string
-  quantity: number
-  price: number
-}
-
-// interface Order {
-//   id: string
-//   products: Product[]
-//   customerName?: string
-// }
-
-// interface Product {
-//   quantity: number
-//   quantityTotal: number
-//   available: boolean
-//   weight?: number
-//   unit?: string
-//   price: number
-//   product: {
-//     title: string
-//   }
-// }
-
-// export type ProductOrder = {
-//   item: {
-//     id: string
-//     title: string
-//     categoryName: string
-//     description: string
-//     imageUrl: string
-//     price: number
-//     weight: number
-//     unit: string
-//     isInStock: string
-//     discount: number
-//     quantity: number
-//     purchaseCount: number
-//     createdAt: string
-//     updatedAt: string
-//   }
-//   total: number
-//   quantity: number
-// }
-
-// export type Order = {
-//   id?: string
-//   orderNumber: string
-//   referenceNumber?: string
-//   total: number
-//   status?: "processing" | "shipped" | "delivered"
-//   dispatchRider?: string
-//   deliveryMethod: string
-//   deliveryFee: number
-//   cardType?: string
-//   last4Digits?: string
-//   paymentMode?: string
-//   paymentAction?: string
-//   shippingAddress: ShippingAddress
-//   products: Product[] // Change from Product[] to ProductOrder[]
-//   createdAt?: string
-// }
-
 async function getFullOrderDetails(orderId: string): Promise<Order | null> {
   try {
-    const res = await fetch(`http://localhost:3000/api/orders/${orderId}`, {
-      method: "GET",
-      cache: "no-store",
-    })
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/orders/${orderId}`,
+      {
+        method: "GET",
+        cache: "no-store",
+      }
+    )
 
     if (!res.ok) throw new Error("Failed to fetch order details")
 
@@ -119,40 +58,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // const messageLines = [
-    //   `Hi${
-    //     order.customerName ? ` ${order.customerName}` : ""
-    //   }, here is your order summary (Order #${order.id}):\n`,
-    // ]
-
-    // if (order.products.length > 0) {
-    //   order.products.forEach((p, i) =>
-    //     messageLines.push(
-    //       `${i + 1}. ${p.name} (Qty: ${p.quantity}) - $${p.price.toFixed(2)}`
-    //     )
-    //   )
-    // } else {
-    //   messageLines.push("No products found in this order.")
-    // }
-
-    // const totalQty = order.products.reduce((sum, p) => sum + p.quantity, 0)
-    // const subtotal = order.products.reduce(
-    //   (sum, p) => sum + p.price * p.quantity,
-    //   0
-    // )
-
-    // messageLines.push(`\nTotal Items: ${totalQty}`)
-    // messageLines.push(`Subtotal: $${subtotal.toFixed(2)}`)
-    // messageLines.push("\nIf you have any questions, please contact support.")
-
-    // let messageBody = messageLines.join("\n")
-    // if (messageBody.length > 4000) {
-    //   messageBody = messageBody.slice(0, 3990) + "\n... (message truncated)"
-    // }
-
     const messageTemplate = generateOrderConfirmationMessage(order)
-    console.log(messageTemplate, "messageTemplate")
-    console.log(order, "order")
 
     const response = await twilioClient.messages.create({
       from: `whatsapp:${whatsappNumber}`,
