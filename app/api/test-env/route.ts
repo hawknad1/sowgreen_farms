@@ -70,7 +70,7 @@ console.log(
   Buffer.from(
     JSON.stringify({
       "14var": "HX6435b0695a4a0421350e2b5d4a66d038",
-      "14var_btn": "HX2c9563f5dd1e5c104c7bd14a1d70d96d",
+      "14var_btn": "HXc536e79c581ab48447a2197063667f8f",
       "15var": "HX9d7972f796060c86a4040f2cf46635b7",
       "16var": "HX710e906ed824a2b992751d840da94762",
       "17var": "HX865f9e52a710e9a397a85eb669b9c69d",

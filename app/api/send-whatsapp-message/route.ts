@@ -64,6 +64,12 @@ export async function POST(req: NextRequest) {
       rawProductCount <= 20 ? `${requiredVarCount}var` : `14var_btn`
     const contentSid = TEMPLATE_MAP[templateKey]
 
+    console.log(contentSid, "contentSid")
+    console.log(templateKey, "templateKey")
+    console.log(rawProductCount, "rawProductCount")
+    console.log(requiredVarCount, "requiredVarCount")
+    console.log(cappedProductCount, "cappedProductCount")
+
     const orderIdToWhahtsapp = [order?.id]
 
     if (!contentSid) {
@@ -77,7 +83,7 @@ export async function POST(req: NextRequest) {
     const productSection =
       rawProductCount > 20
         ? [
-            `Click the *View Order Summary* button to see all purchased products.`,
+            `Click the *View Order Summary* button below to see all purchased products.`,
           ]
         : productLines
 
@@ -110,6 +116,10 @@ export async function POST(req: NextRequest) {
       contentSid,
       contentVariables: JSON.stringify(twilioVariables),
     })
+
+    console.log(message, "message")
+    console.log(allVariables, "allVariables")
+    console.log(twilioVariables, "twilioVariables")
 
     return NextResponse.json({ success: true, messageSid: message.sid })
   } catch (error: any) {
