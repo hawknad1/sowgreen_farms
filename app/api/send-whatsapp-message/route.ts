@@ -60,15 +60,14 @@ export async function POST(req: NextRequest) {
 
     // 2. Get template SID
     const TEMPLATE_MAP = getTemplateMapFromBase64()
+    // const templateKey =
+    //   rawProductCount <= 20 ? `${requiredVarCount}var` : `14var_btn`
     const templateKey =
-      rawProductCount <= 20 ? `${requiredVarCount}var` : `14var_btn`
+      rawProductCount > 20
+        ? "14var_btn"
+        : `${Math.min(13 + rawProductCount, 33)}var`
     const contentSid = TEMPLATE_MAP[templateKey]
-
-    console.log(contentSid, "contentSid")
-    console.log(templateKey, "templateKey")
-    console.log(rawProductCount, "rawProductCount")
-    console.log(requiredVarCount, "requiredVarCount")
-    console.log(cappedProductCount, "cappedProductCount")
+    if (!contentSid) throw new Error(`Template ${templateKey} not found`)
 
     const orderIdToWhahtsapp = [order?.id]
 
@@ -93,14 +92,26 @@ export async function POST(req: NextRequest) {
       ...productSection,
       ...summaryValues,
       ...contactValues,
-      ...orderIdToWhahtsapp,
+      // ...orderIdToWhahtsapp,
+      order?.id,
     ]
 
-    // 5. Validate total message length
-    const fullMessage = allVariables.join(" ")
-    if (fullMessage.length > 1500) {
+    // // 5. Validate total message length
+    // const fullMessage = allVariables.join(" ")
+    // if (fullMessage.length > 1500) {
+    //   throw new Error(
+    //     `Message length (${fullMessage.length}) exceeds safe limit`
+    //   )
+    // }
+
+    // 5. Validate variable count matches template
+    const expectedVarCount =
+      templateKey === "14var_btn"
+        ? 15
+        : parseInt(templateKey.replace("var", ""))
+    if (allVariables.length !== expectedVarCount) {
       throw new Error(
-        `Message length (${fullMessage.length}) exceeds safe limit`
+        `Variable count mismatch (${allVariables.length} vs ${expectedVarCount})`
       )
     }
 
@@ -116,10 +127,6 @@ export async function POST(req: NextRequest) {
       contentSid,
       contentVariables: JSON.stringify(twilioVariables),
     })
-
-    console.log(message, "message")
-    console.log(allVariables, "allVariables")
-    console.log(twilioVariables, "twilioVariables")
 
     return NextResponse.json({ success: true, messageSid: message.sid })
   } catch (error: any) {
