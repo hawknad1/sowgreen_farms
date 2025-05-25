@@ -130,49 +130,6 @@ export const AddProductSchema = z.object({
 //   ),
 // })
 
-export const EditProductSchema = z.object({
-  title: z.string().optional(),
-  description: z
-    .string()
-    .min(5, { message: "Description is required!" })
-    .optional(),
-  discount: z.coerce.number().optional(),
-  price: z.coerce.number().positive().optional(),
-  weight: z.coerce.number().optional(),
-  unit: z.string(),
-  quantity: z.coerce.number().positive().optional(),
-  isInStock: z.string().optional(),
-  variants: z
-    .array(
-      z.object({
-        price: z.coerce.number().positive(),
-        weight: z.coerce.number().positive().optional(),
-        unit: z.string().optional(),
-      })
-    )
-    .nonempty("At least one variation is required"),
-})
-
-// export const UpdateStatusSchema = z.object({
-//   status: z.string(),
-//   dispatchRider: z.string().optional(),
-// })
-
-// export const UpdateStatusSchema = z.object({
-//   status: z.enum([
-//     "processing",
-//     "confirmed",
-//     "in-transit",
-//     "delivered",
-//     "cancelled",
-//   ]),
-//   // dispatchRider: z.string().optional(),
-//   dispatchRider: z.object({
-//     firstName: z.string(),
-//     lastName: z.string(),
-//   }),
-// })
-
 export const UpdateStatusSchema = z.object({
   status: z.enum([
     "processing",
@@ -237,6 +194,46 @@ export const EditOrderDetailSchema = z.object({
   deliveryDate: z.string(),
 })
 
+export const EditProductAdminSchema = z.object({
+  description: z.string(),
+  title: z.string(),
+  discount: z.coerce.number().optional(),
+  quantity: z.coerce.number().min(0), // Allow 0 or positive numbers
+  isInStock: z.string().optional(),
+  variants: z
+    .array(
+      z.object({
+        price: z.coerce.number().positive(),
+        weight: z.coerce.number().positive().optional(),
+        unit: z.string().optional(),
+      })
+    )
+    .nonempty("At least one variation is required"),
+})
+
+export const EditProductSchema = z.object({
+  title: z.string().optional(),
+  description: z
+    .string()
+    .min(5, { message: "Description is required!" })
+    .optional(),
+  discount: z.coerce.number().optional(),
+  price: z.coerce.number().positive().optional(),
+  weight: z.coerce.number().optional(),
+  unit: z.string(),
+  quantity: z.coerce.number().positive().optional(),
+  isInStock: z.string().optional(),
+  variants: z
+    .array(
+      z.object({
+        price: z.coerce.number().positive(),
+        weight: z.coerce.number().positive().optional(),
+        unit: z.string().optional(),
+      })
+    )
+    .nonempty("At least one variation is required"),
+})
+
 export const AddCityandFeeSchema = z.object({
   city: z.string().min(1, { message: "City is required!" }),
   deliveryFee: z.coerce.number(),
@@ -248,13 +245,6 @@ export const UpdateCityandFeeSchema = z.object({
   deliveryFee: z.coerce.number(),
   region: z.string().min(1, { message: "Region is required!" }),
 })
-
-// export const UpdateRiderSchema = z.object({
-//   gender: z.string().min(1, { message: "Gender is required!" }),
-//   firstName: z.string(),
-//   lastName: z.string().optional(),
-//   phone: z.string().regex(phoneRegex, "Invalid Number!"),
-// })
 
 export const UpdateRiderSchema = z.object({
   firstName: z.string().nonempty("First Name is required"),
@@ -316,14 +306,6 @@ export const stepThreeSchema = z.object({
     )
     .optional(),
 })
-
-// export const editDeliveryMethod = z.object({
-//   address: z.string(),
-//   city: z.string(),
-//   region: z.string(),
-//   deliveryMethod: z.string(),
-//   deliveryFee: z.coerce.number(),
-// })
 
 export const editDeliveryMethod = z.object({
   address: z.string().optional(),

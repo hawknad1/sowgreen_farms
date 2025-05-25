@@ -320,34 +320,18 @@ import { Product } from "@/types"
 import { useRouter } from "next/navigation"
 import { units } from "@/constants"
 import { useState } from "react"
+import { EditProductAdminSchema } from "@/schemas"
 
 interface ProductProps {
   product: Product
 }
 
-const EditProductSchema = z.object({
-  description: z.string(),
-  title: z.string(),
-  discount: z.coerce.number().optional(),
-  quantity: z.coerce.number().positive().optional(),
-  isInStock: z.string().optional(),
-  variants: z
-    .array(
-      z.object({
-        price: z.coerce.number().positive(),
-        weight: z.coerce.number().positive().optional(),
-        unit: z.string().optional(),
-      })
-    )
-    .nonempty("At least one variation is required"),
-})
-
 const EditProductForm = ({ product }: ProductProps) => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
-  const form = useForm<z.infer<typeof EditProductSchema>>({
-    resolver: zodResolver(EditProductSchema),
+  const form = useForm<z.infer<typeof EditProductAdminSchema>>({
+    resolver: zodResolver(EditProductAdminSchema),
     defaultValues: {
       title: product.title,
       description: product.description,
@@ -367,7 +351,9 @@ const EditProductForm = ({ product }: ProductProps) => {
     name: "variants",
   })
 
-  const updateProduct = async (values: z.infer<typeof EditProductSchema>) => {
+  const updateProduct = async (
+    values: z.infer<typeof EditProductAdminSchema>
+  ) => {
     setIsLoading(true)
     try {
       const res = await fetch(`/api/products/${product.id}`, {
@@ -388,8 +374,13 @@ const EditProductForm = ({ product }: ProductProps) => {
     }
   }
 
-  const onSubmit = async (values: z.infer<typeof EditProductSchema>) => {
-    updateProduct(values)
+  const onSubmit = async (values: z.infer<typeof EditProductAdminSchema>) => {
+    // updateProduct(values)
+    const updatedValues = {
+      ...values,
+      quantity: values.isInStock === "out-of-stock" ? 0 : values.quantity,
+    }
+    updateProduct(updatedValues)
   }
 
   return (
@@ -422,7 +413,14 @@ const EditProductForm = ({ product }: ProductProps) => {
                 <FormItem>
                   <FormLabel>Availability</FormLabel>
                   <Select
-                    onValueChange={field.onChange}
+                    // onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value)
+                      // When out of stock is selected, set quantity to 0
+                      if (value === "out-of-stock") {
+                        form.setValue("quantity", 0)
+                      }
+                    }}
                     defaultValue={field.value}
                   >
                     <SelectTrigger className="">
@@ -464,6 +462,7 @@ const EditProductForm = ({ product }: ProductProps) => {
                       placeholder="Quantity"
                       {...field}
                       className="w-full"
+                      disabled={form.watch("isInStock") === "out-of-stock"}
                     />
                   </FormControl>
                   <FormMessage />
