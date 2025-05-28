@@ -103,6 +103,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN!
 const whatsappNumber = process.env.TWILIO_WHATSAPP_NUMBER!
 
 const twilioClient = new Twilio(accountSid, authToken)
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
 // Define the maximum number of products per WhatsApp message
 // Based on your testing, 30 products seems to be a safe number to avoid the 1600 character limit.
@@ -113,7 +114,7 @@ async function getFullOrderDetails(orderId: string): Promise<Order | null> {
   try {
     // Ensure NEXT_PUBLIC_BASE_URL is correctly set in your .env file
     const res = await fetch(
-      `http://localhost:3000/api/orders/${orderId}`, // Adjust path to your order API
+      `${baseUrl}/api/orders/${orderId}`, // Adjust path to your order API
       {
         method: "GET",
         cache: "no-store", // Ensure fresh data
@@ -201,7 +202,6 @@ export async function POST(req: NextRequest) {
         from: `whatsapp:${whatsappNumber}`, // Your Twilio WhatsApp number
         to: from, // Customer's WhatsApp number
         body: messageTemplate,
-        // body: "THANK YOU!!!",
       })
 
       sentMessageSids.push(response.sid)
