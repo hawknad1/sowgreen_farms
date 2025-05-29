@@ -253,6 +253,15 @@ export type DispatchRider = {
   orders?: Order
 }
 
+export type Staff = {
+  id: string
+  fullName: string
+  phone: string
+  jobTitle?: string
+  role?: string
+  email?: string
+}
+
 export type Location = {
   id: string
   region: string

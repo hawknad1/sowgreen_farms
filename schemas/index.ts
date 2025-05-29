@@ -256,6 +256,14 @@ export const UpdateRiderSchema = z.object({
   gender: z.string().optional(),
 })
 
+export const StaffSchema = z.object({
+  fullName: z.string().min(1, { message: "Name is required!" }),
+  jobTitle: z.string().min(1, { message: "Job Title is required!" }),
+  role: z.string().min(1, { message: "Role is required!" }),
+  email: z.string().email().optional(),
+  phone: z.string().regex(phoneRegex, "Invalid Number!"),
+})
+
 export const AddLocationSchema = z.object({
   region: z.string().optional(),
   city: z.string().optional(),

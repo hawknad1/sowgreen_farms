@@ -271,6 +271,10 @@ export const sidebarLinks = {
       icon: Users,
       items: [
         {
+          title: "Staff",
+          url: "/admin/management/staff",
+        },
+        {
           title: "Pickup Locations",
           url: "/admin/management/pickup-locations",
         },
@@ -728,6 +732,17 @@ export const regions = [
   },
   {
     name: "Central",
+  },
+]
+
+export const staffRole = [
+  {
+    label: "Admin",
+    value: "admin",
+  },
+  {
+    label: "Staff",
+    value: "staff",
   },
 ]
 

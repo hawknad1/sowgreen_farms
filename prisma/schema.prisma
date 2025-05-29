@@ -286,3 +286,12 @@ model DispatchRider {
   phone     String?
   orders    Order[]
 }
+
+model Staff {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  fullName String
+  phone    String
+  jobTitle String
+  role     String?
+  email    String?
+}
