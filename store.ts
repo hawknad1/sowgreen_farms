@@ -1,15 +1,15 @@
 import { create } from "zustand"
-import { createJSONStorage, devtools, persist } from "zustand/middleware"
+import { createJSONStorage, persist } from "zustand/middleware"
 import {
   DispatchRider,
   Order,
   Product,
   ShippingAddress,
+  Staff,
   User,
   UserDetailType,
 } from "./types"
 import { fetchUserBalance } from "./lib/actions/fetchUserBalance"
-// import { CartItem } from "@/types"
 
 interface PaymentStore {
   reference: any
@@ -141,6 +141,52 @@ type DispatchRidersStore = {
   fetchDispatchRiders: () => Promise<void>
 }
 
+interface OrderDashboardStore {
+  order: Order[] | null
+  loading: boolean
+  error: string | null
+  totalRevenue: number
+  fetchOrders: () => Promise<void>
+}
+
+// Define the type for the store
+type UserListStore = {
+  userList: UserDetailType[]
+  setUserList: (users: UserDetailType[]) => void
+  balance: number
+  setBalance: (balance: number) => void
+}
+
+// Define the store type
+type UserStore = {
+  user: User | null
+  setUser: (user: User) => void
+  clearUser: () => void
+}
+
+interface WorkersStore {
+  workers: Staff[]
+  loading: boolean
+  error: string | null
+  fetchWorkers: () => Promise<void>
+}
+
+interface CheckoutFormValues {
+  name: string
+  email: string
+  address: string
+  city: string
+  country: string
+  phone: string
+  region: string
+}
+
+interface CheckoutStore {
+  formValues: CheckoutFormValues
+  setFormValues: (values: Partial<CheckoutFormValues>) => void
+  resetFormValues: () => void
+}
+
 export const useDispatchRidersStore = create<DispatchRidersStore>((set) => ({
   dispatchRiders: [],
   fetchDispatchRiders: async () => {
@@ -159,22 +205,6 @@ export const useDispatchRidersStore = create<DispatchRidersStore>((set) => ({
     }
   },
 }))
-
-interface CheckoutFormValues {
-  name: string
-  email: string
-  address: string
-  city: string
-  country: string
-  phone: string
-  region: string
-}
-
-interface CheckoutStore {
-  formValues: CheckoutFormValues
-  setFormValues: (values: Partial<CheckoutFormValues>) => void
-  resetFormValues: () => void
-}
 
 export const useCheckoutStore = create<CheckoutStore>()(
   persist(
@@ -438,14 +468,6 @@ export const useVariantStore = create<VariantState>((set) => ({
     set({ selectedVariant: { price, weight, unit } }),
 }))
 
-interface OrderDashboardStore {
-  order: Order[] | null
-  loading: boolean
-  error: string | null
-  totalRevenue: number
-  fetchOrders: () => Promise<void>
-}
-
 export const useOrderDashboardStore = create<OrderDashboardStore>((set) => ({
   order: null,
   loading: true,
@@ -480,51 +502,12 @@ export const useOrderDashboardStore = create<OrderDashboardStore>((set) => ({
   },
 }))
 
-// Define the store type
-type UserStore = {
-  user: User | null
-  setUser: (user: User) => void
-  clearUser: () => void
-}
-
 // Create the store
 export const useUserStore = create<UserStore>((set) => ({
   user: null, // Initial state
   setUser: (user) => set({ user }), // Method to set the user
   clearUser: () => set({ user: null }), // Method to clear the user
 }))
-
-// Define the type for a user
-// export type User = {
-//   id: string
-//   name?: string
-//   email?: string
-//   orders: Order[]
-//   balance?: number
-//   role: string
-//   image?: string | null
-//   createdAt: string
-//   updatedAt: string
-//   emailVerified?: string | null
-//   phone?: string | null
-// }
-
-// Define the type for the store
-type UserListStore = {
-  userList: UserDetailType[]
-  setUserList: (users: UserDetailType[]) => void
-  balance: number
-  setBalance: (balance: number) => void
-}
-
-// Create the Zustand store
-// export const useUserListStore = create<UserListStore>((set) => ({
-//   userList: [],
-//   setUserList: (users) => set({ userList: users }),
-//   balance: 0,
-//   // setBalance: (balance) => set({ balance }),
-//   setBalance: (updatedBalance) => set({ balance: updatedBalance }),
-// }))
 
 export const useUserListStore = create<UserListStore>()(
   persist(
@@ -543,6 +526,23 @@ export const useUserListStore = create<UserListStore>()(
     }
   )
 )
+
+export const useWorkersStore = create<WorkersStore>((set) => ({
+  workers: [],
+  loading: false,
+  error: null,
+  fetchWorkers: async () => {
+    set({ loading: true, error: null })
+    try {
+      const response = await fetch("/api/management/staff")
+      if (!response.ok) throw new Error("Failed to fetch workers")
+      const workers = await response.json()
+      set({ workers, loading: false })
+    } catch (error) {
+      set({ loading: false })
+    }
+  },
+}))
 
 // export const useUserListStore = create<UserListStore>()(
 //   persist(

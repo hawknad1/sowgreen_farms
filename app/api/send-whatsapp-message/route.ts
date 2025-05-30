@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getTemplateMapFromBase64 } from "@/lib/twilio/template"
 import { truncate } from "@/lib/twilio/truncate"
 import { prepareOrderDetails } from "@/lib/twilio/prepareOrderDetails"
+import { Staff } from "@/types"
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID!
 const authToken = process.env.TWILIO_AUTH_TOKEN!
@@ -146,6 +147,9 @@ export async function POST(req: NextRequest) {
     const order: Order = await req.json()
     const shipping = order.shippingAddress
 
+    // 1. Fetch workers from MongoDB
+    const workers = await fetchWorkers() // Add this helper function
+
     // 1. Calculate product count and determine template
     const rawProductCount = order.products.length
     const cappedProductCount = Math.min(rawProductCount, 20)
@@ -169,7 +173,7 @@ export async function POST(req: NextRequest) {
 
     // 3. Prepare order details
     const { baseVariables, productLines, summaryValues, contactValues } =
-      prepareOrderDetails(order, shipping, cappedProductCount)
+      prepareOrderDetails(order, shipping, cappedProductCount, workers)
 
     // 4. Build variables array according to template requirements
     const allVariables = [
@@ -238,5 +242,23 @@ export async function POST(req: NextRequest) {
       },
       { status: 500 }
     )
+  }
+}
+
+async function fetchWorkers(): Promise<Staff[]> {
+  try {
+    // Replace with your actual MongoDB query
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/management/staff`
+    )
+    if (!response.ok) throw new Error("Failed to fetch workers")
+    return await response.json()
+  } catch (error) {
+    console.error("Error fetching workers:", error)
+    // Return fallback workers if fetch fails
+    return [
+      { fullName: "Xornam", phone: "0546729407" },
+      { fullName: "Samira", phone: "0504608448" },
+    ]
   }
 }

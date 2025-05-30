@@ -1,6 +1,5 @@
-import { sowgreenWorkers } from "@/constants"
 import { formatCurrency } from "@/lib/utils"
-import { Order, ProductOrder } from "@/types"
+import { Order } from "@/types"
 
 // export function generateOrderConfirmationMessage(order: Order): string {
 //   const itemsList = order.products

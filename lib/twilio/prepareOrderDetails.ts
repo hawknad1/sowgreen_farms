@@ -1,6 +1,8 @@
 import { formatProductLine } from "./formatProductLine"
 import { truncate } from "./truncate"
 import { formatCurrency } from "../utils"
+import { Staff } from "@/types"
+import { capitalizeName } from "../capitalizeName"
 
 interface Product {
   quantity: number
@@ -36,19 +38,24 @@ interface Order {
   }
 }
 
-const sowgreenWorkers = [
-  { name: "Xornam", phone: "0546729407" },
-  { name: "Samira", phone: "0504608448" },
-]
-
-const worker_one = `${sowgreenWorkers[0].name}: ${sowgreenWorkers[0].phone}`
-const worker_two = `${sowgreenWorkers[1].name}: ${sowgreenWorkers[1].phone}`
-
 export function prepareOrderDetails(
   order: Order,
   shipping: ShippingAddress,
-  maxProducts: number
+  maxProducts: number,
+  workers: Staff[]
 ) {
+  // Prepare worker contact info using passed workers
+  const worker_one = workers[0]
+    ? `${capitalizeName(workers[0]?.fullName?.split(" ")[0])}: ${
+        workers[0]?.phone
+      }`
+    : ""
+  const worker_two = workers[1]
+    ? `${capitalizeName(workers[1]?.fullName?.split(" ")[0])}: ${
+        workers[1]?.phone
+      }`
+    : ""
+
   const deliveryMethod = (shipping.deliveryMethod || "Pickup").trim()
 
   const displayMethod =

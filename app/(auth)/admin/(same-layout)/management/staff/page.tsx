@@ -1,13 +1,12 @@
 "use client"
 import React, { useEffect, useState } from "react"
-
-import { DispatchRider, Staff } from "@/types"
-import DispatchRiderTable from "./StaffTable"
+import { Staff } from "@/types"
 import StaffTable from "./StaffTable"
 
 const StaffPage = () => {
   const [list, setList] = useState<Staff[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
   useEffect(() => {
     async function getStaffList() {
       try {

@@ -254,7 +254,7 @@ export type DispatchRider = {
 }
 
 export type Staff = {
-  id: string
+  id?: string
   fullName: string
   phone: string
   jobTitle?: string
