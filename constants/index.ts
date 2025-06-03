@@ -275,6 +275,10 @@ export const sidebarLinks = {
           url: "/admin/management/staff",
         },
         {
+          title: "Groups",
+          url: "/admin/management/groups/farm",
+        },
+        {
           title: "Pickup Locations",
           url: "/admin/management/pickup-locations",
         },

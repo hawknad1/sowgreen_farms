@@ -36,8 +36,6 @@ const Sidebar = ({ children }: SidebarProps) => {
   const capitalizedFirstName =
     firstName?.charAt(0).toUpperCase() + firstName?.slice(1) // Capitalize first letter
 
-  console.log(capitalizedFirstName) // Output: James
-
   return (
     <SidebarProvider>
       <AppSidebar />
