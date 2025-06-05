@@ -22,7 +22,10 @@ import {
 } from "@/components/ui/select"
 import { Order, OrderStatus } from "@/types"
 import { UpdateStatusSchema } from "@/schemas"
-import { sendOrderConfirmation } from "@/lib/actions/sendWhatsappMessage"
+import {
+  sendOrderConfirmation,
+  sendOrderConfirmationGroup,
+} from "@/lib/actions/sendWhatsappMessage"
 import { useDispatchRidersStore, useUserListStore } from "@/store"
 import { status } from "@/constants"
 import { deductBalance } from "@/lib/actions/deductBalance"
@@ -146,6 +149,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 
       if (updatedOrder.status === "confirmed") {
         await sendOrderConfirmation(orders)
+        await sendOrderConfirmationGroup(orders)
       }
 
       // Use updated order data for operations

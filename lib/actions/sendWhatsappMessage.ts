@@ -65,6 +65,30 @@ export async function sendOrderConfirmation(order: Order) {
   }
 }
 
+export async function sendOrderConfirmationGroup(order: Order) {
+  try {
+    const response = await fetch("/api/whatsapp/conversations/send-message", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order),
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      console.error("Error response:", errorText)
+      throw new Error("Failed to send WhatsApp message")
+    }
+
+    const data = await response.json()
+    return data
+  } catch (error) {
+    console.error("Error sending order confirmation:", error)
+    throw error
+  }
+}
+
 export async function sendOrderReceived(order: any) {
   const message = generateOrderReceivedMessage(order)
   // const message = generateOrderConfirmationMessage(order)

@@ -3,21 +3,22 @@ import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
   try {
-    const { friendlyName } = await request.json() // e.g., "My Awesome Group"
+    const { friendlyName } = await request.json() // e.g., "Support Chat XYZ"
 
-    if (!friendlyName) {
+    if (!twilioClient) {
       return NextResponse.json(
-        { error: "Friendly name is required" },
-        { status: 400 }
+        { error: "Twilio client not initialized" },
+        { status: 500 }
       )
     }
 
     const conversation =
       await twilioClient.conversations.v1.conversations.create({
-        friendlyName: friendlyName,
+        friendlyName: friendlyName || "My WhatsApp Group Chat",
+        // You can also set attributes here if needed
+        // attributes: JSON.stringify({ topic: 'customer_support' })
       })
 
-    console.log("Created conversation:", conversation.sid)
     return NextResponse.json({
       success: true,
       conversationSid: conversation.sid,
@@ -25,10 +26,8 @@ export async function POST(request: Request) {
     })
   } catch (error) {
     console.error("Error creating conversation:", error)
-    const errorMessage =
-      error instanceof Error ? error.message : "An unknown error occurred"
     return NextResponse.json(
-      { error: "Failed to create conversation", details: errorMessage },
+      { error: `Failed to create conversation: ${error}` },
       { status: 500 }
     )
   }
