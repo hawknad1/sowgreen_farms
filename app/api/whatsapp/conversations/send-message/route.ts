@@ -1,161 +1,10 @@
-// import twilioClient from "@/lib/twilio/twilio"
-// import { NextResponse } from "next/server"
-
-// // Define an interface for the expected request body
-// interface SendMessageRequestBody {
-//   conversationSid: string
-//   author?: string
-//   body?: string
-//   contentSid?: string
-//   contentVariables?: Record<string, string | number | boolean> // e.g., { "1": "John", "2": "Order #123" }
-// }
-
-// // Define an interface for the messageData object passed to Twilio
-// interface TwilioMessageCreateOptions {
-//   author?: string
-//   body?: string
-//   contentSid?: string
-//   contentVariables?: string // Twilio expects this as a JSON string
-//   attributes?: string // Optional: JSON string for message attributes
-//   mediaSid?: string // Optional: For sending media messages
-//   // Add other potential options from the Twilio SDK as needed
-// }
-
-// export async function POST(request: Request) {
-//   // Use Next.js Request type
-//   try {
-//     const { conversationSid, author, body, contentSid, contentVariables } =
-//       (await request.json()) as SendMessageRequestBody
-
-//     if (!twilioClient) {
-//       return NextResponse.json(
-//         { success: false, error: "Twilio client not initialized" },
-//         { status: 500 }
-//       )
-//     }
-//     if (!conversationSid) {
-//       return NextResponse.json(
-//         { success: false, error: "Missing conversationSid" },
-//         { status: 400 }
-//       )
-//     }
-//     if (!body && !contentSid) {
-//       return NextResponse.json(
-//         {
-//           success: false,
-//           error: "Missing message body or contentSid for template",
-//         },
-//         { status: 400 }
-//       )
-//     }
-
-//     // Initialize messageData with a proper type
-//     const messageData: TwilioMessageCreateOptions = {
-//       author: author || "system",
-//     }
-
-//     if (contentSid) {
-//       messageData.contentSid = contentSid
-//       if (contentVariables) {
-//         messageData.contentVariables = JSON.stringify(contentVariables)
-//       }
-//       // Optional: Provide a fallback body if desired, though Twilio prioritizes contentSid
-//       if (body) {
-//         messageData.body = body
-//       }
-//     } else if (body) {
-//       // Ensure body is only set if not using contentSid or as a fallback
-//       messageData.body = body
-//     } else {
-//       // This case should ideally be caught by the earlier check,
-//       // but as a safeguard:
-//       return NextResponse.json(
-//         {
-//           success: false,
-//           error: "Message body is required when not using a template.",
-//         },
-//         { status: 400 }
-//       )
-//     }
-
-//     const message = await twilioClient.conversations.v1
-//       .conversations(conversationSid)
-//       .messages.create(messageData)
-
-//     return NextResponse.json({
-//       success: true,
-//       messageSid: message.sid,
-//       conversationSid: message.conversationSid,
-//       author: message.author,
-//       body: message.body, // Include body in response for confirmation
-//       contentSid: message.contentSid, // If contentSid is stored in attributes
-//       dateCreated: message.dateCreated,
-//     })
-//   } catch (error: unknown) {
-//     // Catch error as unknown
-//     console.error("Error sending message:", error)
-
-//     let errorMessage = "Failed to send message."
-//     let statusCode = 500
-//     let twilioErrorDetails: any = null
-
-//     // Type guard to check if it's a Twilio API error
-//     if (
-//       error &&
-//       typeof error === "object" &&
-//       "status" in error &&
-//       "message" in error
-//     ) {
-//       const twilioApiError = error as {
-//         status: number
-//         message: string
-//         code?: number
-//         moreInfo?: string
-//         details?: any
-//       } // Basic Twilio error structure
-//       errorMessage = `Twilio Error ${
-//         twilioApiError.code || twilioApiError.status
-//       }: ${twilioApiError.message}`
-//       statusCode = twilioApiError.status || 500
-//       twilioErrorDetails = twilioApiError.details || null // Capture more details if available
-
-//       // For more detailed logging, you can check for 'response' and 'data' if using Axios-like client internally by Twilio
-//       // However, the primary error object from twilio-node helper usually contains status, message, code.
-//       // The errors you reported with `error.response.data` might occur if you were using a raw HTTP client
-//       // or an older version of a library. With `twilio-node`, the error object itself usually has the necessary info.
-
-//       // If you still suspect `error.response.data` might exist (e.g. from a nested error or specific proxy setup):
-//       // if ('response' in error && error.response && typeof (error as any).response === 'object' && 'data' in (error as any).response) {
-//       //    console.error('Twilio API Response Data:', (error as any).response.data);
-//       //    twilioErrorDetails = (error as any).response.data;
-//       // }
-//     } else if (error instanceof Error) {
-//       errorMessage = error.message
-//     }
-
-//     return NextResponse.json(
-//       { success: false, error: errorMessage, details: twilioErrorDetails },
-//       { status: statusCode }
-//     )
-//   }
-// }
-
 import twilioClient from "@/lib/twilio/twilio"
 import { NextResponse, NextRequest } from "next/server"
-import { Buffer } from "buffer"
-import { capitalizeName } from "@/lib/capitalizeName"
-import { formatProductLine, truncate } from "@/lib/formatters"
-import { formatCurrency } from "@/lib/utils"
+import { truncate } from "@/lib/formatters"
 import { getTemplateMapFromBase64 } from "@/lib/twilio/template"
 import { prepareOrderDetails } from "@/lib/twilio/prepareOrderDetails"
+import prisma from "@/lib/prismadb"
 
-// --- Assuming Types and Helper Functions from your previous detailed versions ---
-// (Staff, Product, ShippingAddress, Order, formatProductLine, truncate,
-// formatCurrency, capitalizeName, getTemplateMapFromBase64, prepareOrderDetails, fetchWorkers)
-// Please ensure they are all correctly defined or imported as in the previous comprehensive example.
-// For brevity, I'll only include minimal placeholders for these here.
-
-// --- BEGIN: Minimal Placeholders for Types and Helpers ---
 interface Staff {
   fullName: string
   phone: string
@@ -191,103 +40,6 @@ interface Order {
   createdAt?: string | Date
 }
 
-// function formatProductLine(p: Product, maxLength: number): string {
-//   const title = truncate(p.product.title, maxLength - 12)
-//   return `• ${p.quantity}x ${title} ${
-//     p.weight ? p.weight + (p.unit || "") : ""
-//   } - ${formatCurrency(p.quantityTotal, "GHS")}`
-// }
-// function truncate(str: string | undefined, maxLength: number): string {
-//   if (!str) return ""
-//   return str.length > maxLength ? str.substring(0, maxLength - 3) + "..." : str
-// }
-// function formatCurrency(amount: number, currency: string = "GHS"): string {
-//   return `${currency} ${amount.toFixed(2)}`
-// }
-// function capitalizeName(name: string | undefined): string {
-//   if (!name) return ""
-//   return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()
-// }
-// function getTemplateMapFromBase64(): Record<string, string> {
-//   const encoded = process.env.TWILIO_TEMPLATE_MAP_BASE64
-//   if (!encoded) {
-//     console.error("TWILIO_TEMPLATE_MAP_BASE64 is not set.")
-//     return {}
-//   }
-//   try {
-//     return JSON.parse(Buffer.from(encoded, "base64").toString("utf-8"))
-//   } catch (err) {
-//     console.error("Failed to decode TWILIO_TEMPLATE_MAP_BASE64:", err)
-//     return {}
-//   }
-// }
-// function prepareOrderDetails(
-//   order: Order,
-//   shipping: ShippingAddress,
-//   maxProducts: number,
-//   workers: Staff[]
-// ): {
-//   baseVariables: string[]
-//   productLines: string[]
-//   summaryValues: string[]
-//   contactValues: string[]
-// } {
-//   const worker_one = workers[0]
-//     ? `${capitalizeName(workers[0]?.fullName?.split(" ")[0])}: ${
-//         workers[0]?.phone
-//       }`
-//     : ""
-//   const worker_two = workers[1]
-//     ? `${capitalizeName(workers[1]?.fullName?.split(" ")[0])}: ${
-//         workers[1]?.phone
-//       }`
-//     : ""
-//   const deliveryMethod = (shipping.deliveryMethod || "Pickup").trim()
-//   const displayMethod =
-//     deliveryMethod !== "Home Delivery"
-//       ? `Pickup @ ${deliveryMethod}`
-//       : deliveryMethod
-//   const baseVariables = [
-//     shipping.name?.split(" ")[0] || "Valued Customer",
-//     order.orderNumber,
-//     order.deliveryDate?.split(",").slice(0, 2).join(",") || "N/A",
-//     displayMethod,
-//     `${shipping.address || "N/A"}, ${shipping.city || "N/A"}`,
-//     shipping.phone || "N/A",
-//   ]
-//   const allProducts = order.products
-//   let productLines: string[] = []
-//   if (allProducts.length > maxProducts && maxProducts > 0) {
-//     const firstProducts = allProducts.slice(0, maxProducts - 1)
-//     const remainingProducts = allProducts.slice(maxProducts - 1)
-//     productLines = [
-//       ...firstProducts.map((p) => formatProductLine(p, 28)),
-//       remainingProducts
-//         .map(
-//           (p) =>
-//             `• ${p.quantity}x ${truncate(p.product.title, 13)} ${
-//               p.weight ? p.weight + (p.unit || "") : ""
-//             } - ${formatCurrency(p.quantityTotal, "GHS")}`
-//         )
-//         .join(", "),
-//     ]
-//   } else {
-//     productLines = [
-//       ...allProducts.slice(0, maxProducts).map((p) => formatProductLine(p, 24)),
-//       ...Array(Math.max(0, maxProducts - allProducts.length)).fill(""),
-//     ]
-//   }
-//   const summaryValues = [
-//     formatCurrency(order.total, "GHS"),
-//     formatCurrency(order.deliveryFee ?? 0, "GHS"),
-//     formatCurrency(order.creditAppliedTotal, "GHS"),
-//     formatCurrency(order.total + (order.deliveryFee ?? 0), "GHS"),
-//     formatCurrency(order.updatedOrderTotal, "GHS"),
-//   ]
-//   let contactValues = [` ${worker_one}`, ` ${worker_two}`]
-//   while (contactValues.length < 2) contactValues.push(" ")
-//   return { baseVariables, productLines, summaryValues, contactValues }
-// }
 async function fetchWorkers(): Promise<Staff[]> {
   try {
     const response = await fetch(
@@ -317,7 +69,6 @@ async function fetchWorkers(): Promise<Staff[]> {
     ]
   }
 }
-// --- END: Minimal Placeholders for Types and Helpers ---
 
 interface TwilioConversationsMessageCreateOptions {
   author?: string
@@ -331,7 +82,8 @@ interface TwilioConversationsMessageCreateOptions {
 export async function POST(request: NextRequest) {
   try {
     // Read configuration from environment variables
-    const targetConversationSid = process.env.ORDER_TARGET_CONVERSATION_SID
+    const targetConversationSid =
+      process.env.NEXT_PUBLIC_TWILIO_CONVERSATIONS_SID_SOWGREEN_FARMS
     // const messageAuthor =
     //   process.env.ORDER_MESSAGE_AUTHOR || "OrderNotificationService" // Default author
 
@@ -484,6 +236,18 @@ export async function POST(request: NextRequest) {
     )
     calculatedBodyForTemplate = `Order ${order.orderNumber} update. Template: ${templateUsedKey}. (See WhatsApp for details)`
 
+    // Find the conversation in our DB
+    const conversation = await prisma.conversation.findUnique({
+      where: { twilioSid: targetConversationSid },
+    })
+
+    if (!conversation) {
+      return NextResponse.json(
+        { error: "Conversation not found in database" },
+        { status: 404 }
+      )
+    }
+
     messageData.contentSid = finalContentSid
     if (finalContentVariablesData) {
       messageData.contentVariables = JSON.stringify(finalContentVariablesData)
@@ -494,10 +258,19 @@ export async function POST(request: NextRequest) {
       .conversations(targetConversationSid) // Use SID from .env
       .messages.create(messageData)
 
+    await prisma.conversationMessage.create({
+      data: {
+        conversationId: conversation.id,
+        twilioMessageSid: message.sid,
+        body: message.body,
+        author: message.author,
+      },
+    })
+
     return NextResponse.json({
       success: true,
       messageSid: message.sid,
-      conversationSid: message.conversationSid, // This will be targetConversationSid
+      conversationSid: targetConversationSid,
       author: message.author,
       body: message.body,
       contentSid: message.contentSid || finalContentSid,

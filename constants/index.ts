@@ -740,14 +740,13 @@ export const regions = [
 ]
 
 export const staffRole = [
+  { id: "1", label: "Manager", value: "manager" },
   {
+    id: "2",
     label: "Admin",
     value: "admin",
   },
-  {
-    label: "Staff",
-    value: "staff",
-  },
+  { id: "3", label: "Staff", value: "staff" },
 ]
 
 export const gender = [

@@ -100,7 +100,7 @@ import { Twilio } from "twilio"
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID!
 const authToken = process.env.TWILIO_AUTH_TOKEN!
-const whatsappNumber = process.env.TWILIO_WHATSAPP_NUMBER!
+const whatsappNumber = process.env.TWILIO_WHATSAPP_SENDER
 
 const twilioClient = new Twilio(accountSid, authToken)
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
@@ -143,6 +143,9 @@ export async function POST(req: NextRequest) {
     const from = formData.get("From") as string // Customer's WhatsApp number (e.g., whatsapp:+1234567890)
     const buttonPayload = formData.get("ButtonPayload") as string // The order ID sent as payload
     const messageSid = formData.get("MessageSid") as string // SID of the incoming Twilio message
+
+    console.log(whatsappNumber, "whatsapp Number")
+    console.log(formData, "formData")
 
     // Basic validation
     if (!from || !buttonPayload) {

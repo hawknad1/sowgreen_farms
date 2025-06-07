@@ -1,3 +1,4 @@
+import prisma from "@/lib/prismadb"
 import twilioClient from "@/lib/twilio/twilio"
 import { NextResponse } from "next/server"
 
@@ -12,12 +13,20 @@ export async function POST(request: Request) {
       )
     }
 
+    // Create Twilio conversation
     const conversation =
       await twilioClient.conversations.v1.conversations.create({
         friendlyName: friendlyName || "My WhatsApp Group Chat",
-        // You can also set attributes here if needed
-        // attributes: JSON.stringify({ topic: 'customer_support' })
+        attributes: JSON.stringify({ topic: "staff" }),
       })
+
+    // Save to our DB
+    await prisma.conversation.create({
+      data: {
+        friendlyName: conversation.friendlyName,
+        twilioSid: conversation.sid,
+      },
+    })
 
     return NextResponse.json({
       success: true,

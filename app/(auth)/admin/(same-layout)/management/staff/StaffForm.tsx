@@ -27,20 +27,26 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+// Create type from Zod schema
+type StaffFormValues = z.infer<typeof StaffSchema>
+
 const StaffForm = () => {
-  const [staff, setStaff] = useState<
-    {
-      fullName: string
-      jobTitle: string
-      phone: string
-      role: string
-      email: string
-    }[]
-  >([])
+  // const [staff, setStaff] = useState<
+  //   {
+  //     fullName: string
+  //     jobTitle: string
+  //     phone: string
+  //     role: string
+  //     email: string
+  //   }[]
+  // >([])
   const [isSaving, setIsSaving] = useState(false)
 
+  const sowgreenFarm_Con_Sid =
+    process.env.NEXT_PUBLIC_TWILIO_CONVERSATIONS_SID_SOWGREEN_FARMS
+
   // React Hook Form setup
-  const form = useForm<z.infer<typeof StaffSchema>>({
+  const form = useForm<StaffFormValues>({
     resolver: zodResolver(StaffSchema),
     defaultValues: {
       fullName: "",
@@ -52,31 +58,54 @@ const StaffForm = () => {
   })
 
   // Form submission handler
-  const onSubmit = async (values: z.infer<typeof StaffSchema>) => {
+  const onSubmit = async (values: StaffFormValues) => {
     setIsSaving(true)
+    const convertedWhatsapp = values.phone.slice(1)
     try {
-      const response = await fetch("/api/management/staff", {
+      // Save staff data
+      const staffResponse = await fetch("/api/management/staff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       })
 
-      if (!response.ok) {
-        const { error } = await response.json()
-        console.error("Error:", error)
-        return
+      if (!staffResponse.ok) {
+        const errorData = await staffResponse.json()
+        throw new Error(errorData.error || "Failed to save staff")
       }
 
-      const newStaff = await response.json()
-      setStaff((prev) => [...prev, newStaff])
+      // Create WhatsApp participant
+      const conversationResponse = await fetch(
+        "/api/whatsapp/conversations/add-participants",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userWhatsAppNumber: `whatsapp:+233${convertedWhatsapp}`,
+            name: values.fullName,
+            conversationSid: sowgreenFarm_Con_Sid,
+          }),
+        }
+      )
+
+      if (!conversationResponse.ok) {
+        const errorData = await conversationResponse.json()
+        throw new Error(
+          errorData.error || "Failed to create WhatsApp participant"
+        )
+      }
+      // const newStaff = await response.json()
+      // setStaff((prev) => [...prev, newStaff])
       form.reset() // Reset form fields
-      window.location.reload()
+
       toast.success("Staff added successfully")
+      setTimeout(() => window.location.reload(), 1500)
     } catch (error) {
       console.error("Error adding staff:", error)
     } finally {
       setIsSaving(false)
     }
+    console.log(values, "values")
   }
 
   return (

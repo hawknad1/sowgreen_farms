@@ -321,6 +321,7 @@ model ConversationParticipant {
   contactId               String?      @db.ObjectId
   twilioParticipantSid    String? // Twilio Participant SID
   messagingBindingAddress String // e.g., "whatsapp:+1234567890"
+  name                    String?
   conversation            Conversation @relation(fields: [conversationId], references: [id])
   contact                 Contact?     @relation(fields: [contactId], references: [id])
   createdAt               DateTime     @default(now())

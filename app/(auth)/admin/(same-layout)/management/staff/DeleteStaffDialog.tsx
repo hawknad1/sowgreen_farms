@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import toast from "react-hot-toast"
-import { DispatchRider, Staff } from "@/types"
+import { Staff } from "@/types"
 
 interface Props {
   staff?: Staff
@@ -24,11 +24,64 @@ const DeleteStaffDialog = forwardRef<HTMLButtonElement, Props>(
     const [isDeleting, setIsDeleting] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
 
+    const deleteParticipant = async (phone: string) => {
+      const number = phone.slice(1)
+      const convertedTowhatsapp = `whatsapp:+233${number}`
+
+      try {
+        // First, find the conversation participant associated with this staff
+        const findResponse = await fetch(
+          `/api/whatsapp/conversations/get-participant`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ phone: convertedTowhatsapp }),
+          }
+        )
+
+        if (!findResponse.ok) {
+          console.log("No participant found for this staff")
+          return
+        }
+
+        const participantData = await findResponse.json()
+
+        if (participantData.participantSid) {
+          // Delete the participant from Twilio conversation
+          const deleteResponse = await fetch(
+            `/api/whatsapp/conversations/all-participants/${participantData.conversation.twilioSid}/remove-participant`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                participantSid: participantData.participantSid,
+              }),
+            }
+          )
+
+          if (!deleteResponse.ok) {
+            console.error("Failed to delete participant")
+          }
+        }
+      } catch (error) {
+        console.error("Error deleting participant:", error)
+      }
+    }
+
     const handleDelete = async () => {
       if (!location) return
 
       setIsDeleting(true)
       try {
+        // First delete the participant if staff has phone
+        if (staff.phone) {
+          await deleteParticipant(staff.phone)
+        }
+
         // Example API call to delete location
         const response = await fetch(`/api/management/staff/${staff.id}`, {
           method: "DELETE",
@@ -76,6 +129,7 @@ const DeleteStaffDialog = forwardRef<HTMLButtonElement, Props>(
             <Button
               variant="destructive"
               onClick={handleDelete}
+              // onClick={() => console.log(staff, "staff")}
               disabled={isDeleting}
             >
               {isDeleting ? "Deleting..." : "Delete"}
