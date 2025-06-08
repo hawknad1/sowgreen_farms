@@ -29,15 +29,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { columns } from "@/app/(auth)/admin/(same-layout)/dispatch-riders/columns" // Corrected import for the columns
-
-import { CitiesWithFees, DispatchRider } from "@/types"
+import { columns } from "@/app/(auth)/admin/(same-layout)/dispatch-riders/columns"
+import { Staff } from "@/types"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
-import AddRiderDialog from "./AddRiderDialog"
 
 interface OrdersProps {
   loading?: boolean
-  data?: DispatchRider[]
+  data?: Staff[]
 }
 
 const DispatchRiderTable = ({ loading, data }: OrdersProps) => {
@@ -77,10 +75,10 @@ const DispatchRiderTable = ({ loading, data }: OrdersProps) => {
           <Input
             placeholder="Filter riders..."
             value={
-              (table.getColumn("firstName")?.getFilterValue() as string) ?? ""
+              (table.getColumn("fullName")?.getFilterValue() as string) ?? ""
             }
             onChange={(event) =>
-              table.getColumn("firstName")?.setFilterValue(event.target.value)
+              table.getColumn("fullName")?.setFilterValue(event.target.value)
             }
             className="max-w-sm w-full"
             aria-label="Filter riders"
@@ -115,7 +113,7 @@ const DispatchRiderTable = ({ loading, data }: OrdersProps) => {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <AddRiderDialog />
+          {/* <AddRiderDialog /> */}
         </div>
       </div>
 

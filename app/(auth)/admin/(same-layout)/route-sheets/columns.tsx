@@ -119,10 +119,10 @@ export const columns: ColumnDef<Order>[] = [
     accessorKey: "dispatchRider",
     header: "Dispatch Rider",
     cell: ({ row }) => (
-      <div className="capitalize">{`${row.original.dispatchRider.firstName} ${row.original.dispatchRider.lastName}`}</div>
+      <div className="capitalize">{`${row.original.dispatchRider.fullName}`}</div>
     ),
     filterFn: (row, columnId, filterValue) => {
-      const riderName = row.original.dispatchRider.firstName.toLowerCase()
+      const riderName = row.original.dispatchRider.fullName.toLowerCase()
       return riderName.includes(filterValue.toLowerCase())
     },
   },

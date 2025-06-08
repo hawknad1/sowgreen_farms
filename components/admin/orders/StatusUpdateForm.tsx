@@ -63,6 +63,10 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
   const { dispatchRiders, fetchDispatchRiders } = useDispatchRidersStore()
   // const { balance, setBalance } = useUserListStore()
 
+  const filteredDispatchRider = dispatchRiders.filter(
+    (user) => user.jobTitle === "dispatch rider"
+  )
+
   const email = orders?.shippingAddress?.email
 
   useEffect(() => {
@@ -92,7 +96,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     defaultValues: {
       ...orders,
       dispatchRider: orders.dispatchRider
-        ? `${orders.dispatchRider.firstName} ${orders.dispatchRider.lastName}` // Join first name and last name
+        ? `${orders.dispatchRider.fullName}` // Join first name and last name
         : "",
     },
   })
@@ -106,16 +110,14 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     try {
       // Map the dispatch rider's name to their ID before sending the request
       const dispatchRider = dispatchRiders.find(
-        (rider) =>
-          `${rider.firstName} ${rider.lastName}` === values.dispatchRider
+        (rider) => `${rider.fullName}` === values.dispatchRider
       )
 
       const dispatchRiderId = dispatchRider?.id // Extract ID
       const dispatchRiderData = dispatchRider
         ? {
             id: dispatchRider.id, // Pass ID
-            firstName: dispatchRider.firstName,
-            lastName: dispatchRider.lastName,
+            fullName: dispatchRider.fullName,
             phone: dispatchRider.phone,
           }
         : undefined
@@ -188,6 +190,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 
   const onSubmit = (values: z.infer<typeof UpdateStatusSchema>) => {
     updateOrder(values)
+    console.log(values, "values")
   }
 
   return (
@@ -242,12 +245,9 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
                     <SelectValue placeholder="Select Rider" />
                   </SelectTrigger>
                   <SelectContent>
-                    {dispatchRiders.map((rider) => (
-                      <SelectItem
-                        key={rider.id}
-                        value={`${rider.firstName} ${rider.lastName}`}
-                      >
-                        {`${rider.firstName} ${rider.lastName}`}
+                    {filteredDispatchRider.map((rider) => (
+                      <SelectItem key={rider.id} value={`${rider.fullName}`}>
+                        {rider.fullName}
                       </SelectItem>
                     ))}
                   </SelectContent>

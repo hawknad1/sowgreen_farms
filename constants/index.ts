@@ -267,7 +267,7 @@ export const sidebarLinks = {
     },
     {
       title: "Management",
-      url: "/admin/management/pickup-locations",
+      url: "/admin/management/staff",
       icon: Users,
       items: [
         {
@@ -747,6 +747,18 @@ export const staffRole = [
     value: "admin",
   },
   { id: "3", label: "Staff", value: "staff" },
+]
+
+export const jobTitle = [
+  { id: "1", label: "Sales Manager", value: "sales manager" },
+  {
+    id: "2",
+    label: "Support Staff",
+    value: "support staff",
+  },
+  { id: "3", label: "Dispatch Rider", value: "dispatch rider" },
+  { id: "4", label: "Cleaner", value: "cleaner" },
+  { id: "5", label: "Inventory", value: "inventory" },
 ]
 
 export const gender = [

@@ -11,11 +11,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Staff } from "@/types"
+
 import toast from "react-hot-toast"
-import { CitiesWithFees, DispatchRider } from "@/types"
 
 interface Props {
-  location?: DispatchRider
+  location?: Staff
 }
 
 // Use forwardRef for DeleteLocationDialog
@@ -30,7 +31,7 @@ const DeleteRiderDialog = forwardRef<HTMLButtonElement, Props>(
       setIsDeleting(true)
       try {
         // Example API call to delete location
-        const response = await fetch(`/api/dispatch-riders/${location.id}`, {
+        const response = await fetch(`/api/management/staff/${location.id}`, {
           method: "DELETE",
         })
 

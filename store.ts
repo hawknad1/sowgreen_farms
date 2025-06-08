@@ -137,7 +137,7 @@ type CartState = {
 }
 
 type DispatchRidersStore = {
-  dispatchRiders: DispatchRider[]
+  dispatchRiders: Staff[]
   fetchDispatchRiders: () => Promise<void>
 }
 
@@ -187,17 +187,40 @@ interface CheckoutStore {
   resetFormValues: () => void
 }
 
+// export const useDispatchRidersStore = create<DispatchRidersStore>((set) => ({
+//   dispatchRiders: [],
+//   fetchDispatchRiders: async () => {
+//     try {
+//       const res = await fetch("/api/dispatch-riders", {
+//         method: "GET",
+//         cache: "no-store",
+//       })
+
+//       if (res.ok) {
+//         const riders = await res.json()
+//         set({ dispatchRiders: riders })
+//       }
+//     } catch (error) {
+//       console.error("Error fetching dispatch riders:", error)
+//     }
+//   },
+// }))
+
 export const useDispatchRidersStore = create<DispatchRidersStore>((set) => ({
   dispatchRiders: [],
   fetchDispatchRiders: async () => {
     try {
-      const res = await fetch("/api/dispatch-riders", {
+      const res = await fetch("/api/management/staff", {
         method: "GET",
         cache: "no-store",
       })
 
       if (res.ok) {
-        const riders = await res.json()
+        const data = await res.json()
+        const riders = data.filter(
+          (user: Staff) => user.jobTitle === "dispatch rider"
+        )
+
         set({ dispatchRiders: riders })
       }
     } catch (error) {

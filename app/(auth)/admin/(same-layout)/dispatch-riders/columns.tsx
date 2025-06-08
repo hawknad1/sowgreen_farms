@@ -4,7 +4,7 @@ import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
 import { ArrowUpDown, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { DispatchRider } from "@/types"
+import { DispatchRider, Staff } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
   DropdownMenu,
@@ -18,7 +18,7 @@ import EditRiderDialog from "./EditRiderDialog"
 import DeleteRiderDialog from "./DeleteRiderDialog"
 import { useRouter } from "next/navigation"
 
-export const columns: ColumnDef<DispatchRider>[] = [
+export const columns: ColumnDef<Staff>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -46,7 +46,7 @@ export const columns: ColumnDef<DispatchRider>[] = [
   },
 
   {
-    accessorKey: "firstName",
+    accessorKey: "fullName",
     header: ({ column }) => {
       return (
         <Button
@@ -58,22 +58,15 @@ export const columns: ColumnDef<DispatchRider>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div>{row.getValue("firstName")}</div>,
+    cell: ({ row }) => <div>{row.getValue("fullName")}</div>,
   },
+
   {
-    accessorKey: "lastName",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          First Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div>{row.getValue("lastName")}</div>,
+    accessorKey: "jobTitle",
+    header: "Job Title",
+    cell: ({ row }) => (
+      <div className="capitalize">{row.getValue("jobTitle")}</div>
+    ),
   },
 
   {
@@ -111,11 +104,11 @@ export const columns: ColumnDef<DispatchRider>[] = [
             </div>
 
             {/* Prevent closing dropdown on Dialog trigger */}
-            <Button
+            {/* <Button
               onClick={() => router.push(`/admin/dispatch-riders/deliveries`)}
             >
               View Deliveries
-            </Button>
+            </Button> */}
 
             <DropdownMenuSeparator />
 

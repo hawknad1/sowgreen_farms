@@ -79,7 +79,7 @@ export type Order = {
     method: "checkbox"
   }
   status: OrderStatus
-  dispatchRider: DispatchRider
+  dispatchRider: Staff
   deliveryMethod?: string
   deliveryFee: number
   deliveryDate: string

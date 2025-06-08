@@ -143,8 +143,8 @@ export const UpdateStatusSchema = z.object({
     .union([
       z.string(),
       z.object({
-        firstName: z.string().optional(),
-        lastName: z.string().optional(),
+        fullName: z.string().optional(),
+        phone: z.string().optional(),
       }),
     ])
     .optional(),

@@ -13,20 +13,11 @@ import { UpdateRiderSchema } from "@/schemas"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { DispatchRider } from "@/types"
-import { gender } from "@/constants"
+
+import { Staff } from "@/types"
 
 interface Props {
-  dispatch?: DispatchRider
+  dispatch?: Staff
 }
 
 const EditRiderForm = ({ dispatch }: Props) => {
@@ -39,7 +30,7 @@ const EditRiderForm = ({ dispatch }: Props) => {
   const onSubmit = async (values: z.infer<typeof UpdateRiderSchema>) => {
     setIsSaving(true)
     try {
-      const res = await fetch(`/api/dispatch-riders/${dispatch.id}`, {
+      const res = await fetch(`/api/management/staff/${dispatch.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),

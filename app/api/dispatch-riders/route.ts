@@ -1,10 +1,42 @@
 import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
 
-export async function POST(req: Request) {
-  const { gender, firstName, lastName, phone } = await req.json()
+// export async function POST(req: Request) {
+//   const { gender, firstName, lastName, phone } = await req.json()
 
-  if (!firstName || !lastName || !phone) {
+//   if (!firstName || !lastName || !phone) {
+//     return NextResponse.json(
+//       { message: '"Gender, First and Last name are required"' },
+//       { status: 400 }
+//     )
+//   }
+
+//   try {
+//     const newRider = await prisma.dispatchRider.create({
+//       data: {
+//         gender,
+//         firstName,
+//         lastName,
+//         phone,
+//       },
+//     })
+//     return NextResponse.json(newRider, { status: 201 })
+//   } catch (error) {
+//     console.error("Error adding rider:", error)
+//     return NextResponse.json(
+//       { message: "Internal server error" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
+export async function POST(req: Request) {
+  const { fullName, phone } = await req.json()
+
+  console.log(fullName, "fullName")
+  console.log(phone, "phone")
+
+  if (!fullName || !phone) {
     return NextResponse.json(
       { message: '"Gender, First and Last name are required"' },
       { status: 400 }
@@ -14,9 +46,7 @@ export async function POST(req: Request) {
   try {
     const newRider = await prisma.dispatchRider.create({
       data: {
-        gender,
-        firstName,
-        lastName,
+        fullName,
         phone,
       },
     })

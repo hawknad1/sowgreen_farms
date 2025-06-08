@@ -127,10 +127,10 @@ export async function PUT(
     let dispatchRiderId = existingOrder.dispatchRiderId
 
     if (dispatchRider) {
-      const { firstName, lastName, phone } = dispatchRider
+      const { fullName, phone } = dispatchRider
 
       const existingRider = await prisma.dispatchRider.findFirst({
-        where: { firstName, lastName, phone },
+        where: { fullName, phone },
       })
 
       if (existingRider) {
@@ -139,12 +139,12 @@ export async function PUT(
         // Update existing dispatch rider by ID
         await prisma.dispatchRider.update({
           where: { id: dispatchRiderId },
-          data: { firstName, lastName, phone },
+          data: { fullName, phone },
         })
       } else {
         // Create a new dispatch rider if no match is found
         const newDispatchRider = await prisma.dispatchRider.create({
-          data: { firstName, lastName, phone },
+          data: { fullName, phone },
         })
         dispatchRiderId = newDispatchRider.id
       }

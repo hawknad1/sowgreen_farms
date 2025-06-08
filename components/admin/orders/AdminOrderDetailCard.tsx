@@ -12,7 +12,6 @@ import { Order, User } from "@/types"
 import { formatCurrency } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
 import { orderStatusCard } from "@/constants"
-import { useDeliveryStore } from "@/store"
 import { useSession } from "next-auth/react"
 import { deductBalance } from "@/lib/actions/deductBalance"
 
@@ -71,10 +70,12 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
       </div>
     )
 
-  const firstName = orders?.dispatchRider?.firstName
-  const lastName = orders?.dispatchRider?.lastName
-  const rider =
-    firstName && lastName ? `${firstName} ${lastName}` : "Not Assigned"
+  // const firstName = orders?.dispatchRider?.firstName
+  // const lastName = orders?.dispatchRider?.lastName
+  // const rider =
+  //   firstName && lastName ? `${firstName} ${lastName}` : "Not Assigned"
+
+  const rider = orders?.dispatchRider?.fullName || "Not Assigned"
 
   return (
     <div className="p-4 w-full">

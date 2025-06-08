@@ -7,9 +7,9 @@ export async function PUT(
 ) {
   const id = params.id
   try {
-    const { gender, firstName, lastName, phone } = await req.json()
+    const { fullName, phone } = await req.json()
 
-    if (!gender || !firstName || !lastName || !phone) {
+    if (!fullName || !phone) {
       return NextResponse.json(
         { message: "Valid gender, firstname, and lastname are required." },
         { status: 400 }
@@ -18,7 +18,7 @@ export async function PUT(
 
     const updatedRider = await prisma.dispatchRider.update({
       where: { id },
-      data: { gender, firstName, lastName, phone },
+      data: { fullName, phone },
     })
 
     return NextResponse.json(updatedRider, { status: 200 })

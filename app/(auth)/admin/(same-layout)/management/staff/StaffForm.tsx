@@ -16,7 +16,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { StaffSchema } from "@/schemas"
 import toast from "react-hot-toast"
-import { staffRole } from "@/constants"
+import { jobTitle, staffRole } from "@/constants"
 import {
   Select,
   SelectContent,
@@ -131,7 +131,7 @@ const StaffForm = () => {
             )}
           />
           {/* Job Title Field */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="jobTitle"
             render={({ field }) => (
@@ -144,6 +144,35 @@ const StaffForm = () => {
                     {...field}
                   />
                 </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+
+          <FormField
+            control={form.control}
+            name="jobTitle"
+            render={({ field }) => (
+              <FormItem className="flex-1 min-w-[150px]">
+                <FormLabel>Job Title</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(value)}
+                  defaultValue={field.value}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Job Title" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-72 py-1.5 overflow-auto">
+                    <SelectGroup>
+                      <SelectLabel>Job Title</SelectLabel>
+                      {jobTitle.map(({ label, value }) => (
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
+                      ))}
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
                 <FormMessage />
               </FormItem>
             )}
@@ -161,7 +190,7 @@ const StaffForm = () => {
                   defaultValue={field.value}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
+                    <SelectValue placeholder="Select Role" />
                   </SelectTrigger>
                   <SelectContent className="max-h-72 py-1.5 overflow-auto">
                     <SelectGroup>

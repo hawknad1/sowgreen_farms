@@ -278,14 +278,28 @@ model PickupOptions {
   location String
 }
 
+// model DispatchRider {
+//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
+//   gender    String?
+//   firstName String
+//   lastName  String
+//   phone     String?
+//   orders    Order[]
+// }
+
 model DispatchRider {
-  id        String  @id @default(auto()) @map("_id") @db.ObjectId
-  gender    String?
-  firstName String
-  lastName  String
-  phone     String?
-  orders    Order[]
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  fullName String
+  phone    String?
+  orders   Order[]
 }
+
+// model StaffDispatchRider {
+//   id        String  @id @default(auto()) @map("_id") @db.ObjectId
+//   fullName String
+//   phone     String?
+//   orders    Order[]
+// }
 
 model Staff {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
