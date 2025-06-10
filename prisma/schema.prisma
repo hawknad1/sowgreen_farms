@@ -289,7 +289,7 @@ model PickupOptions {
 
 model DispatchRider {
   id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  fullName String
+  fullName String?
   phone    String?
   orders   Order[]
 }

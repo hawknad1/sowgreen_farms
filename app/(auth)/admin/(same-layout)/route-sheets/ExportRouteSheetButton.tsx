@@ -10,6 +10,8 @@ export default function ExportRouteSheetButton() {
   const { dateRange } = useDateRangeStore()
   const [isLoading, setIsLoading] = useState(false) // Loading state
 
+  console.log(dateRange, "date Range")
+
   const handleExport = async () => {
     setIsLoading(true) // Set loading state to true
     try {

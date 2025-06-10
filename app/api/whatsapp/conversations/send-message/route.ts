@@ -33,6 +33,10 @@ interface Order {
   products: Product[]
   total: number
   deliveryFee: number
+  dispatchRider: {
+    fullName: string
+    phone: string
+  }
   updatedOrderTotal: number
   creditAppliedTotal: number
   userWhatsappOptIn: { customerPhone: string } // Still useful for context within the order
@@ -150,15 +154,15 @@ export async function POST(request: NextRequest) {
       rawProductCount,
       CAPPED_PRODUCTS_IN_LIST
     )
-    const baseVarCount = 6
+    const baseVarCount = 7
     const summaryVarCount = 5
     const contactVarCount = 2
     const TEMPLATE_MAP = getTemplateMapFromBase64()
 
     if (rawProductCount > buttonTemplateThreshold) {
-      templateUsedKey = "14var_btn"
+      templateUsedKey = "15var_btn"
       finalContentSid = TEMPLATE_MAP[templateUsedKey]
-      expectedVarCount = 15
+      expectedVarCount = 16
     } else {
       const totalTextVars =
         baseVarCount +
@@ -192,10 +196,10 @@ export async function POST(request: NextRequest) {
       )
 
     let allTemplateVariables: (string | number)[] = []
-    if (templateUsedKey === "14var_btn") {
+    if (templateUsedKey === "15var_btn") {
       allTemplateVariables = [
         ...baseVariables.map((v) => truncate(v, 60)),
-        "Click the *View Order Summary* button below to see all purchased products.",
+        "Click the *View Ordered Items* button below to see all purchased products.",
         ...summaryValues.map((v) => truncate(v, 60)),
         ...contactValues.map((v) => truncate(v, 60)),
         order.id || `fallback_id_${Date.now()}`, // Ensure order.id is present

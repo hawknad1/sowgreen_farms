@@ -31,6 +31,10 @@ interface Order {
   products: Product[]
   total: number
   deliveryFee: number
+  dispatchRider: {
+    fullName: string
+    phone: string
+  }
   updatedOrderTotal: number
   creditAppliedTotal: number
   userWhatsappOptIn: {
@@ -71,6 +75,7 @@ export function prepareOrderDetails(
     order.deliveryDate?.split(",").slice(0, 2).join(","),
     displayMethod,
     `${shipping.address}, ${shipping.city}`,
+    order?.dispatchRider?.fullName,
     shipping.phone,
   ]
 
@@ -78,7 +83,7 @@ export function prepareOrderDetails(
   const allProducts = order.products
   let productLines: string[] = []
 
-  if (allProducts.length > maxProducts) {
+  if (allProducts?.length > maxProducts) {
     const firstProducts = allProducts.slice(0, 19)
     const remainingProducts = allProducts.slice(19)
 
@@ -87,7 +92,7 @@ export function prepareOrderDetails(
       remainingProducts
         .map(
           (p) =>
-            `• ${p.quantity}x ${truncate(p.product.title, 13)} ` +
+            `• ${p.quantity}x ${truncate(p.product.title, 14)} ` +
             `${p.weight ? p.weight + p.unit : ""} - ${formatCurrency(
               p.quantityTotal,
               "GHS"

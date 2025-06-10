@@ -42,6 +42,10 @@ interface Order {
   products: Product[]
   total: number
   deliveryFee: number
+  dispatchRider: {
+    fullName: string
+    phone: string
+  }
   updatedOrderTotal: number
   creditAppliedTotal: number
   userWhatsappOptIn: {
@@ -55,14 +59,14 @@ export async function POST(req: NextRequest) {
     const shipping = order.shippingAddress
 
     // 1. Fetch workers from MongoDB
-    const workers = await fetchWorkers() // Add this helper function
+    const workers = await fetchStaff() // Add this helper function
 
     // 1. Calculate product count and determine template
     const rawProductCount = order.products.length
     const cappedProductCount = Math.min(rawProductCount, 20)
 
     // Calculate exact variable count for non-button templates
-    const baseVarCount = 6 // [name, orderNumber, date, method, address, phone]
+    const baseVarCount = 7 // [name, orderNumber, date, method, address,rider, phone]
     const summaryVarCount = 5 // [subtotal, delivery, credit, total, due]
     const contactVarCount = 2 // [contact1, contact2]
     const requiredVarCount =
@@ -71,8 +75,11 @@ export async function POST(req: NextRequest) {
     // 2. Get template SID
     const TEMPLATE_MAP = getTemplateMapFromBase64()
     const templateKey =
-      rawProductCount > 20 ? "14var_btn" : `${requiredVarCount}var`
+      rawProductCount > 20 ? "15var_btn" : `${requiredVarCount}var`
     const contentSid = TEMPLATE_MAP[templateKey]
+
+    console.log(contentSid, "contentSid")
+    console.log(templateKey, "templateKey")
 
     if (!contentSid) {
       throw new Error(`Template ${templateKey} not found in template map`)
@@ -84,24 +91,24 @@ export async function POST(req: NextRequest) {
 
     // 4. Build variables array according to template requirements
     const allVariables = [
-      ...baseVariables.map((v) => truncate(v, 40)), // 6 variables
-      ...(templateKey === "14var_btn"
+      ...baseVariables.map((v) => truncate(v, 40)), // 7 variables
+      ...(templateKey === "15var_btn"
         ? [
-            "Click the *View Order Summary* button below to see all purchased products.",
+            "Click the *View Ordered Items* button below to see all purchased products.",
           ] // Single product line for button template
         : productLines), // Multiple lines for other templates
       ...summaryValues, // 5 variables
       ...contactValues, // 2 variables
-      ...(templateKey === "14var_btn" ? [order.id] : []), // Button ID only for button template
+      ...(templateKey === "15var_btn" ? [order.id] : []), // Button ID only for button template
     ]
 
     // 5. Validate variable count matches template expectations
     const expectedVarCount =
-      templateKey === "14var_btn"
-        ? 15 // 6 + 1 + 5 + 2 + 1 (button ID)
+      templateKey === "15var_btn"
+        ? 16 // 6 + 1 + 5 + 2 + 1 (button ID)
         : requiredVarCount
 
-    if (allVariables.length !== expectedVarCount) {
+    if (allVariables?.length !== expectedVarCount) {
       throw new Error(
         `Variable count mismatch! Generated ${allVariables.length} variables, ` +
           `template ${templateKey} expects ${expectedVarCount}. ` +
@@ -147,13 +154,14 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function fetchWorkers(): Promise<Staff[]> {
+async function fetchStaff(): Promise<Staff[]> {
   try {
     // Replace with your actual MongoDB query
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/management/staff`
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/management/staff`,
+      { method: "GET", cache: "no-store" }
     )
-    if (!response.ok) throw new Error("Failed to fetch workers")
+    if (!response.ok) throw new Error("Failed to fetch staff")
     return await response.json()
   } catch (error) {
     console.error("Error fetching workers:", error)
