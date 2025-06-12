@@ -21,7 +21,7 @@ interface Props {
   className?: string
 }
 
-const CancelOrderDialog = ({ order, children, className }: Props) => {
+const CancelOrderDialog = ({ order, className }: Props) => {
   const [isCancelling, setIsCancelling] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
@@ -60,6 +60,7 @@ const CancelOrderDialog = ({ order, children, className }: Props) => {
       <DialogTrigger asChild>
         <Button
           variant="secondary"
+          disabled={order?.status === "delivered"}
           className={`font-semibold text-xs lg:text-sm w-fit hover:bg-slate-200 ${className} shadow-sm border border-neutral-200 `}
         >
           Cancel Order

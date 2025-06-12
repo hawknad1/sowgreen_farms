@@ -22,7 +22,7 @@ interface Props {
   className?: string
 }
 
-const DeleteOrderDialog = ({ order, children, className }: Props) => {
+const DeleteOrderDialog = ({ order, className }: Props) => {
   const [isDeleting, setIsDeleting] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const router = useRouter()
@@ -60,6 +60,7 @@ const DeleteOrderDialog = ({ order, children, className }: Props) => {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button
+          disabled={order?.status === "delivered"}
           variant="destructive"
           className={`font-semibold w-full ${className}`}
         >

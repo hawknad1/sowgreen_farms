@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react"
 
 interface ChevronProps {
   children: React.ReactNode
-  message: string
+  message?: string
 }
 
 const ProductChevrons = ({ children, message }: ChevronProps) => {

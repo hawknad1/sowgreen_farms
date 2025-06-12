@@ -117,6 +117,7 @@ export type Product = {
   title: string
   updatedAt: string
   variants: Variant[]
+  rating?: number // Added as optional since it's used in sorting
 }
 
 export type Variant = {

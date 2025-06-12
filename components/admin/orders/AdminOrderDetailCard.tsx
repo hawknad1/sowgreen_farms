@@ -70,11 +70,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
       </div>
     )
 
-  // const firstName = orders?.dispatchRider?.firstName
-  // const lastName = orders?.dispatchRider?.lastName
-  // const rider =
-  //   firstName && lastName ? `${firstName} ${lastName}` : "Not Assigned"
-
   const rider = orders?.dispatchRider?.fullName || "Not Assigned"
 
   return (

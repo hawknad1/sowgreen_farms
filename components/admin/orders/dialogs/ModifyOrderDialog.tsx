@@ -60,12 +60,16 @@ const ModifyOrderDialog = ({ order }: Props) => {
 
       <DialogContent
         className={` ${
-          order?.status === "confirmed"
+          order?.status === "confirmed" ||
+          order?.status === "in-transit" ||
+          order?.status === "delivered"
             ? "max-w-2xl h-fit p-1"
             : "max-w-3xl h-[500px] flex flex-col py-3"
         }`}
       >
-        {order?.status === "confirmed" ? (
+        {order?.status === "confirmed" ||
+        order?.status === "in-transit" ||
+        order?.status === "delivered" ? (
           <AlertDestructive
             message="Your order is being confirmed and cannot be modified at this moment. 
             Kindly call Sowgreen Organic on 0546729407 / 0544437775 for assistance. 

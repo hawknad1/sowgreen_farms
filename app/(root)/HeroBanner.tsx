@@ -40,7 +40,7 @@ const HeroBanner = () => {
   const nextRef = useRef<HTMLButtonElement>(null)
 
   return (
-    <div className="relative w-full h-[70vh]">
+    <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh]">
       <Swiper
         modules={[Autoplay, Pagination, Navigation]}
         autoplay={{ delay: 10000, disableOnInteraction: false }}
@@ -127,18 +127,16 @@ const HeroBanner = () => {
 
       {/* Tailwind Styling for Dots */}
       <style jsx global>{`
-        .custom-dot {
-          background-color: gray; /* Default gray color */
-          width: 12px;
-          height: 12px;
-          margin: 0 5px;
-          border-radius: 50%;
-          opacity: 0.6;
-          transition: all 0.3s ease;
-        }
-        .custom-dot.swiper-pagination-bullet-active {
-          background-color: white;
+        .swiper-pagination-bullet {
+          width: 10px;
+          height: 10px;
+          background: rgba(255, 255, 255, 0.5);
           opacity: 1;
+        }
+        .swiper-pagination-bullet-active {
+          background: white;
+          width: 30px;
+          border-radius: 4px;
         }
       `}</style>
     </div>
