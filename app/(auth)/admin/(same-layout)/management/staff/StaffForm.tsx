@@ -60,6 +60,9 @@ const StaffForm = () => {
   // Form submission handler
   const onSubmit = async (values: StaffFormValues) => {
     setIsSaving(true)
+    const firstName = values.fullName.split(" ")[0]
+    const formattedPhone = values.phone.replace(/^0/, "+233")
+
     const convertedWhatsapp = values.phone.slice(1)
     try {
       // Save staff data
@@ -94,6 +97,13 @@ const StaffForm = () => {
           errorData.error || "Failed to create WhatsApp participant"
         )
       }
+
+      await fetch("/api/whatsapp/messages/send-greetings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: formattedPhone, name: firstName }),
+      })
+
       // const newStaff = await response.json()
       // setStaff((prev) => [...prev, newStaff])
       form.reset() // Reset form fields
@@ -130,24 +140,6 @@ const StaffForm = () => {
               </FormItem>
             )}
           />
-          {/* Job Title Field */}
-          {/* <FormField
-            control={form.control}
-            name="jobTitle"
-            render={({ field }) => (
-              <FormItem className="flex-1 min-w-[200px]">
-                <FormLabel>Job Title</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Enter last name"
-                    aria-label="Last Name"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
 
           <FormField
             control={form.control}
