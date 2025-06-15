@@ -33,6 +33,12 @@ export type ShippingAddress = {
   deliveryMethod?: string
   whatsappOptIn?: boolean
   orders?: Order[]
+  pickupLocation?: {
+    id: string
+    address: string
+    city: string
+    region: string
+  }
 }
 
 export type MenuItem = {
@@ -65,6 +71,7 @@ export type Order = {
   orderNumber: string
   referenceNumber: string
   total: number
+  subtotal: number
   totalDue?: number
   creditAppliedTotal?: number
   creditAppliedDeliveryFee?: number

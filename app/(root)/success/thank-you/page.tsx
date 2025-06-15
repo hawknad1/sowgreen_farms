@@ -26,18 +26,23 @@ const ThankYouPage = () => {
   const { user } = useUserStore()
   // const { balance } = useUserListStore()
 
+  console.log(ordersData, "ordersData")
+
   // Extract order details
   const {
     orderNumber,
     shippingAddress,
     products,
     total,
+    subtotal,
     deliveryDate,
     deliveryMethod,
   } = ordersData || {}
 
   const orderTotal = total + deliveryFee
   const balance = user?.user.balance
+
+  console.log(total, "total---thank u")
 
   const {
     updatedBalance,

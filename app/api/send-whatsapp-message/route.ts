@@ -58,6 +58,8 @@ export async function POST(req: NextRequest) {
     const order: Order = await req.json()
     const shipping = order.shippingAddress
 
+    console.log(order, "order")
+
     // 1. Fetch workers from MongoDB
     const workers = await fetchStaff() // Add this helper function
 

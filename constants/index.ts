@@ -212,7 +212,7 @@ export const orderStatusCard = [
   },
 ]
 
-const [wednesday, saturday] = getUpcomingDeliveryDates()
+export const [wednesday, saturday] = getUpcomingDeliveryDates()
 
 export const sidebarLinks = {
   user: {

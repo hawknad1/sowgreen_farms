@@ -15,7 +15,6 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
     orderNumber,
     referenceNumber,
     total,
-    deliveryMethod,
     deliveryFee,
     deliveryDate,
     dispatchRider,
@@ -28,10 +27,46 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
     createdAt,
   } = orders
 
-  const orderTotal = total + deliveryFee
-
   const date = new Date(createdAt)
   const dateplaced = formatDeliveryDate(date)
+
+  // function formatDeliveryMethod(method: string) {
+  //   if (method.toLowerCase().trim().startsWith("home-delivery-")) {
+  //     return "Home Delivery"
+  //   } else if (method.toLowerCase().trim().startsWith("pickup-")) {
+  //     return method.split("pickup-")[1] // remove 'pickup-' prefix
+  //   }
+  //   return method // fallback for any other values
+  // }
+  function formatDeliveryMethod(method: string) {
+    const trimmed = method.trim().toLowerCase()
+
+    if (trimmed.startsWith("home delivery")) {
+      return "Home Delivery"
+    }
+
+    if (trimmed.startsWith("pickup-")) {
+      return method.split("pickup-")[1].trim()
+    }
+
+    // if (trimmed.startsWith("pickup-")) {
+    //   const location = method.split("pickup-")[1].trim()
+    //   return `PICK UP @ - ${location}`
+    // }
+
+    return method.trim() // fallback
+  }
+
+  // const cleanDeliveryMethod = deliveryMethod.split("-")[0].trim()
+
+  const deliveryMethod = formatDeliveryMethod(shippingAddress?.deliveryMethod)
+  console.log(deliveryDate, "deliveryDate")
+  console.log(shippingAddress?.deliveryMethod, "deliveryMethod")
+
+  console.log(
+    formatDeliveryMethod(shippingAddress?.deliveryMethod),
+    "deliveryMethod====="
+  )
 
   if (!orders) return null
 
@@ -43,7 +78,7 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
     paymentAction?.charAt(0).toUpperCase() + paymentAction?.slice(1)
 
   return (
-    <Card className="min-h-[210px]">
+    <Card className="min-h-[210px] px-6 py-4">
       <div className="flex justify-between flex-wrap">
         <h3 className="text-base lg:text-lg font-bold mb-2">
           Modify Order Details
@@ -63,7 +98,7 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
 
         <p className="flex justify-between text-sm lg:text-base">
           <span className=" text-neutral-600">Delivery Method: </span>{" "}
-          {shippingAddress?.deliveryMethod}
+          {deliveryMethod}
         </p>
 
         {cardType ? (

@@ -14,6 +14,7 @@ import { Button } from "../../../ui/button"
 import { Order, ShippingAddress } from "@/types"
 import EditShippingDetails from "../EditShippingDetails"
 import { PencilSquareIcon } from "@heroicons/react/24/outline"
+import { AlertDestructive } from "@/components/alerts/AlertDestructive"
 
 interface Props {
   shippingAddress?: ShippingAddress
@@ -39,15 +40,35 @@ const ModifyShippingDialog = ({ order, balance }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="rounded-lg">
-        <DialogHeader>
-          <DialogTitle>{`Modify address. `}</DialogTitle>
-          <DialogDescription>
-            Update customer's delivery address
-          </DialogDescription>
-        </DialogHeader>
-        <EditShippingDetails order={order} balance={balance} />
-        <DialogFooter></DialogFooter>
+      <DialogContent
+        className={` ${
+          order?.status === "confirmed" ||
+          order?.status === "in-transit" ||
+          order?.status === "delivered"
+            ? "max-w-2xl h-fit p-1"
+            : "max-w-3xl h-[500px] flex flex-col py-3"
+        }`}
+      >
+        {order?.status === "confirmed" ||
+        order?.status === "in-transit" ||
+        order?.status === "delivered" ? (
+          <AlertDestructive
+            message="Your order is being confirmed and cannot be modified at this moment. 
+                    Kindly call Sowgreen Organic on 0546729407 / 0544437775 for assistance. 
+                    Thank you!"
+          />
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>{`Modify address. `}</DialogTitle>
+              <DialogDescription>
+                Update delivery method and shipping address
+              </DialogDescription>
+            </DialogHeader>
+            <EditShippingDetails order={order} balance={balance} />
+            <DialogFooter></DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   )

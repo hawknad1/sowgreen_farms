@@ -16,6 +16,7 @@ import {
 import EditOrderDetails from "../EditOrderDetails"
 import { SquarePenIcon } from "lucide-react"
 import { PencilSquareIcon } from "@heroicons/react/24/outline"
+import { AlertDestructive } from "@/components/alerts/AlertDestructive"
 
 interface Props {
   order?: Order
@@ -38,15 +39,35 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl rounded-lg">
-        <DialogHeader>
-          <DialogTitle>Update Delivery Method</DialogTitle>
-          <DialogDescription>
-            Update the delivery method of an existing order.
-          </DialogDescription>
-        </DialogHeader>
-        <EditOrderDetails order={order} />
-        <DialogFooter></DialogFooter>
+      <DialogContent
+        className={` ${
+          order?.status === "confirmed" ||
+          order?.status === "in-transit" ||
+          order?.status === "delivered"
+            ? "max-w-2xl h-fit p-1 rounded-lg"
+            : "max-w-3xl rounded-lg"
+        }`}
+      >
+        {order?.status === "confirmed" ||
+        order?.status === "in-transit" ||
+        order?.status === "delivered" ? (
+          <AlertDestructive
+            message="Your order is being confirmed and cannot be modified at this moment. 
+                    Kindly call Sowgreen Organic on 0546729407 / 0544437775 for assistance. 
+                    Thank you!"
+          />
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle>Update Delivery Method</DialogTitle>
+              <DialogDescription>
+                Update the delivery method of an existing order.
+              </DialogDescription>
+            </DialogHeader>
+            <EditOrderDetails order={order} />
+            <DialogFooter></DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   )

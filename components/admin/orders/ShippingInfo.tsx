@@ -13,7 +13,7 @@ export const ShippingInfo = ({
 
   const { name, address, city, region, email, phone } = order?.shippingAddress
   return (
-    <Card className="min-h-[210px]">
+    <Card className="min-h-[210px] px-6 py-4">
       <div className="flex justify-between flex-wrap">
         <h3 className="text-base lg:text-lg font-bold mb-2">
           Shipping Address

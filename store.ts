@@ -85,6 +85,7 @@ interface OrderDataState {
     updatedBalance: number
     referenceNumber: string
     total: number
+    subtotal: number
     creditAppliedTotal?: number
     creditAppliedDeliveryFee?: number
   } | null

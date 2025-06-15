@@ -60,12 +60,27 @@ export function prepareOrderDetails(
       }`
     : ""
 
-  const deliveryMethod = (shipping.deliveryMethod || "Pickup").trim()
+  const deliveryMethod = (shipping?.deliveryMethod || "Pickup").trim()
 
-  const displayMethod =
-    deliveryMethod !== "Home Delivery"
-      ? `Pickup @ ${deliveryMethod}`
-      : deliveryMethod
+  // const displayMethod =
+  //   deliveryMethod !== "Home Delivery"
+  //     ? `Pickup @ ${deliveryMethod}`
+  //     : deliveryMethod
+
+  function formatDeliveryMethod(method: string) {
+    // const trimmed = method.trim().toLowerCase()
+    const trimmed = method.trim()
+
+    if (trimmed.includes("Home Delivery")) {
+      return "Home Delivery"
+    }
+
+    const cleaned = trimmed.replace(/^pickup-?/i, "").trim()
+    return `PICK UP @ ${cleaned}`
+  }
+
+  const displayMethod = formatDeliveryMethod(deliveryMethod)
+  console.log(displayMethod, "displayMethod")
 
   // 1. Base information with minimal truncation
   const baseVariables = [
