@@ -1,4 +1,3 @@
-// import PaystackButton from "@/components/paystackButton"
 import { useUserListStore } from "@/store"
 import { Order } from "@/types"
 import React from "react"
@@ -101,15 +100,6 @@ const PaystackPayNow = ({
       {order?.paymentMode === "cash" &&
       order?.paymentAction === "pending" &&
       order?.status === "confirmed" ? (
-        // <PaystackButton
-        //   {...generatePaystackConfig(order)}
-        //   disabled={disablePayNow}
-        //   className={`bg-green-700 text-white w-full ${
-        //     disablePayNow
-        //       ? "opacity-50 cursor-not-allowed rounded-lg"
-        //       : "font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition"
-        //   } `}
-        // />
         <PaystackButton
           {...generatePaystackConfig(order)}
           className={`bg-green-700 text-white w-full font-semibold px-4 py-2 rounded-lg hover:bg-green-600 transition

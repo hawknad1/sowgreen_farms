@@ -84,13 +84,13 @@ const PaymentConfirmationSection = ({
             </span>
           </div>
           <div className="border-t border-gray-300 pt-3 mt-3 flex justify-between items-center text-xl font-bold text-primary">
-            <span className=" text-red-500 text-base">Total Due:</span>
+            <span className="font-bold text-red-500 text-base">Total Due:</span>
             {balance > 0 || balance < 0 ? (
               <p className=" text-red-500 text-base">
                 {formatCurrency(Number(updatedOrderTotal), "GHS") || "No total"}
               </p>
             ) : (
-              <p className=" font-bold text-red-500 text-xs md:text-sm lg:text-base">
+              <p className=" font-bold text-red-500 text-base">
                 {formatCurrency(total + deliveryFee, "GHS") || "No total"}
               </p>
             )}
