@@ -129,6 +129,11 @@ export async function POST(req: NextRequest) {
       contentVariables: JSON.stringify(twilioVariables),
     })
 
+    console.log(message, "message")
+    console.log(twilioVariables, "twilioVariables")
+    console.log(allVariables, "allVariables")
+    console.log(order, "order")
+
     return NextResponse.json({
       success: true,
       messageSid: message.sid,
