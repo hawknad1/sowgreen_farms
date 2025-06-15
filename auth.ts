@@ -7,6 +7,7 @@ import bcrypt from "bcryptjs"
 import authConfig from "./auth.config"
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   theme: {
     logo: "/images/sowgreen.png",
   },
@@ -15,7 +16,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: "/sign-in",
   },
-  ...authConfig,
   providers: [
     Credentials({
       credentials: {
