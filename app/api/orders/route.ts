@@ -2,113 +2,45 @@ import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
 import { parse } from "date-fns" // Make sure date-fns is installed (npm install date-fns)
 
-// export async function GET(req: Request) {
-//   try {
-//     const { searchParams } = new URL(req.url)
-//     const from = searchParams.get("from")
-//     const to = searchParams.get("to")
-//     const status = searchParams.get("status") // Get the status query parameter
-//     const email = searchParams.get("email") // Get the email query parameter
-
-//     // Build the date filter
-//     const dateFilter =
-//       from || to
-//         ? {
-//             createdAt: {
-//               ...(from ? { gte: new Date(from) } : {}),
-//               ...(to
-//                 ? { lte: new Date(new Date(to).setHours(23, 59, 59, 999)) }
-//                 : {}),
-//             },
-//           }
-//         : {}
-
-//     // If status is provided, add it to the filter
-//     const statusFilter = status ? { status } : {}
-
-//     const emailFilter = email
-//       ? {
-//           shippingAddress: {
-//             email,
-//           },
-//         }
-//       : {}
-
-//     // Fetch orders with filters
-//     const orders = await prisma.order.findMany({
-//       where: {
-//         ...dateFilter,
-//         ...statusFilter, // Apply the status filter if present
-//         ...emailFilter,
-//       },
-//       include: {
-//         shippingAddress: true,
-//         dispatchRider: true,
-//         products: {
-//           include: {
-//             product: true,
-//           },
-//         },
-//       },
-//     })
-
-//     // Check if any orders were fetched
-//     if (orders.length === 0) {
-//       return NextResponse.json(
-//         { message: "You have no orders" },
-//         { status: 400 }
-//       )
-//     }
-
-//     // Return fetched orders
-//     return NextResponse.json(orders, { status: 200 })
-//   } catch (error) {
-//     console.error("Error fetching orders:", error)
-//     return NextResponse.json(
-//       { message: "Couldn't fetch orders" },
-//       { status: 500 }
-//     )
-//   }
-// }
-
-// /app/api/orders/route.ts
-
 export async function GET(req: Request) {
-  /*
-   * =========================================================================================
-   * IMPORTANT NOTE FOR FUTURE IMPROVEMENT:
-   * Your `deliveryDate` is stored as a String (e.g., "Saturday, Apr 12th, 2025").
-   * This prevents efficient date filtering and sorting in the database.
-   * The best long-term solution is to migrate this column to a `DateTime` type in your
-   * `schema.prisma` file. This would allow the filtering logic to be moved back into the
-   * `prisma.order.findMany` call, which is significantly faster and more scalable.
-   * The current implementation is a workaround that filters the data in-memory.
-   * =========================================================================================
-   */
   try {
     const { searchParams } = new URL(req.url)
+    const from = searchParams.get("from")
+    const to = searchParams.get("to")
+    const status = searchParams.get("status") // Get the status query parameter
+    const email = searchParams.get("email") // Get the email query parameter
 
-    const deliveryDateFrom = searchParams.get("deliveryDateFrom")
-    const deliveryDateTo = searchParams.get("deliveryDateTo")
-    const status = searchParams.get("status")
-    const withDispatchRider = searchParams.get("withDispatchRider")
+    // Build the date filter
+    const dateFilter =
+      from || to
+        ? {
+            createdAt: {
+              ...(from ? { gte: new Date(from) } : {}),
+              ...(to
+                ? { lte: new Date(new Date(to).setHours(23, 59, 59, 999)) }
+                : {}),
+            },
+          }
+        : {}
 
-    // --- Build Where Clause (without date filtering) ---
-    const where: any = {}
+    // If status is provided, add it to the filter
+    const statusFilter = status ? { status } : {}
 
-    if (status) {
-      where.status = status
-    }
+    const emailFilter = email
+      ? {
+          shippingAddress: {
+            email,
+          },
+        }
+      : {}
 
-    if (withDispatchRider === "true") {
-      where.dispatchRiderId = {
-        not: null,
-      }
-    }
-
-    // --- Fetch Orders from Database ---
-    const allOrders = await prisma.order.findMany({
-      where,
+    // Fetch orders with filters
+    const orders = await prisma.order.findMany({
+      where: {
+        ...dateFilter,
+        ...statusFilter, // Apply the status filter if present
+        ...emailFilter,
+      },
       include: {
         shippingAddress: true,
         dispatchRider: true,
@@ -120,69 +52,137 @@ export async function GET(req: Request) {
       },
     })
 
-    // --- Perform Date Filtering In-Memory ---
-    if (deliveryDateFrom && deliveryDateTo) {
-      const fromDate = new Date(deliveryDateFrom)
-      const toDate = new Date(deliveryDateTo)
-
-      // Set toDate to the end of the day to include all orders on that day
-      toDate.setHours(23, 59, 59, 999)
-
-      const filteredByDateOrders = allOrders.filter((order) => {
-        // Skip orders that don't have a delivery date
-        if (!order.deliveryDate) {
-          return false
-        }
-
-        try {
-          // Parse the date string: "Saturday, Apr 12th, 2025"
-          // 1. Remove the ordinal suffix (e.g., "th", "nd")
-          const cleanedDateString = order.deliveryDate.replace(
-            /(\d+)(st|nd|rd|th)/,
-            "$1"
-          )
-
-          // 2. Parse the cleaned string into a Date object
-          const orderDate = parse(
-            cleanedDateString,
-            "EEEE, MMM d, yyyy",
-            new Date()
-          )
-
-          // 3. Check if the order's date falls within the selected range
-          return orderDate >= fromDate && orderDate <= toDate
-        } catch (e) {
-          console.error(
-            `Could not parse date string: "${order.deliveryDate}" for order #${order.orderNumber}`,
-            e
-          )
-          return false // Exclude orders with unparseable dates
-        }
-      })
-
-      return NextResponse.json(filteredByDateOrders, { status: 200 })
-    }
-
-    // If no date range is provided, return all fetched orders
-    return NextResponse.json(allOrders, { status: 200 })
-  } catch (error) {
-    console.error("Error fetching orders:", error)
-    // Check if the error is a Prisma validation error to give a more specific message
-    if ((error as any).name === "PrismaClientValidationError") {
+    // Check if any orders were fetched
+    if (orders.length === 0) {
       return NextResponse.json(
-        {
-          message: "A data validation error occurred.",
-          error: (error as Error).message,
-        },
-        { status: 400 } // Bad Request
+        { message: "You have no orders" },
+        { status: 400 }
       )
     }
+
+    // Return fetched orders
+    return NextResponse.json(orders, { status: 200 })
+  } catch (error) {
+    console.error("Error fetching orders:", error)
     return NextResponse.json(
-      { message: "Couldn't fetch orders", error: (error as Error).message },
+      { message: "Couldn't fetch orders" },
       { status: 500 }
     )
   }
 }
+
+// /app/api/orders/route.ts
+
+// export async function GET(req: Request) {
+//   /*
+//    * =========================================================================================
+//    * IMPORTANT NOTE FOR FUTURE IMPROVEMENT:
+//    * Your `deliveryDate` is stored as a String (e.g., "Saturday, Apr 12th, 2025").
+//    * This prevents efficient date filtering and sorting in the database.
+//    * The best long-term solution is to migrate this column to a `DateTime` type in your
+//    * `schema.prisma` file. This would allow the filtering logic to be moved back into the
+//    * `prisma.order.findMany` call, which is significantly faster and more scalable.
+//    * The current implementation is a workaround that filters the data in-memory.
+//    * =========================================================================================
+//    */
+//   try {
+//     const { searchParams } = new URL(req.url)
+
+//     const deliveryDateFrom = searchParams.get("deliveryDateFrom")
+//     const deliveryDateTo = searchParams.get("deliveryDateTo")
+//     const status = searchParams.get("status")
+//     const withDispatchRider = searchParams.get("withDispatchRider")
+
+//     // --- Build Where Clause (without date filtering) ---
+//     const where: any = {}
+
+//     if (status) {
+//       where.status = status
+//     }
+
+//     if (withDispatchRider === "true") {
+//       where.dispatchRiderId = {
+//         not: null,
+//       }
+//     }
+
+//     // --- Fetch Orders from Database ---
+//     const allOrders = await prisma.order.findMany({
+//       where,
+//       include: {
+//         shippingAddress: true,
+//         dispatchRider: true,
+//         products: {
+//           include: {
+//             product: true,
+//           },
+//         },
+//       },
+//     })
+
+//     // --- Perform Date Filtering In-Memory ---
+//     if (deliveryDateFrom && deliveryDateTo) {
+//       const fromDate = new Date(deliveryDateFrom)
+//       const toDate = new Date(deliveryDateTo)
+
+//       // Set toDate to the end of the day to include all orders on that day
+//       toDate.setHours(23, 59, 59, 999)
+
+//       const filteredByDateOrders = allOrders.filter((order) => {
+//         // Skip orders that don't have a delivery date
+//         if (!order.deliveryDate) {
+//           return false
+//         }
+
+//         try {
+//           // Parse the date string: "Saturday, Apr 12th, 2025"
+//           // 1. Remove the ordinal suffix (e.g., "th", "nd")
+//           const cleanedDateString = order.deliveryDate.replace(
+//             /(\d+)(st|nd|rd|th)/,
+//             "$1"
+//           )
+
+//           // 2. Parse the cleaned string into a Date object
+//           const orderDate = parse(
+//             cleanedDateString,
+//             "EEEE, MMM d, yyyy",
+//             new Date()
+//           )
+
+//           // 3. Check if the order's date falls within the selected range
+//           return orderDate >= fromDate && orderDate <= toDate
+//         } catch (e) {
+//           console.error(
+//             `Could not parse date string: "${order.deliveryDate}" for order #${order.orderNumber}`,
+//             e
+//           )
+//           return false // Exclude orders with unparseable dates
+//         }
+//       })
+
+//       return NextResponse.json(filteredByDateOrders, { status: 200 })
+//     }
+
+//     // If no date range is provided, return all fetched orders
+//     return NextResponse.json(allOrders, { status: 200 })
+//   } catch (error) {
+//     console.error("Error fetching orders:", error)
+//     // Check if the error is a Prisma validation error to give a more specific message
+//     if ((error as any).name === "PrismaClientValidationError") {
+//       return NextResponse.json(
+//         {
+//           message: "A data validation error occurred.",
+//           error: (error as Error).message,
+//         },
+//         { status: 400 } // Bad Request
+//       )
+//     }
+//     return NextResponse.json(
+//       { message: "Couldn't fetch orders", error: (error as Error).message },
+//       { status: 500 }
+//     )
+//   }
+// }
 
 export async function POST(req: Request) {
   try {

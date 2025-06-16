@@ -10,7 +10,7 @@ interface Product {
 }
 
 export const truncate = (str: string, max: number): string =>
-  str.length > max ? `${str.slice(0, max - 1)}…` : str
+  str?.length > max ? `${str.slice(0, max - 1)}…` : str
 
 export const formatCurrency = (amount: number, currency: string): string =>
   new Intl.NumberFormat("en-GH", {
