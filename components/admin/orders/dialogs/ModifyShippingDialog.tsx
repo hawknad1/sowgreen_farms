@@ -22,9 +22,10 @@ interface Props {
   className?: string
   order: Order
   balance?: number
+  updatedOrderTotal?: number
 }
 
-const ModifyShippingDialog = ({ order, balance }: Props) => {
+const ModifyShippingDialog = ({ order, balance, updatedOrderTotal }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (

@@ -545,6 +545,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
+import { deductBalance } from "@/lib/actions/deductBalance"
 
 interface DeliveryOption {
   label: string
@@ -650,9 +651,10 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
     const toastId = toast.loading("Updating shipping information...")
 
     try {
-      const finalTotal = (order?.subtotal || 0) + deliveryFee
-      const creditApplied = Math.min(balance, finalTotal)
-      const remainingAmount = finalTotal - creditApplied
+      // const finalTotal = (order?.total || 0) + deliveryFee
+      const finalTotal = order?.total || 0
+      // const creditApplied = Math.min(balance, finalTotal)
+      // const remainingAmount = finalTotal - creditApplied
 
       const updateData = {
         ...values,
@@ -663,7 +665,10 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
         deliveryFee,
         deliveryDate: selectedDeliveryDate,
         total: finalTotal,
-        updatedOrderTotal: remainingAmount,
+        subtotal: finalTotal,
+
+        // updatedOrderTotal: remainingAmount,
+        updatedOrderTotal,
       }
 
       const res = await fetch(`/api/orders/${order?.id}`, {
@@ -811,14 +816,19 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
     }
 
     setDeliveryFee(newFee)
-    setCalculatedTotal((order?.subtotal || 0) + newFee)
+    setCalculatedTotal((order?.total || 0) + newFee)
   }, [
     selectedCity,
     deliveryMethod,
-    order?.subtotal,
+    order?.total,
     setDeliveryFee,
     pickupLocations,
   ])
+
+  const { remainingAmount, updatedBalance, updatedOrderTotal } = deductBalance(
+    balance,
+    calculatedTotal
+  )
 
   return (
     <div className="space-y-6 max-h-[calc(100vh-200px)] overflow-y-auto px-1">
@@ -828,15 +838,11 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
         <div className="space-y-2">
           <div className="flex justify-between">
             <span>Subtotal:</span>
-            <span>{formatCurrency(order?.subtotal || 0, "GHS")}</span>
+            <span>{formatCurrency(order?.total || 0, "GHS")}</span>
           </div>
           <div className="flex justify-between">
             <span>Delivery Fee:</span>
             <span>{formatCurrency(deliveryFee, "GHS")}</span>
-          </div>
-          <div className="flex justify-between pt-2 border-t font-medium">
-            <span>Total:</span>
-            <span>{formatCurrency(calculatedTotal, "GHS")}</span>
           </div>
           {balance > 0 && (
             <div className="flex justify-between text-sm text-muted-foreground">
@@ -844,6 +850,15 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
               <span>{formatCurrency(balance, "GHS")}</span>
             </div>
           )}
+          <div className="flex justify-between pt-2 border-t font-medium">
+            <span>Total:</span>
+            <span>{formatCurrency(calculatedTotal, "GHS")}</span>
+          </div>
+
+          <div className="flex text-red-500 justify-between pt-2 border-t font-medium">
+            <span>Total Due:</span>
+            <span>{formatCurrency(updatedOrderTotal, "GHS")}</span>
+          </div>
         </div>
       </div>
 
