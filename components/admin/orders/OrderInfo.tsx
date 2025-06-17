@@ -30,14 +30,6 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
   const date = new Date(createdAt)
   const dateplaced = formatDeliveryDate(date)
 
-  // function formatDeliveryMethod(method: string) {
-  //   if (method.toLowerCase().trim().startsWith("home-delivery-")) {
-  //     return "Home Delivery"
-  //   } else if (method.toLowerCase().trim().startsWith("pickup-")) {
-  //     return method.split("pickup-")[1] // remove 'pickup-' prefix
-  //   }
-  //   return method // fallback for any other values
-  // }
   function formatDeliveryMethod(method: string) {
     const trimmed = method.trim().toLowerCase()
 

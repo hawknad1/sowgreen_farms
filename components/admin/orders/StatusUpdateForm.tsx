@@ -26,7 +26,7 @@ import {
   sendOrderConfirmation,
   sendOrderConfirmationGroup,
 } from "@/lib/actions/sendWhatsappMessage"
-import { useDispatchRidersStore, useUserListStore } from "@/store"
+import { useDispatchRidersStore } from "@/store"
 import { status } from "@/constants"
 import { deductBalance } from "@/lib/actions/deductBalance"
 import { getUser } from "@/lib/actions/getUser"
@@ -168,10 +168,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           }),
         })
 
-        // if (balanceResponse.ok) {
-        //   setBalance(updatedBalance)
-        // }
-
         if (!balanceResponse.ok) {
           const error = await balanceResponse.json()
           throw new Error(error.message || "Failed to update balance")
@@ -258,7 +254,12 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
           />
         </div>
 
-        <Button type="submit" className="w-full" disabled={isSaving}>
+        <Button
+          variant="sowgreen"
+          type="submit"
+          className="w-full"
+          disabled={isSaving}
+        >
           {isSaving ? (
             <span className="loading loading-infinity loading-md"></span>
           ) : (

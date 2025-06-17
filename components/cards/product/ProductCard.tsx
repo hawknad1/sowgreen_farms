@@ -30,8 +30,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [imageLoading, setImageLoading] = useState(true)
 
-  console.log(data, "data")
-
   if (loading) {
     return (
       <div className="w-full max-w-xs mx-auto bg-white rounded-lg shadow-md overflow-hidden">
@@ -56,11 +54,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
     )
   }
 
-  // const discount = data.isInStock === "out-of-stock" ? null : data.discount
-  // const isOutOfStock = data.isInStock === "out-of-stock"
-  // const primaryImage = data?.imageUrl || data.images[0]?.url
-  // const secondaryImage = data?.images?.length > 1 ? data.images[1]?.url : null
-  // Safely get variants and first variant
   const variants = data?.variants || []
   const firstVariant = variants[0] || null
   const discount = data.isInStock === "out-of-stock" ? null : data.discount
@@ -68,11 +61,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
   const primaryImage = data?.imageUrl || data.images?.[0]?.url
   const secondaryImage = data?.images?.length > 1 ? data.images[1]?.url : null
   const hasDiscount = discount && data?.variants[0]?.discountedPrice
-
-  console.log(hasDiscount, "hasDiscount")
-  console.log(isOutOfStock, "isOutOfStock")
-  console.log(firstVariant, "firstVariant")
-  console.log(variants, "variants")
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (

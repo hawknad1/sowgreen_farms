@@ -45,7 +45,7 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
           order?.status === "in-transit" ||
           order?.status === "delivered"
             ? "max-w-2xl h-fit p-1 rounded-lg"
-            : "max-w-3xl rounded-lg"
+            : "max-w-sm rounded-lg"
         }`}
       >
         {order?.status === "confirmed" ||
@@ -59,10 +59,8 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>Update Delivery Method</DialogTitle>
-              <DialogDescription>
-                Update the delivery method of an existing order.
-              </DialogDescription>
+              <DialogTitle>Update Payment Action</DialogTitle>
+              <DialogDescription>Update payment action.</DialogDescription>
             </DialogHeader>
             <EditOrderDetails order={order} />
             <DialogFooter></DialogFooter>

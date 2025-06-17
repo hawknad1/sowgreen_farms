@@ -347,6 +347,7 @@ import { getUser } from "@/lib/actions/getUser"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
+import ModifyOrderDialog from "@/components/admin/orders/dialogs/ModifyOrderDialog"
 
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)

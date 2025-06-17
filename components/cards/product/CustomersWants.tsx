@@ -223,6 +223,73 @@ const CustomersWants = ({ message }: CustomersWantsProps) => {
   }, [productList])
 
   return (
+    // <div className="relative">
+    //   <Card className="border-0 shadow-none">
+    //     <CardHeader className="pb-2 p-0 py-4">
+    //       <div className="flex justify-between items-center">
+    //         <CardTitle className="text-xl flex items-center text-sowgren_Color self-center sm:text-2xl md:text-3xl font-bold">
+    //           {message}
+    //         </CardTitle>
+    //         {productList.length > 4 && (
+    //           <div className="flex gap-2">
+    //             <Button
+    //               variant="ghost"
+    //               size="icon"
+    //               className={cn(
+    //                 "h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm shadow-sm hover:bg-background",
+    //                 !canScrollLeft && "opacity-50 cursor-not-allowed"
+    //               )}
+    //               onClick={handlePrev}
+    //               disabled={!canScrollLeft}
+    //             >
+    //               <ChevronLeft className="h-4 w-4" />
+    //             </Button>
+    //             <Button
+    //               variant="ghost"
+    //               size="icon"
+    //               className={cn(
+    //                 "h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm shadow-sm hover:bg-background",
+    //                 !canScrollRight && "opacity-50 cursor-not-allowed"
+    //               )}
+    //               onClick={handleNext}
+    //               disabled={!canScrollRight}
+    //             >
+    //               <ChevronRight className="h-4 w-4" />
+    //             </Button>
+    //           </div>
+    //         )}
+    //       </div>
+    //     </CardHeader>
+    //     <CardContent className="pt-0">
+    //       {isLoading ? (
+    //         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    //           {[...Array(4)].map((_, i) => (
+    //             <Skeleton key={i} className="aspect-square rounded-lg" />
+    //           ))}
+    //         </div>
+    //       ) : (
+    //         <div className="relative">
+    //           {/* Scrollable container */}
+    //           <div
+    //             ref={scrollContainerRef}
+    //             className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide"
+    //           >
+    //             <div className="flex gap-4 w-max min-w-full">
+    //               {productList.map((product) => (
+    //                 <div
+    //                   key={product.id}
+    //                   className="w-[calc(50vw-32px)] sm:w-[calc(33.333vw-32px)] md:w-[calc(25vw-32px)] lg:w-[280px] flex-shrink-0"
+    //                 >
+    //                   <ProductCards data={product} />
+    //                 </div>
+    //               ))}
+    //             </div>
+    //           </div>
+    //         </div>
+    //       )}
+    //     </CardContent>
+    //   </Card>
+    // </div>
     <div className="relative">
       <Card className="border-0 shadow-none">
         <CardHeader className="pb-2 p-0 py-4">
@@ -272,13 +339,13 @@ const CustomersWants = ({ message }: CustomersWantsProps) => {
               {/* Scrollable container */}
               <div
                 ref={scrollContainerRef}
-                className="overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide"
+                className="overflow-x-auto pb-4 scrollbar-hide"
               >
-                <div className="flex gap-4 w-max min-w-full">
+                <div className="flex gap-4 w-max">
                   {productList.map((product) => (
                     <div
                       key={product.id}
-                      className="w-[calc(50vw-32px)] sm:w-[calc(33.333vw-32px)] md:w-[calc(25vw-32px)] lg:w-[280px] flex-shrink-0"
+                      className="w-[180px] sm:w-[200px] md:w-[220px] lg:w-[240px] flex-shrink-0"
                     >
                       <ProductCards data={product} />
                     </div>

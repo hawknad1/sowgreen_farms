@@ -35,83 +35,80 @@ interface OrderProps {
 
 const EditOrderDetails = ({ order }: OrderProps) => {
   const [isSaving, setIsSaving] = useState(false)
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
-    order?.shippingAddress?.deliveryMethod.trim() || ""
-  )
+  // const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
+  //   order?.shippingAddress?.deliveryMethod.trim() || ""
+  // )
 
   // Initialize deliveryFee with order's value, but will be updated based on method/city
-  const [deliveryFee, setDeliveryFee] = useState<number>(
-    order?.deliveryFee || 0
-  )
+  // const [deliveryFee, setDeliveryFee] = useState<number>(
+  //   order?.deliveryFee || 0
+  // )
 
-  const [selectedCity, setSelectedCity] = useState(
-    order?.shippingAddress?.city || ""
-  )
+  // const [selectedCity, setSelectedCity] = useState(
+  //   order?.shippingAddress?.city || ""
+  // )
 
-  const total = order?.total + deliveryFee
-  const { updatedOrderTotal } = deductBalance(order?.creditAppliedTotal, total)
+  // const total = order?.total + deliveryFee
+  // const { updatedOrderTotal } = deductBalance(order?.creditAppliedTotal, total)
 
   // Update delivery fee whenever the selected delivery method or city changes
-  useEffect(() => {
-    // Only update if the delivery method is "Home Delivery"
-    if (selectedDeliveryMethod !== "Home Delivery") {
-      setDeliveryFee(0)
-    } else {
-      let newDeliveryFee = 0
+  // useEffect(() => {
+  //   // Only update if the delivery method is "Home Delivery"
+  //   if (selectedDeliveryMethod !== "Home Delivery") {
+  //     setDeliveryFee(0)
+  //   } else {
+  //     let newDeliveryFee = 0
 
-      if (selectedCity && cityDeliveryPrices[selectedCity]) {
-        newDeliveryFee = cityDeliveryPrices[selectedCity]
-      }
-      setDeliveryFee(newDeliveryFee)
-    }
-  }, [deliveryFee, selectedDeliveryMethod])
+  //     if (selectedCity && cityDeliveryPrices[selectedCity]) {
+  //       newDeliveryFee = cityDeliveryPrices[selectedCity]
+  //     }
+  //     setDeliveryFee(newDeliveryFee)
+  //   }
+  // }, [deliveryFee, selectedDeliveryMethod])
 
   const form = useForm<z.infer<typeof EditOrderDetailSchema>>({
     resolver: zodResolver(EditOrderDetailSchema),
     defaultValues: {
-      deliveryMethod: order?.shippingAddress?.deliveryMethod?.trim(),
-      deliveryDate: order?.deliveryDate,
+      // deliveryMethod: order?.shippingAddress?.deliveryMethod?.trim(),
+      // deliveryDate: order?.deliveryDate,
       paymentAction: order?.paymentAction,
     },
   })
 
   const onSubmit = async (values: z.infer<typeof EditOrderDetailSchema>) => {
-    if (!order?.shippingAddress?.id || !order?.id) {
-      console.error("Order or Shipping Address ID is missing.")
-      return
-    }
+    // if (!order?.shippingAddress?.id || !order?.id) {
+    //   console.error("Order or Shipping Address ID is missing.")
+    //   return
+    // }
 
     setIsSaving(true)
 
     try {
-      const res = await fetch(
-        `/api/shipping-address/${order.shippingAddress.id}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ deliveryMethod: values.deliveryMethod }),
-        }
-      )
+      // const res = await fetch(
+      //   `/api/shipping-address/${order.shippingAddress.id}`,
+      //   {
+      //     method: "PUT",
+      //     headers: { "Content-Type": "application/json" },
+      //     body: JSON.stringify({ deliveryMethod: values.deliveryMethod }),
+      //   }
+      // )
 
-      if (!res.ok) throw new Error("Failed to update delivery method")
+      // if (!res.ok) throw new Error("Failed to update delivery method")
 
       const deliverRes = await fetch(`/api/orders/${order.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          deliveryDate: values.deliveryDate,
-          deliveryFee,
-          updatedOrderTotal,
           paymentAction: values.paymentAction,
         }),
       })
 
-      if (!deliverRes.ok) throw new Error("Failed to update delivery date")
+      if (!deliverRes.ok) throw new Error("Failed to update payment action")
 
       window.location.reload()
-      toast.success("Delivery method updated successfully!")
+      toast.success("Payment action updated successfully!")
     } catch (error) {
-      console.error("Error updating delivery method or date:", error)
+      console.error("Error updating payment action", error)
     } finally {
       setIsSaving(false)
     }
@@ -122,7 +119,7 @@ const EditOrderDetails = ({ order }: OrderProps) => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
         <div className="md:inline-flex w-full md:gap-x-4">
           {/* Delivery Method */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="deliveryMethod"
             render={({ field }) => (
@@ -151,10 +148,10 @@ const EditOrderDetails = ({ order }: OrderProps) => {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           {/* Delivery/Pickup Date */}
-          <FormField
+          {/* <FormField
             control={form.control}
             name="deliveryDate"
             render={({ field }) => (
@@ -180,7 +177,7 @@ const EditOrderDetails = ({ order }: OrderProps) => {
                 <FormMessage />
               </FormItem>
             )}
-          />
+          /> */}
 
           {/* Payment Action */}
           <FormField

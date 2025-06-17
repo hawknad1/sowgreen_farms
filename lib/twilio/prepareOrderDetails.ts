@@ -213,7 +213,7 @@ export function prepareOrderDetails(
     order.deliveryDate?.split(",").slice(0, 2).join(","),
     displayMethod,
     `${shipping.address}, ${shipping.city}`,
-    order?.dispatchRider?.fullName,
+    order?.dispatchRider?.fullName || "Not Assigned",
     shipping.phone,
   ]
 

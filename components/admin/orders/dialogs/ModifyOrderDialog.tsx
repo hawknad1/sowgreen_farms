@@ -826,9 +826,9 @@ const ModifyOrderDialog = ({ order }: { order: Order }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(1)
   const [orderItems, setOrderItems] = useState<ProductOrder[]>(
-    order.products || []
+    order?.products || []
   )
-  const [deliveryFee, setDeliveryFee] = useState(order.deliveryFee || 0)
+  const [deliveryFee, setDeliveryFee] = useState(order?.deliveryFee || 0)
   const [isSaving, setIsSaving] = useState(false)
   const [activeUser, setActiveUser] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -978,7 +978,7 @@ const ModifyOrderDialog = ({ order }: { order: Order }) => {
               <div className="flex items-center justify-between">
                 <DialogTitle className="text-lg sm:text-xl font-semibold">
                   {currentStep === 1 ? (
-                    <>Edit Order #{order.orderNumber}</>
+                    <>Edit Order #{order?.orderNumber}</>
                   ) : (
                     <>Add Products</>
                   )}
@@ -1012,8 +1012,8 @@ const ModifyOrderDialog = ({ order }: { order: Order }) => {
                 <div className="lg:col-span-5 flex flex-col h-full">
                   <div className="flex-1 p-2 sm:p-4">
                     <div className="space-y-2 sm:space-y-3">
-                      {orderItems.length > 0 ? (
-                        orderItems.map((item) => (
+                      {orderItems?.length > 0 ? (
+                        orderItems?.map((item) => (
                           <ProductRow
                             key={item.id}
                             item={item}
@@ -1046,8 +1046,8 @@ const ModifyOrderDialog = ({ order }: { order: Order }) => {
                         <p className="text-xs text-muted-foreground">
                           Delivery:
                         </p>
-                        <p className="text-xs text-muted-foreground">
-                          {formatCurrency(order.deliveryFee, "GHS")}
+                        <p className="text-sm font-medium">
+                          {formatCurrency(order?.deliveryFee, "GHS")}
                         </p>
                       </div>
                       <div className="text-center sm:text-left">
@@ -1088,11 +1088,11 @@ const ModifyOrderDialog = ({ order }: { order: Order }) => {
                   </div>
                   <div className="lg:col-span-2 p-2 sm:p-4 overflow-y-auto border-t lg:border-t-0">
                     <h3 className="font-medium mb-2 sm:mb-4 text-sm sm:text-base">
-                      Current Order ({orderItems.length})
+                      Current Order ({orderItems?.length})
                     </h3>
                     <div className="space-y-2 sm:space-y-3">
-                      {orderItems.length > 0 ? (
-                        orderItems.map((item) => (
+                      {orderItems?.length > 0 ? (
+                        orderItems?.map((item) => (
                           <ProductRow
                             key={item.id}
                             item={item}

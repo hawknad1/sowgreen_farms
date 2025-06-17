@@ -512,7 +512,7 @@ export const ProductRow = ({
             <SelectItem value="outofstock" className="text-xs">
               <div className="flex items-center gap-2">
                 <X className="h-3 w-3 sm:h-4 sm:w-4 text-red-500" />
-                <span className="text-xs sm:text-sm">Out of Stock</span>
+                <span className="text-xs ">Out of Stock</span>
               </div>
             </SelectItem>
           </SelectContent>

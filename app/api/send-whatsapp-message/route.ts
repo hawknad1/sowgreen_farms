@@ -78,9 +78,6 @@ export async function POST(req: NextRequest) {
       rawProductCount > 20 ? "15var_btn" : `${requiredVarCount}var`
     const contentSid = TEMPLATE_MAP[templateKey]
 
-    console.log(contentSid, "contentSid")
-    console.log(templateKey, "templateKey")
-
     if (!contentSid) {
       throw new Error(`Template ${templateKey} not found in template map`)
     }
@@ -128,11 +125,6 @@ export async function POST(req: NextRequest) {
       contentSid,
       contentVariables: JSON.stringify(twilioVariables),
     })
-
-    console.log(message, "message")
-    console.log(twilioVariables, "twilioVariables")
-    console.log(allVariables, "allVariables")
-    console.log(order, "order")
 
     return NextResponse.json({
       success: true,
