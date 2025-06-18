@@ -1,26 +1,28 @@
-// "use client"
-// import { useRouter, useSearchParams } from "next/navigation"
-// import React, { useEffect, useState } from "react"
-// import { useCartStore, useDeliveryStore, useOrderDataStore } from "@/store"
+"use client"
+import { useRouter } from "next/navigation"
+import React, { useEffect, useState } from "react"
+import { useCartStore, useDeliveryStore, useOrderDataStore } from "@/store"
+import CartDisplay from "./CartDisplay"
+import { formatCurrency } from "@/lib/utils"
+import { PaymentInfo, VariantCartItem } from "@/types"
+import { generateOrderNumber } from "@/lib/actions/whatsAppMessages/generateOrderNumber"
+import { DeliveryMethod } from "./InfoCard"
+import { useSession } from "next-auth/react"
+import { deductBalance } from "@/lib/actions/deductBalance"
+import { Loader2 } from "lucide-react"
+import { toast } from "sonner"
+import { FaTruck } from "react-icons/fa"
+import PaymentConfirmationSection from "./PaymentConfirmationSection "
 
-// import CartDisplay from "./CartDisplay"
-// import { Button } from "@/components/ui/button"
-// import { formatCurrency } from "@/lib/utils"
-// import { PaymentInfo, VariantCartItem } from "@/types"
-// import { generateOrderNumber } from "@/lib/actions/whatsAppMessages/generateOrderNumber"
-// import InfoCard from "./InfoCard"
-// import { useSession } from "next-auth/react"
-// import { deductBalance } from "@/lib/actions/deductBalance"
-
-// export type User = {
-//   user: {
-//     id: string
-//     name: string
-//     role: string
-//     balance: number
-//     email: string
-//   }
-// }
+export type User = {
+  user: {
+    id: string
+    name: string
+    role: string
+    balance: number
+    email: string
+  }
+}
 
 // const ConfirmOrderPage = () => {
 //   const [activeUser, setActiveUser] = useState<User | null>(null)
@@ -30,6 +32,7 @@
 //   const [result, setResult] = useState<PaymentInfo>(null)
 //   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
 //   const [isConfirming, setIsConfirming] = useState(false)
+//   const [isLoadingUser, setIsLoadingUser] = useState(true)
 
 //   const session = useSession()
 //   const user = session?.data?.user
@@ -39,7 +42,10 @@
 //   const formData = Object.fromEntries(searchParams.entries())
 
 //   useEffect(() => {
-//     if (!user?.email) return
+//     if (!user?.email) {
+//       setIsLoadingUser(false)
+//       return
+//     }
 
 //     const fetchUser = async () => {
 //       try {
@@ -48,13 +54,15 @@
 //           cache: "no-store",
 //         })
 //         if (!res.ok) {
-//           console.error("Failed to fetch user:", res.statusText)
-//           return
+//           throw new Error("Failed to fetch user data")
 //         }
 //         const userData = await res.json()
 //         setActiveUser(userData)
 //       } catch (error) {
 //         console.error("Error fetching user:", error)
+//         toast.error("Failed to load user information")
+//       } finally {
+//         setIsLoadingUser(false)
 //       }
 //     }
 
@@ -75,7 +83,7 @@
 //   const shippingInfo = {
 //     deliveryDate,
 //     ...formData,
-//     whatsappOptIn, // Convert string to boolean
+//     whatsappOptIn,
 //     deliveryMethod: formData.deliveryMethod.split("-")[0],
 //   }
 
@@ -85,7 +93,7 @@
 //   const addressPayload = {
 //     ...addressData,
 //     deliveryDate,
-//     whatsappOptIn, // Convert string to boolean
+//     whatsappOptIn,
 //     deliveryMethod: cleanDeliveryMethod,
 //   }
 
@@ -96,22 +104,21 @@
 //     method: "checkbox",
 //   }
 
-//   // Order number generator
 //   const orderNumber = generateOrderNumber()
 
 //   const transformCart = (cart: any[]) => {
 //     return cart.map((item: VariantCartItem) => ({
 //       item: {
-//         price: item.price, // Include price
-//         weight: item.weight, // Include weight
+//         price: item.price,
+//         weight: item.weight,
 //         productId: item.productId,
 //         quantity: item.quantity,
 //         unit: item.unit,
 //         variantId: item.variantId,
 //         product: item.product,
 //       },
-//       quantity: item.quantity, // Top-level quantity
-//       total: (item.price * item.quantity).toFixed(2), // Total as a string
+//       quantity: item.quantity,
+//       total: (item.price * item.quantity).toFixed(2),
 //     }))
 //   }
 
@@ -137,7 +144,7 @@
 //   const config = {
 //     reference: new Date().getTime().toString(),
 //     email: formData.email,
-//     amount: Math.round(remainingAmount * 100), // Ensure amount is an integer
+//     amount: Math.round(remainingAmount * 100),
 //     currency: "GHS",
 //     metadata: {
 //       custom_fields: [
@@ -158,15 +165,15 @@
 
 //   async function handlePaystackSuccessAction(reference?: any) {
 //     setIsConfirming(true)
+//     const toastId = toast.loading("Processing your order...")
 
 //     try {
 //       let verifyData: PaymentInfo = null
 
 //       if (
-//         reference.status === "success" &&
-//         reference.reference !== "cash-on-delivery"
+//         reference?.status === "success" &&
+//         reference?.reference !== "cash-on-delivery"
 //       ) {
-//         // Paystack transaction: Verify with Paystack
 //         const verifyTransaction = await fetch("/api/verify-transaction", {
 //           method: "POST",
 //           headers: {
@@ -175,8 +182,9 @@
 //           body: JSON.stringify({ reference: reference?.reference }),
 //         })
 
-//         if (!verifyTransaction.ok)
+//         if (!verifyTransaction.ok) {
 //           throw new Error("Failed to verify transaction")
+//         }
 
 //         const verifiedResponse = await verifyTransaction.json()
 //         verifyData = {
@@ -184,9 +192,7 @@
 //           paymentAction: "paid",
 //         }
 //         setResult(verifyData)
-//       } else if (reference.reference === "cash-on-delivery") {
-//         // Non-Paystack transaction
-
+//       } else if (reference?.reference === "cash-on-delivery") {
 //         verifyData = {
 //           status: "success",
 //           paymentMode: "cash",
@@ -196,14 +202,13 @@
 //         }
 //         setResult(verifyData)
 //       } else {
-//         throw new Error("Invalid payment reference")
+//         throw new Error("Invalid payment reference or status")
 //       }
 
 //       const ordersData = {
 //         products: transformedCart,
 //         shippingAddress: shippingInfo,
 //         orderNumber,
-//         // deliveryMethod:,
 //         deliveryDate,
 //         deliveryFee: deliveryFee,
 //         referenceNumber: reference?.reference || "cash-on-delivery",
@@ -212,6 +217,7 @@
 //         paymentMode: verifyData?.paymentMode,
 //         paymentAction: verifyData?.paymentAction,
 //         total: total,
+//         subtotal: cartTotal,
 //         creditAppliedTotal: balance,
 //         balanceDeducted: deductedBalance,
 //         userWhatsappOptIn,
@@ -221,36 +227,21 @@
 
 //       setOrdersData(ordersData)
 
-//       // Save shipping address
+//       // API Calls
 //       const shippingResponse = await fetch("/api/address", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify(addressPayload),
 //       })
-//       if (!shippingResponse.ok) throw new Error("Shipping API failed")
+//       if (!shippingResponse.ok)
+//         throw new Error("Failed to save shipping address.")
 
-//       // Save order
 //       const ordersResponse = await fetch("/api/orders", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify(ordersData),
 //       })
-//       if (!ordersResponse.ok) throw new Error("Orders API failed")
-
-//       // Send order confirmation email
-//       const email = await fetch("/api/send-order-email", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ order: ordersData }),
-//       })
-//       if (!email.ok) throw new Error("Email API failed")
-
-//       const productIds = transformedCart.map(
-//         (product) => product.item.productId
-//       )
-//       const productQuantity = transformedCart.map(
-//         (product) => product.item.quantity
-//       )
+//       if (!ordersResponse.ok) throw new Error("Failed to save order.")
 
 //       await fetch("/api/products/updatePurchaseCount", {
 //         method: "POST",
@@ -258,25 +249,36 @@
 //         body: JSON.stringify({ products: transformedCart }),
 //       })
 
-//       router.push("/success/thank-you")
-//       clearCart() // Clear the cart after successful order processing
-
-//       // Update product quantities
 //       const quantityResponse = await fetch("/api/products/updateQuantity", {
 //         method: "POST",
 //         headers: { "Content-Type": "application/json" },
 //         body: JSON.stringify({ products: ordersData.products }),
 //       })
-//       if (!quantityResponse.ok) throw new Error("Quantity update API failed")
+//       if (!quantityResponse.ok)
+//         throw new Error("Failed to update product quantities.")
+
+//       const email = await fetch("/api/send-order-email", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         body: JSON.stringify({ order: ordersData }),
+//       })
+//       if (!email.ok) throw new Error("Failed to send order confirmation email.")
+
+//       clearCart()
+//       toast.success("Order placed successfully!", { id: toastId })
+//       router.push("/success/thank-you")
 //     } catch (error) {
-//       console.error("Payment processing error:", error)
+//       console.error("Order processing error:", error)
+//       toast.error(`Order failed: ${error || "Please try again."}`, {
+//         id: toastId,
+//       })
 //     } finally {
 //       setIsConfirming(false)
 //     }
 //   }
 
 //   const handlePaystackCloseAction = () => {
-//     console.log("closed")
+//     toast.info("Payment was cancelled")
 //   }
 
 //   const componentProps = {
@@ -286,79 +288,16 @@
 //     onClose: handlePaystackCloseAction,
 //   }
 
-//   return (
-//     <div className="container mx-auto min-h-screen p-8">
-//       <div className="mx-auto lg:max-w-5xl w-full bg-white">
-//         <h2 className="lg:text-3xl text-xl font-bold mb-4 lg:mb-8 text-center text-gray-800">
-//           Confirm Order
-//         </h2>
-//         <InfoCard data={dataProps} />
-
-//         <div className="mt-8">
-//           <CartDisplay />
-//         </div>
-
-//         <div className="w-full flex justify-between mt-8 gap-4">
-//           <Button
-//             disabled={isConfirming}
-//             onClick={() => router.push("/basket")}
-//             className="bg-blue-500 text-white text-sm px-6 py-3 rounded-lg hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all"
-//           >
-//             Edit Order
-//           </Button>
-//           <Button
-//             onClick={() =>
-//               handlePaystackSuccessAction({
-//                 status: "success",
-//                 reference: "cash-on-delivery",
-//               })
-//             }
-//             disabled={isConfirming}
-//             className="bg-sowgren_Color text-white px-6 py-3 text-sm rounded-lg hover:bg-sowgren_Color/85 focus:ring-2 focus:ring-green-500 focus:ring-offset-2 transition-all"
-//           >
-//             {isConfirming ? (
-//               <span className="flex items-center gap-2">
-//                 <span className="loading loading-spinner loading-md"></span>
-//                 Processing order...
-//               </span>
-//             ) : (
-//               "Place Order"
-//             )}
-//           </Button>
+//   if (isLoadingUser) {
+//     return (
+//       <div className="min-h-screen flex items-center justify-center">
+//         <div className="flex flex-col items-center gap-4">
+//           <Loader2 className="h-12 w-12 animate-spin text-primary" />
+//           <p className="text-lg font-medium">Loading your information...</p>
 //         </div>
 //       </div>
-//     </div>
-//   )
-// }
-
-// export default ConfirmOrderPage
-
-"use client"
-import { useRouter, useSearchParams } from "next/navigation"
-import React, { useEffect, useState } from "react"
-import { useCartStore, useDeliveryStore, useOrderDataStore } from "@/store"
-import CartDisplay from "./CartDisplay"
-import { Button } from "@/components/ui/button"
-import { formatCurrency } from "@/lib/utils"
-import { PaymentInfo, VariantCartItem } from "@/types"
-import { generateOrderNumber } from "@/lib/actions/whatsAppMessages/generateOrderNumber"
-import InfoCard, { DeliveryMethod } from "./InfoCard"
-import { useSession } from "next-auth/react"
-import { deductBalance } from "@/lib/actions/deductBalance"
-import { Loader2 } from "lucide-react"
-import { toast } from "sonner"
-import { FaTruck } from "react-icons/fa"
-import PaymentConfirmationSection from "./PaymentConfirmationSection "
-
-export type User = {
-  user: {
-    id: string
-    name: string
-    role: string
-    balance: number
-    email: string
-  }
-}
+//     )
+//   }
 
 const ConfirmOrderPage = () => {
   const [activeUser, setActiveUser] = useState<User | null>(null)
@@ -369,13 +308,27 @@ const ConfirmOrderPage = () => {
   const deliveryFee = useDeliveryStore((state) => state.deliveryFee)
   const [isConfirming, setIsConfirming] = useState(false)
   const [isLoadingUser, setIsLoadingUser] = useState(true)
-
+  const [formData, setFormData] = useState<any>(null)
+  const router = useRouter()
   const session = useSession()
   const user = session?.data?.user
 
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const formData = Object.fromEntries(searchParams.entries())
+  useEffect(() => {
+    // Retrieve data from sessionStorage
+    const checkoutData = sessionStorage.getItem("checkoutData")
+    if (!checkoutData) {
+      router.push("/checkout")
+      return
+    }
+
+    try {
+      const parsedData = JSON.parse(checkoutData)
+      setFormData(parsedData)
+    } catch (error) {
+      console.error("Error parsing checkout data:", error)
+      router.push("/checkout")
+    }
+  }, [router])
 
   useEffect(() => {
     if (!user?.email) {
@@ -405,9 +358,16 @@ const ConfirmOrderPage = () => {
     fetchUser()
   }, [user?.email])
 
-  // let total = cartTotal
-  // let combinedTotal = cartTotal + deliveryFee
-  // const balance = activeUser?.user?.balance
+  if (!formData || isLoadingUser) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-12 w-12 animate-spin text-primary" />
+          <p className="text-lg font-medium">Confirming your order...</p>
+        </div>
+      </div>
+    )
+  }
 
   let total = cartTotal
   let conbinedTotal = total + deliveryFee
@@ -418,7 +378,7 @@ const ConfirmOrderPage = () => {
   const formattedTotal = formatCurrency(total, "GHS")
 
   const { deliveryDate, ...newFormData } = formData
-  const whatsappOptIn = formData.whatsappOptIn === "true"
+  const whatsappOptIn = formData.whatsappOptIn
 
   const shippingInfo = {
     deliveryDate,
@@ -468,18 +428,6 @@ const ConfirmOrderPage = () => {
     balance,
     conbinedTotal
   )
-
-  // const dataProps = {
-  //   formData,
-  //   formattedDelivery,
-  //   cart,
-  //   formattedSubtotal,
-  //   formattedTotal,
-  //   total: combinedTotal,
-  //   deliveryFee,
-  //   deliveryDate,
-  //   updatedOrderTotal,
-  // }
 
   const dataProps = {
     formData,
@@ -616,6 +564,8 @@ const ConfirmOrderPage = () => {
       })
       if (!email.ok) throw new Error("Failed to send order confirmation email.")
 
+      // Clear the session storage after successful order
+      sessionStorage.removeItem("checkoutData")
       clearCart()
       toast.success("Order placed successfully!", { id: toastId })
       router.push("/success/thank-you")
@@ -640,16 +590,6 @@ const ConfirmOrderPage = () => {
     onClose: handlePaystackCloseAction,
   }
 
-  if (isLoadingUser) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-12 w-12 animate-spin text-primary" />
-          <p className="text-lg font-medium">Loading your information...</p>
-        </div>
-      </div>
-    )
-  }
   return (
     <div className="min-h-screen bg-gray-50 py-4 sm:py-8 px-4 sm:px-6 lg:px-8 flex items-center justify-center font-sans">
       <div className="w-full max-w-6xl bg-white rounded-xl overflow-hidden animate-fade-in border border-gray-200">

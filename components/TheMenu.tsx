@@ -79,7 +79,7 @@ function TheMenu() {
   return (
     <NavigationMenu>
       <NavigationMenuList>
-        <NavigationMenuItem className="text-sowgren_Color  ">
+        <NavigationMenuItem className="text-sowgren_Color ">
           <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink
               className={`${navigationMenuTriggerStyle()} hover:bg-sowgren_Color hover:text-white active:bg-sowgren_Color`}
