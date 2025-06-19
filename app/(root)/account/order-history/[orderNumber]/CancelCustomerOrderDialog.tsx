@@ -75,8 +75,8 @@ const CancelCustomerOrderDialog = ({ order, className }: Props) => {
       <DialogContent
         className={` ${
           order?.status === "confirmed"
-            ? "max-w-2xl h-fit p-1"
-            : "max-w-2xl h-fit flex flex-col py-3 scrollbar-hide overflow-y-scroll"
+            ? "max-w-2xl h-fit p-1 rounded-lg"
+            : "max-w-2xl h-fit flex flex-col py-3 scrollbar-hide overflow-y-scroll rounded-lg"
         }`}
       >
         {order?.status === "confirmed" ? (

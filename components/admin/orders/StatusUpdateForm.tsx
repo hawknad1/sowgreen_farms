@@ -61,7 +61,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
   const [loading, setLoading] = useState(false)
 
   const { dispatchRiders, fetchDispatchRiders } = useDispatchRidersStore()
-  // const { balance, setBalance } = useUserListStore()
 
   const filteredDispatchRider = dispatchRiders.filter(
     (user) => user.jobTitle === "dispatch rider"
@@ -186,7 +185,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 
   const onSubmit = (values: z.infer<typeof UpdateStatusSchema>) => {
     updateOrder(values)
-    console.log(values, "values")
   }
 
   return (

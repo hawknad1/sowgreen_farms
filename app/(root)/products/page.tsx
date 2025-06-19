@@ -228,18 +228,18 @@ const Products = () => {
     switch (sortOption) {
       case "popularity":
         // Use purchaseCount instead of rating since it exists in your type
-        sorted.sort((a, b) => (b.purchaseCount || 0) - (a.purchaseCount || 0))
+        sorted.sort((a, b) => (b?.purchaseCount || 0) - (a?.purchaseCount || 0))
         break
       case "price-low":
-        sorted.sort((a, b) => a.variants[0].price - b.variants[0].price)
+        sorted.sort((a, b) => a.variants[0]?.price - b.variants[0]?.price)
         break
       case "price-high":
-        sorted.sort((a, b) => b.variants[0].price - a.variants[0].price)
+        sorted.sort((a, b) => b.variants[0]?.price - a.variants[0]?.price)
         break
       case "newest":
         sorted.sort(
           (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            new Date(b.createdAt)?.getTime() - new Date(a.createdAt)?.getTime()
         )
         break
       default:
@@ -253,11 +253,11 @@ const Products = () => {
     if (
       inView &&
       !loading &&
-      currentPage * productsPerPage < sortedProducts.length
+      currentPage * productsPerPage < sortedProducts?.length
     ) {
       setCurrentPage((prev) => prev + 1)
     }
-  }, [inView, loading, currentPage, productsPerPage, sortedProducts.length])
+  }, [inView, loading, currentPage, productsPerPage, sortedProducts?.length])
 
   // Paginated products
   const currentProducts = useMemo(() => {
@@ -302,7 +302,7 @@ const Products = () => {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {currentProducts.map((product) => (
+            {currentProducts?.map((product) => (
               <ProductCard key={product.id} data={product} />
             ))}
           </div>
@@ -311,7 +311,7 @@ const Products = () => {
           <div ref={ref} className="h-10 w-full my-4" />
 
           {/* Pagination Controls */}
-          {currentPage * productsPerPage < sortedProducts.length && (
+          {currentPage * productsPerPage < sortedProducts?.length && (
             <div className="flex justify-center mt-8">
               <Button
                 variant="outline"

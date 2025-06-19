@@ -67,7 +67,7 @@ const CancelOrderDialog = ({ order, className }: Props) => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent>
+      <DialogContent className="rounded-lg">
         <DialogHeader>
           <DialogTitle>{`Cancel Order No. ${order.orderNumber}`}</DialogTitle>
           <DialogDescription>

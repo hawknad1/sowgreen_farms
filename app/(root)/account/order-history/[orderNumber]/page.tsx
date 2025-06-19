@@ -347,7 +347,6 @@ import { getUser } from "@/lib/actions/getUser"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import ModifyOrderDialog from "@/components/admin/orders/dialogs/ModifyOrderDialog"
 
 const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
   const [orderDetails, setOrderDetails] = useState<Order | null>(null)
@@ -582,24 +581,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
         </div>
 
         {/* Action Buttons */}
-        {/* <div className="bg-white rounded-lg shadow-sm px-4 py-2 sm:px-6 sm:py-2">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">
-              Order Actions
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 w-full sm:w-auto">
-              <PaystackPayNow
-                order={orderDetails}
-                updatedBalance={updatedBalance}
-                disablePayNow={disablePayNow}
-              />
-              <EditCustomerOrderDialog order={orderDetails} />
-              <CancelCustomerOrderDialog order={orderDetails} />
-              <ChangeDeliveryMethodDialog order={orderDetails} />
-            </div>
-          </div>
-        </div> */}
-
         <div className="bg-white rounded-lg shadow-sm px-4 py-4 sm:px-6 sm:py-4">
           {" "}
           {/* Increased vertical padding */}

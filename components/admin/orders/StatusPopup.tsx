@@ -31,11 +31,11 @@ const StatusPopup = ({
           <StatusCards orderStatus={orderStatus} orders={orders} />
         </div>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] rounded-lg">
         <DialogHeader>
-          <DialogTitle>Edit Order Status</DialogTitle>
+          <DialogTitle>Update Order Status</DialogTitle>
           <DialogDescription>
-            Modify the order status. Click save when you're done.
+            Update order status. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <StatusUpdateForm

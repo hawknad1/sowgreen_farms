@@ -46,8 +46,8 @@ const ModifyShippingDialog = ({ order, balance, updatedOrderTotal }: Props) => {
           order?.status === "confirmed" ||
           order?.status === "in-transit" ||
           order?.status === "delivered"
-            ? "max-w-2xl h-fit p-1"
-            : "max-w-3xl h-[500px] flex flex-col py-3"
+            ? "max-w-2xl h-fit p-1 rounded-lg"
+            : "max-w-3xl h-[500px] flex flex-col py-3 rounded-lg"
         }`}
       >
         {order?.status === "confirmed" ||

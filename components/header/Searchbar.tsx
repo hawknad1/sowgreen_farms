@@ -218,7 +218,7 @@ const Searchbar = ({ onClose }: { onClose?: () => void }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => searchQuery.trim() && setShowDropdown(true)}
             placeholder="Search products..."
-            className="w-full pl-5 pr-12 py-3 border border-gray-300 rounded-full text-base"
+            className="w-full pl-5 pr-12 py-3 bg-white border border-gray-300 rounded-full text-base"
             aria-label="Search products"
           />
           {searchQuery ? (
