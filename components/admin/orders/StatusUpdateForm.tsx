@@ -104,18 +104,97 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
     fetchDispatchRiders()
   }, [fetchDispatchRiders])
 
+  // const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
+  //   setIsSaving(true)
+  //   try {
+  //     // Map the dispatch rider's name to their ID before sending the request
+  //     const dispatchRider = dispatchRiders.find(
+  //       (rider) => `${rider.fullName}` === values.dispatchRider
+  //     )
+
+  //     const dispatchRiderId = dispatchRider?.id // Extract ID
+  //     const dispatchRiderData = dispatchRider
+  //       ? {
+  //           id: dispatchRider.id, // Pass ID
+  //           fullName: dispatchRider.fullName,
+  //           phone: dispatchRider.phone,
+  //         }
+  //       : undefined
+
+  //     const isAutoPay =
+  //       values.status === "confirmed" &&
+  //       orders.updatedOrderTotal === 0 &&
+  //       orders.paymentAction !== "paid" // Only update if not already 'paid'
+
+  //     const paymentAction = isAutoPay ? "paid" : orders.paymentAction // Use existing paymentAction if not auto-pay
+
+  //     const response = await fetch(`/api/orders/${orders.id}`, {
+  //       method: "PUT",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         ...values,
+  //         dispatchRider: dispatchRiderData, // Pass the full dispatch rider object
+  //         updatedBalance,
+  //         dispatchRiderId, // Pass the ID if needed
+  //         ...(paymentAction !== orders.paymentAction && { paymentAction }), // Only include if changed
+  //       }),
+  //     })
+
+  //     if (!response.ok) {
+  //       const error = await response.json()
+  //       throw new Error(error.message || "Failed to update order")
+  //     }
+
+  //     const updatedOrder = await response.json()
+  //     setOrderStatus(updatedOrder.status)
+
+  //     if (updatedOrder.status === "confirmed") {
+  //       await sendOrderConfirmation(orders)
+  //       await sendOrderConfirmationGroup(orders)
+  //     }
+
+  //     // Use updated order data for operations
+  //     if (isAutoPay) {
+  //       // await updateBalance(orders)
+
+  //       const balanceResponse = await fetch("/api/balance", {
+  //         method: "PUT",
+  //         headers: { "Content-Type": "application/json" },
+  //         body: JSON.stringify({
+  //           email: orders?.shippingAddress.email,
+  //           updatedBalance,
+  //           phone: orders.shippingAddress.phone,
+  //         }),
+  //       })
+
+  //       if (!balanceResponse.ok) {
+  //         const error = await balanceResponse.json()
+  //         throw new Error(error.message || "Failed to update balance")
+  //       }
+  //     }
+
+  //     closeModal()
+  //     toast.success("Order status updated successfully!")
+  //     window.location.reload()
+  //   } catch (error: any) {
+  //     toast.error(`Error: ${error.message || "Failed to update order"}`)
+  //   } finally {
+  //     setIsSaving(false)
+  //   }
+  // }
+
   const updateOrder = async (values: z.infer<typeof UpdateStatusSchema>) => {
     setIsSaving(true)
     try {
-      // Map the dispatch rider's name to their ID before sending the request
+      // 1. Prepare dispatch rider data
       const dispatchRider = dispatchRiders.find(
         (rider) => `${rider.fullName}` === values.dispatchRider
       )
 
-      const dispatchRiderId = dispatchRider?.id // Extract ID
+      const dispatchRiderId = dispatchRider?.id
       const dispatchRiderData = dispatchRider
         ? {
-            id: dispatchRider.id, // Pass ID
+            id: dispatchRider.id,
             fullName: dispatchRider.fullName,
             phone: dispatchRider.phone,
           }
@@ -124,19 +203,20 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       const isAutoPay =
         values.status === "confirmed" &&
         orders.updatedOrderTotal === 0 &&
-        orders.paymentAction !== "paid" // Only update if not already 'paid'
+        orders.paymentAction !== "paid"
 
-      const paymentAction = isAutoPay ? "paid" : orders.paymentAction // Use existing paymentAction if not auto-pay
+      const paymentAction = isAutoPay ? "paid" : orders.paymentAction
 
+      // 2. Update the order
       const response = await fetch(`/api/orders/${orders.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...values,
-          dispatchRider: dispatchRiderData, // Pass the full dispatch rider object
+          dispatchRider: dispatchRiderData,
           updatedBalance,
-          dispatchRiderId, // Pass the ID if needed
-          ...(paymentAction !== orders.paymentAction && { paymentAction }), // Only include if changed
+          dispatchRiderId,
+          ...(paymentAction !== orders.paymentAction && { paymentAction }),
         }),
       })
 
@@ -145,18 +225,34 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
         throw new Error(error.message || "Failed to update order")
       }
 
-      const updatedOrder = await response.json()
-      setOrderStatus(updatedOrder.status)
+      // 3. Wait for database commit
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
+      // 4. Refetch the updated order to ensure data consistency
+      const updatedOrderResponse = await fetch(`/api/orders/${orders.id}`)
+      if (!updatedOrderResponse.ok) {
+        throw new Error("Failed to fetch updated order")
+      }
+      const updatedOrder = await updatedOrderResponse.json()
+
+      console.log("Order update verification:", {
+        originalDispatchRider: orders.dispatchRider,
+        updatedDispatchRider: updatedOrder.dispatchRider,
+      })
+
+      // 5. Send notifications only after confirming update
       if (updatedOrder.status === "confirmed") {
-        await sendOrderConfirmation(orders)
-        await sendOrderConfirmationGroup(orders)
+        await Promise.all([
+          sendOrderConfirmation(updatedOrder),
+          sendOrderConfirmationGroup(updatedOrder),
+        ]).catch((error) => {
+          console.error("Failed to send notifications:", error)
+          throw new Error("Notifications failed to send")
+        })
       }
 
-      // Use updated order data for operations
+      // 6. Handle balance updates if needed
       if (isAutoPay) {
-        // await updateBalance(orders)
-
         const balanceResponse = await fetch("/api/balance", {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -177,6 +273,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       toast.success("Order status updated successfully!")
       window.location.reload()
     } catch (error: any) {
+      console.error("Order update error:", error)
       toast.error(`Error: ${error.message || "Failed to update order"}`)
     } finally {
       setIsSaving(false)
@@ -230,7 +327,6 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
                 <FormLabel>Dispatch Rider</FormLabel>
                 <Select
                   onValueChange={field.onChange}
-                  // defaultValue={field.value || ""}
                   defaultValue={
                     typeof field.value === "string" ? field.value : ""
                   }

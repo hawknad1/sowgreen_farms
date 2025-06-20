@@ -1,7 +1,5 @@
 import { Order } from "@/types"
-import { useMemo } from "react"
 import ModifyOrderDetailsDialog from "./dialogs/ModifyOrderDetailsDialog"
-import { formatCurrency } from "@/lib/utils"
 import Card from "@/app/(root)/confirm-order/Card"
 import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
 
@@ -41,19 +39,10 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
       return method.split("pickup-")[1].trim()
     }
 
-    // if (trimmed.startsWith("pickup-")) {
-    //   const location = method.split("pickup-")[1].trim()
-    //   return `PICK UP @ - ${location}`
-    // }
-
     return method.trim() // fallback
   }
 
-  // const cleanDeliveryMethod = deliveryMethod.split("-")[0].trim()
-
   const deliveryMethod = formatDeliveryMethod(shippingAddress?.deliveryMethod)
-  console.log(deliveryDate, "deliveryDate")
-  console.log(shippingAddress?.deliveryMethod, "deliveryMethod")
 
   console.log(
     formatDeliveryMethod(shippingAddress?.deliveryMethod),

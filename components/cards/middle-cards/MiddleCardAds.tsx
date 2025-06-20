@@ -30,20 +30,15 @@ const MiddleCardAds = () => {
         </div>
       </MiddleCard>
       <MiddleCard className="bg-orange-100 p-3">
-        <div className="w-full flex flex-col gap-y-4">
-          <h1 className="text-xl sm:text-2xl md:text-lg lg:text-3xl font-bold">
+        <div className="w-full lg:max-w-xl flex flex-col justify-center">
+          <h1 className="text-xl sm:text-2xl md:text-lg lg:text-4xl font-bold md:mb-2">
             Grab up to{" "}
-            <span className="bg-red-500 lg:text-2xl text-white px-2 rounded-lg">
+            <span className="bg-red-500 text-lg lg:text-2xl text-white px-2 rounded-lg">
               20% off
             </span>{" "}
             on fresh Vegetables
+            {/* <br /> */}
           </h1>
-          <Button
-            onClick={() => router.push("/discount")}
-            className="bg-red-500 rounded-full text-white px-8 py-2 font-medium w-fit hover:bg-red-500/80"
-          >
-            Shop Sale
-          </Button>
         </div>
         <div className="w-full ">
           <Image
@@ -55,6 +50,32 @@ const MiddleCardAds = () => {
           />
         </div>
       </MiddleCard>
+      {/* <MiddleCard className="bg-orange-100 p-3">
+        <div className="w-full flex flex-col gap-y-4">
+          <h1 className="text-lg sm:text-2xl md:text-lg lg:text-3xl font-bold">
+            Grab up to{" "}
+            <span className="bg-red-500 text-lg lg:text-2xl text-white px-2 rounded-lg">
+              20% off
+            </span>{" "}
+            on fresh Vegetables
+          </h1>
+          <Button
+            onClick={() => router.push("/discount")}
+            className="bg-red-500 rounded-full text-white px-8 py-2 font-medium w-fit hover:bg-red-500/80"
+          >
+            Shop Sale
+          </Button>
+        </div>
+        <div className="w-full]">
+          <Image
+            src="/images/veg2.png"
+            height={100}
+            width={700}
+            className="bg-cover"
+            alt="Veggies"
+          />
+        </div>
+      </MiddleCard> */}
     </div>
   )
 }

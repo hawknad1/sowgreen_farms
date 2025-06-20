@@ -60,19 +60,6 @@ const ChangeDeliveryMethodForm = ({ order }: Props) => {
   const { data: session } = useSession()
   const user = session?.user
 
-  // const form = useForm<z.infer<typeof CheckoutSchema>>({
-  //   resolver: zodResolver(CheckoutSchema),
-  //   defaultValues: {
-  //     ...order?.shippingAddress,
-  //     address: order?.shippingAddress?.address,
-  //     city: order?.shippingAddress?.city,
-  //     deliveryMethod: order?.shippingAddress?.deliveryMethod,
-  //   },
-  // })
-
-  // const total = deliveryFee + order?.total
-  // const { updatedOrderTotal } = deductBalance(user?.balance, total)
-
   const form = useForm<z.infer<typeof DeliveryMethodSchema>>({
     resolver: zodResolver(DeliveryMethodSchema),
     defaultValues: {

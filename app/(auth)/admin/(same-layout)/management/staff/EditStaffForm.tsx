@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { jobTitle, staffRole } from "@/constants"
+import { useSession } from "next-auth/react"
 
 interface Props {
   staff?: Staff
@@ -31,11 +32,20 @@ interface Props {
 
 const EditStaffForm = ({ staff }: Props) => {
   const [isSaving, setIsSaving] = useState(false)
+  const { data: session } = useSession()
+  const user = session?.user
+  console.log(staff, "staff")
+  console.log(user, "user--")
 
   const form = useForm<z.infer<typeof StaffSchema>>({
     resolver: zodResolver(StaffSchema),
     defaultValues: staff,
   })
+
+  // Get the current role value from the form
+  // const currentRole = form.watch("role")
+  const currentRole = user?.role
+
   const onSubmit = async (values: z.infer<typeof StaffSchema>) => {
     setIsSaving(true)
     try {
@@ -119,6 +129,7 @@ const EditStaffForm = ({ staff }: Props) => {
                 <Select
                   onValueChange={(value) => field.onChange(value)}
                   defaultValue={field.value}
+                  disabled={currentRole !== "manager"}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select role" />

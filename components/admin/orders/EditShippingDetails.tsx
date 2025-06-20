@@ -527,7 +527,6 @@ import { ShippingInfoMethodSchema } from "@/schemas"
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -538,12 +537,7 @@ import { Order, Location } from "@/types"
 import { useDeliveryStore } from "@/store"
 import { Loader2 } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
-import {
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
+import { DialogFooter } from "@/components/ui/dialog"
 import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
 import { deductBalance } from "@/lib/actions/deductBalance"
 
@@ -595,7 +589,7 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
   const [pickupLocations, setPickupLocations] = useState<Location[]>([])
   const [isLoadingPickupLocations, setIsLoadingPickupLocations] =
     useState(false)
-
+  const [isLoadingCities, setIsLoadingCities] = useState(false)
   const [selectedDeliveryDate, setSelectedDeliveryDate] = useState<string>(
     order?.deliveryDate || formatDeliveryDate(wednesday)
   )
@@ -653,9 +647,6 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
     try {
       // const finalTotal = (order?.total || 0) + deliveryFee
       const finalTotal = order?.total || 0
-      // const creditApplied = Math.min(balance, finalTotal)
-      // const remainingAmount = finalTotal - creditApplied
-
       const updateData = {
         ...values,
         deliveryMethod:
@@ -666,8 +657,6 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
         deliveryDate: selectedDeliveryDate,
         total: finalTotal,
         subtotal: finalTotal,
-
-        // updatedOrderTotal: remainingAmount,
         updatedOrderTotal,
       }
 
@@ -692,6 +681,8 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
   useEffect(() => {
     const initializeData = async () => {
       try {
+        setIsLoadingCities(true) // Add this line
+
         // Fetch cities
         const citiesRes = await fetch("/api/cities")
         if (citiesRes.ok) {
@@ -705,40 +696,6 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
             setFilteredCities(filtered)
           }
         }
-
-        // Fetch pickup locations
-        // setIsLoadingPickupLocations(true)
-        // const pickupRes = await fetch("/api/pickup-options")
-        // if (pickupRes.ok) {
-        //   const locations: Location[] = await pickupRes.json()
-        //   setPickupLocations(locations)
-
-        //   setDeliveryOptions((prev) => ({
-        //     ...prev,
-        //     pickup: {
-        //       ...prev.pickup,
-        //       pickupOptions: locations.map((loc) => ({
-        //         label: `${loc.address} - ${loc.city}`,
-        //         value: loc.address,
-        //         locationId: loc.id,
-        //       })),
-        //     },
-        //   }))
-
-        //   // Initialize selected pickup location if it exists
-        //   if (
-        //     order?.shippingAddress?.deliveryMethod !== "home-delivery" &&
-        //     order?.shippingAddress?.deliveryMethod !== "pickup"
-        //   ) {
-        //     const savedLocation = locations.find(
-        //       (loc) => loc.address === order.shippingAddress.deliveryMethod
-        //     )
-        //     if (savedLocation) {
-        //       setSelectedPickupLocation(savedLocation)
-        //       setDeliveryMethod(savedLocation.address)
-        //     }
-        //   }
-        // }
 
         // Fetch pickup locations
         setIsLoadingPickupLocations(true)
@@ -771,7 +728,6 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
 
           // Initialize selected pickup location if it exists
           if (
-            // order?.shippingAddress?.deliveryMethod !== "home-delivery" &&
             order?.shippingAddress?.deliveryMethod.includes("Home Delivery") &&
             order?.shippingAddress?.deliveryMethod !== "pickup"
           ) {
@@ -796,6 +752,7 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
         console.error("Initialization error:", error)
         toast.error("Failed to load shipping options")
       } finally {
+        setIsLoadingCities(false)
         setIsLoadingPickupLocations(false)
       }
     }
@@ -871,7 +828,7 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
               <Button
                 key={index}
                 variant={
-                  deliveryMethod === option.value ? "default" : "outline"
+                  deliveryMethod === option.value ? "sowgreen" : "outline"
                 }
                 onClick={() => {
                   setDeliveryMethod(option.value)
@@ -880,7 +837,7 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
                 className="h-14 flex flex-col items-start"
               >
                 <span className="font-medium">{option.label}</span>
-                <span className="text-sm">{option.date}</span>
+                <span className="text-xs md:text-sm">{option.date}</span>
               </Button>
             ))}
           </div>
@@ -892,7 +849,7 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
             variant={
               deliveryMethod === "pickup" ||
               pickupLocations.some((loc) => loc.address === deliveryMethod)
-                ? "default"
+                ? "sowgreen"
                 : "outline"
             }
             onClick={() => {
@@ -917,7 +874,7 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
                     <Button
                       key={option.locationId}
                       variant={
-                        deliveryMethod === option.value ? "default" : "outline"
+                        deliveryMethod === option.value ? "sowgreen" : "outline"
                       }
                       onClick={() => {
                         const location = pickupLocations.find(
@@ -941,12 +898,12 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
                     <Button
                       key={date}
                       variant={
-                        selectedDeliveryDate === date ? "default" : "outline"
+                        selectedDeliveryDate === date ? "sowgreen" : "outline"
                       }
                       onClick={() => setSelectedDeliveryDate(date)}
                       className="h-14 flex flex-col items-center"
                     >
-                      <span className="text-sm">{date}</span>
+                      <span className="text-xs md:text-sm">{date}</span>
                     </Button>
                   ))}
                 </div>
@@ -1056,8 +1013,14 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
             <DialogFooter>
               <Button
                 type="submit"
+                variant="sowgreen"
                 className="w-full"
-                disabled={isSaving || !selectedCity}
+                // disabled={isSaving || !selectedCity}
+                disabled={
+                  isSaving ||
+                  (!selectedCity && deliveryMethod.includes("Home Delivery")) ||
+                  isLoadingCities
+                }
               >
                 {isSaving ? (
                   <>
@@ -1106,6 +1069,7 @@ const EditShippingDetails = ({ order, balance }: ShippingProps) => {
           <DialogFooter>
             <Button
               type="button"
+              variant="sowgreen"
               onClick={() => onSubmit(form.getValues())}
               className="w-full"
               disabled={

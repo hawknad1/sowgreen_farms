@@ -165,7 +165,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
           {/* Product Details Section - Fixed Height */}
           <div className="flex flex-col flex-grow min-h-[60px] max-h-[70px]">
             <h3
-              className="font-medium text-gray-900 line-clamp-2 text-sm md:text-base mb-1"
+              className="font-medium text-gray-900 line-clamp-1 text-sm md:text-base mb-1"
               title={data?.title}
             >
               {data?.title}

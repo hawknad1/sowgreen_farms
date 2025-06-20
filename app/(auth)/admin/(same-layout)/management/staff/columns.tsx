@@ -107,13 +107,6 @@ export const columns: ColumnDef<Staff>[] = [
               </DropdownMenuItem>
             </div>
 
-            {/* Prevent closing dropdown on Dialog trigger */}
-            {/* <Button
-              onClick={() => router.push(`/admin/dispatch-riders/deliveries`)}
-            >
-              View Deliveries
-            </Button> */}
-
             <DropdownMenuSeparator />
 
             <DropdownMenuSeparator />
