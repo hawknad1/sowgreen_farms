@@ -75,6 +75,7 @@ import { useRouter } from "next/navigation"
 import { ShoppingCartIcon } from "@heroicons/react/20/solid"
 import { motion, AnimatePresence } from "framer-motion"
 import { Badge } from "./ui/badge"
+import { formatCurrency } from "@/lib/utils"
 
 export function CartPopover() {
   const { cartItemCount, cartTotal } = useCartStore()
@@ -146,7 +147,10 @@ export function CartPopover() {
             <div className="border-t p-4 bg-gray-50">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-sm font-medium">Subtotal:</span>
-                <span className="font-medium">${cartTotal.toFixed(2)}</span>
+                {/* <span className="font-medium">{cartTotal.toFixed(2)}</span> */}
+                <span className="font-medium text-sm">
+                  {formatCurrency(cartTotal, "GHS")}
+                </span>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <Button
