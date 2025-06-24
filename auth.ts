@@ -73,6 +73,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (user) {
         token.role = user.role as string // Explicitly cast the role to string
         token.balance = user.balance
+        token.id = user.id as string
       }
       return token
     },

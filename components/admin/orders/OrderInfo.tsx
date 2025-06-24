@@ -44,11 +44,6 @@ export const OrderInfo = ({ orders, balance }: OrderInfoProps) => {
 
   const deliveryMethod = formatDeliveryMethod(shippingAddress?.deliveryMethod)
 
-  console.log(
-    formatDeliveryMethod(shippingAddress?.deliveryMethod),
-    "deliveryMethod====="
-  )
-
   if (!orders) return null
 
   const typeCard = cardType?.charAt(0).toUpperCase() + cardType?.slice(1)

@@ -18,16 +18,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { EditOrderDetailSchema } from "@/schemas"
+import { PaymentActionSchema } from "@/schemas"
 import { Order } from "@/types"
-import {
-  cityDeliveryPrices,
-  deliveryDates,
-  newDeliveryMethod,
-  paymentActionList,
-} from "@/constants"
-import toast from "react-hot-toast"
+import { paymentActionList } from "@/constants"
 import { deductBalance } from "@/lib/actions/deductBalance"
+import { getUser } from "@/lib/actions/getUser"
+import { UserData } from "./StatusUpdateForm"
+import toast from "react-hot-toast"
 
 interface OrderProps {
   order: Order
@@ -35,66 +32,44 @@ interface OrderProps {
 
 const EditOrderDetails = ({ order }: OrderProps) => {
   const [isSaving, setIsSaving] = useState(false)
-  // const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState(
-  //   order?.shippingAddress?.deliveryMethod.trim() || ""
-  // )
+  const [loading, setLoading] = useState(false)
+  const [userData, setUserData] = useState<UserData | null>(null)
 
-  // Initialize deliveryFee with order's value, but will be updated based on method/city
-  // const [deliveryFee, setDeliveryFee] = useState<number>(
-  //   order?.deliveryFee || 0
-  // )
-
-  // const [selectedCity, setSelectedCity] = useState(
-  //   order?.shippingAddress?.city || ""
-  // )
-
-  // const total = order?.total + deliveryFee
-  // const { updatedOrderTotal } = deductBalance(order?.creditAppliedTotal, total)
-
-  // Update delivery fee whenever the selected delivery method or city changes
-  // useEffect(() => {
-  //   // Only update if the delivery method is "Home Delivery"
-  //   if (selectedDeliveryMethod !== "Home Delivery") {
-  //     setDeliveryFee(0)
-  //   } else {
-  //     let newDeliveryFee = 0
-
-  //     if (selectedCity && cityDeliveryPrices[selectedCity]) {
-  //       newDeliveryFee = cityDeliveryPrices[selectedCity]
-  //     }
-  //     setDeliveryFee(newDeliveryFee)
-  //   }
-  // }, [deliveryFee, selectedDeliveryMethod])
-
-  const form = useForm<z.infer<typeof EditOrderDetailSchema>>({
-    resolver: zodResolver(EditOrderDetailSchema),
+  const form = useForm<z.infer<typeof PaymentActionSchema>>({
+    resolver: zodResolver(PaymentActionSchema),
     defaultValues: {
-      // deliveryMethod: order?.shippingAddress?.deliveryMethod?.trim(),
-      // deliveryDate: order?.deliveryDate,
       paymentAction: order?.paymentAction,
     },
   })
 
-  const onSubmit = async (values: z.infer<typeof EditOrderDetailSchema>) => {
-    // if (!order?.shippingAddress?.id || !order?.id) {
-    //   console.error("Order or Shipping Address ID is missing.")
-    //   return
-    // }
+  const email = order?.shippingAddress?.email
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (!email) return
+
+      setLoading(true) // Start loading
+
+      const data = await getUser(email)
+      if (data) setUserData(data)
+
+      setLoading(false) // Done loading
+    }
+
+    fetchUser()
+  }, [email])
+
+  const orderTotal = order?.total + order?.deliveryFee
+  const balance = userData?.user?.balance
+
+  const { updatedBalance } = deductBalance(balance, orderTotal)
+
+  console.log(updatedBalance, "updatedBalance===")
+
+  const onSubmit = async (values: z.infer<typeof PaymentActionSchema>) => {
     setIsSaving(true)
 
     try {
-      // const res = await fetch(
-      //   `/api/shipping-address/${order.shippingAddress.id}`,
-      //   {
-      //     method: "PUT",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({ deliveryMethod: values.deliveryMethod }),
-      //   }
-      // )
-
-      // if (!res.ok) throw new Error("Failed to update delivery method")
-
       const deliverRes = await fetch(`/api/orders/${order.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -104,6 +79,22 @@ const EditOrderDetails = ({ order }: OrderProps) => {
       })
 
       if (!deliverRes.ok) throw new Error("Failed to update payment action")
+
+      // Handle balance updates if needed
+      const balanceResponse = await fetch("/api/balance", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          updatedBalance,
+          phone: order.shippingAddress.phone,
+        }),
+      })
+
+      if (!balanceResponse.ok) {
+        const error = await balanceResponse.json()
+        throw new Error(error.message || "Failed to update balance")
+      }
 
       window.location.reload()
       toast.success("Payment action updated successfully!")
@@ -118,67 +109,6 @@ const EditOrderDetails = ({ order }: OrderProps) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 ">
         <div className="md:inline-flex w-full md:gap-x-4">
-          {/* Delivery Method */}
-          {/* <FormField
-            control={form.control}
-            name="deliveryMethod"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Delivery Method</FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(value)
-                    setSelectedDeliveryMethod(value) // Update selected delivery method
-                  }}
-                  value={field.value} // Bind value to React Hook Form
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a delivery method" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {newDeliveryMethod.map((method) => (
-                      <SelectItem key={method.value} value={method.value}>
-                        {method.value}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-
-          {/* Delivery/Pickup Date */}
-          {/* <FormField
-            control={form.control}
-            name="deliveryDate"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormLabel>Delivery/Pickup Date</FormLabel>
-                <Select
-                  onValueChange={(value) => field.onChange(value)}
-                  value={field.value} // Bind value to React Hook Form
-                >
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a Delivery/Pickup Date" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    {deliveryDates.map((method) => (
-                      <SelectItem key={method.date} value={method.date}>
-                        {method.date}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )}
-          /> */}
-
           {/* Payment Action */}
           <FormField
             control={form.control}

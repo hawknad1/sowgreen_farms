@@ -194,6 +194,10 @@ export const EditOrderDetailSchema = z.object({
   deliveryDate: z.string(),
 })
 
+export const PaymentActionSchema = z.object({
+  paymentAction: z.string(),
+})
+
 export const EditProductAdminSchema = z.object({
   description: z.string(),
   title: z.string(),

@@ -82,12 +82,16 @@ import { CartPopover } from "../CartPopover"
 import { motion } from "framer-motion"
 import { usePathname } from "next/navigation"
 import { MagnifyingGlassIcon } from "@heroicons/react/20/solid"
+import Link from "next/link"
+import { Heart } from "lucide-react"
+import { useWishlistStore } from "@/store"
 
 const Navbar = () => {
   const { data: session, status } = useSession()
   const user = session?.user
   const pathname = usePathname()
   const [showMobileSearch, setShowMobileSearch] = useState(false)
+  const { wishlist } = useWishlistStore()
 
   return (
     <header className="bg-white w-full sticky top-0 left-0 right-0 z-50 border-b border-gray-100 shadow-sm">
@@ -122,6 +126,14 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center justify-center mx-6">
             <TheMenu />
           </div>
+          {/* <Link href="/wishlist" className="relative p-2">
+            <Heart className="w-5 h-5" />
+            {wishlist.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {wishlist.length}
+              </span>
+            )}
+          </Link> */}
 
           {/* User Actions */}
           <div className="flex items-center gap-4 md:gap-6">

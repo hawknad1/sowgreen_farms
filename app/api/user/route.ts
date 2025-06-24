@@ -1,16 +1,125 @@
+import { auth } from "@/auth"
 import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
 
 // Force dynamic rendering
 export const dynamic = "force-dynamic"
 
+// export async function GET(req: Request) {
+//   try {
+//     const users = await prisma.user.findMany({
+//       include: {
+//         customer: true,
+//         orders: {
+//           include: { shippingAddress: true },
+//         },
+//       },
+//     })
+
+//     return NextResponse.json(users, {
+//       status: 200,
+//       headers: {
+//         "Cache-Control": "no-store, must-revalidate",
+//       },
+//     })
+//   } catch (error) {
+//     console.log(error)
+//     return NextResponse.json(
+//       { message: "Couldn't fetch users" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
 export async function GET(req: Request) {
   try {
     const users = await prisma.user.findMany({
-      include: {
-        customer: true,
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        emailVerified: true,
+        image: true,
+        role: true,
+        balance: true,
+        phone: true,
+        address: true,
+        dateOfBirth: true,
+        whatsappOptIn: true,
+        userWhatsappOptIn: true,
+        country: true,
+        city: true,
+        createdAt: true,
+        updatedAt: true,
+        customer: {
+          select: {
+            id: true,
+            email: true,
+          },
+        },
         orders: {
-          include: { shippingAddress: true },
+          select: {
+            id: true,
+            referenceNumber: true,
+            orderNumber: true,
+            total: true,
+            subtotal: true,
+            totalDue: true,
+            creditAppliedTotal: true,
+            balanceApplied: true,
+            whatsappOptIn: true,
+            updatedOrderTotal: true,
+            userWhatsappOptIn: true,
+            balanceDeducted: true,
+            remainingAmount: true,
+            updatedBalance: true,
+            creditAppliedDeliveryFee: true,
+            status: true,
+            dispatchRiderId: true,
+            dispatchRider: true,
+            shippingAddressId: true,
+            deliveryMethod: true,
+            deliveryFee: true,
+            customerId: true,
+            deliveryDate: true,
+            cardType: true,
+            last4Digits: true,
+            paymentMode: true,
+            paymentAction: true,
+            userId: true,
+            createdAt: true,
+            updatedAt: true,
+            shippingAddress: {
+              select: {
+                id: true,
+                name: true,
+                region: true,
+                city: true,
+                address: true,
+                phone: true,
+                country: true,
+                email: true,
+                deliveryMethod: true,
+                whatsappOptIn: true,
+                customerId: true,
+                userId: true,
+              },
+            },
+            products: {
+              select: {
+                id: true,
+                productId: true,
+                product: true,
+                orderId: true,
+                price: true,
+                weight: true,
+                unit: true,
+                quantity: true,
+                quantityTotal: true,
+                available: true,
+              },
+            },
+          },
         },
       },
     })

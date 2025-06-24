@@ -168,6 +168,168 @@
 
 // export default Products
 
+// "use client"
+// import React, { useEffect, useState, useCallback, useMemo } from "react"
+// import { useCategoryState } from "@/hooks/state"
+// import { Product } from "@/types"
+// import ProductCard from "@/components/cards/product/ProductCard"
+// import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
+// import {
+//   Select,
+//   SelectContent,
+//   SelectGroup,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select"
+// import ProductsHeroBanner from "./ProductsHeroBanner"
+// import PaginationButtons from "@/components/sort/PaginationButtons"
+// import { Button } from "@/components/ui/button"
+// import { ChevronLeft, ChevronRight, PackageSearch } from "lucide-react"
+// import { useInView } from "react-intersection-observer"
+// import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+
+// const ProductsPage = () => {
+//   const [products, setProducts] = useState<Product[]>([])
+//   const [loading, setLoading] = useState(true)
+//   const [currentPage, setCurrentPage] = useState(1)
+//   const [productsPerPage] = useState(12)
+//   const [sortOption, setSortOption] = useState<string>("alphabetical")
+//   const { selected } = useCategoryState()
+//   const [ref, inView] = useInView({ threshold: 0.1 })
+//   const [categoryHasNoProducts, setCategoryHasNoProducts] = useState(false)
+
+//   const fetchProducts = useCallback(async () => {
+//     setLoading(true)
+//     setCategoryHasNoProducts(false) // Reset flag before each fetch
+//     try {
+//       const endpoint =
+//         selected === "All Category"
+//           ? `/api/products?sort=${sortOption}`
+//           : `/api/categories/${selected}?sort=${sortOption}`
+
+//       const res = await fetch(endpoint, { cache: "no-store" })
+//       const data = await res.json()
+
+//       if (selected === "All Category") {
+//         setProducts(data)
+//       } else {
+//         const categoryProducts = data[0]?.products || []
+//         setProducts(categoryProducts)
+//         setCategoryHasNoProducts(categoryProducts.length === 0)
+//       }
+//     } catch (error) {
+//       console.error("Error fetching products:", error)
+//     } finally {
+//       setLoading(false)
+//     }
+//   }, [selected, sortOption])
+
+//   useEffect(() => {
+//     fetchProducts()
+//   }, [fetchProducts])
+
+//   // Lazy load more products when scrolled to bottom
+//   useEffect(() => {
+//     if (inView && !loading && currentPage * productsPerPage < products.length) {
+//       setCurrentPage((prev) => prev + 1)
+//     }
+//   }, [inView, loading, currentPage, productsPerPage, products.length])
+
+//   // Paginated products
+//   const currentProducts = useMemo(() => {
+//     return products.slice(0, currentPage * productsPerPage)
+//   }, [products, currentPage, productsPerPage])
+
+//   const handleSortChange = (value: string) => {
+//     setSortOption(value)
+//     setCurrentPage(1) // Reset to first page when changing sort
+//   }
+
+//   return (
+//     <div className="container mx-auto px-4 sm:px-10 py-8">
+//       <ProductsHeroBanner />
+
+//       {/* Filter and Sort Controls */}
+//       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+//         <div className="w-full">
+//           <PaginationButtons />
+//         </div>
+//         <div className="w-full md:w-auto">
+//           <Select onValueChange={handleSortChange} value={sortOption}>
+//             <SelectTrigger className="w-full md:w-48 bg-background">
+//               <SelectValue placeholder="Sort By" />
+//             </SelectTrigger>
+//             <SelectContent>
+//               <SelectGroup>
+//                 <SelectItem value="alphabetical">Alphabetical</SelectItem>
+//                 <SelectItem value="popularity">Popularity</SelectItem>
+//                 <SelectItem value="price-low">Price: Low to High</SelectItem>
+//                 <SelectItem value="price-high">Price: High to Low</SelectItem>
+//                 <SelectItem value="newest">Newest Arrivals</SelectItem>
+//               </SelectGroup>
+//             </SelectContent>
+//           </Select>
+//         </div>
+//       </div>
+
+//       {/* Products Grid */}
+//       {loading ? (
+//         <ProductsSkeleton />
+//       ) : categoryHasNoProducts ? (
+//         <div className="flex flex-col items-center justify-center py-16 gap-4">
+//           <Alert className="w-full max-w-md">
+//             <PackageSearch className="h-6 w-6" />
+//             <AlertTitle>No Products Found</AlertTitle>
+//             <AlertDescription>
+//               We currently don't have any products in the "{selected}" category.
+//               Please check back later or browse our other categories.
+//             </AlertDescription>
+//           </Alert>
+//           <Button
+//             variant="outline"
+//             onClick={() => {
+//               // Reset to "All Category" or implement your category state change logic
+//               useCategoryState.setState({ selected: "All Category" })
+//             }}
+//           >
+//             Browse All Products
+//           </Button>
+//         </div>
+//       ) : (
+//         <>
+//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+//             {currentProducts.map((product) => (
+//               <ProductCard key={product.id} data={product} />
+//             ))}
+//           </div>
+
+//           {/* Lazy Load Trigger */}
+//           {products.length > 0 && (
+//             <>
+//               <div ref={ref} className="h-10 w-full my-4" />
+//               {currentPage * productsPerPage < products.length && (
+//                 <div className="flex justify-center mt-8">
+//                   <Button
+//                     variant="outline"
+//                     onClick={() => setCurrentPage((prev) => prev + 1)}
+//                     className="gap-2"
+//                   >
+//                     Load More
+//                     <ChevronRight className="h-4 w-4" />
+//                   </Button>
+//                 </div>
+//               )}
+//             </>
+//           )}
+//         </>
+//       )}
+//     </div>
+//   )
+// }
+
+// export default ProductsPage
+
 "use client"
 import React, { useEffect, useState, useCallback, useMemo } from "react"
 import { useCategoryState } from "@/hooks/state"
@@ -185,7 +347,7 @@ import {
 import ProductsHeroBanner from "./ProductsHeroBanner"
 import PaginationButtons from "@/components/sort/PaginationButtons"
 import { Button } from "@/components/ui/button"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import { useInView } from "react-intersection-observer"
 
 const Products = () => {
@@ -193,7 +355,7 @@ const Products = () => {
   const [loading, setLoading] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [productsPerPage] = useState(12)
-  const [sortOption, setSortOption] = useState<string>("popularity")
+  const [sortOption, setSortOption] = useState<string>("alphabetical")
   const { selected } = useCategoryState()
   const [ref, inView] = useInView({ threshold: 0.1 })
 
@@ -210,9 +372,11 @@ const Products = () => {
       const data = await res.json()
       const products =
         selected === "All Category" ? data : data[0]?.products || []
+
       setProducts(products)
     } catch (error) {
       console.error("Error fetching products:", error)
+      setProducts([]) // Set products to empty array on error
     } finally {
       setLoading(false)
     }
@@ -231,16 +395,23 @@ const Products = () => {
         sorted.sort((a, b) => (b?.purchaseCount || 0) - (a?.purchaseCount || 0))
         break
       case "price-low":
-        sorted.sort((a, b) => a.variants[0]?.price - b.variants[0]?.price)
+        sorted.sort(
+          (a, b) => (a.variants[0]?.price || 0) - (b.variants[0]?.price || 0)
+        )
         break
       case "price-high":
-        sorted.sort((a, b) => b.variants[0]?.price - a.variants[0]?.price)
+        sorted.sort(
+          (a, b) => (b.variants[0]?.price || 0) - (a.variants[0]?.price || 0)
+        )
         break
       case "newest":
         sorted.sort(
           (a, b) =>
             new Date(b.createdAt)?.getTime() - new Date(a.createdAt)?.getTime()
         )
+        break
+      case "alphabetical":
+        sorted.sort((a, b) => a.title.localeCompare(b.title))
         break
       default:
         break
@@ -266,7 +437,7 @@ const Products = () => {
 
   const handleSortChange = (value: string) => {
     setSortOption(value)
-    setCurrentPage(1)
+    setCurrentPage(1) // Reset page to 1 when sort option changes
   }
 
   return (
@@ -286,42 +457,73 @@ const Products = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectGroup>
+                <SelectItem value="alphabetical">Alphabetical</SelectItem>
                 <SelectItem value="popularity">Popularity</SelectItem>
                 <SelectItem value="price-low">Price: Low to High</SelectItem>
                 <SelectItem value="price-high">Price: High to Low</SelectItem>
                 <SelectItem value="newest">Newest Arrivals</SelectItem>
+                {/* Added Alphabetical */}
               </SelectGroup>
             </SelectContent>
           </Select>
         </div>
       </div>
 
-      {/* Products Grid */}
+      {/* Products Grid or No Products Message */}
       {loading ? (
         <ProductsSkeleton />
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {currentProducts?.map((product) => (
-              <ProductCard key={product.id} data={product} />
-            ))}
-          </div>
-
-          {/* Lazy Load Trigger */}
-          <div ref={ref} className="h-10 w-full my-4" />
-
-          {/* Pagination Controls */}
-          {currentPage * productsPerPage < sortedProducts?.length && (
-            <div className="flex justify-center mt-8">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage((prev) => prev + 1)}
-                className="gap-2"
-              >
-                Load More
-                <ChevronRight className="h-4 w-4" />
-              </Button>
+          {currentProducts.length === 0 ? (
+            <div className="text-center py-10">
+              <h2 className="text-2xl font-semibold text-gray-700">
+                No products found
+              </h2>
+              <p className="text-gray-500 mt-2">
+                {selected !== "All Category"
+                  ? `There are no products under the "${selected}" category with the current sorting option.`
+                  : "We couldn't find any products matching your criteria."}
+              </p>
+              {selected !== "All Category" && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    // You might want to clear the category selection here
+                    // If useCategoryState has a method to reset, use it
+                    // For now, let's just reset sort option
+                    setSortOption("popularity")
+                  }}
+                  className="mt-4"
+                >
+                  Clear Category Filter
+                </Button>
+              )}
             </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+                {currentProducts?.map((product) => (
+                  <ProductCard key={product.id} data={product} />
+                ))}
+              </div>
+
+              {/* Lazy Load Trigger */}
+              <div ref={ref} className="h-10 w-full my-4" />
+
+              {/* Pagination Controls */}
+              {currentPage * productsPerPage < sortedProducts?.length && (
+                <div className="flex justify-center mt-8">
+                  <Button
+                    variant="outline"
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
+                    className="gap-2"
+                  >
+                    Load More
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
+              )}
+            </>
           )}
         </>
       )}
@@ -330,3 +532,167 @@ const Products = () => {
 }
 
 export default Products
+
+// "use client"
+// import React, { useEffect, useState, useCallback, useMemo } from "react"
+// import { useCategoryState } from "@/hooks/state"
+// import { Product } from "@/types"
+// import ProductCard from "@/components/cards/product/ProductCard"
+// import ProductsSkeleton from "@/components/skeletons/ProductsSkeleton"
+// import {
+//   Select,
+//   SelectContent,
+//   SelectGroup,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select"
+// import ProductsHeroBanner from "./ProductsHeroBanner"
+// import PaginationButtons from "@/components/sort/PaginationButtons"
+// import { Button } from "@/components/ui/button"
+// import { ChevronLeft, ChevronRight } from "lucide-react"
+// import { useInView } from "react-intersection-observer"
+
+// const Products = () => {
+//   const [products, setProducts] = useState<Product[]>([])
+//   const [loading, setLoading] = useState(true)
+//   const [currentPage, setCurrentPage] = useState(1)
+//   const [productsPerPage] = useState(12)
+//   const [sortOption, setSortOption] = useState<string>("popularity")
+//   const { selected } = useCategoryState()
+//   const [ref, inView] = useInView({ threshold: 0.1 })
+
+//   // Fetch products with lazy loading
+//   const fetchProducts = useCallback(async () => {
+//     setLoading(true)
+//     try {
+//       const endpoint =
+//         selected === "All Category"
+//           ? "/api/products"
+//           : `/api/categories/${selected}`
+
+//       const res = await fetch(endpoint, { cache: "no-store" })
+//       const data = await res.json()
+//       const products =
+//         selected === "All Category" ? data : data[0]?.products || []
+
+//       setProducts(products)
+//     } catch (error) {
+//       console.error("Error fetching products:", error)
+//     } finally {
+//       setLoading(false)
+//     }
+//   }, [selected])
+
+//   useEffect(() => {
+//     fetchProducts()
+//   }, [fetchProducts])
+
+//   // Sort products
+//   const sortedProducts = useMemo(() => {
+//     const sorted = [...products]
+//     switch (sortOption) {
+//       case "popularity":
+//         // Use purchaseCount instead of rating since it exists in your type
+//         sorted.sort((a, b) => (b?.purchaseCount || 0) - (a?.purchaseCount || 0))
+//         break
+//       case "price-low":
+//         sorted.sort((a, b) => a.variants[0]?.price - b.variants[0]?.price)
+//         break
+//       case "price-high":
+//         sorted.sort((a, b) => b.variants[0]?.price - a.variants[0]?.price)
+//         break
+//       case "newest":
+//         sorted.sort(
+//           (a, b) =>
+//             new Date(b.createdAt)?.getTime() - new Date(a.createdAt)?.getTime()
+//         )
+//         break
+//       default:
+//         break
+//     }
+//     return sorted
+//   }, [products, sortOption])
+
+//   // Lazy load more products when scrolled to bottom
+//   useEffect(() => {
+//     if (
+//       inView &&
+//       !loading &&
+//       currentPage * productsPerPage < sortedProducts?.length
+//     ) {
+//       setCurrentPage((prev) => prev + 1)
+//     }
+//   }, [inView, loading, currentPage, productsPerPage, sortedProducts?.length])
+
+//   // Paginated products
+//   const currentProducts = useMemo(() => {
+//     return sortedProducts.slice(0, currentPage * productsPerPage)
+//   }, [sortedProducts, currentPage, productsPerPage])
+
+//   const handleSortChange = (value: string) => {
+//     setSortOption(value)
+//     setCurrentPage(1)
+//   }
+
+//   return (
+//     <div className="container mx-auto px-4 sm:px-10 py-8">
+//       {/* Hero Banner */}
+//       <ProductsHeroBanner />
+
+//       {/* Filter and Sort Controls */}
+//       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+//         <div className="w-full">
+//           <PaginationButtons />
+//         </div>
+//         <div className="w-full md:w-auto">
+//           <Select onValueChange={handleSortChange} value={sortOption}>
+//             <SelectTrigger className="w-full md:w-48 bg-background">
+//               <SelectValue placeholder="Sort By" />
+//             </SelectTrigger>
+//             <SelectContent>
+//               <SelectGroup>
+//                 <SelectItem value="popularity">Popularity</SelectItem>
+//                 <SelectItem value="price-low">Price: Low to High</SelectItem>
+//                 <SelectItem value="price-high">Price: High to Low</SelectItem>
+//                 <SelectItem value="newest">Newest Arrivals</SelectItem>
+//               </SelectGroup>
+//             </SelectContent>
+//           </Select>
+//         </div>
+//       </div>
+
+//       {/* Products Grid */}
+//       {loading ? (
+//         <ProductsSkeleton />
+//       ) : (
+//         <>
+//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+//             {currentProducts?.map((product) => (
+//               <ProductCard key={product.id} data={product} />
+//             ))}
+//           </div>
+
+//           {/* Lazy Load Trigger */}
+//           <div ref={ref} className="h-10 w-full my-4" />
+
+//           {/* Pagination Controls */}
+//           {currentPage * productsPerPage < sortedProducts?.length && (
+//             <div className="flex justify-center mt-8">
+//               <Button
+//                 variant="outline"
+//                 onClick={() => setCurrentPage((prev) => prev + 1)}
+//                 className="gap-2"
+//               >
+//                 Load More
+//                 <ChevronRight className="h-4 w-4" />
+//               </Button>
+//             </div>
+//           )}
+//         </>
+//       )}
+//     </div>
+//   )
+// }
+
+// export default Products

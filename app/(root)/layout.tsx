@@ -6,6 +6,7 @@ import { auth } from "@/auth"
 import { SessionProvider } from "next-auth/react"
 import "../globals.css"
 import { Toaster } from "react-hot-toast"
+import { Toaster as Sonner } from "@/components/ui/sonner"
 import { BalanceProvider } from "@/context/BalanceContext"
 import { Providers } from "@/components/Providers"
 
@@ -57,27 +58,12 @@ export default async function RootLayout({
             <main className="flex-1">{children}</main>
             {/* Toaster Notifications */}
             <Toaster position="bottom-right" />
+            <Sonner position="bottom-right" />
             {/* Footer */}
             <Footer />
           </BalanceProvider>
         </body>
       </SessionProvider>
     </html>
-    // <html lang="en" className={`${jost.variable} `}>
-    //   <body className="min-h-screen flex flex-col">
-    //     <Providers session={session}>
-    //       {/* Sticky Navbar */}
-    //       <header className="sticky top-0 z-50 bg-white w-full shadow-sm border-b">
-    //         <Navbar />
-    //       </header>
-    //       {/* Main Content */}
-    //       <main className="flex-1">{children}</main>
-    //       {/* Toaster Notifications */}
-    //       <Toaster position="bottom-right" />
-    //       {/* Footer */}
-    //       <Footer />
-    //     </Providers>
-    //   </body>
-    // </html>
   )
 }

@@ -65,7 +65,7 @@ export function WhatsappOptIn() {
                     id="whatsapp-opt-in"
                     checked={field.value}
                     onCheckedChange={field.onChange}
-                    className="mt-1 h-5 w-5 rounded border-gray-300 text-primary focus:ring-primary"
+                    className="mt-1 h-5 w-5 rounded border-black border-2 text-primary focus:ring-primary"
                   />
                 </FormControl>
                 <div className="space-y-1">
