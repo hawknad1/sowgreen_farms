@@ -316,10 +316,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Product } from "@/types"
+import { Category, Product } from "@/types"
 import { useRouter } from "next/navigation"
 import { units } from "@/constants"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { EditProductAdminSchema } from "@/schemas"
 
 interface ProductProps {
@@ -327,13 +327,15 @@ interface ProductProps {
 }
 
 const EditProductForm = ({ product }: ProductProps) => {
-  const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [categories, setCategories] = useState<Category[]>([])
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof EditProductAdminSchema>>({
     resolver: zodResolver(EditProductAdminSchema),
     defaultValues: {
       title: product.title,
+      categoryName: product.categoryName,
       description: product.description,
       discount: product.discount,
       isInStock: product.isInStock,
@@ -350,6 +352,25 @@ const EditProductForm = ({ product }: ProductProps) => {
     control: form.control,
     name: "variants",
   })
+
+  // Fetch categories only once when the component mounts
+  useEffect(() => {
+    async function getCategories() {
+      try {
+        const res = await fetch("/api/categories", {
+          cache: "no-store",
+          method: "GET",
+        })
+        if (res.ok) {
+          const categories = await res.json()
+          setCategories(categories)
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error)
+      }
+    }
+    getCategories()
+  }, [])
 
   const updateProduct = async (
     values: z.infer<typeof EditProductAdminSchema>
@@ -391,19 +412,78 @@ const EditProductForm = ({ product }: ProductProps) => {
       >
         {/* Top Section */}
         <div className="grid grid-cols-1 gap-y-4">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem className="md:col-span-2 lg:col-span-4">
-                <FormLabel>Product Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Product name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          <div className="flex w-full space-x-3">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem className="md:col-span-2 lg:col-span-4 w-full">
+                  <FormLabel>Product Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Product name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* <FormField
+              control={form.control}
+              name="categoryName"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Category</FormLabel>
+                  <Select
+                    // onValueChange={field.onChange}
+                    onValueChange={(value) => {
+                      field.onChange(value)
+                      // When out of stock is selected, set quantity to 0
+                      if (value === "out-of-stock") {
+                        form.setValue("quantity", 0)
+                      }
+                    }}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="">
+                      <SelectValue placeholder="Stock" className="" />
+                    </SelectTrigger>
+                    <SelectContent className="">
+                      <SelectItem value="in-stock">In Stock</SelectItem>
+                      <SelectItem value="out-of-stock">Out Of Stock</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            /> */}
+
+            <FormField
+              control={form.control}
+              name="categoryName"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormLabel>Category</FormLabel>
+                  <Select
+                    onValueChange={(value) => field.onChange(value)}
+                    defaultValue={field.value}
+                  >
+                    <SelectTrigger className="mt-2 mb-3">
+                      <SelectValue placeholder="Select Category" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Category</SelectLabel>
+                        {categories.map((cat) => (
+                          <SelectItem key={cat.id} value={cat.categoryName}>
+                            {cat.categoryName}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
+              )}
+            />
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 w-full gap-2.5">
             <FormField

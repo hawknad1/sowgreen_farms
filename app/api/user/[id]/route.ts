@@ -1,3 +1,4 @@
+import { auth } from "@/auth"
 import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
 
@@ -8,6 +9,29 @@ export async function GET(
   const userEmail = params.id
 
   try {
+    const session = await auth()
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        email: session?.user?.email,
+      },
+    })
+
+    if (existingUser?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+
     // Check if the user exists
     const user = await prisma.user.findUnique({
       where: {

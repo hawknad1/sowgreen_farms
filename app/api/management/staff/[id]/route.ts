@@ -1,3 +1,4 @@
+import { auth } from "@/auth"
 import prisma from "@/lib/prismadb"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -5,8 +6,28 @@ export async function PUT(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id
   try {
+    const session = await auth()
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (user?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+    const id = params.id
     const { fullName, jobTitle, email, role, phone } = await req.json()
 
     if (!fullName || !jobTitle || !phone || !role) {
@@ -35,8 +56,28 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params
   try {
+    const session = await auth()
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (user?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+    const { id } = params
     const deleteStaff = await prisma.staff.delete({
       where: {
         id,

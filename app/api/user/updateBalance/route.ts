@@ -1,10 +1,32 @@
+import { auth } from "@/auth"
 import prisma from "@/lib/prismadb"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await auth()
     const body = await req.json() // Make sure to await this line
     const { userId, newBalance } = body
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const existingUser = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (existingUser?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
 
     if (!userId || newBalance === undefined) {
       return NextResponse.json(

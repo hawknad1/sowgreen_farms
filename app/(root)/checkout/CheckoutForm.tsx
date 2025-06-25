@@ -386,8 +386,17 @@ import OrderSummary from "./OrderSummary"
 import { CitiesWithFees } from "@/types"
 import { WhatsappOptIn } from "./WhatsAppOptIn"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Loader2 } from "lucide-react"
+import { ChevronDown, Loader2 } from "lucide-react"
 import { motion } from "framer-motion"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface ExtendedUser {
   email: string
@@ -669,7 +678,7 @@ export function CheckoutForm() {
                         )}
                       />
 
-                      <FormField
+                      {/* <FormField
                         control={form.control}
                         name="city"
                         render={({ field }) => (
@@ -701,6 +710,54 @@ export function CheckoutForm() {
                                 </SelectGroup>
                               </SelectContent>
                             </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      /> */}
+
+                      <FormField
+                        control={form.control}
+                        name="city"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>City</FormLabel>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  className="w-full justify-between focus-visible:ring-primary"
+                                  disabled={!selectedRegion}
+                                >
+                                  {field.value || "Select city"}
+                                  <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent className="max-h-[250px] w-[290px] sm:w-[300px] md:w-[330px] lg:w-[360px] overflow-y-auto">
+                                <DropdownMenuGroup>
+                                  <DropdownMenuLabel>Cities</DropdownMenuLabel>
+                                  {filteredCities.length > 0 ? (
+                                    filteredCities.map((city) => (
+                                      <DropdownMenuItem
+                                        key={city.id}
+                                        onSelect={() => {
+                                          field.onChange(city.city)
+                                          setSelectedCity(city.city)
+                                        }}
+                                        className="focus:bg-primary/10"
+                                      >
+                                        {city.city}
+                                      </DropdownMenuItem>
+                                    ))
+                                  ) : (
+                                    <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                                      {selectedRegion
+                                        ? "No cities found"
+                                        : "Select a region first"}
+                                    </div>
+                                  )}
+                                </DropdownMenuGroup>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                             <FormMessage />
                           </FormItem>
                         )}

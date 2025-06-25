@@ -33,6 +33,27 @@ export const dynamic = "force-dynamic"
 
 export async function GET(req: Request) {
   try {
+    const session = await auth()
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (user?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+
     const users = await prisma.user.findMany({
       select: {
         id: true,

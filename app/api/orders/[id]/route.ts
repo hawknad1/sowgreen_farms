@@ -1,3 +1,4 @@
+import { auth } from "@/auth"
 import prisma from "@/lib/prismadb"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -32,9 +33,30 @@ export async function DELETE(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  const { id } = params
-
   try {
+    const session = await auth()
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (user?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+
+    const { id } = params
+
     const deletedOrder = await prisma.order.delete({
       where: { id },
     })
@@ -82,38 +104,58 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const {
-    status,
-    dispatchRider,
-    paymentAction,
-    last4Digits,
-    cardType,
-    paymentMode,
-    deliveryDate,
-    deliveryMethod,
-    whatsappOptIn,
-    deliveryFee,
-    subtotal,
-    shippingAddress,
-    referenceNumber,
-    balanceDeducted,
-    updatedBalance,
-    balanceApplied,
-    creditAppliedTotal,
-    updatedOrderTotal,
-    address,
-    city,
-    region,
-    phone,
-    email,
-    products, // Allow products to be undefined to signify no change
-  } = await req.json()
-
-  const orderId = params.id
-
-  const whatsappOptInBool = Boolean(whatsappOptIn)
-
   try {
+    const session = await auth()
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (user?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+    const {
+      status,
+      dispatchRider,
+      paymentAction,
+      last4Digits,
+      cardType,
+      paymentMode,
+      deliveryDate,
+      deliveryMethod,
+      whatsappOptIn,
+      deliveryFee,
+      subtotal,
+      shippingAddress,
+      referenceNumber,
+      balanceDeducted,
+      updatedBalance,
+      balanceApplied,
+      creditAppliedTotal,
+      updatedOrderTotal,
+      address,
+      city,
+      region,
+      phone,
+      email,
+      products, // Allow products to be undefined to signify no change
+    } = await req.json()
+
+    const orderId = params.id
+
+    const whatsappOptInBool = Boolean(whatsappOptIn)
+
     // Fetch the existing order with related products
     const existingOrder = await prisma.order.findUnique({
       where: { id: orderId },

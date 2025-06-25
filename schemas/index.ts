@@ -201,6 +201,7 @@ export const PaymentActionSchema = z.object({
 export const EditProductAdminSchema = z.object({
   description: z.string(),
   title: z.string(),
+  categoryName: z.string(),
   discount: z.coerce.number().optional(),
   quantity: z.coerce.number().min(0), // Allow 0 or positive numbers
   isInStock: z.string().optional(),

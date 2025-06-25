@@ -4,6 +4,7 @@ import { truncate } from "@/lib/formatters"
 import { getTemplateMapFromBase64 } from "@/lib/twilio/template"
 import { prepareOrderDetails } from "@/lib/twilio/prepareOrderDetails"
 import prisma from "@/lib/prismadb"
+import { auth } from "@/auth"
 
 interface Staff {
   fullName: string
@@ -85,6 +86,30 @@ interface TwilioConversationsMessageCreateOptions {
 
 export async function POST(request: NextRequest) {
   try {
+    const session = await auth()
+
+    if (!session) {
+      return NextResponse.json(
+        {
+          error: "Unauthorized - You must log in!",
+        },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (user?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+
     // Read configuration from environment variables
     const targetConversationSid =
       process.env.NEXT_PUBLIC_TWILIO_CONVERSATIONS_SID_SOWGREEN_FARMS

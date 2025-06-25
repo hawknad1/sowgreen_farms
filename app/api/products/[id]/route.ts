@@ -1,3 +1,4 @@
+import { auth } from "@/auth"
 import prisma from "@/lib/prismadb"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -124,8 +125,30 @@ export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id
   try {
+    const session = await auth()
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (user?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+
+    const id = params.id
+
     const deletedProduct = await prisma.product.delete({
       where: { id },
     })
@@ -143,22 +166,44 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const {
-    title,
-    description,
-    imageUrl,
-    images,
-    unit,
-    categoryName,
-    quantity,
-    discount,
-    isInStock,
-    variants,
-  } = await req.json()
-
-  const id = params.id
-
   try {
+    const session = await auth()
+
+    if (!session) {
+      return NextResponse.json(
+        { error: "Unauthorized - You must be logged in" },
+        { status: 401 }
+      )
+    }
+
+    // 2. Check user role (if you have admin/users distinction)
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email },
+    })
+
+    if (user?.role !== "admin") {
+      // Add this if you want admin-only access
+      return NextResponse.json(
+        { error: "Forbidden - You don't have permission" },
+        { status: 403 }
+      )
+    }
+
+    const {
+      title,
+      description,
+      imageUrl,
+      images,
+      unit,
+      categoryName,
+      quantity,
+      discount,
+      isInStock,
+      variants,
+    } = await req.json()
+
+    const id = params.id
+
     const updatedProduct = await prisma.$transaction(async (prisma) => {
       // Build update data dynamically
       const data: any = {}
