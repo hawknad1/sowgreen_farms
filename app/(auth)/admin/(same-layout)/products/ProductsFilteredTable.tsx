@@ -32,15 +32,20 @@ import {
 
 import { Product } from "@/types"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
-import AddProduct from "../AddProduct"
-import { columns } from "../columns"
+import { columns } from "@/app/(auth)/admin/(same-layout)/products/columns"
+import AddProduct from "./AddProduct"
 
 interface OrdersProps {
   loading: boolean
-  product: Product[]
+  products: Product[] // Changed from product to products
+  category?: string // Add category prop
 }
 
-const VegetableDataTable = ({ product, loading }: OrdersProps) => {
+const ProductsFilteredTable = ({
+  products,
+  loading,
+  category,
+}: OrdersProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -51,14 +56,14 @@ const VegetableDataTable = ({ product, loading }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
-  // Filter orders to only include those with status "confirmed"
-  const vegetableCategory = React.useMemo(
-    () => product.filter((o) => o.categoryName === "Vegetables"),
-    [product]
-  )
+  // Filter products based on the selected category
+  const filteredProducts = React.useMemo(() => {
+    if (!category) return products // If no category selected, show all products
+    return products.filter((product) => product.categoryName === category)
+  }, [products, category])
 
   const table = useReactTable({
-    data: vegetableCategory, // Use the filtered data here
+    data: filteredProducts, // Use the filtered data here
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -78,7 +83,7 @@ const VegetableDataTable = ({ product, loading }: OrdersProps) => {
 
   return (
     <div className="w-full p-4">
-      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">
+      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white ">
         <Input
           placeholder="Filter products..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
@@ -110,7 +115,7 @@ const VegetableDataTable = ({ product, loading }: OrdersProps) => {
               ))}
           </DropdownMenuContent>
         </DropdownMenu>
-        <AddProduct />
+        {/* <AddProduct /> */}
         {/* <Export /> */}
       </div>
       <div className="rounded-md border">
@@ -195,4 +200,4 @@ const VegetableDataTable = ({ product, loading }: OrdersProps) => {
   )
 }
 
-export default VegetableDataTable
+export default ProductsFilteredTable

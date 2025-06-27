@@ -31,15 +31,6 @@ import {
 type StaffFormValues = z.infer<typeof StaffSchema>
 
 const StaffForm = () => {
-  // const [staff, setStaff] = useState<
-  //   {
-  //     fullName: string
-  //     jobTitle: string
-  //     phone: string
-  //     role: string
-  //     email: string
-  //   }[]
-  // >([])
   const [isSaving, setIsSaving] = useState(false)
 
   const sowgreenFarm_Con_Sid =

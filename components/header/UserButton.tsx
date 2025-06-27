@@ -130,14 +130,17 @@ const UserButton = ({ user }: { user: UserProps }) => {
   return (
     <div className="relative">
       <DropdownMenu>
-        <DropdownMenuTrigger className="outline-none" aria-label="User menu">
+        <DropdownMenuTrigger
+          className="outline-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          aria-label="User menu"
+        >
           {isLoading ? (
             <Skeleton className="h-10 w-10 rounded-full" />
           ) : (
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Avatar className="h-10 w-10 rounded-full border-2 border-white shadow-sm hover:border-primary transition-all">
+              <Avatar className="h-10 w-10 rounded-full border-2  border-white shadow-sm hover:ring-0 outline-none focus-visible:ring-0 focus-visible:ring-offset-0 hover:border-primary transition-all">
                 <AvatarImage src={user?.image} alt={user?.name || "User"} />
-                <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium">
+                <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white font-medium outline-none focus-visible:ring-0 focus-visible:ring-offset-0">
                   {initials}
                 </AvatarFallback>
               </Avatar>

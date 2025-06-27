@@ -8,6 +8,7 @@ const SignUpButton = () => {
     <div>
       <Button
         onClick={() => router.push("/sign-up")}
+        variant="sowgreen"
         className="rounded-full px-6"
       >
         Sign Up

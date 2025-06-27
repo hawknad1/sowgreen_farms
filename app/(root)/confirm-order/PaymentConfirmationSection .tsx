@@ -41,12 +41,6 @@ const PaymentConfirmationSection = ({
 }: PaymentConfirmationSectionProps) => {
   const { user } = useUserStore()
 
-  console.log(balance, "balance")
-  console.log(deductedBalance, "deductedBalance")
-  console.log(remainingAmount, "remainingAmount")
-  console.log(formattedTotal, "formattedTotal")
-  console.log(total, "total")
-
   return (
     <>
       <div className="bg-blue-50/50 p-4 sm:p-6 rounded-lg border border-blue-100 mb-6">
@@ -61,7 +55,7 @@ const PaymentConfirmationSection = ({
             <span className="font-medium">{formattedDelivery}</span>
           </div>
 
-          <div className="flex justify-between items-center font-semibold">
+          {/* <div className="flex justify-between items-center font-semibold">
             <span
               className={`${
                 balance >= 0 ? "text-emerald-500" : "text-red-500"
@@ -74,6 +68,16 @@ const PaymentConfirmationSection = ({
                 balance >= 0 ? "text-emerald-500" : "text-red-500"
               }`}
             >
+              {formatCurrency(balance, "GHS")}
+            </span>
+          </div> */}
+          <div
+            className={`flex justify-between ${
+              balance < 0 ? " text-red-600" : " text-green-600"
+            }`}
+          >
+            <span>{balance < 0 ? "Balance Due" : "Credit Balance"}</span>
+            <span className="font-medium">
               {formatCurrency(balance, "GHS")}
             </span>
           </div>

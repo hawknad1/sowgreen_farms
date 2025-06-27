@@ -218,25 +218,25 @@ const Searchbar = ({ onClose }: { onClose?: () => void }) => {
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => searchQuery.trim() && setShowDropdown(true)}
             placeholder="Search products..."
-            className="w-full pl-5 pr-12 py-3 bg-white border border-gray-300 rounded-full text-base"
+            className="w-full pl-4 pr-10 py-2 bg-white border border-gray-300 rounded-full text-sm focus:ring-0 outline-none "
             aria-label="Search products"
           />
           {searchQuery ? (
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-12 p-1.5 text-gray-400 hover:text-gray-600"
+              className="absolute right-8 p-1 text-gray-400 hover:text-gray-600"
               aria-label="Clear search"
             >
-              <XMarkIcon className="h-5 w-5" />
+              <XMarkIcon className="h-4 w-4" />
             </button>
           ) : null}
           <button
             type="submit"
-            className="absolute right-2 p-2 bg-sowgren_Color rounded-full text-white hover:bg-primary/90 transition-colors"
+            className="absolute right-1 p-1.5 text-sowgren_Color hover:text-primary/90 transition-colors"
             aria-label="Submit search"
           >
-            <MagnifyingGlassIcon className="h-5 w-5" />
+            <MagnifyingGlassIcon className="h-4 w-4" />
           </button>
         </div>
       </form>
@@ -286,6 +286,49 @@ const Searchbar = ({ onClose }: { onClose?: () => void }) => {
       )}
     </div>
   )
+
+  // return (
+  //   <div className="relative w-full max-w-[400px]" ref={dropdownRef}>
+  //     <form onSubmit={handleSubmit}>
+  //       <div className="relative flex items-center w-full">
+  //         <input
+  //           ref={inputRef}
+  //           type="text"
+  //           value={searchQuery}
+  //           onChange={(e) => setSearchQuery(e.target.value)}
+  //           onFocus={() => searchQuery.trim() && setShowDropdown(true)}
+  //           placeholder="Search..."
+  //           className="w-full pl-4 pr-10 py-2 bg-white border border-gray-300 rounded-full text-sm focus:ring-2 focus:ring-sowgren_Color focus:border-transparent"
+  //           aria-label="Search products"
+  //         />
+  // {searchQuery ? (
+  //   <button
+  //     type="button"
+  //     onClick={handleClear}
+  //     className="absolute right-8 p-1 text-gray-400 hover:text-gray-600"
+  //     aria-label="Clear search"
+  //   >
+  //     <XMarkIcon className="h-4 w-4" />
+  //   </button>
+  // ) : null}
+  //         <button
+  //           type="submit"
+  //           className="absolute right-1 p-1.5 text-sowgren_Color hover:text-primary/90 transition-colors"
+  //           aria-label="Submit search"
+  //         >
+  //           <MagnifyingGlassIcon className="h-4 w-4" />
+  //         </button>
+  //       </div>
+  //     </form>
+
+  //     {/* Dropdown content remains the same */}
+  //     {showDropdown && (
+  //       <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+  //         {/* ... existing dropdown content ... */}
+  //       </div>
+  //     )}
+  //   </div>
+  // )
 }
 
 export default Searchbar

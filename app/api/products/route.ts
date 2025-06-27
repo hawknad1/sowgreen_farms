@@ -313,6 +313,7 @@ export async function GET(req: NextRequest) {
       const products = await prisma.product.findMany({
         include: {
           variants: true,
+          partner: true,
         },
       })
       return NextResponse.json(products, { status: 200 })

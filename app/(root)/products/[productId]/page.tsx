@@ -503,10 +503,7 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
           {/* Main Image */}
           <div className="relative aspect-square w-full rounded-xl bg-gray-50 overflow-hidden mb-3 shadow-sm">
             <Image
-              src={
-                product?.images[selectedImageIndex]?.url ||
-                "/placeholder-product.jpg"
-              }
+              src={product?.images[selectedImageIndex]?.url}
               alt={product.title}
               fill
               priority

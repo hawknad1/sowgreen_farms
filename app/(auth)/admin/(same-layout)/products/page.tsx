@@ -27,7 +27,7 @@ const AdminProducts = () => {
   }, [])
 
   return (
-    <div className="h-screen overflow-scroll scrollbar-hide">
+    <div className="h-screen">
       <ProductDataTable products={products} loading={loading} />
     </div>
   )

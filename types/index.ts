@@ -1,3 +1,5 @@
+import { PartnerType } from "@/app/(auth)/admin/(same-layout)/management/partners/PartnerForm"
+
 export type Category = {
   id: string
   categoryName: string
@@ -125,6 +127,7 @@ export type Product = {
   updatedAt: string
   variants: Variant[]
   rating?: number // Added as optional since it's used in sorting
+  partner?: PartnerType | null // Match Prisma model
 }
 
 export type Variant = {

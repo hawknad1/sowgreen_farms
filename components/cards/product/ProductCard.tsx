@@ -1,6 +1,7 @@
 // "use client"
+
 // import Image from "next/image"
-// import React, { useState } from "react"
+// import React, { useState, useEffect } from "react"
 // import { StarIcon } from "@heroicons/react/16/solid"
 // import { useRouter } from "next/navigation"
 // import { Product } from "@/types"
@@ -9,7 +10,7 @@
 // import { formatWeight } from "@/lib/formatWeight"
 // import { Plus, Heart } from "lucide-react"
 // import Link from "next/link"
-// import { useCartStore } from "@/store"
+// import { useCartStore, useWishlistStore } from "@/store"
 // import { Skeleton } from "@/components/ui/skeleton"
 // import {
 //   Tooltip,
@@ -17,6 +18,7 @@
 //   TooltipProvider,
 //   TooltipTrigger,
 // } from "@/components/ui/tooltip"
+// import { toast } from "sonner"
 
 // interface ProductCardProps {
 //   data: Product
@@ -26,14 +28,45 @@
 // const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
 //   const router = useRouter()
 //   const { addToCart } = useCartStore()
+
 //   const [isHovered, setIsHovered] = useState(false)
-//   const [isWishlisted, setIsWishlisted] = useState(false)
 //   const [imageLoading, setImageLoading] = useState(true)
+//   const [isWishlisted, setIsWishlisted] = useState(false)
+//   const [isClient, setIsClient] = useState(false)
+//   const { addToWishlist, removeFromWishlist, isInWishlist, isLoading } =
+//     useWishlistStore()
+
+//   useEffect(() => {
+//     setIsClient(true)
+//     setIsWishlisted(isInWishlist(data.id))
+//   }, [isInWishlist, data.id])
+
+//   const toggleWishlist = async (e: React.MouseEvent) => {
+//     e.preventDefault()
+//     e.stopPropagation()
+
+//     if (isLoading) return
+
+//     try {
+//       if (isWishlisted) {
+//         await removeFromWishlist(data.id)
+//         toast.success("Removed from wishlist")
+//       } else {
+//         await addToWishlist(data)
+//         toast.success("Added to wishlist")
+//       }
+//       setIsWishlisted(!isWishlisted)
+//     } catch (error) {
+//       toast.error("Failed to update wishlist")
+//     }
+//   }
+
+//   if (!isClient) return null
 
 //   if (loading) {
 //     return (
-//       <div className="w-full max-w-xs mx-auto bg-white rounded-lg shadow-md overflow-hidden">
-//         <Skeleton className="w-full h-48 rounded-t-lg" />
+//       <div className="w-full max-w-xs mx-auto bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 hover:shadow-md transition-shadow">
+//         <Skeleton className="w-full aspect-square rounded-t-lg" />
 //         <div className="p-4 space-y-3">
 //           <Skeleton className="h-4 w-3/4" />
 //           <Skeleton className="h-3 w-1/2" />
@@ -61,6 +94,9 @@
 //   const primaryImage = data?.imageUrl || data.images?.[0]?.url
 //   const secondaryImage = data?.images?.length > 1 ? data.images[1]?.url : null
 //   const hasDiscount = discount && data?.variants[0]?.discountedPrice
+//   const partnerName = data?.partner?.brand || data?.partner?.owner || ""
+
+//   console.log(partnerName, "partnerName")
 
 //   const renderStars = (rating: number) => {
 //     return [...Array(5)].map((_, i) => (
@@ -86,15 +122,10 @@
 //         product: data,
 //         quantity: 1,
 //       })
+//       toast.success("Added to cart")
 //     } else {
 //       router.push(`/products/${data.id}`)
 //     }
-//   }
-
-//   const toggleWishlist = (e: React.MouseEvent) => {
-//     e.preventDefault()
-//     e.stopPropagation()
-//     setIsWishlisted(!isWishlisted)
 //   }
 
 //   return (
@@ -108,35 +139,44 @@
 //         {/* Badges - Top Left */}
 //         <div className="absolute top-2 left-2 z-20 flex flex-col space-y-1">
 //           {isOutOfStock ? (
-//             <Badge className="bg-gray-500/90 text-white rounded-md px-2 py-1 text-xs">
+//             <Badge variant="outline" className="bg-gray-100 text-gray-800">
 //               Out of stock
 //             </Badge>
 //           ) : discount ? (
-//             <Badge className="bg-red-500/90 text-white rounded-md px-2 py-1 text-xs">
-//               {discount}% OFF
-//             </Badge>
+//             <Badge className="bg-red-500 text-white">{discount}% OFF</Badge>
 //           ) : null}
 //         </div>
 
 //         {/* Wishlist Button - Top Right */}
-//         <button
-//           onClick={toggleWishlist}
-//           className="absolute top-2 right-2 z-20 p-2 rounded-full bg-white/80 backdrop-blur-sm shadow-sm hover:bg-white transition-colors"
-//           aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-//         >
-//           <Heart
-//             className={`w-4 h-4 ${
-//               isWishlisted ? "fill-red-500 text-red-500" : "text-gray-600"
-//             }`}
-//           />
-//         </button>
+//         <Tooltip>
+//           <TooltipTrigger asChild>
+//             <button
+//               onClick={toggleWishlist}
+//               className="absolute top-2 right-2 z-20 p-2 rounded-full bg-white/90 backdrop-blur-sm shadow-sm hover:bg-white transition-all hover:scale-110"
+//               aria-label={
+//                 isWishlisted ? "Remove from wishlist" : "Add to wishlist"
+//               }
+//             >
+//               <Heart
+//                 className={`w-4 h-4 transition-colors ${
+//                   isWishlisted
+//                     ? "fill-red-500 text-red-500"
+//                     : "text-gray-600 hover:text-red-500"
+//                 }`}
+//               />
+//             </button>
+//           </TooltipTrigger>
+//           <TooltipContent side="left">
+//             <p>{isWishlisted ? "Remove from wishlist" : "Add to wishlist"}</p>
+//           </TooltipContent>
+//         </Tooltip>
 
 //         {/* Product Card Container */}
-//         <div className="bg-white w-full h-full rounded-lg flex flex-col p-3 border border-gray-100 hover:shadow-md transition-all duration-300">
-//           {/* Image Section - Fixed Aspect Ratio */}
+//         <div className="bg-white w-full h-full rounded-lg flex flex-col p-3 border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden">
+//           {/* Image Section */}
 //           <div className="w-full aspect-square relative bg-gray-50 rounded-lg overflow-hidden mb-3">
 //             {imageLoading && (
-//               <div className="absolute inset-0 bg-gray-200 animate-pulse" />
+//               <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 animate-pulse" />
 //             )}
 //             <Image
 //               src={primaryImage}
@@ -147,6 +187,7 @@
 //               } ${data?.images?.length > 1 ? "group-hover:opacity-0" : ""}`}
 //               onLoad={() => setImageLoading(false)}
 //               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+//               priority={false}
 //             />
 
 //             {secondaryImage && (
@@ -158,27 +199,27 @@
 //                   isHovered ? "opacity-100" : "opacity-0"
 //                 }`}
 //                 sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+//                 priority={false}
 //               />
 //             )}
 //           </div>
 
-//           {/* Product Details Section - Fixed Height */}
-//           <div className="flex flex-col flex-grow min-h-[60px] max-h-[70px]">
-//             <h3
-//               className="font-medium text-gray-900 line-clamp-1 text-sm md:text-base mb-1"
-//               title={data?.title}
-//             >
+//           {/* Product Details Section */}
+//           <div className="flex flex-col flex-grow">
+//             <h3 className="font-medium text-gray-900 line-clamp-2 text-sm min-h-[40px] mb-1">
 //               {data?.title}
+//               <br />
+//               <span className="">{data?.partner?.brand}</span>
 //             </h3>
 
-//             <p className="text-xs text-blue-400 font-normal capitalize mb-2">
+//             <p className="text-xs text-blue-500 font-medium capitalize mb-2">
 //               {data?.categoryName}
 //             </p>
 
 //             <div className="flex justify-between items-center mt-auto">
 //               {data?.variants[0]?.weight > 0 && (
-//                 <div className="flex items-center text-gray-500">
-//                   <p className="text-xs tracking-wide">
+//                 <div className="flex items-center">
+//                   <p className="text-xs text-gray-500">
 //                     {formatWeight(data?.variants[0]?.weight)}
 //                     {data?.variants[0]?.unit || ""}
 //                   </p>
@@ -191,7 +232,7 @@
 //             </div>
 //           </div>
 
-//           {/* Price Section - Consistent Height */}
+//           {/* Price Section */}
 //           <div className="mt-3">
 //             <div className="flex justify-between items-center">
 //               <div className="flex flex-col">
@@ -217,7 +258,7 @@
 //                     className={`rounded-full p-2 text-white flex justify-center items-center transition-all ${
 //                       isOutOfStock
 //                         ? "bg-gray-400 cursor-not-allowed"
-//                         : "bg-green-700 hover:bg-green-800 group-hover:scale-110"
+//                         : "bg-green-600 hover:bg-green-700 group-hover:scale-110"
 //                     }`}
 //                     aria-label="Add to cart"
 //                     onClick={handleAddToCartClick}
@@ -333,9 +374,14 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
   const firstVariant = variants[0] || null
   const discount = data.isInStock === "out-of-stock" ? null : data.discount
   const isOutOfStock = data.isInStock === "out-of-stock"
-  const primaryImage = data?.imageUrl || data.images?.[0]?.url
+  const primaryImage =
+    data?.imageUrl || (data.images?.length ? data.images[0]?.url : "")
   const secondaryImage = data?.images?.length > 1 ? data.images[1]?.url : null
-  const hasDiscount = discount && data?.variants[0]?.discountedPrice
+  const hasDiscount = discount && firstVariant?.discountedPrice
+  const partnerName = data?.partner?.brand || data?.partner?.owner || ""
+
+  // Debug log to check the partnerName value
+  console.log("partnerName:", partnerName)
 
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
@@ -411,7 +457,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
         </Tooltip>
 
         {/* Product Card Container */}
-        <div className="bg-white w-full h-full rounded-lg flex flex-col p-3 border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden">
+        <div className="bg-white w-full h-full rounded-lg flex flex-col p-3 border border-gray-100 hover:shadow-md transition-all duration-300 overflow-hidden group-hover:border-gray-200">
           {/* Image Section */}
           <div className="w-full aspect-square relative bg-gray-50 rounded-lg overflow-hidden mb-3">
             {imageLoading && (
@@ -445,7 +491,32 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
 
           {/* Product Details Section */}
           <div className="flex flex-col flex-grow">
-            <h3 className="font-medium text-gray-900 line-clamp-2 text-sm min-h-[40px] mb-1">
+            {/* <div className="min-h-[40px]">
+              <h3 className="font-medium text-gray-900  line-clamp-2 text-sm lg:text-base  mb-1">
+                {data?.title}
+              </h3>
+              {partnerName && (
+                <div className=" flex items-center">
+                  <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+                    {partnerName}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <p className="text-xs text-blue-500 font-medium capitalize mb-2">
+              {data?.categoryName}
+            </p> */}
+            {/* Partner/Producer Info - Now with better visibility */}
+            {partnerName && (
+              <div className="mb-1 flex items-center">
+                <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+                  {partnerName}
+                </span>
+              </div>
+            )}
+
+            <h3 className="font-medium text-gray-900 line-clamp-2 text-sm lg:text-base min-h-[40px] mb-1">
               {data?.title}
             </h3>
 
@@ -454,11 +525,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
             </p>
 
             <div className="flex justify-between items-center mt-auto">
-              {data?.variants[0]?.weight > 0 && (
+              {firstVariant?.weight > 0 && (
                 <div className="flex items-center">
                   <p className="text-xs text-gray-500">
-                    {formatWeight(data?.variants[0]?.weight)}
-                    {data?.variants[0]?.unit || ""}
+                    {formatWeight(firstVariant?.weight)}
+                    {firstVariant?.unit || ""}
                   </p>
                 </div>
               )}
@@ -476,15 +547,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
                 {hasDiscount ? (
                   <>
                     <span className="text-lg font-bold text-gray-900">
-                      {formatCurrency(data.variants[0].discountedPrice, "GHS")}
+                      {formatCurrency(firstVariant.discountedPrice, "GHS")}
                     </span>
                     <span className="text-xs text-gray-400 font-medium line-through">
-                      {formatCurrency(data.variants[0].price, "GHS")}
+                      {formatCurrency(firstVariant.price, "GHS")}
                     </span>
                   </>
                 ) : (
                   <span className="text-lg font-bold text-gray-900">
-                    {formatCurrency(data?.variants[0]?.price, "GHS")}
+                    {formatCurrency(firstVariant?.price, "GHS")}
                   </span>
                 )}
               </div>

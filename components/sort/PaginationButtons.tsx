@@ -11,6 +11,15 @@ import {
 import { getCategories } from "@/lib/utils"
 import { useCategoryState } from "@/hooks/state"
 import { Product } from "@/types"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu"
+import { Button } from "../ui/button"
+import { ChevronDown } from "lucide-react"
 
 const PaginationButtons = () => {
   const [categories, setCategories] = useState<Product[]>([])
@@ -34,8 +43,9 @@ const PaginationButtons = () => {
       {/* Category and Discount Dropdowns */}
       <div className="flex lg:flex-row items-center gap-4 w-full lg:w-auto">
         {/* Categories Dropdown */}
+
         <div className="w-full lg:w-[200px]">
-          <Select onValueChange={handleCategoryChange} value={selected}>
+          {/* <Select onValueChange={handleCategoryChange} value={selected}>
             <SelectTrigger className="w-full bg-[#184532] rounded-lg px-4 font-medium text-white">
               <SelectValue placeholder="All Categories" />
             </SelectTrigger>
@@ -49,7 +59,37 @@ const PaginationButtons = () => {
                 ))}
               </SelectGroup>
             </SelectContent>
-          </Select>
+          </Select> */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="w-full justify-between bg-[#184532] text-white focus-visible:ring-primary"
+              >
+                {selected || "All Categories"}
+                <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="max-h-[250px] w-full overflow-y-auto">
+              <DropdownMenuGroup>
+                <DropdownMenuItem
+                  onSelect={() => handleCategoryChange("All Category")}
+                  className="focus:bg-primary/10"
+                >
+                  All Categories
+                </DropdownMenuItem>
+                {categories?.map((cat) => (
+                  <DropdownMenuItem
+                    key={cat.id}
+                    onSelect={() => handleCategoryChange(cat.categoryName)}
+                    className="focus:bg-primary/10"
+                  >
+                    {cat.categoryName}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         {/* Discounts Dropdown */}

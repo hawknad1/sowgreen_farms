@@ -52,7 +52,7 @@ const CartBasket = () => {
       </div>
 
       {/* Cart Items */}
-      <div className="divide-y divide-gray-200 px-3">
+      <div className="divide-y divide-gray-200 p-3">
         <BasketCartItems />
       </div>
     </div>

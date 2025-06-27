@@ -263,6 +263,54 @@ export const sidebarLinks = {
           title: "Beverages",
           url: "/admin/products/beverages",
         },
+        {
+          title: "Meat & Poultry",
+          url: "/admin/products/meat-poultry",
+        },
+        {
+          title: "Processed Meats",
+          url: "/admin/products/processed-meat",
+        },
+        {
+          title: "Fat & Oils",
+          url: "/admin/products/fat-oils",
+        },
+        {
+          title: "Spicies & Herbs",
+          url: "/admin/products/spicies-herbs",
+        },
+        {
+          title: "Seafoods",
+          url: "/admin/products/seafoods",
+        },
+        {
+          title: "Nuts",
+          url: "/admin/products/nuts",
+        },
+        {
+          title: "Preservatives",
+          url: "/admin/products/preservatives",
+        },
+        {
+          title: "Farming Supplies",
+          url: "/admin/products/farming-supplies",
+        },
+        {
+          title: "Seeds & Seedlings",
+          url: "/admin/products/seeds-seedlings",
+        },
+        {
+          title: "Ice Cream & Sorbets",
+          url: "/admin/products/ice-cream-sorbets",
+        },
+        {
+          title: "Sauces & Condiments",
+          url: "/admin/products/sauces-condiments",
+        },
+        {
+          title: "Other",
+          url: "/admin/products/other",
+        },
       ],
     },
     {
@@ -274,10 +322,10 @@ export const sidebarLinks = {
           title: "Staff",
           url: "/admin/management/staff",
         },
-        {
-          title: "Groups",
-          url: "/admin/management/groups/farm",
-        },
+        // {
+        //   title: "Groups",
+        //   url: "/admin/management/groups/farm",
+        // },
         {
           title: "Pickup Locations",
           url: "/admin/management/pickup-locations",
@@ -293,6 +341,10 @@ export const sidebarLinks = {
         {
           title: "Dispatch Riders",
           url: "/admin/dispatch-riders",
+        },
+        {
+          title: "Official Partners",
+          url: "/admin/management/partners",
         },
         // {
         //   title: "Broadcast Message",

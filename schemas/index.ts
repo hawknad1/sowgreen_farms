@@ -202,6 +202,27 @@ export const EditProductAdminSchema = z.object({
   description: z.string(),
   title: z.string(),
   categoryName: z.string(),
+  partner: z
+    .object({
+      id: z.string(),
+      brand: z.string(),
+      owner: z.string().optional(),
+      phone: z.string(),
+    })
+    .optional()
+    .nullable(),
+
+  // partner: z
+  //   .union([
+  //     z.string(),
+  //     z.object({
+  //       brand: z.string().optional(),
+  //       owner: z.string().optional(),
+  //       phone: z.string().optional(),
+  //     }),
+  //   ])
+  //   .optional(),
+
   discount: z.coerce.number().optional(),
   quantity: z.coerce.number().min(0), // Allow 0 or positive numbers
   isInStock: z.string().optional(),
@@ -266,6 +287,12 @@ export const StaffSchema = z.object({
   jobTitle: z.string().min(1, { message: "Job Title is required!" }),
   role: z.string().min(1, { message: "Role is required!" }),
   email: z.string().email().optional(),
+  phone: z.string().regex(phoneRegex, "Invalid Number!"),
+})
+
+export const AddPartnerSchema = z.object({
+  brand: z.string().min(1, { message: "Brand is required!" }),
+  owner: z.string().optional(),
   phone: z.string().regex(phoneRegex, "Invalid Number!"),
 })
 

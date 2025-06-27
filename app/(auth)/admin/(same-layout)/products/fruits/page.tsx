@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import FruitDataTable from "./FruitDataTable"
+import ProductsFilteredTable from "../ProductsFilteredTable"
 
 const FruitsPage = () => {
   const [products, setProducts] = useState([])
@@ -27,7 +27,11 @@ const FruitsPage = () => {
   }, [])
   return (
     <div>
-      <FruitDataTable product={products} loading={loading} />
+      <ProductsFilteredTable
+        products={products}
+        loading={loading}
+        category="Fruits"
+      />
     </div>
   )
 }

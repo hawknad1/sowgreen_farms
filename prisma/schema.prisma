@@ -7,24 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User {
-//   id             String          @id @default(auto()) @map("_id") @db.ObjectId
-//   name           String?
-//   email          String?         @unique
-//   hashedPassword String?
-//   emailVerified  DateTime?
-//   image          String?
-//   role           String?         @default("user")
-//   balance        Float?          @default(0.0)
-//   phone          String?
-//   accounts       Account[]
-//   sessions       Session[]
-//   customer Customer
-//   authenticators Authenticator[] // Renamed for consistency
-//   createdAt      DateTime        @default(now())
-//   updatedAt      DateTime        @updatedAt
-// }
-
 model Customer {
   id                String            @id @default(auto()) @map("_id") @db.ObjectId
   email             String            @unique
@@ -166,6 +148,8 @@ model Product {
   wishLists     Wishlist[]
   purchaseCount Int              @default(0)
   variants      ProductVariant[] @relation("ProductVariants")
+  partnerId     String?          @db.ObjectId // Optional (use String if required)
+  partner       Partner?         @relation(fields: [partnerId], references: [id])
 }
 
 model ProductVariant {
@@ -333,4 +317,12 @@ model Wishlist {
   @@unique([userId, productId])
   @@index([userId])
   @@index([productId])
+}
+
+model Partner {
+  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  brand    String
+  owner    String?
+  phone    String?
+  products Product[] // Optional back-relation
 }

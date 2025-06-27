@@ -3,7 +3,15 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(req: NextRequest) {
   try {
-    const categories = await prisma.category.findMany()
+    const categories = await prisma.category.findMany({
+      include: {
+        products: {
+          include: {
+            partner: true,
+          },
+        },
+      },
+    })
     const response = NextResponse.json(categories, { status: 200 })
     response.headers.set(
       "Access-Control-Allow-Origin",

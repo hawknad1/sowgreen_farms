@@ -320,8 +320,8 @@ function TheMenu() {
   }, [])
 
   return (
-    <NavigationMenu className="max-w-full justify-center">
-      <NavigationMenuList className="flex flex-wrap justify-center">
+    <NavigationMenu className="hidden lg:flex justify-start mx-4">
+      <NavigationMenuList className="flex items-center px-5 py-3.5">
         <NavigationMenuItem>
           <Link href="/" legacyBehavior passHref>
             <NavigationMenuLink className={customNavigationMenuTriggerStyle()}>
@@ -369,7 +369,7 @@ function TheMenu() {
           </NavigationMenuContent>
         </NavigationMenuItem>
 
-        <NavigationMenuItem>
+        {/* <NavigationMenuItem>
           <NavigationMenuTrigger className={customNavigationMenuTriggerStyle()}>
             Category
           </NavigationMenuTrigger>
@@ -406,6 +406,46 @@ function TheMenu() {
                   ))}
             </ul>
           </NavigationMenuContent>
+        </NavigationMenuItem> */}
+
+        <NavigationMenuItem>
+          <NavigationMenuTrigger className={customNavigationMenuTriggerStyle()}>
+            Category
+          </NavigationMenuTrigger>
+          <NavigationMenuContent className="absolute left-0 z-50 w-[400px] transform translate-x-0 md:w-[500px] lg:w-[600px] p-4 border border-gray-200 shadow-lg bg-white rounded-md">
+            <ul className="grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3 max-h-[60vh] overflow-y-auto scrollbar-thin">
+              {isLoadingCategories
+                ? Array.from({ length: 6 }).map((_, index) => (
+                    <SkeletonItems key={index} />
+                  ))
+                : categoryList.map((category) => (
+                    <Link
+                      href={{
+                        pathname: "/category",
+                        query: { q: category?.categoryName },
+                      }}
+                      key={category.id}
+                      className="flex items-center cursor-pointer space-x-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground p-2"
+                    >
+                      <Image
+                        src={category.imageUrl}
+                        alt={category.categoryName}
+                        width={50}
+                        height={50}
+                        className="flex-shrink-0 h-12 w-12 object-contain bg-gray-100 rounded-md overflow-hidden flex items-center justify-center"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <ListItem
+                          title={category.categoryName}
+                          href={category.href}
+                        >
+                          {category.categoryName} description or details.
+                        </ListItem>
+                      </div>
+                    </Link>
+                  ))}
+            </ul>
+          </NavigationMenuContent>
         </NavigationMenuItem>
 
         <NavigationMenuItem>
@@ -418,6 +458,109 @@ function TheMenu() {
       </NavigationMenuList>
     </NavigationMenu>
   )
+
+  // return (
+  //   <NavigationMenu className="hidden lg:flex justify-start mx-4">
+  //     <NavigationMenuList className="flex items-center gap-1">
+  //       {/* Home Link */}
+  //       <NavigationMenuItem className="flex-shrink-0">
+  //         <Link href="/" legacyBehavior passHref>
+  //           <NavigationMenuLink className={customNavigationMenuTriggerStyle()}>
+  //             Home
+  //           </NavigationMenuLink>
+  //         </Link>
+  //       </NavigationMenuItem>
+
+  //       {/* Shop Dropdown */}
+  //       <NavigationMenuItem className="flex-shrink-0">
+  //         <NavigationMenuTrigger className={customNavigationMenuTriggerStyle()}>
+  //           Shop
+  //         </NavigationMenuTrigger>
+  //         <NavigationMenuContent className="absolute left-0 z-50 w-[400px] md:w-[500px] lg:w-[600px] p-4 border border-gray-200 shadow-lg bg-white rounded-md">
+  //           <ul className="grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3">
+  //             {isLoadingProducts
+  //               ? Array.from({ length: 9 }).map((_, index) => (
+  //                   <SkeletonItems key={index} />
+  //                 ))
+  //               : productList.slice(0, 9).map((product: Product) => (
+  //                   <ListItem
+  //                     key={product.id}
+  //                     title={product.title}
+  //                     href={`/products/${product.id}`}
+  //                     imageSrc={
+  //                       product.imageUrl || product?.images?.[0]?.url || ""
+  //                     }
+  //                     imageAlt={product.categoryName || "Product Image"}
+  //                   >
+  //                     {product.description}
+  //                   </ListItem>
+  //                 ))}
+  //             <li className="col-span-full">
+  //               <Link href="/products" passHref legacyBehavior>
+  //                 <NavigationMenuLink
+  //                   className={cn(
+  //                     "flex justify-center items-center py-2 px-4 rounded-md text-sm font-medium transition-colors bg-sowgren_Color text-white hover:bg-sowgren_Color/90",
+  //                     "focus:outline-none focus:ring-2 focus:ring-sowgren_Color focus:ring-offset-2"
+  //                   )}
+  //                 >
+  //                   View All Products
+  //                 </NavigationMenuLink>
+  //               </Link>
+  //             </li>
+  //           </ul>
+  //         </NavigationMenuContent>
+  //       </NavigationMenuItem>
+
+  //       {/* Category Dropdown */}
+  //       <NavigationMenuItem className="flex-shrink-0">
+  //         <NavigationMenuTrigger className={customNavigationMenuTriggerStyle()}>
+  //           Category
+  //         </NavigationMenuTrigger>
+  //         <NavigationMenuContent className="absolute left-0 z-50 w-[400px] md:w-[500px] lg:w-[600px] p-4 border border-gray-200 shadow-lg bg-white rounded-md">
+  //           <ul className="grid w-full gap-4 md:grid-cols-2 lg:grid-cols-3">
+  //             {isLoadingCategories
+  //               ? Array.from({ length: 6 }).map((_, index) => (
+  //                   <SkeletonItems key={index} />
+  //                 ))
+  //               : categoryList.map((category) => (
+  //                   <Link
+  //                     href={{
+  //                       pathname: "/category",
+  //                       query: { q: category?.categoryName },
+  //                     }}
+  //                     key={category.id}
+  //                     className="flex items-center cursor-pointer space-x-2 rounded-md transition-colors hover:bg-accent hover:text-accent-foreground"
+  //                   >
+  //                     <Image
+  //                       src={category.imageUrl}
+  //                       alt={category.categoryName}
+  //                       width={50}
+  //                       height={50}
+  //                       className="flex-shrink-0 h-12 w-12 object-contain bg-gray-100 rounded-md overflow-hidden flex items-center justify-center"
+  //                     />
+  //                     <ListItem
+  //                       title={category.categoryName}
+  //                       href={category.href}
+  //                     >
+  //                       {category.categoryName} description or details.
+  //                     </ListItem>
+  //                   </Link>
+  //                 ))}
+  //           </ul>
+  //         </NavigationMenuContent>
+  //       </NavigationMenuItem>
+
+  //       {/* Sale Link */}
+  //       <NavigationMenuItem className="flex-shrink-0">
+  //         <Link href="/discount" legacyBehavior passHref>
+  //           <NavigationMenuLink className={customNavigationMenuTriggerStyle()}>
+  //             Sale
+  //           </NavigationMenuLink>
+  //         </Link>
+  //       </NavigationMenuItem>
+  //     </NavigationMenuList>
+  //   </NavigationMenu>
+  // )
 }
 
 interface ListItemProps extends React.ComponentPropsWithoutRef<"a"> {

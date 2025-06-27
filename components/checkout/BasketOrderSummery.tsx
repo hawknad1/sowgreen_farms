@@ -111,7 +111,7 @@ const BasketOrderSummery = () => {
           </span>
         </div>
 
-        <div
+        {/* <div
           className={`flex justify-between p-2 rounded-md ${
             balance < 0
               ? "bg-red-50 text-red-600"
@@ -119,6 +119,16 @@ const BasketOrderSummery = () => {
           }`}
         >
           <span>Credit Balance</span>
+          <span className="font-medium">{formatCurrency(balance, "GHS")}</span>
+        </div> */}
+        <div
+          className={`flex justify-between p-2 rounded-md ${
+            balance < 0
+              ? "bg-red-50 text-red-600"
+              : "bg-green-50 text-green-600"
+          }`}
+        >
+          <span>{balance < 0 ? "Balance Due" : "Credit Balance"}</span>
           <span className="font-medium">{formatCurrency(balance, "GHS")}</span>
         </div>
 

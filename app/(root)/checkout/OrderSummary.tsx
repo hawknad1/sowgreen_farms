@@ -140,7 +140,7 @@ const OrderSummary = ({
           <p className="font-medium">{formattedDelivery}</p>
         </div>
 
-        <div
+        {/* <div
           className={`flex items-center justify-between p-2 rounded-lg ${
             user?.user?.balance < 0
               ? "bg-red-50 text-red-600"
@@ -151,6 +151,17 @@ const OrderSummary = ({
         >
           <p className="text-sm">Credit Balance</p>
           <p className="font-medium">{formatCurrency(balance, "GHS")}</p>
+        </div> */}
+
+        <div
+          className={`flex justify-between p-2 rounded-md ${
+            balance < 0
+              ? "bg-red-50 text-red-600"
+              : "bg-green-50 text-green-600"
+          }`}
+        >
+          <span>{balance < 0 ? "Balance Due" : "Credit Balance"}</span>
+          <span className="font-medium">{formatCurrency(balance, "GHS")}</span>
         </div>
 
         <div className="flex items-center justify-between pt-2">

@@ -548,7 +548,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-gray-600">Credit Balance</span>
                   <span
                     className={`text-sm font-medium ${
                       orderDetails?.creditAppliedTotal >= 0
@@ -556,7 +555,21 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                         : "text-red-600"
                     }`}
                   >
-                    {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
+                    {orderDetails?.creditAppliedTotal >= 0
+                      ? "Credit Balance"
+                      : "Balance Due"}
+                  </span>
+                  <span
+                    className={`text-sm font-medium ${
+                      orderDetails?.creditAppliedTotal >= 0
+                        ? "text-emerald-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {formatCurrency(
+                      Math.abs(orderDetails?.creditAppliedTotal),
+                      "GHS"
+                    )}
                   </span>
                 </div>
                 <div className="border-t border-gray-200 pt-2 flex justify-between">
@@ -691,7 +704,6 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-sm text-gray-600">Credit Balance</span>
                 <span
                   className={`text-sm font-medium ${
                     orderDetails?.creditAppliedTotal >= 0
@@ -699,7 +711,21 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
                       : "text-red-600"
                   }`}
                 >
-                  {formatCurrency(orderDetails?.creditAppliedTotal, "GHS")}
+                  {orderDetails?.creditAppliedTotal >= 0
+                    ? "Credit Balance"
+                    : "Balance Due"}
+                </span>
+                <span
+                  className={`text-sm font-medium ${
+                    orderDetails?.creditAppliedTotal >= 0
+                      ? "text-emerald-600"
+                      : "text-red-600"
+                  }`}
+                >
+                  {formatCurrency(
+                    Math.abs(orderDetails?.creditAppliedTotal),
+                    "GHS"
+                  )}
                 </span>
               </div>
               <div className="flex justify-between border-t border-gray-200 pt-2">

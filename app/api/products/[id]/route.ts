@@ -12,6 +12,7 @@ export async function GET(
       where: { id },
       include: {
         variants: true,
+        partner: true,
       },
     })
     return NextResponse.json(product)
@@ -196,6 +197,7 @@ export async function PUT(
       images,
       unit,
       categoryName,
+      partner,
       quantity,
       discount,
       isInStock,
@@ -204,18 +206,48 @@ export async function PUT(
 
     const id = params.id
 
+    // const updatedProduct = await prisma.$transaction(async (prisma) => {
+    //   // Build update data dynamically
+    //   const data: any = {}
+    //   if (title !== undefined) data.title = title
+    //   if (description !== undefined) data.description = description
+    //   if (imageUrl !== undefined) data.imageUrl = imageUrl
+    //   if (images !== undefined) data.images = images
+    //   if (unit !== undefined) data.unit = unit
+    //   if (categoryName !== undefined) data.categoryName = categoryName
+    //   if (partner !== undefined) data.partner.brand = partner
+    //   if (quantity !== undefined) data.quantity = quantity
+    //   if (discount !== undefined) data.discount = discount
+    //   if (isInStock !== undefined) data.isInStock = isInStock
+
     const updatedProduct = await prisma.$transaction(async (prisma) => {
-      // Build update data dynamically
-      const data: any = {}
-      if (title !== undefined) data.title = title
-      if (description !== undefined) data.description = description
-      if (imageUrl !== undefined) data.imageUrl = imageUrl
-      if (images !== undefined) data.images = images
-      if (unit !== undefined) data.unit = unit
-      if (categoryName !== undefined) data.categoryName = categoryName
-      if (quantity !== undefined) data.quantity = quantity
-      if (discount !== undefined) data.discount = discount
-      if (isInStock !== undefined) data.isInStock = isInStock
+      // Build update data
+      const data: any = {
+        title,
+        description,
+        imageUrl,
+        images,
+        unit,
+        quantity,
+        discount,
+        isInStock,
+      }
+
+      // Handle category relationship
+      if (categoryName !== undefined) {
+        data.category = {
+          connect: { categoryName }, // Connect to category by its name
+        }
+      }
+
+      // Handle partner relationship
+      if (partner !== undefined) {
+        if (partner === null) {
+          data.partner = { disconnect: true }
+        } else if (partner.id) {
+          data.partner = { connect: { id: partner.id } }
+        }
+      }
 
       // Update the product with only the defined fields
       const product = await prisma.product.update({

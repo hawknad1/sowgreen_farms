@@ -10,7 +10,7 @@ export async function GET(
     const category = await prisma.category.findMany({
       where: { categoryName: catName },
       include: {
-        products: { include: { variants: true } },
+        products: { include: { variants: true, partner: true } },
       },
     })
     const response = NextResponse.json(category)
@@ -48,17 +48,21 @@ export async function GET(
 //   }
 // }
 
-// export async function DELETE(
-//   req: NextRequest,
-//   { params }: { params: { id: string } }
-// ) {
-//   const id = params.id
-//   try {
-//     const deletedProduct = await prisma.product.delete({
-//       where: { id },
-//     })
-//     return NextResponse.json(deletedProduct)
-//   } catch (error) {
-//     return NextResponse.json({ message: "Error deleting product!" })
-//   }
-// }
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { categoryName: string } }
+) {
+  // const id = params.id
+  const id = params.categoryName
+
+  try {
+    const deletedProduct = await prisma.category.delete({
+      where: { id },
+    })
+    return NextResponse.json({
+      message: "Category deleted successfully",
+    })
+  } catch (error) {
+    return NextResponse.json({ message: "Error deleting product!" })
+  }
+}

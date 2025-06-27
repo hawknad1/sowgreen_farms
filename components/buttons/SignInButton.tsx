@@ -9,9 +9,9 @@ const SignInButton = () => {
     <Button
       variant="outline"
       onClick={() => router.push("/sign-in")}
-      className="border-none px-7 rounded-full"
+      className="border-none px-6 text-sm rounded-full"
     >
-      Log In
+      Sign In
     </Button>
   )
 }

@@ -29,19 +29,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-
-import { Product } from "@/types"
+import { columns } from "@/app/(auth)/admin/(same-layout)/management/partners/columns" // Corrected import for the columns
+import { CitiesWithFees } from "@/types"
+import AddCityDialog from "./AddPartnerDialog"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
-import AddProduct from "../AddProduct"
-import { columns } from "../columns"
+import { PartnerType } from "./PartnerForm"
 
 interface OrdersProps {
-  loading: boolean
-  product: Product[]
+  loading?: boolean
+  data?: PartnerType[]
 }
 
-const FruitDataTable = ({ product, loading }: OrdersProps) => {
+const PartnersTable = ({ loading, data }: OrdersProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([])
+  const [filterValue, setFilterValue] = React.useState<CitiesWithFees[]>([])
+
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   )
@@ -51,14 +53,8 @@ const FruitDataTable = ({ product, loading }: OrdersProps) => {
     Record<string, boolean>
   >({})
 
-  // Filter orders to only include those with status "confirmed"
-  const vegetableCategory = React.useMemo(
-    () => product.filter((o) => o.categoryName === "Fruits"),
-    [product]
-  )
-
   const table = useReactTable({
-    data: vegetableCategory, // Use the filtered data here
+    data: data,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -78,42 +74,54 @@ const FruitDataTable = ({ product, loading }: OrdersProps) => {
 
   return (
     <div className="w-full p-4">
-      <div className="flex items-center py-4 gap-x-5 top-0 sticky inset-0 z-10 bg-white shadow-sm">
-        <Input
-          placeholder="Filter products..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-          aria-label="Filter products"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-        <AddProduct />
-        {/* <Export /> */}
+      <div className="py-4 gap-x-3 lg:gap-x-0 flex items-center justify-between">
+        <div className="flex gap-x-2 w-full">
+          <Input
+            placeholder="Filter partners..."
+            value={
+              (table.getColumn("partner")?.getFilterValue() as string) ?? ""
+            }
+            onChange={(event) =>
+              table.getColumn("partner")?.setFilterValue(event.target.value)
+            }
+            className="max-w-sm w-full"
+            aria-label="Filter partner"
+          />
+        </div>
+        <div className="flex items-center justify-between gap-x-6 max-w-full">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="lg:inline-flex items-center hidden "
+              >
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <AddCityDialog />
+        </div>
       </div>
-      <div className="rounded-md border">
+
+      <div className="overflow-hidden rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -167,12 +175,13 @@ const FruitDataTable = ({ product, loading }: OrdersProps) => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+
+      <div className="flex items-center justify-between py-4">
+        <div className="text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
           {table.getFilteredRowModel().rows.length} row(s) selected.
         </div>
-        <div className="space-x-2">
+        <div className="flex space-x-2">
           <Button
             variant="outline"
             size="sm"
@@ -195,4 +204,4 @@ const FruitDataTable = ({ product, loading }: OrdersProps) => {
   )
 }
 
-export default FruitDataTable
+export default PartnersTable

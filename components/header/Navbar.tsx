@@ -93,86 +93,175 @@ const Navbar = () => {
   const [showMobileSearch, setShowMobileSearch] = useState(false)
   const { wishlist } = useWishlistStore()
 
+  // return (
+  //   <header className="bg-white w-full sticky top-0 left-0 right-0 z-50 border-b border-gray-100 shadow-sm">
+  //     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+  //       <div className="flex h-20 items-center justify-between gap-4">
+  //         {/* Mobile Menu Button */}
+  //         <div className="flex lg:hidden items-center">
+  //           <SideSheet />
+  //         </div>
+
+  //         {/* Logo Section */}
+  //         <motion.div
+  //           className="flex items-center justify-center lg:justify-start min-w-[150px]"
+  //           initial={{ opacity: 0 }}
+  //           animate={{ opacity: 1 }}
+  //           transition={{ duration: 0.3 }}
+  //         >
+  //           <a href="/" className="block">
+  //             <span className="sr-only">Home</span>
+  //             <Image
+  //               src="/images/logo.png"
+  //               alt="logo"
+  //               width={200}
+  //               height={80}
+  //               className="object-contain w-[180px] md:w-[180px]"
+  //               priority
+  //             />
+  //           </a>
+  //         </motion.div>
+
+  //         {/* Desktop Menu */}
+  //         <div className="hidden lg:flex items-center justify-center mx-6">
+  //           <TheMenu />
+  //         </div>
+
+  //         {/* User Actions */}
+  //         <div className="flex items-center gap-4 md:gap-6">
+  //           {/* Desktop Searchbar */}
+  //           <div className="hidden md:flex min-w-[400px] max-w-[500px]">
+  //             <Searchbar />
+  //           </div>
+
+  //           {/* Mobile Search Button */}
+  //           <button
+  //             className="md:hidden p-2 text-gray-600 hover:text-sowgren_Color transition-colors"
+  //             onClick={() => setShowMobileSearch(!showMobileSearch)}
+  //             aria-label="Search"
+  //           >
+  //             <MagnifyingGlassIcon className="h-6 w-6" />
+  //           </button>
+
+  //           {/* User/Auth Buttons */}
+  //           <div className="flex items-center gap-3">
+  //             {status === "loading" ? (
+  //               <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse" />
+  //             ) : status === "authenticated" && user ? (
+  //               <UserButton user={user} />
+  //             ) : (
+  //               <>
+  //                 <div className="hidden md:flex items-center gap-2">
+  //                   <SignInButton />
+  //                   <SignUpButton />
+  //                 </div>
+  //               </>
+  //             )}
+  //             <CartPopover />
+  //             <Link href="/wishlist" className="relative p-2">
+  //               <Heart className="w-5 h-5" />
+  //               {wishlist.length > 0 && (
+  //                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+  //                   {wishlist.length}
+  //                 </span>
+  //               )}
+  //             </Link>
+  //           </div>
+  //         </div>
+  //       </div>
+
+  //       {/* Mobile Search Popover */}
+  //       {showMobileSearch && (
+  //         <div className="md:hidden pb-3 pt-2 px-4 w-full">
+  //           <Searchbar onClose={() => setShowMobileSearch(false)} />
+  //         </div>
+  //       )}
+  //     </div>
+  //   </header>
+  // )
+
   return (
     <header className="bg-white w-full sticky top-0 left-0 right-0 z-50 border-b border-gray-100 shadow-sm">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center justify-between gap-4">
-          {/* Mobile Menu Button */}
-          <div className="flex lg:hidden items-center">
-            <SideSheet />
-          </div>
-
-          {/* Logo Section */}
-          <motion.div
-            className="flex items-center justify-center lg:justify-start min-w-[150px]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <a href="/" className="block">
-              <span className="sr-only">Home</span>
-              <Image
-                src="/images/logo.png"
-                alt="logo"
-                width={200}
-                height={80}
-                className="object-contain w-[180px] md:w-[180px]"
-                priority
-              />
-            </a>
-          </motion.div>
-
-          {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center justify-center mx-6">
-            <TheMenu />
-          </div>
-          {/* <Link href="/wishlist" className="relative p-2">
-            <Heart className="w-5 h-5" />
-            {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {wishlist.length}
-              </span>
-            )}
-          </Link> */}
-
-          {/* User Actions */}
+        <div className="flex h-20 items-center justify-between">
+          {/* Left section - mobile menu + logo */}
           <div className="flex items-center gap-4 md:gap-6">
-            {/* Desktop Searchbar */}
-            <div className="hidden md:flex min-w-[400px] max-w-[500px]">
-              <Searchbar />
+            {/* Mobile Menu Button */}
+            <div className="flex lg:hidden">
+              <SideSheet />
             </div>
 
+            {/* Logo */}
+            <motion.div
+              className="flex items-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <a href="/" className="block">
+                <Image
+                  src="/images/logo.png"
+                  alt="logo"
+                  width={180}
+                  height={80}
+                  className="object-contain w-[140px] md:w-[160px]"
+                  priority
+                />
+              </a>
+            </motion.div>
+          </div>
+
+          {/* Center section - desktop menu + search */}
+          <div className="hidden lg:flex items-center flex-1 px-6 max-w-3xl mx-4">
+            <div className="hidden lg:flex mr-6">
+              <TheMenu />
+            </div>
+            <div className="w-full max-w-md">
+              <Searchbar />
+            </div>
+          </div>
+
+          {/* Right section - user actions */}
+          <div className="flex items-center gap-3 sm:gap-4">
             {/* Mobile Search Button */}
             <button
-              className="md:hidden p-2 text-gray-600 hover:text-sowgren_Color transition-colors"
+              className="lg:hidden p-2 text-gray-600 hover:text-sowgren_Color"
               onClick={() => setShowMobileSearch(!showMobileSearch)}
               aria-label="Search"
             >
-              <MagnifyingGlassIcon className="h-6 w-6" />
+              <MagnifyingGlassIcon className="h-5 w-5" />
             </button>
 
             {/* User/Auth Buttons */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               {status === "loading" ? (
-                <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse" />
+                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
               ) : status === "authenticated" && user ? (
                 <UserButton user={user} />
               ) : (
                 <>
-                  <div className="hidden md:flex items-center gap-3">
+                  <div className="hidden md:flex items-center gap-2">
                     <SignInButton />
                     <SignUpButton />
                   </div>
                 </>
               )}
               <CartPopover />
+              <Link href="/wishlist" className="relative p-1.5">
+                <Heart className="w-5 h-5" />
+                {wishlist.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                    {wishlist.length}
+                  </span>
+                )}
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Mobile Search Popover */}
         {showMobileSearch && (
-          <div className="md:hidden pb-3 pt-2 px-4 w-full">
+          <div className="lg:hidden pb-3 pt-2 px-4">
             <Searchbar onClose={() => setShowMobileSearch(false)} />
           </div>
         )}
