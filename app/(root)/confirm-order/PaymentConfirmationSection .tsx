@@ -78,7 +78,7 @@ const PaymentConfirmationSection = ({
           >
             <span>{balance < 0 ? "Balance Due" : "Credit Balance"}</span>
             <span className="font-medium">
-              {formatCurrency(balance, "GHS")}
+              {formatCurrency(Math.abs(balance), "GHS")}
             </span>
           </div>
           <div className="flex justify-between items-center text-gray-700">

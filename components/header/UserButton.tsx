@@ -115,12 +115,14 @@ const UserButton = ({ user }: { user: UserProps }) => {
             : "bg-red-50 text-red-700"
         }`}
       >
-        <span>Balance</span>
+        <span>
+          {activeUser?.user?.balance >= 0 ? "Balance" : "Balance Due"}
+        </span>
         <span>
           {isLoading ? (
             <span className="inline-block h-3 w-10 bg-gray-200 rounded animate-pulse" />
           ) : (
-            formatCurrency(activeUser?.user?.balance, "GHS")
+            formatCurrency(Math.abs(activeUser?.user?.balance), "GHS")
           )}
         </span>
       </div>

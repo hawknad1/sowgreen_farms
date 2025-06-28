@@ -161,7 +161,9 @@ const OrderSummary = ({
           }`}
         >
           <span>{balance < 0 ? "Balance Due" : "Credit Balance"}</span>
-          <span className="font-medium">{formatCurrency(balance, "GHS")}</span>
+          <span className="font-medium">
+            {formatCurrency(Math.abs(balance), "GHS")}
+          </span>
         </div>
 
         <div className="flex items-center justify-between pt-2">
