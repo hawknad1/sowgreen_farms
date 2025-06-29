@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { ColumnDef } from "@tanstack/react-table"
-import { ArrowUpDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, Eye, MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Product } from "@/types"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -15,6 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useRouter } from "next/navigation" // Ensure router is imported
+import EditPartnerDialog from "../management/partners/EditPartnerDialog"
+import DeletePartnerDialog from "../management/partners/DeletePartnerDialog"
+import DeleteProductDialog from "@/components/admin/products/DeleteProductDialog"
+import EditProduct from "@/components/admin/products/EditProduct"
 
 export const columns: ColumnDef<Product>[] = [
   {
@@ -150,15 +154,39 @@ export const columns: ColumnDef<Product>[] = [
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="gap-1.5 flex flex-col">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+
+          <DropdownMenuContent align="end" className="lg:w-[200px] lg:p-2">
+            <DropdownMenuLabel>Product Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <Button
-              className="bg-black text-white"
+              variant="outline"
+              className="w-full"
               onClick={() => router.push(`/admin/products/${product.id}`)}
             >
-              Product Details
+              <div className="flex justify-center items-center gap-2 w-full">
+                <Eye className="h-4 w-4 text-gray-700" />
+                <span className="text-sm text-black">View Product</span>
+              </div>
             </Button>
+            <DropdownMenuSeparator />
+
+            {/* Prevent closing dropdown on Dialog trigger */}
+            <div onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem asChild>
+                <EditProduct
+                  product={product}
+                  className="w-full justify-start px-2 py-1.5 hover:bg-gray-100"
+                  variant="ghost"
+                />
+              </DropdownMenuItem>
+            </div>
+
+            <DropdownMenuSeparator />
+            <div onClick={(e) => e.stopPropagation()}>
+              <DropdownMenuItem asChild>
+                <DeleteProductDialog product={product} />
+              </DropdownMenuItem>
+            </div>
           </DropdownMenuContent>
         </DropdownMenu>
       )

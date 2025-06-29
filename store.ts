@@ -10,6 +10,7 @@ import {
   UserDetailType,
 } from "./types"
 import { fetchUserBalance } from "./lib/actions/fetchUserBalance"
+import { toast } from "sonner"
 
 interface PaymentStore {
   reference: any
@@ -582,16 +583,16 @@ export const useWorkersStore = create<WorkersStore>((set) => ({
 //   )
 // )
 
-interface WishlistStore {
-  wishlist: Product[]
-  isLoading: boolean
-  error: string | null
-  fetchWishlist: () => Promise<void>
-  addToWishlist: (product: Product) => Promise<void>
-  removeFromWishlist: (productId: string) => Promise<void>
-  isInWishlist: (productId: string) => boolean
-  clearWishlist: () => void
-}
+// interface WishlistStore {
+//   wishlist: Product[]
+//   isLoading: boolean
+//   error: string | null
+//   fetchWishlist: () => Promise<void>
+//   addToWishlist: (product: Product) => Promise<void>
+//   removeFromWishlist: (productId: string) => Promise<void>
+//   isInWishlist: (productId: string) => boolean
+//   clearWishlist: () => void
+// }
 
 // export const useWishlistStore = create<WishlistStore>()(
 //   persist(
@@ -678,6 +679,17 @@ interface WishlistStore {
 //   )
 // )
 
+interface WishlistStore {
+  wishlist: Product[]
+  isLoading: boolean
+  error: string | null
+  fetchWishlist: () => Promise<void>
+  addToWishlist: (product: Product) => Promise<void>
+  removeFromWishlist: (productId: string) => Promise<void>
+  isInWishlist: (productId: string) => boolean
+  clearWishlist: () => void
+}
+
 export const useWishlistStore = create<WishlistStore>()(
   persist(
     (set, get) => ({
@@ -688,92 +700,92 @@ export const useWishlistStore = create<WishlistStore>()(
       fetchWishlist: async () => {
         set({ isLoading: true, error: null })
         try {
-          const response = await fetch("/api/wishlist")
-          if (!response.ok) throw new Error("Failed to fetch wishlist")
+          const response = await fetch("/api/wishlist", {
+            credentials: "include", // Ensure cookies are sent
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}))
+            throw new Error(
+              errorData.message ||
+                `Failed to fetch wishlist: ${response.status} ${response.statusText}`
+            )
+          }
+
           const wishlist = await response.json()
           set({ wishlist, isLoading: false })
         } catch (error) {
+          console.error("Wishlist fetch error:", error)
           set({
             error: error instanceof Error ? error.message : "Unknown error",
             isLoading: false,
           })
+          toast.error("Failed to load wishlist")
         }
       },
 
       addToWishlist: async (product) => {
         if (get().isInWishlist(product.id)) return
 
-        // Optimistically add to wishlist
-        set((state) => ({
-          wishlist: [...state.wishlist, product],
-          error: null, // Clear any previous errors
-        }))
+        const originalWishlist = get().wishlist
+        set((state) => ({ wishlist: [...state.wishlist, product] }))
 
         try {
           const response = await fetch("/api/wishlist", {
             method: "POST",
+            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ productId: product.id }),
           })
 
           if (!response.ok) {
-            // If API call fails, revert the optimistic update
-            set((state) => ({
-              wishlist: state.wishlist.filter((item) => item.id !== product.id),
-              error: "Failed to add to wishlist",
-            }))
-            throw new Error("Failed to add to wishlist")
+            set({ wishlist: originalWishlist })
+            const errorData = await response.json().catch(() => ({}))
+            throw new Error(errorData.message || "Failed to add to wishlist")
           }
 
-          // No need to update state here, as it was already updated optimistically
-          // set({ isLoading: false }); // Only set isLoading to false after successful response if you still use it elsewhere
+          toast.success("Added to wishlist")
         } catch (error) {
+          console.error("Add to wishlist error:", error)
           set({
             error: error instanceof Error ? error.message : "Unknown error",
-            // isLoading: false, // Only set isLoading to false after successful response if you still use it elsewhere
           })
-          // The UI was already reverted in the catch block for !response.ok,
-          // but good to have a general error set for other types of errors.
-        } finally {
-          set({ isLoading: false }) // Ensure isLoading is reset regardless of success or failure
+          toast.error("Failed to add to wishlist")
         }
       },
 
       removeFromWishlist: async (productId) => {
-        const originalWishlist = get().wishlist // Store current wishlist for potential rollback
-        // Optimistically remove from wishlist
+        const originalWishlist = get().wishlist
         set((state) => ({
           wishlist: state.wishlist.filter((item) => item.id !== productId),
-          error: null, // Clear any previous errors
         }))
 
         try {
           const response = await fetch("/api/wishlist", {
             method: "DELETE",
+            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ productId }),
           })
 
           if (!response.ok) {
-            // If API call fails, revert the optimistic update
-            set({
-              wishlist: originalWishlist,
-              error: "Failed to remove from wishlist",
-            })
-            throw new Error("Failed to remove from wishlist")
+            set({ wishlist: originalWishlist })
+            const errorData = await response.json().catch(() => ({}))
+            throw new Error(
+              errorData.message || "Failed to remove from wishlist"
+            )
           }
 
-          // No need to update state here, as it was already updated optimistically
-          // set({ isLoading: false }); // Only set isLoading to false after successful response if you still use it elsewhere
+          toast.success("Removed from wishlist")
         } catch (error) {
+          console.error("Remove from wishlist error:", error)
           set({
             error: error instanceof Error ? error.message : "Unknown error",
-            // isLoading: false, // Only set isLoading to false after successful response if you still use it elsewhere
           })
-          // The UI was already reverted in the catch block for !response.ok,
-          // but good to have a general error set for other types of errors.
-        } finally {
-          set({ isLoading: false }) // Ensure isLoading is reset regardless of success or failure
+          toast.error("Failed to remove from wishlist")
         }
       },
 
@@ -785,9 +797,121 @@ export const useWishlistStore = create<WishlistStore>()(
     {
       name: "wishlist-storage",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        wishlist: state.wishlist,
-      }),
+      partialize: (state) => ({ wishlist: state.wishlist }),
     }
   )
 )
+
+// export const useWishlistStore = create<WishlistStore>()(
+//   persist(
+//     (set, get) => ({
+//       wishlist: [],
+//       isLoading: false,
+//       error: null,
+
+//       fetchWishlist: async () => {
+//         set({ isLoading: true, error: null })
+//         try {
+//           const response = await fetch("/api/wishlist")
+//           if (!response.ok) throw new Error("Failed to fetch wishlist")
+//           const wishlist = await response.json()
+//           set({ wishlist, isLoading: false })
+//         } catch (error) {
+//           set({
+//             error: error instanceof Error ? error.message : "Unknown error",
+//             isLoading: false,
+//           })
+//         }
+//       },
+
+//       addToWishlist: async (product) => {
+//         if (get().isInWishlist(product.id)) return
+
+//         // Optimistically add to wishlist
+//         set((state) => ({
+//           wishlist: [...state.wishlist, product],
+//           error: null, // Clear any previous errors
+//         }))
+
+//         try {
+//           const response = await fetch("/api/wishlist", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({ productId: product.id }),
+//           })
+
+//           if (!response.ok) {
+//             // If API call fails, revert the optimistic update
+//             set((state) => ({
+//               wishlist: state.wishlist.filter((item) => item.id !== product.id),
+//               error: "Failed to add to wishlist",
+//             }))
+//             throw new Error("Failed to add to wishlist")
+//           }
+
+//           // No need to update state here, as it was already updated optimistically
+//           // set({ isLoading: false }); // Only set isLoading to false after successful response if you still use it elsewhere
+//         } catch (error) {
+//           set({
+//             error: error instanceof Error ? error.message : "Unknown error",
+//             // isLoading: false, // Only set isLoading to false after successful response if you still use it elsewhere
+//           })
+//           // The UI was already reverted in the catch block for !response.ok,
+//           // but good to have a general error set for other types of errors.
+//         } finally {
+//           set({ isLoading: false }) // Ensure isLoading is reset regardless of success or failure
+//         }
+//       },
+
+//       removeFromWishlist: async (productId) => {
+//         const originalWishlist = get().wishlist // Store current wishlist for potential rollback
+//         // Optimistically remove from wishlist
+//         set((state) => ({
+//           wishlist: state.wishlist.filter((item) => item.id !== productId),
+//           error: null, // Clear any previous errors
+//         }))
+
+//         try {
+//           const response = await fetch("/api/wishlist", {
+//             method: "DELETE",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({ productId }),
+//           })
+
+//           if (!response.ok) {
+//             // If API call fails, revert the optimistic update
+//             set({
+//               wishlist: originalWishlist,
+//               error: "Failed to remove from wishlist",
+//             })
+//             throw new Error("Failed to remove from wishlist")
+//           }
+
+//           // No need to update state here, as it was already updated optimistically
+//           // set({ isLoading: false }); // Only set isLoading to false after successful response if you still use it elsewhere
+//         } catch (error) {
+//           set({
+//             error: error instanceof Error ? error.message : "Unknown error",
+//             // isLoading: false, // Only set isLoading to false after successful response if you still use it elsewhere
+//           })
+//           // The UI was already reverted in the catch block for !response.ok,
+//           // but good to have a general error set for other types of errors.
+//         } finally {
+//           set({ isLoading: false }) // Ensure isLoading is reset regardless of success or failure
+//         }
+//       },
+
+//       isInWishlist: (productId) =>
+//         get().wishlist.some((item) => item.id === productId),
+
+//       clearWishlist: () => set({ wishlist: [] }),
+//     }),
+//     {
+//       name: "wishlist-storage",
+//       storage: createJSONStorage(() => localStorage),
+//       partialize: (state) => ({
+//         wishlist: state.wishlist,
+//       }),
+//     }
+//   )
+// )

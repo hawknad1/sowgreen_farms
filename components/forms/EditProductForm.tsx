@@ -30,6 +30,7 @@ import { units } from "@/constants"
 import { useEffect, useState } from "react"
 import { EditProductAdminSchema } from "@/schemas"
 import { PartnerType } from "@/app/(auth)/admin/(same-layout)/management/partners/PartnerForm"
+import { revalidatePath } from "next/cache"
 
 interface ProductProps {
   product: Product
@@ -111,7 +112,9 @@ const EditProductForm = ({ product }: ProductProps) => {
       if (!res.ok) throw new Error("Failed to update product")
 
       toast.success("Product updated successfully!")
-      router.push(`/admin/products`)
+
+      window.location.reload()
+      router.push(`/admin/products/${product.id}`)
     } catch (error) {
       console.error("Error updating product:", error)
       toast.error("Error updating product.")

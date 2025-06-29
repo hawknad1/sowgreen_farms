@@ -40,103 +40,103 @@
 
 // app/wishlist/page.tsx
 
-"use client"
+// "use client"
 
-import { useEffect } from "react"
+// import { useEffect } from "react"
 
-import { Button } from "@/components/ui/button"
-import { HeartOff } from "lucide-react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { toast } from "sonner"
-import { useWishlistStore } from "@/store"
-import ProductCard from "@/components/cards/product/ProductCard"
+// import { Button } from "@/components/ui/button"
+// import { HeartOff } from "lucide-react"
+// import { Skeleton } from "@/components/ui/skeleton"
+// import { toast } from "sonner"
+// import { useWishlistStore } from "@/store"
+// import ProductCard from "@/components/cards/product/ProductCard"
 
-export default function WishlistPage() {
-  const { wishlist, isLoading, error, fetchWishlist, clearWishlist } =
-    useWishlistStore()
+// export default function WishlistPage() {
+//   const { wishlist, isLoading, error, fetchWishlist, clearWishlist } =
+//     useWishlistStore()
 
-  useEffect(() => {
-    fetchWishlist()
-  }, [fetchWishlist])
+//   useEffect(() => {
+//     fetchWishlist()
+//   }, [fetchWishlist])
 
-  const handleClearWishlist = async () => {
-    try {
-      await Promise.all(
-        wishlist.map((product) =>
-          fetch("/api/wishlist", {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ productId: product.id }),
-          })
-        )
-      )
-      clearWishlist()
-      toast.success("Wishlist cleared")
-    } catch (error) {
-      toast.error("Failed to clear wishlist")
-    }
-  }
+//   const handleClearWishlist = async () => {
+//     try {
+//       await Promise.all(
+//         wishlist.map((product) =>
+//           fetch("/api/wishlist", {
+//             method: "DELETE",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({ productId: product.id }),
+//           })
+//         )
+//       )
+//       clearWishlist()
+//       toast.success("Wishlist cleared")
+//     } catch (error) {
+//       toast.error("Failed to clear wishlist")
+//     }
+//   }
 
-  if (isLoading) {
-    return (
-      <div className="container py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <Skeleton key={i} className="w-full h-[350px] rounded-lg" />
-          ))}
-        </div>
-      </div>
-    )
-  }
+//   if (isLoading) {
+//     return (
+//       <div className="container py-8">
+//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+//           {Array.from({ length: 4 }).map((_, i) => (
+//             <Skeleton key={i} className="w-full h-[350px] rounded-lg" />
+//           ))}
+//         </div>
+//       </div>
+//     )
+//   }
 
-  if (error) {
-    return (
-      <div className="container py-8 text-center">
-        <p className="text-red-500">{error}</p>
-        <Button onClick={fetchWishlist} variant="outline" className="mt-4">
-          Retry
-        </Button>
-      </div>
-    )
-  }
+//   if (error) {
+//     return (
+//       <div className="container py-8 text-center">
+//         <p className="text-red-500">{error}</p>
+//         <Button onClick={fetchWishlist} variant="outline" className="mt-4">
+//           Retry
+//         </Button>
+//       </div>
+//     )
+//   }
 
-  return (
-    <div className="container py-8">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold">Your Wishlist</h1>
-        {wishlist.length > 0 && (
-          <Button
-            variant="outline"
-            onClick={handleClearWishlist}
-            className="flex items-center gap-2"
-            disabled={isLoading}
-          >
-            <HeartOff className="w-4 h-4" />
-            Clear All
-          </Button>
-        )}
-      </div>
+//   return (
+//     <div className="container py-8">
+//       <div className="flex justify-between items-center mb-8">
+//         <h1 className="text-2xl font-bold">Your Wishlist</h1>
+//         {wishlist.length > 0 && (
+//           <Button
+//             variant="outline"
+//             onClick={handleClearWishlist}
+//             className="flex items-center gap-2"
+//             disabled={isLoading}
+//           >
+//             <HeartOff className="w-4 h-4" />
+//             Clear All
+//           </Button>
+//         )}
+//       </div>
 
-      {wishlist.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-4">
-          <HeartOff className="w-16 h-16 text-gray-400" />
-          <h2 className="text-xl font-medium text-gray-600">
-            Your wishlist is empty
-          </h2>
-          <p className="text-gray-500">
-            Start adding products to your wishlist
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {wishlist.map((product) => (
-            <ProductCard key={product.id} data={product} />
-          ))}
-        </div>
-      )}
-    </div>
-  )
-}
+//       {wishlist.length === 0 ? (
+//         <div className="flex flex-col items-center justify-center py-16 gap-4">
+//           <HeartOff className="w-16 h-16 text-gray-400" />
+//           <h2 className="text-xl font-medium text-gray-600">
+//             Your wishlist is empty
+//           </h2>
+//           <p className="text-gray-500">
+//             Start adding products to your wishlist
+//           </p>
+//         </div>
+//       ) : (
+//         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+//           {wishlist.map((product) => (
+//             <ProductCard key={product.id} data={product} />
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   )
+// }
 // "use client"
 
 // import { useWishlistStore } from "@/store"
@@ -209,3 +209,120 @@ export default function WishlistPage() {
 //     </div>
 //   )
 // }
+
+"use client"
+
+import { useEffect } from "react"
+import { HeartOff } from "lucide-react"
+import { toast } from "sonner"
+import { useWishlistStore } from "@/store"
+import ProductCard from "@/components/cards/product/ProductCard"
+import { Button } from "@/components/ui/button"
+import { Skeleton } from "@/components/ui/skeleton"
+
+export default function WishlistPage() {
+  const { wishlist, isLoading, error, fetchWishlist, clearWishlist } =
+    useWishlistStore()
+
+  useEffect(() => {
+    // Only fetch if we don't have data and aren't already loading
+    if (wishlist.length === 0 && !isLoading && !error) {
+      fetchWishlist()
+    }
+  }, [fetchWishlist, wishlist.length, isLoading, error])
+
+  const handleClearWishlist = async () => {
+    if (wishlist.length === 0) return
+
+    try {
+      const responses = await Promise.all(
+        wishlist.map((product) =>
+          fetch("/api/wishlist", {
+            method: "DELETE",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId: product.id }),
+          })
+        )
+      )
+
+      const allSuccessful = responses.every((response) => response.ok)
+      if (!allSuccessful) {
+        throw new Error("Some items could not be removed")
+      }
+
+      clearWishlist()
+      toast.success("Wishlist cleared")
+    } catch (error) {
+      console.error("Clear wishlist error:", error)
+      toast.error("Failed to clear wishlist")
+      // Re-fetch to ensure state is correct
+      fetchWishlist()
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="container py-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} className="w-full h-[350px] rounded-lg" />
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="container py-8 text-center">
+        <p className="text-red-500">{error}</p>
+        <div className="mt-4 space-x-4">
+          <Button onClick={fetchWishlist} variant="outline">
+            Retry
+          </Button>
+          <Button onClick={() => window.location.reload()} variant="ghost">
+            Refresh Page
+          </Button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="container py-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-2xl font-bold">Your Wishlist</h1>
+        {wishlist.length > 0 && (
+          <Button
+            variant="outline"
+            onClick={handleClearWishlist}
+            className="flex items-center gap-2"
+            disabled={isLoading}
+          >
+            <HeartOff className="w-4 h-4" />
+            Clear All
+          </Button>
+        )}
+      </div>
+
+      {wishlist.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-16 gap-4">
+          <HeartOff className="w-16 h-16 text-gray-400" />
+          <h2 className="text-xl font-medium text-gray-600">
+            Your wishlist is empty
+          </h2>
+          <p className="text-gray-500">
+            Start adding products to your wishlist
+          </p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {wishlist.map((product) => (
+            <ProductCard key={product.id} data={product} />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}

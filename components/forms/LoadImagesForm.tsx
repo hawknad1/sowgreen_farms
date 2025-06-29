@@ -388,7 +388,8 @@ export function LoadImagesForm({ productId }: ProductProps) {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => router.push("/admin/products")}
+                  // onClick={() => router.push("/admin/products")}
+                  onClick={() => router.back()}
                 >
                   Cancel
                 </Button>

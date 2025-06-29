@@ -380,9 +380,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
   const hasDiscount = discount && firstVariant?.discountedPrice
   const partnerName = data?.partner?.brand || data?.partner?.owner || ""
 
-  // Debug log to check the partnerName value
-  console.log("partnerName:", partnerName)
-
   const renderStars = (rating: number) => {
     return [...Array(5)].map((_, i) => (
       <StarIcon

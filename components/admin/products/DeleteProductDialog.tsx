@@ -13,6 +13,7 @@ import { Button } from "../../ui/button"
 import { useRouter } from "next/navigation"
 import toast from "react-hot-toast"
 import { Product } from "@/types"
+import { Trash2 } from "lucide-react"
 
 interface Props {
   product: Product
@@ -55,11 +56,19 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
+        {/* <Button
           variant="destructive"
           className={`font-semibold w-full ${className}`}
         >
           Delete Product
+        </Button> */}
+
+        <Button
+          variant="destructive"
+          className={`gap-2 flex-1 sm:flex-initial w-full ${className}`}
+        >
+          <Trash2 className="h-4 w-4" />
+          <span>Delete</span>
         </Button>
       </DialogTrigger>
 
