@@ -301,7 +301,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { toast } from "sonner"
+import toast from "react-hot-toast"
 
 interface ProductCardProps {
   data: Product
@@ -316,7 +316,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
   const [imageLoading, setImageLoading] = useState(true)
   const [isWishlisted, setIsWishlisted] = useState(false)
   const [isClient, setIsClient] = useState(false)
-  const { addToWishlist, removeFromWishlist, isInWishlist, isLoading } =
+  const { addToWishlist, removeFromWishlist, isInWishlist, status } =
     useWishlistStore()
 
   useEffect(() => {
@@ -328,7 +328,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (isLoading) return
+    if (status === "loading") return
 
     try {
       if (isWishlisted) {

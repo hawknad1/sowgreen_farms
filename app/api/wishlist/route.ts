@@ -1,13 +1,10 @@
 import prisma from "@/lib/prismadb"
 import { NextResponse } from "next/server"
 import { auth } from "@/auth"
-// import { authOptions } from '@/lib/auth'
-// import { prisma } from '@/lib/prisma'
 
 export async function GET() {
   try {
     const session = await auth()
-    console.log(session, "from wishlist")
 
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })

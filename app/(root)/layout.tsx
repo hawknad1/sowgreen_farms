@@ -6,7 +6,8 @@ import { auth } from "@/auth"
 import { SessionProvider } from "next-auth/react"
 import "../globals.css"
 import { Toaster } from "react-hot-toast"
-import { Toaster as Sonner } from "@/components/ui/sonner"
+// import { Toaster as Sonner } from "@/components/ui/sonner"
+// import { Toaster } from "@/components/ui/sonner"
 import { BalanceProvider } from "@/context/BalanceContext"
 import { Providers } from "@/components/Providers"
 
@@ -57,8 +58,9 @@ export default async function RootLayout({
             {/* Main Content */}
             <main className="flex-1">{children}</main>
             {/* Toaster Notifications */}
-            <Toaster position="bottom-right" />
-            <Sonner position="bottom-right" />
+            <Toaster />
+            {/* <Sonner position="bottom-right" /> */}
+
             {/* Footer */}
             <Footer />
           </BalanceProvider>

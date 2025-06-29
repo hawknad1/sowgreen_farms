@@ -679,51 +679,40 @@ export const useWorkersStore = create<WorkersStore>((set) => ({
 //   )
 // )
 
+// Define the store's state and actions interface
 interface WishlistStore {
   wishlist: Product[]
-  isLoading: boolean
+  status: "idle" | "loading" | "succeeded" | "failed"
   error: string | null
   fetchWishlist: () => Promise<void>
   addToWishlist: (product: Product) => Promise<void>
   removeFromWishlist: (productId: string) => Promise<void>
+  clearWishlist: () => Promise<void>
   isInWishlist: (productId: string) => boolean
-  clearWishlist: () => void
 }
 
 export const useWishlistStore = create<WishlistStore>()(
   persist(
     (set, get) => ({
       wishlist: [],
-      isLoading: false,
+      // Use a status enum instead of isLoading and error booleans
+      status: "idle",
       error: null,
 
       fetchWishlist: async () => {
-        set({ isLoading: true, error: null })
+        // Prevent re-fetching if already loading or succeeded
+        if (get().status === "loading" || get().status === "succeeded") return
+
+        set({ status: "loading", error: null })
         try {
-          const response = await fetch("/api/wishlist", {
-            credentials: "include", // Ensure cookies are sent
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-
-          if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}))
-            throw new Error(
-              errorData.message ||
-                `Failed to fetch wishlist: ${response.status} ${response.statusText}`
-            )
-          }
-
+          const response = await fetch("/api/wishlist")
+          if (!response.ok) throw new Error("Failed to fetch wishlist")
           const wishlist = await response.json()
-          set({ wishlist, isLoading: false })
+          set({ wishlist, status: "succeeded" })
         } catch (error) {
-          console.error("Wishlist fetch error:", error)
-          set({
-            error: error instanceof Error ? error.message : "Unknown error",
-            isLoading: false,
-          })
-          toast.error("Failed to load wishlist")
+          const errorMessage =
+            error instanceof Error ? error.message : "An unknown error occurred"
+          set({ status: "failed", error: errorMessage })
         }
       },
 
@@ -731,73 +720,107 @@ export const useWishlistStore = create<WishlistStore>()(
         if (get().isInWishlist(product.id)) return
 
         const originalWishlist = get().wishlist
-        set((state) => ({ wishlist: [...state.wishlist, product] }))
+        // Optimistic update
+        set({
+          wishlist: [...originalWishlist, product],
+        })
 
         try {
           const response = await fetch("/api/wishlist", {
             method: "POST",
-            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ productId: product.id }),
           })
 
           if (!response.ok) {
-            set({ wishlist: originalWishlist })
-            const errorData = await response.json().catch(() => ({}))
-            throw new Error(errorData.message || "Failed to add to wishlist")
+            throw new Error("Failed to add item to wishlist.")
           }
-
-          toast.success("Added to wishlist")
         } catch (error) {
-          console.error("Add to wishlist error:", error)
-          set({
-            error: error instanceof Error ? error.message : "Unknown error",
-          })
-          toast.error("Failed to add to wishlist")
+          toast(
+            error instanceof Error ? error.message : "An unknown error occurred"
+          )
+          // Rollback on failure
+          set({ wishlist: originalWishlist })
         }
       },
 
       removeFromWishlist: async (productId) => {
         const originalWishlist = get().wishlist
-        set((state) => ({
-          wishlist: state.wishlist.filter((item) => item.id !== productId),
-        }))
+        // Optimistic update
+        set({
+          wishlist: originalWishlist.filter((item) => item.id !== productId),
+        })
 
         try {
           const response = await fetch("/api/wishlist", {
             method: "DELETE",
-            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ productId }),
           })
 
           if (!response.ok) {
-            set({ wishlist: originalWishlist })
-            const errorData = await response.json().catch(() => ({}))
+            throw new Error("Failed to remove item from wishlist.")
+          }
+        } catch (error) {
+          toast(
+            error instanceof Error ? error.message : "An unknown error occurred"
+          )
+          // Rollback on failure
+          set({ wishlist: originalWishlist })
+        }
+      },
+
+      // Centralize the clear wishlist logic here
+      clearWishlist: async () => {
+        const originalWishlist = get().wishlist
+        if (originalWishlist.length === 0) return
+
+        // Optimistically clear the UI
+        set({ wishlist: [] })
+
+        try {
+          // You could create a dedicated `/api/wishlist/clear` endpoint
+          // to make this a single, more efficient API call.
+          // For now, we'll stick to the multiple-call approach.
+          const responses = await Promise.all(
+            originalWishlist.map((product) =>
+              fetch("/api/wishlist", {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ productId: product.id }),
+              })
+            )
+          )
+
+          const allSuccessful = responses.every((res) => res.ok)
+          if (!allSuccessful) {
             throw new Error(
-              errorData.message || "Failed to remove from wishlist"
+              "Some items could not be removed from the wishlist."
             )
           }
 
-          toast.success("Removed from wishlist")
+          toast("Wishlist cleared successfully")
         } catch (error) {
-          console.error("Remove from wishlist error:", error)
-          set({
-            error: error instanceof Error ? error.message : "Unknown error",
-          })
-          toast.error("Failed to remove from wishlist")
+          toast(
+            error instanceof Error ? error.message : "Failed to clear wishlist."
+          )
+          // Rollback the entire wishlist on failure
+          set({ wishlist: originalWishlist })
+          // Optionally re-fetch to ensure sync with the server
+          get().fetchWishlist()
         }
       },
 
       isInWishlist: (productId) =>
         get().wishlist.some((item) => item.id === productId),
-
-      clearWishlist: () => set({ wishlist: [] }),
     }),
     {
       name: "wishlist-storage",
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ wishlist: state.wishlist }),
+      // Only persist the wishlist itself, not its transient status
+      partialize: (state) => ({
+        wishlist: state.wishlist,
+      }),
     }
   )
 )
