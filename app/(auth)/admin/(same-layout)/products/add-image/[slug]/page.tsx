@@ -1,10 +1,10 @@
 import { LoadImagesForm } from "@/components/forms/LoadImagesForm"
 import React from "react"
 
-const LoadImagesPage = ({ params }: { params: { id: string } }) => {
+const LoadImagesPage = ({ params }: { params: { slug: string } }) => {
   return (
     <div>
-      <LoadImagesForm productId={params.id} />
+      <LoadImagesForm slug={params.slug} />
     </div>
   )
 }

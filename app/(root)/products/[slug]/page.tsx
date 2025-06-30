@@ -20,7 +20,7 @@ import {
 import CustomersWants from "@/components/cards/product/CustomersWants"
 import { Skeleton } from "@/components/ui/skeleton"
 
-const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
+const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
   const router = useRouter()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
@@ -30,10 +30,39 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
 
   const { addToCart, selectedVariant, setSelectedVariant } = useCartStore()
 
+  // useEffect(() => {
+  //   // Only fetch if you need client-side updates
+  //   fetch(`/api/products/${params.slug}`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       setProduct(data)
+  //       // Preserve the title (optional safety measure)
+  //       document.title = `${data.title} | Your Store`
+  //     })
+  // }, [params.slug])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`/api/products/${params.slug}`)
+        const data = await response.json()
+        setProduct(data)
+
+        // Sync the title with the metadata
+        document.title = `${data.title} | Sowgreen Organic Farms`
+      } catch (error) {
+        console.error("Failed to fetch product:", error)
+        router.push("/error") // Optional error handling
+      }
+    }
+
+    fetchData()
+  }, [params.slug, router])
+
   useEffect(() => {
     async function getProductDetail() {
       try {
-        const res = await fetch(`/api/products/${params.productId}`, {
+        const res = await fetch(`/api/products/${params.slug}`, {
           method: "GET",
           cache: "no-store",
         })
@@ -52,13 +81,11 @@ const ProductDetailPage = ({ params }: { params: { productId: string } }) => {
       }
     }
     getProductDetail()
-  }, [params.productId, setSelectedVariant])
+  }, [params.slug, setSelectedVariant])
 
   const partnerName = product?.partner?.brand || product?.partner?.owner || ""
 
   const handleAddToCart = () => {
-    // if (!selectedVariant) return
-
     if (product.variants.length > 1 && !selectedVariant) {
       setVariantError(true)
       return

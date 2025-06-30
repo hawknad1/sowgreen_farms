@@ -1,5 +1,6 @@
 import { auth } from "@/auth"
 import prisma from "@/lib/prismadb"
+import { slugify } from "@/lib/utils/slugify"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
@@ -44,6 +45,23 @@ export async function POST(req: NextRequest) {
       isInStock,
       variants,
     } = await req.json()
+
+    // Generate initial slug from title
+    let slug = slugify(title)
+    let counter = 1
+    let uniqueSlug = slug
+
+    // Check for existing slugs and make unique if needed
+    while (true) {
+      const existing = await prisma.product.findFirst({
+        where: { slug: uniqueSlug },
+      })
+
+      if (!existing) break
+
+      uniqueSlug = `${slug}-${counter}`
+      counter++
+    }
 
     // Validate required fields
     if (
@@ -115,6 +133,7 @@ export async function POST(req: NextRequest) {
       data: {
         title,
         description,
+        slug: uniqueSlug, // Add the generated slug
         imageUrl,
         images: images ?? [], // Default to empty array if not provided
         categoryName,

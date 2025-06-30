@@ -119,6 +119,7 @@ export type Product = {
   description: string
   discount: number
   id: string
+  slug: string
   imageUrl: string
   isInStock: string
   purchaseCount: number

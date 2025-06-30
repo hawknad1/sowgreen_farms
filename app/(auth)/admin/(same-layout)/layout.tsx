@@ -12,7 +12,7 @@ const jost = Jost({
 })
 
 export const metadata: Metadata = {
-  title: "Sowgreen Farms",
+  title: "Admin | Sowgreen Farms",
   description: "Get your organic farm produce",
 }
 

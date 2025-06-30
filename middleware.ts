@@ -22,9 +22,8 @@ export default async function middleware(req: NextRequest) {
 
   // Admin protected routes
   const adminRoute = pathname.startsWith("/admin")
-
-  // Checkout route
   const checkoutRoute = pathname.startsWith("/checkout")
+  const accountRoute = pathname.startsWith("/account") // New: account routes
 
   // If the user is authenticated and an admin, always redirect them to /admin/dashboard when they hit root
   if (
@@ -47,8 +46,13 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL(ROOT, req.url))
   }
 
-  // Redirect unauthenticated users trying to access checkout
-  if (checkoutRoute && !isAuthenticate) {
+  // // Redirect unauthenticated users trying to access checkout
+  // if (checkoutRoute && !isAuthenticate) {
+  //   return NextResponse.redirect(new URL(LOGIN, req.url))
+  // }
+
+  // Redirect unauthenticated users trying to access protected routes
+  if (!isAuthenticate && (checkoutRoute || accountRoute)) {
     return NextResponse.redirect(new URL(LOGIN, req.url))
   }
 
@@ -72,8 +76,12 @@ export default async function middleware(req: NextRequest) {
 // Apply middleware only to specific routes
 
 export const config = {
-  matcher: ["/admin/:path*", "/checkout", "/", "/sign-in", "/sign-up"],
+  matcher: [
+    "/admin/:path*",
+    "/checkout",
+    "/",
+    "/sign-in",
+    "/sign-up",
+    "/account/:path*",
+  ],
 }
-// export const config = {
-//   matcher: ["/admin/:path*", "/checkout", "/"],
-// }

@@ -40,7 +40,7 @@ const AddImage = ({ product }: AddImageProps) => {
 
   return (
     <Button
-      onClick={() => router.push(`/admin/products/add-image/${product.id}`)}
+      onClick={() => router.push(`/admin/products/add-image/${product.slug}`)}
       variant="outline"
       className="gap-2 flex-1 sm:flex-initial w-full"
     >

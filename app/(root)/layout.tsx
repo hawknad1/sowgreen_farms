@@ -6,10 +6,7 @@ import { auth } from "@/auth"
 import { SessionProvider } from "next-auth/react"
 import "../globals.css"
 import { Toaster } from "react-hot-toast"
-// import { Toaster as Sonner } from "@/components/ui/sonner"
-// import { Toaster } from "@/components/ui/sonner"
 import { BalanceProvider } from "@/context/BalanceContext"
-import { Providers } from "@/components/Providers"
 
 // Define fonts
 const roboto = Roboto({
@@ -29,7 +26,7 @@ const jost = Jost({
 // Metadata for the site
 export const metadata: Metadata = {
   title: {
-    default: "Sowgreen Organic Farms",
+    default: "Home | Sowgreen Organic Farms",
     template: "%s | Sowgreen Organic Farms",
   },
   description: "Get your organic farm produce delivered to your doorstep.",

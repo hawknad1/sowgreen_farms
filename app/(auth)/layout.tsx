@@ -33,12 +33,5 @@ export default async function RootLayout({
         </body>
       </SessionProvider>
     </html>
-    // <html lang="en">
-    //   <body>
-    //     <Providers session={session}>
-    //       <div className={jost.className}>{children}</div>
-    //     </Providers>
-    //   </body>
-    // </html>
   )
 }

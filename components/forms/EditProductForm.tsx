@@ -103,7 +103,7 @@ const EditProductForm = ({ product }: ProductProps) => {
   ) => {
     setIsLoading(true)
     try {
-      const res = await fetch(`/api/products/${product.id}`, {
+      const res = await fetch(`/api/products/${product.slug}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -114,7 +114,7 @@ const EditProductForm = ({ product }: ProductProps) => {
       toast.success("Product updated successfully!")
 
       window.location.reload()
-      router.push(`/admin/products/${product.id}`)
+      router.push(`/admin/products/${product.slug}`)
     } catch (error) {
       console.error("Error updating product:", error)
       toast.error("Error updating product.")

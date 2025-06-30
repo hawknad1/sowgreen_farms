@@ -413,7 +413,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
   return (
     <TooltipProvider>
       <Link
-        href={`/products/${data?.id}`}
+        href={`/products/${data?.slug}`}
         className="group relative block w-full h-full"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

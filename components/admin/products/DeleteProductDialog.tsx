@@ -28,7 +28,7 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
   const handleDelete = async () => {
     setIsDeleting(true)
     try {
-      const res = await fetch(`/api/products/${product.id}`, {
+      const res = await fetch(`/api/products/${product.slug}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -56,13 +56,6 @@ const DeleteProductDialog = ({ product, children, className }: Props) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        {/* <Button
-          variant="destructive"
-          className={`font-semibold w-full ${className}`}
-        >
-          Delete Product
-        </Button> */}
-
         <Button
           variant="destructive"
           className={`gap-2 flex-1 sm:flex-initial w-full ${className}`}

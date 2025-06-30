@@ -3,14 +3,14 @@ import AdminProductDetailCard from "@/components/admin/AdminProductDetailCard"
 import { Product } from "@/types"
 import React, { useEffect, useState } from "react"
 
-const AdminProductDetail = ({ params }: { params: { id: string } }) => {
+const AdminProductDetail = ({ params }: { params: { slug: string } }) => {
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function getProductDetail() {
       try {
-        const res = await fetch(`/api/products/${params.id}`, {
+        const res = await fetch(`/api/products/${params.slug}`, {
           method: "GET",
           cache: "no-store",
         })
@@ -25,7 +25,7 @@ const AdminProductDetail = ({ params }: { params: { id: string } }) => {
       }
     }
     getProductDetail()
-  }, [params.id])
+  }, [params.slug])
 
   //   if (loading) return <LoadProductDetail />
 

@@ -1,5 +1,5 @@
 "use client"
-import AddButton from "@/app/(root)/products/[productId]/AddButton"
+import AddButton from "@/app/(root)/products/[slug]/AddButton"
 import Image from "next/image"
 
 import React, { useState } from "react"

@@ -161,7 +161,7 @@ export const columns: ColumnDef<Product>[] = [
             <Button
               variant="outline"
               className="w-full"
-              onClick={() => router.push(`/admin/products/${product.id}`)}
+              onClick={() => router.push(`/admin/products/${product.slug}`)}
             >
               <div className="flex justify-center items-center gap-2 w-full">
                 <Eye className="h-4 w-4 text-gray-700" />

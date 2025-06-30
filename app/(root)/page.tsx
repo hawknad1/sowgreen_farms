@@ -1,29 +1,24 @@
 "use client"
-import { useCustomerStore, useOrdersStore, useProductStore } from "@/store"
 import React, { useEffect, useState } from "react"
+import { useCustomerStore, useOrdersStore, useProductStore } from "@/store"
 import Head from "next/head"
-import ProductCards from "@/components/cards/product/ProductCards"
 import CategoryCards from "@/components/cards/category/CategoryCards"
 import Testimonials from "@/components/Testimonials"
-import ViewAll from "@/components/ViewAll"
 import DeliveryCard from "@/components/cards/DeliveryCard"
 import OrganicCard from "@/components/cards/OrganicCard"
 import CategoryChevrons from "@/components/CategoryChevrons"
-import ProductChevrons from "@/components/ProductChevrons"
 import MiddleCardAds from "@/components/cards/middle-cards/MiddleCardAds"
 import HeroBanner from "./HeroBanner"
-import { useBalance } from "@/context/BalanceContext"
 import CustomersWants from "@/components/cards/product/CustomersWants"
 import PartnerLogos from "./PartnerLogos"
 
 export default function Home() {
-  const { setProductDetails, products, setLoading } = useProductStore()
-  const { setOrderLoading, setOrderDetails } = useOrdersStore()
+  const { setLoading } = useProductStore()
+  const { setOrderDetails } = useOrdersStore()
   const { setCustomerLoading, setCustomerDetails } = useCustomerStore()
 
   const [productList, setProductList] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const { balance } = useBalance()
 
   useEffect(() => {
     async function getProductList() {

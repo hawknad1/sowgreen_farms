@@ -129,8 +129,9 @@ model ShippingAddress {
 }
 
 model Product {
-  id            String           @id @default(auto()) @map("_id") @db.ObjectId
-  title         String           @unique
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  title String  @unique
+  slug  String? @unique
   imageUrl      String
   images        Json?
   description   String
