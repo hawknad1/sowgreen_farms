@@ -17,7 +17,6 @@ import PaginationButtons from "@/components/sort/PaginationButtons"
 import { Button } from "@/components/ui/button"
 import { ChevronRight } from "lucide-react"
 import { useInView } from "react-intersection-observer"
-import { Metadata } from "next"
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([])

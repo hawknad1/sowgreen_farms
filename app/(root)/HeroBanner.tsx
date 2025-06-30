@@ -114,13 +114,15 @@ const HeroBanner = () => {
       {/* Custom Navigation Buttons */}
       <button
         ref={prevRef}
-        className="absolute left-4 top-1/2 z-10 -translate-y-1/2 bg-gray-500 bg-opacity-70 p-2 rounded-full text-white hover:bg-gray-700"
+        className="absolute left-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-gray-500/70 p-2 text-white transition hover:bg-gray-700"
+        aria-label="Previous slide"
       >
         <ChevronLeftIcon className="h-6 w-6" />
       </button>
       <button
         ref={nextRef}
-        className="absolute right-4 top-1/2 z-10 -translate-y-1/2 bg-gray-500 bg-opacity-70 p-2 rounded-full text-white hover:bg-gray-700"
+        className="absolute right-4 top-1/2 z-10 -translate-y-1/2 rounded-full bg-gray-500/70 p-2 text-white transition hover:bg-gray-700"
+        aria-label="Next slide"
       >
         <ChevronRightIcon className="h-6 w-6" />
       </button>

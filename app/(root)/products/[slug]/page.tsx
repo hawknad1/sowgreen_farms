@@ -18,28 +18,18 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import CustomersWants from "@/components/cards/product/CustomersWants"
-import { Skeleton } from "@/components/ui/skeleton"
+import { ProductDetailSkeleton } from "@/components/skeletons/ProductDetailSkeleton"
 
 const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
   const router = useRouter()
   const [product, setProduct] = useState<Product | null>(null)
+  const [popularProducts, setPopularProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [localQuantity, setLocalQuantity] = useState(1)
   const [variantError, setVariantError] = useState(false)
 
   const { addToCart, selectedVariant, setSelectedVariant } = useCartStore()
-
-  // useEffect(() => {
-  //   // Only fetch if you need client-side updates
-  //   fetch(`/api/products/${params.slug}`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setProduct(data)
-  //       // Preserve the title (optional safety measure)
-  //       document.title = `${data.title} | Your Store`
-  //     })
-  // }, [params.slug])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,14 +49,34 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
     fetchData()
   }, [params.slug, router])
 
-  useEffect(() => {
-    async function getProductDetail() {
-      try {
-        const res = await fetch(`/api/products/${params.slug}`, {
-          method: "GET",
-          cache: "no-store",
-        })
+  // useEffect(() => {
+  //   async function getProductDetail() {
+  //     try {
+  //       const res = await fetch(`/api/products/${params.slug}`, {
+  //         method: "GET",
+  //         cache: "no-store",
+  //       })
 
+  //       if (res.ok) {
+  //         const productDetail = await res.json()
+  //         setProduct(productDetail)
+  //         if (productDetail.variants.length === 1) {
+  //           setSelectedVariant(productDetail.variants[0])
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //     } finally {
+  //       setLoading(false)
+  //     }
+  //   }
+  //   getProductDetail()
+  // }, [params.slug, setSelectedVariant])
+
+  useEffect(() => {
+    const getProductDetail = async () => {
+      try {
+        const res = await fetch(`/api/products/${params.slug}`)
         if (res.ok) {
           const productDetail = await res.json()
           setProduct(productDetail)
@@ -75,12 +85,28 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
           }
         }
       } catch (error) {
-        console.log(error)
+        console.error("Failed to fetch product details:", error)
       } finally {
         setLoading(false)
       }
     }
+
+    // --- NEW FUNCTION TO FETCH POPULAR PRODUCTS ---
+    const getPopularProducts = async () => {
+      try {
+        const res = await fetch(`/api/products/popular`) // Assuming this is your endpoint
+        if (res.ok) {
+          const data = await res.json()
+          setPopularProducts(data)
+        }
+      } catch (error) {
+        console.error("Failed to fetch popular products:", error)
+        // It's okay to fail silently here, the section just won't show products
+      }
+    }
+
     getProductDetail()
+    getPopularProducts() // Call the new function
   }, [params.slug, setSelectedVariant])
 
   const partnerName = product?.partner?.brand || product?.partner?.owner || ""
@@ -204,12 +230,7 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
         <div className="w-full sm:w-[55%] lg:w-[60%] space-y-4 sm:space-y-6">
           <div className="space-y-2 sm:space-y-3">
             <h1 className="text-2xl sm:text-3xl font-bold">{product.title}</h1>
-            {/* <p className="text-gray-500">
-              by{" "}
-              <span className="bg-gray-200 rounded-full px-3 py-0.5 ">
-                PLENTEOUS
-              </span>
-            </p> */}
+
             {partnerName && (
               <div className="mb-1 flex items-center">
                 <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
@@ -234,35 +255,19 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
           <div className="space-y-2">
             <div className="flex items-center gap-3">
               <span className="text-xl sm:text-2xl font-bold">
-                {
-                  /* {selectedVariant ? (
-                  product.discount > 0 && selectedVariant.discountedPrice ? (
-                    <span>
-                      {formatCurrency(selectedVariant.discountedPrice, "GHS")}{" "}
-                      <span className="text-sm sm:text-base text-muted-foreground line-through">
-                        {formatCurrency(selectedVariant.price, "GHS")}
-                      </span>
+                {product.discount > 0 && selectedVariant?.discountedPrice ? (
+                  <span>
+                    {formatCurrency(selectedVariant.discountedPrice, "GHS")}{" "}
+                    <span className="text-sm sm:text-base text-muted-foreground line-through">
+                      {formatCurrency(selectedVariant.price, "GHS")}
                     </span>
-                  ) : (
-                    formatCurrency(selectedVariant.price, "GHS")
-                  )
+                  </span>
                 ) : (
-                  formatCurrency(product.variants[0]?.price, "GHS")
-                )} */
-                  product.discount > 0 && selectedVariant?.discountedPrice ? (
-                    <span>
-                      {formatCurrency(selectedVariant.discountedPrice, "GHS")}{" "}
-                      <span className="text-sm sm:text-base text-muted-foreground line-through">
-                        {formatCurrency(selectedVariant.price, "GHS")}
-                      </span>
-                    </span>
-                  ) : (
-                    formatCurrency(
-                      selectedVariant?.price || product.variants[0]?.price,
-                      "GHS"
-                    )
+                  formatCurrency(
+                    selectedVariant?.price || product.variants[0]?.price,
+                    "GHS"
                   )
-                }
+                )}
               </span>
             </div>
 
@@ -293,7 +298,6 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
                     }
                     size="sm"
                     className="text-xs sm:text-sm"
-                    // onClick={() => setSelectedVariant(variant)}
                     onClick={() => {
                       setSelectedVariant(variant)
                       setVariantError(false) // Clear error when variant is selected
@@ -394,105 +398,10 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
 
       {/* Customers Also Bought Section */}
       <section className="mt-8 sm:mt-12">
-        <CustomersWants message="Customers also bought" />
-      </section>
-    </div>
-  )
-}
-
-// Skeleton component remains the same as previous version
-const ProductDetailSkeleton = () => {
-  return (
-    <div className="container mx-auto px-4 py-4 sm:py-6 max-w-7xl">
-      {/* Breadcrumb Skeleton */}
-      <div className="mb-4 sm:mb-6 flex space-x-2">
-        <Skeleton className="h-4 w-20" />
-        <Skeleton className="h-4 w-4" />
-        <Skeleton className="h-4 w-24" />
-        <Skeleton className="h-4 w-4" />
-        <Skeleton className="h-4 w-32" />
-      </div>
-
-      {/* Main Content Skeleton - Side by side */}
-      <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-        {/* Image Gallery Skeleton */}
-        <div className="w-full sm:w-[45%]">
-          <Skeleton className="aspect-square w-full rounded-xl mb-3" />
-          <div className="flex sm:grid sm:grid-cols-4 gap-2 overflow-x-auto pb-2 sm:pb-0">
-            {[...Array(4)].map((_, i) => (
-              <Skeleton
-                key={i}
-                className="aspect-square min-w-[80px] sm:min-w-0 rounded-md"
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Product Info Skeleton */}
-        <div className="w-full sm:w-[55%] space-y-4 sm:space-y-6">
-          <div className="space-y-2 sm:space-y-3">
-            <Skeleton className="h-7 sm:h-8 w-3/4" />
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-4 w-16" />
-              <Skeleton className="h-4 w-24" />
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Price Skeleton */}
-          <div className="space-y-2">
-            <Skeleton className="h-6 sm:h-7 w-32" />
-            <Skeleton className="h-4 w-64" />
-          </div>
-
-          <Separator />
-
-          {/* Variants Skeleton */}
-          <div className="space-y-2 sm:space-y-3">
-            <Skeleton className="h-5 w-24" />
-            <div className="flex flex-wrap gap-2">
-              {[...Array(3)].map((_, i) => (
-                <Skeleton key={i} className="h-8 sm:h-9 w-20 rounded-md" />
-              ))}
-            </div>
-          </div>
-
-          {/* Quantity Skeleton */}
-          <div className="flex items-center gap-3">
-            <Skeleton className="h-8 sm:h-9 w-32 rounded-md" />
-          </div>
-
-          {/* Add to Cart & Checkout Skeleton */}
-          <div className="grid grid-cols-2 gap-3">
-            <Skeleton className="h-9 sm:h-10 rounded-md" />
-            <Skeleton className="h-9 sm:h-10 rounded-md" />
-          </div>
-
-          <Separator />
-
-          {/* Details Skeleton */}
-          <div className="space-y-2 sm:space-y-3">
-            <Skeleton className="h-5 w-32" />
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-3/4" />
-            <div className="space-y-1 sm:space-y-2">
-              {[...Array(2)].map((_, i) => (
-                <Skeleton key={i} className="h-4 w-64" />
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Related Products Skeleton */}
-      <section className="mt-8 sm:mt-12">
-        <Skeleton className="h-7 sm:h-8 w-64 mb-4 sm:mb-6" />
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Skeleton key={i} className="aspect-square rounded-lg" />
-          ))}
-        </div>
+        <CustomersWants
+          message="Customers also bought"
+          initialProducts={popularProducts}
+        />
       </section>
     </div>
   )

@@ -4,12 +4,12 @@ export type Category = {
   id: string
   categoryName: string
   imageUrl: string
-  description: string
-  href: string
-  price: number
-  discount: number
-  isInStock: boolean
-  quantity: number
+  description?: string
+  href?: string
+  price?: number
+  discount?: number
+  isInStock?: boolean
+  quantity?: number
 }
 
 export type Payment = {

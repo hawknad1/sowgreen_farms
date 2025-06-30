@@ -2,9 +2,9 @@
 import React from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Product } from "@/types"
+import { Category } from "@/types"
 
-const CategoryCard = ({ data }: { data: Product }) => {
+const CategoryCard = ({ data }: { data: Category }) => {
   return (
     <Link
       href={{
