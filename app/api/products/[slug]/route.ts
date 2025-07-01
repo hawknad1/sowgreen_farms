@@ -306,7 +306,7 @@ export async function PUT(
       quantity,
       discount,
       isInStock,
-      variants = [],
+      variants,
     } = await req.json()
 
     const updatedProduct = await prisma.$transaction(async (prisma) => {
@@ -356,54 +356,107 @@ export async function PUT(
         data: updateData,
       })
 
-      // Handle variants
-      const existingVariants = await prisma.productVariant.findMany({
-        where: { productId },
-        select: { id: true },
-      })
-
-      const existingVariantIds = existingVariants.map((v) => v.id)
-      const incomingVariantIds = variants.map((v: any) => v.id).filter(Boolean)
-
-      // Delete variants not in the incoming list
-      const variantsToDelete = existingVariantIds.filter(
-        (id) => !incomingVariantIds.includes(id)
-      )
-
-      if (variantsToDelete.length > 0) {
-        await prisma.productVariant.deleteMany({
-          where: { id: { in: variantsToDelete } },
+      // Only process variants if they're provided in the request
+      if (variants !== undefined) {
+        const existingVariants = await prisma.productVariant.findMany({
+          where: { productId },
+          select: { id: true },
         })
-      }
 
-      // Upsert variants
-      for (const variant of variants) {
-        const variantData = {
-          price: variant.price,
-          weight: variant.weight,
-          unit: variant.unit,
-          discountedPrice:
-            discount && discount > 0
-              ? variant.price * (1 - discount / 100)
-              : variant.discountedPrice || null,
+        const existingVariantIds = existingVariants.map((v) => v.id)
+        const incomingVariantIds = variants
+          .map((v: any) => v.id)
+          .filter(Boolean)
+
+        // Delete variants not in the incoming list
+        const variantsToDelete = existingVariantIds.filter(
+          (id) => !incomingVariantIds.includes(id)
+        )
+
+        if (variantsToDelete.length > 0) {
+          await prisma.productVariant.deleteMany({
+            where: { id: { in: variantsToDelete } },
+          })
         }
 
-        if (variant.id) {
-          await prisma.productVariant.update({
-            where: { id: variant.id },
-            data: variantData,
-          })
-        } else {
-          await prisma.productVariant.create({
-            data: {
-              ...variantData,
-              productId,
-            },
-          })
+        // Upsert variants
+        for (const variant of variants) {
+          const variantData = {
+            price: variant.price,
+            weight: variant.weight,
+            unit: variant.unit,
+            discountedPrice:
+              discount && discount > 0
+                ? variant.price * (1 - discount / 100)
+                : variant.discountedPrice || null,
+          }
+
+          if (variant.id) {
+            await prisma.productVariant.update({
+              where: { id: variant.id },
+              data: variantData,
+            })
+          } else {
+            await prisma.productVariant.create({
+              data: {
+                ...variantData,
+                productId,
+              },
+            })
+          }
         }
       }
 
       return product
+
+      // // Handle variants
+      // const existingVariants = await prisma.productVariant.findMany({
+      //   where: { productId },
+      //   select: { id: true },
+      // })
+
+      // const existingVariantIds = existingVariants.map((v) => v.id)
+      // const incomingVariantIds = variants.map((v: any) => v.id).filter(Boolean)
+
+      // // Delete variants not in the incoming list
+      // const variantsToDelete = existingVariantIds.filter(
+      //   (id) => !incomingVariantIds.includes(id)
+      // )
+
+      // if (variantsToDelete.length > 0) {
+      //   await prisma.productVariant.deleteMany({
+      //     where: { id: { in: variantsToDelete } },
+      //   })
+      // }
+
+      // // Upsert variants
+      // for (const variant of variants) {
+      //   const variantData = {
+      //     price: variant.price,
+      //     weight: variant.weight,
+      //     unit: variant.unit,
+      //     discountedPrice:
+      //       discount && discount > 0
+      //         ? variant.price * (1 - discount / 100)
+      //         : variant.discountedPrice || null,
+      //   }
+
+      //   if (variant.id) {
+      //     await prisma.productVariant.update({
+      //       where: { id: variant.id },
+      //       data: variantData,
+      //     })
+      //   } else {
+      //     await prisma.productVariant.create({
+      //       data: {
+      //         ...variantData,
+      //         productId,
+      //       },
+      //     })
+      //   }
+      // }
+
+      // return product
     })
 
     return NextResponse.json(updatedProduct)

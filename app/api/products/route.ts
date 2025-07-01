@@ -323,43 +323,112 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   try {
-    // Extract search query from URL
     const { searchParams } = new URL(req.url)
-    const query = searchParams.get("query")
+    const sort = searchParams.get("sort")
+    const category = searchParams.get("category")
+    const discounted = searchParams.get("discounted") // ✨ ADD THIS
 
-    // If no query, return all products
-    if (!query) {
-      const products = await prisma.product.findMany({
-        include: {
-          variants: true,
-          partner: true,
-        },
-      })
-      return NextResponse.json(products, { status: 200 })
+    let where: any = {}
+    let orderBy: any = {}
+
+    //THIS BLOCK to filter for discounted products
+    if (discounted === "true") {
+      where.discount = {
+        gt: 0, // 'gt' means "greater than"
+      }
     }
 
-    // Normalize query (convert to lowercase for case insensitivity)
-    const normalizedQuery = query.toLowerCase()
+    if (category && category !== "All Category") {
+      where.categoryName = category
+    }
 
-    // Fetch products based on normalized query (case insensitive search)
-    const products = await prisma.product.findMany({
-      where: {
-        title: {
-          contains: normalizedQuery, // Search for partial matches
-          mode: "insensitive", // Case-insensitive search
-        },
-      },
+    // ✅ FIX 1: Correct sorting logic for price
+    switch (sort) {
+      case "popularity":
+        orderBy = { purchaseCount: "desc" }
+        break
+      case "newest":
+        orderBy = { createdAt: "desc" }
+        break
+      default:
+        orderBy = { title: "asc" }
+        break
+    }
+
+    const productsFromDb = await prisma.product.findMany({
+      where,
+      orderBy,
       include: {
         variants: true,
+        partner: true,
+        category: true,
       },
     })
 
-    return NextResponse.json({ products }, { status: 200 })
+    // ✅ FIX 2: Type cast the 'images' field and serialize dates
+    const serializedProducts = productsFromDb.map((product) => ({
+      ...product,
+      createdAt: product.createdAt.toISOString(),
+      updatedAt: product.updatedAt.toISOString(),
+      // This tells TypeScript to trust that `images` matches your type
+      images: (product.images as { url: string; publicId: string }[]) || [],
+      variants: product.variants.map((variant) => ({
+        ...variant,
+        createdAt: variant.createdAt.toISOString(),
+        updatedAt: variant.updatedAt.toISOString(),
+      })),
+    }))
+
+    return NextResponse.json(serializedProducts, { status: 200 })
   } catch (error) {
     console.error("Error fetching products:", error)
+    // Provide a more detailed error response for debugging
     return NextResponse.json(
-      { error: "Couldn't get all products" },
+      { error: "Couldn't get all products", details: (error as Error).message },
       { status: 500 }
     )
   }
 }
+
+// export async function GET(req: NextRequest) {
+//   try {
+//     // Extract search query from URL
+//     const { searchParams } = new URL(req.url)
+//     const query = searchParams.get("query")
+
+//     // If no query, return all products
+//     if (!query) {
+//       const products = await prisma.product.findMany({
+//         include: {
+//           variants: true,
+//           partner: true,
+//         },
+//       })
+//       return NextResponse.json(products, { status: 200 })
+//     }
+
+//     // Normalize query (convert to lowercase for case insensitivity)
+//     const normalizedQuery = query.toLowerCase()
+
+//     // Fetch products based on normalized query (case insensitive search)
+//     const products = await prisma.product.findMany({
+//       where: {
+//         title: {
+//           contains: normalizedQuery, // Search for partial matches
+//           mode: "insensitive", // Case-insensitive search
+//         },
+//       },
+//       include: {
+//         variants: true,
+//       },
+//     })
+
+//     return NextResponse.json({ products }, { status: 200 })
+//   } catch (error) {
+//     console.error("Error fetching products:", error)
+//     return NextResponse.json(
+//       { error: "Couldn't get all products" },
+//       { status: 500 }
+//     )
+//   }
+// }

@@ -3,13 +3,15 @@ import { NextResponse } from "next/server"
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: { slug: string } }
 ) {
-  const { id } = params
+  // const { id } = params
+  const { slug } = params
+
   const { publicId } = await request.json()
 
   // Validate productId and publicId
-  if (!id) {
+  if (!slug) {
     console.error("Missing product ID in route parameters.")
     return NextResponse.json(
       { message: "Product ID is required" },
@@ -28,7 +30,7 @@ export async function DELETE(
   try {
     // Attempt to update product and remove the specified image
     const product = await prisma.product.update({
-      where: { id: id },
+      where: { slug },
       data: {
         images: {
           deleteMany: { publicId },

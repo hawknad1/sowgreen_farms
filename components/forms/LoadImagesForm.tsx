@@ -35,8 +35,6 @@ export function LoadImagesForm({ slug }: ProductProps) {
   const [isRemoving, setIsRemoving] = useState<string | null>(null)
   const [isFetching, setIsFetching] = useState(true)
 
-  console.log(slug, "slug")
-
   // Fetch existing images on component load
   useEffect(() => {
     const fetchExistingImages = async () => {

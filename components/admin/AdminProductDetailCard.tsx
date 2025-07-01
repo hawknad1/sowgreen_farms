@@ -309,7 +309,7 @@ const AdminProductDetailCard = ({ product }: Props) => {
           </div>
 
           {/* Thumbnail Gallery */}
-          <div className="grid grid-cols-4 gap-3">
+          {/* <div className="grid grid-cols-4 gap-3">
             {product?.images.map((img, index) => (
               <button
                 key={img.publicId}
@@ -329,6 +329,31 @@ const AdminProductDetailCard = ({ product }: Props) => {
                 />
               </button>
             ))}
+          </div> */}
+          <div className="grid grid-cols-4 gap-3">
+            {Array.isArray(product?.images) && product.images.length > 0 ? (
+              product.images.map((img, index) => (
+                <button
+                  key={img.publicId}
+                  onClick={() => setActiveImageIndex(index)}
+                  className={`relative aspect-square overflow-hidden rounded-md transition-all ${
+                    activeImageIndex === index
+                      ? "ring-2 ring-primary"
+                      : "opacity-90 hover:opacity-100"
+                  }`}
+                >
+                  <Image
+                    src={img.url}
+                    alt=""
+                    fill
+                    sizes="(max-width: 768px) 25vw, 12.5vw"
+                    className="object-cover"
+                  />
+                </button>
+              ))
+            ) : (
+              <p>No images available</p>
+            )}
           </div>
         </div>
 
