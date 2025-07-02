@@ -46,11 +46,6 @@ export default async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL(ROOT, req.url))
   }
 
-  // // Redirect unauthenticated users trying to access checkout
-  // if (checkoutRoute && !isAuthenticate) {
-  //   return NextResponse.redirect(new URL(LOGIN, req.url))
-  // }
-
   // Redirect unauthenticated users trying to access protected routes
   if (!isAuthenticate && (checkoutRoute || accountRoute)) {
     return NextResponse.redirect(new URL(LOGIN, req.url))
@@ -75,13 +70,17 @@ export default async function middleware(req: NextRequest) {
 
 // Apply middleware only to specific routes
 
+// export const config = {
+//   matcher: [
+//     "/admin/:path*",
+//     "/checkout",
+//     "/",
+//     "/sign-in",
+//     "/sign-up",
+//     "/account/:path*",
+//   ],
+// }
+
 export const config = {
-  matcher: [
-    "/admin/:path*",
-    "/checkout",
-    "/",
-    "/sign-in",
-    "/sign-up",
-    "/account/:path*",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 }

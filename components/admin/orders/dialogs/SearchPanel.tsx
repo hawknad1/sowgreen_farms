@@ -401,6 +401,42 @@ export const SearchPanel = ({
     [productId: string]: string
   }>({})
 
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     if (searchTerm.trim().length < 2) {
+  //       setProducts([])
+  //       return
+  //     }
+  //     setIsLoading(true)
+  //     try {
+  //       const response = await fetch(`/api/products?query=${searchTerm}`)
+  //       if (response.ok) {
+  //         const data = await response.json()
+  //         const fetchedProducts: Product[] = data.products.filter(
+  //           (p: Product) => p.isInStock !== "out-of-stock"
+  //         )
+  //         setProducts(fetchedProducts)
+
+  //         // Initialize selected variants with the first variant's ID for each product.
+  //         const initialVariantIds: { [productId: string]: string } = {}
+  //         fetchedProducts.forEach((product) => {
+  //           if (product.variants && product.variants.length > 0) {
+  //             initialVariantIds[product.id] = product.variants[0].id
+  //           }
+  //         })
+  //         setSelectedVariantIds(initialVariantIds)
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching products:", error)
+  //     } finally {
+  //       setIsLoading(false)
+  //     }
+  //   }
+
+  //   const debounceTimer = setTimeout(fetchProducts, 300)
+  //   return () => clearTimeout(debounceTimer)
+  // }, [searchTerm])
+
   useEffect(() => {
     const fetchProducts = async () => {
       if (searchTerm.trim().length < 2) {
@@ -411,15 +447,17 @@ export const SearchPanel = ({
       try {
         const response = await fetch(`/api/products?query=${searchTerm}`)
         if (response.ok) {
-          const data = await response.json()
-          const fetchedProducts: Product[] = data.products.filter(
+          // ✅ FIX: Use the response directly, since it's now an array
+          const fetchedProducts: Product[] = await response.json()
+
+          const availableProducts = fetchedProducts.filter(
             (p: Product) => p.isInStock !== "out-of-stock"
           )
-          setProducts(fetchedProducts)
+          setProducts(availableProducts)
 
-          // Initialize selected variants with the first variant's ID for each product.
+          // (The rest of your logic for initializing variants stays the same)
           const initialVariantIds: { [productId: string]: string } = {}
-          fetchedProducts.forEach((product) => {
+          availableProducts.forEach((product) => {
             if (product.variants && product.variants.length > 0) {
               initialVariantIds[product.id] = product.variants[0].id
             }
@@ -444,36 +482,6 @@ export const SearchPanel = ({
       [productId]: variantId,
     }))
   }
-
-  // 3. HANDLER CHANGE: Find the selected variant using its ID before adding.
-  // const handleAddProduct = (product: Product) => {
-  //   if (!product.variants || product.variants.length === 0) return
-
-  //   const selectedVariantId = selectedVariantIds[product.id]
-  //   const variant =
-  //     product.variants.find((v) => v.id === selectedVariantId) ||
-  //     product.variants[0]
-
-  //   const newProductOrder: ProductOrder = {
-  //     // Ensure your ProductOrder type includes `variantId`
-  //     id: `${product.id}-${variant.id}-${Date.now()}`,
-  //     variantId: variant.id,
-  //     productId: product.id,
-  //     orderId: "", // This will be set later
-  //     quantity: 1,
-  //     price: variant.price,
-  //     weight: variant.weight,
-  //     unit: variant.unit,
-  //     product: product,
-  //     available: true,
-  //   }
-
-  //   onAddProduct(newProductOrder)
-  //   setSearchTerm("")
-  //   setProducts([])
-  // }
-
-  // Inside your SearchPanel.tsx, in the handleAddProduct function...
 
   const handleAddProduct = (product: Product) => {
     if (!product.variants || product.variants.length === 0) return

@@ -66,6 +66,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
     Google,
   ],
+  useSecureCookies: process.env.NODE_ENV === "production",
   trustHost: true,
   callbacks: {
     async jwt({ token, user }) {
