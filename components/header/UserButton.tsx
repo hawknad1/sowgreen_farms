@@ -56,8 +56,6 @@ const UserButton = ({ user }: { user: UserProps }) => {
     getUser()
   }, [user?.email])
 
-  console.log(activeUser, "active")
-
   const handleLogout = async () => {
     await signOut({ redirect: false })
     router.push("/")
