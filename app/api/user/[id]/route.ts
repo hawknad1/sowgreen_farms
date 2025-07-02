@@ -24,7 +24,12 @@ export async function GET(
       },
     })
 
-    if (existingUser?.role !== "admin") {
+    if (!existingUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 })
+    }
+
+    // If the current user is not an admin AND is trying to access another user's data
+    if (existingUser.role !== "admin" && existingUser.email !== userEmail) {
       // Add this if you want admin-only access
       return NextResponse.json(
         { error: "Forbidden - You don't have permission" },
