@@ -3,18 +3,16 @@
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
-import { CitiesWithFees } from "@/types"
 import React, { forwardRef, useState } from "react"
-import AddCreditForm from "@/components/forms/AddCreditForm"
-import { formatCurrency } from "@/lib/utils"
+
 import UpdateBalanceForm from "./UpdateBalanceForm"
+import { Banknote } from "lucide-react"
 
 interface Props {
   customer: any
@@ -28,8 +26,14 @@ const UpdateBalanceDialog = forwardRef<HTMLDivElement, Props>(
       <div ref={ref}>
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" className="w-full">
-              Update Balance
+            <Button
+              variant={"outline"}
+              className={`w-full font-medium cursor-pointer `}
+            >
+              <div className="flex justify-center items-center gap-2 w-full">
+                <Banknote className="h-4 w-4 text-gray-700" />
+                <span className="text-sm">Update Balance</span>
+              </div>
             </Button>
           </DialogTrigger>
 

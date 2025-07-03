@@ -38,6 +38,7 @@ import toast from "react-hot-toast"
 import { useRouter } from "next/navigation"
 import { stepOneSchema, stepThreeSchema, stepTwoSchema } from "@/schemas"
 import Image from "next/image"
+import { PartnerType } from "../management/partners/PartnerForm"
 
 // Combine all schemas for submission
 const finalSchema = stepOneSchema.merge(stepTwoSchema).merge(stepThreeSchema)
@@ -48,6 +49,7 @@ export const AddProductModal = () => {
   const [currentStep, setCurrentStep] = useState(1) // Tracks the current step
   const [formData, setFormData] = useState<Partial<FormValues>>({}) // Stores form data across steps
   const [categories, setCategories] = useState([])
+  const [partners, setPartners] = useState<PartnerType[]>([])
   const [variations, setVariations] = useState([
     { price: 0, weight: "", unit: "" },
   ])
@@ -59,55 +61,11 @@ export const AddProductModal = () => {
   >([])
   const [isLoading, setIsLoading] = useState(false)
 
-  // const removeImage = async (e: React.FormEvent) => {
-  //   e.preventDefault()
-
-  //   try {
-  //     const res = await fetch("/api/removeImage", {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ publicId }),
-  //     })
-
-  //     if (res.ok) {
-  //       setProductImageUrl("")
-  //       setPublicId("")
-  //     }
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
-
   // Function to remove an image from the list
   const removeImage = (publicId: string) => {
     setImageList((prev) => prev.filter((image) => image.publicId !== publicId))
     toast.success("Image removed successfully!")
   }
-
-  // const removeImage = useCallback(async (publicId: string) => {
-  //   try {
-  //     setIsLoading(true)
-  //     const res = await fetch(`/api/removeImage`, {
-  //       method: "DELETE",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ publicId }),
-  //     })
-
-  //     if (res.ok) {
-  //       setImageList((prev) =>
-  //         prev.filter((image) => image.publicId !== publicId)
-  //       )
-  //       toast.success("Image removed successfully!")
-  //     } else {
-  //       toast.error("Failed to remove image from the database.")
-  //     }
-  //   } catch (error) {
-  //     console.error("Error removing image:", error)
-  //     toast.error("An error occurred while removing the image.")
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }, [])
 
   useEffect(() => {
     async function getCategories() {
@@ -127,13 +85,32 @@ export const AddProductModal = () => {
     getCategories()
   }, [])
 
+  // Fetch categories only once when the component mounts
+  useEffect(() => {
+    async function getPartners() {
+      try {
+        const res = await fetch("/api/management/partners", {
+          cache: "no-store",
+          method: "GET",
+        })
+        if (res.ok) {
+          const partners = await res.json()
+          setPartners(partners)
+        }
+      } catch (error) {
+        console.error("Error fetching partners:", error)
+      }
+    }
+    getPartners()
+  }, [])
+
   const form = useForm<FormValues>({
     resolver: zodResolver(
       currentStep === 1
         ? stepOneSchema
         : currentStep === 2
-        ? stepTwoSchema
-        : stepThreeSchema
+          ? stepTwoSchema
+          : stepThreeSchema
     ),
     defaultValues: {
       ...(formData as FormValues),
@@ -209,7 +186,7 @@ export const AddProductModal = () => {
           Add Product
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl p-6 bg-white rounded-lg">
+      <DialogContent className="max-w-3xl p-6 bg-white rounded-lg">
         <DialogHeader>
           <DialogTitle>Multi-Step Product Form</DialogTitle>
         </DialogHeader>
@@ -281,13 +258,55 @@ export const AddProductModal = () => {
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={form.control}
+                    name="partner"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormLabel>Partner</FormLabel>
+                        <Select
+                          onValueChange={(value) => {
+                            const selectedPartner = partners.find(
+                              (p) => p.id === value
+                            )
+                            field.onChange(selectedPartner || null)
+                          }}
+                          value={field.value?.id || undefined} // Use undefined instead of empty string
+                        >
+                          <SelectTrigger className="mt-2 mb-3">
+                            <SelectValue placeholder="Select Partner" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              <SelectLabel>Partner</SelectLabel>
+                              {partners.map((part) => (
+                                <SelectItem key={part.id} value={part.id}>
+                                  {part.brand}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                        {!field.value && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => field.onChange(null)}
+                          >
+                            Clear Selection
+                          </Button>
+                        )}
+                      </FormItem>
+                    )}
+                  />
                 </div>
                 <div className="flex gap-x-2.5 w-full items-center justify-between">
                   <FormField
                     control={form.control}
                     name="quantity"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="w-full">
                         <FormLabel className="text-sm md:text-base">
                           Quantity
                         </FormLabel>
@@ -307,7 +326,7 @@ export const AddProductModal = () => {
                     control={form.control}
                     name="isInStock"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="w-full">
                         <FormLabel className="text-sm md:text-base">
                           In Stock
                         </FormLabel>
@@ -335,7 +354,7 @@ export const AddProductModal = () => {
                     control={form.control}
                     name="discount"
                     render={({ field }) => (
-                      <FormItem>
+                      <FormItem className="w-full">
                         <FormLabel className="text-sm md:text-base">
                           Discount (%)
                         </FormLabel>

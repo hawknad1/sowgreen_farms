@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
       imageUrl,
       images,
       categoryName,
+      partner,
       quantity,
       discount,
       isInStock,
@@ -138,6 +139,7 @@ export async function POST(req: NextRequest) {
         images: images ?? [], // Default to empty array if not provided
         categoryName,
         quantity,
+        partnerId: partner ? partner.id : null, // Use the ID from the partner object
         discount: discount ?? null, // Set to null if not provided
         isInStock: isInStock || "out-of-stock", // Default to "out-of-stock" if not provided
         variants: {

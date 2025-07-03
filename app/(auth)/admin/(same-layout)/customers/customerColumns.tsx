@@ -13,7 +13,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useRouter } from "next/navigation"
 import { formatCurrency } from "@/lib/utils"
 import Link from "next/link"
 import { UserDetailType } from "@/types"
@@ -28,8 +27,8 @@ export const columns: ColumnDef<UserDetailType>[] = [
           table.getIsAllPageRowsSelected()
             ? true
             : table.getIsSomePageRowsSelected()
-            ? "indeterminate"
-            : false
+              ? "indeterminate"
+              : false
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"
@@ -94,8 +93,8 @@ export const columns: ColumnDef<UserDetailType>[] = [
           row.original.balance > 0
             ? "text-emerald-500 bg-emerald-500/15 border-emerald-300/15"
             : row.original.balance < 0
-            ? "text-red-500 bg-red-500/15 border-red-300/15"
-            : "bg-neutral-500/15 border-neutral-200"
+              ? "text-red-500 bg-red-500/15 border-red-300/15"
+              : "bg-neutral-500/15 border-neutral-200"
         } rounded-full flex justify-start items-center px-3 w-fit border tracking-wide`}
       >
         {formatCurrency(row.original.balance, "GHS")}
@@ -126,7 +125,7 @@ export const columns: ColumnDef<UserDetailType>[] = [
               </DropdownMenuItem>
             </div>
 
-            <Link href={`/admin/customers/${customer.email}`}>
+            {/* <Link href={`/admin/customers/${customer.email}`}>
               <Button
                 className="bg-black text-white"
                 // onClick={() =>
@@ -135,7 +134,7 @@ export const columns: ColumnDef<UserDetailType>[] = [
               >
                 Customer Details
               </Button>
-            </Link>
+            </Link> */}
           </DropdownMenuContent>
         </DropdownMenu>
       )

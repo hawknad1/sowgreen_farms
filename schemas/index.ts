@@ -321,6 +321,15 @@ export const stepOneSchema = z.object({
   discount: z.coerce.number().optional(),
   isInStock: z.string(),
   quantity: z.coerce.number().positive().optional(),
+  partner: z
+    .object({
+      id: z.string(),
+      brand: z.string(),
+      owner: z.string().optional(),
+      phone: z.string(),
+    })
+    .optional()
+    .nullable(),
 })
 
 export const stepTwoSchema = z.object({

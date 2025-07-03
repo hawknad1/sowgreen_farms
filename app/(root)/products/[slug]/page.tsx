@@ -660,10 +660,20 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
                     </span>
                   </span>
                 ) : (
-                  formatCurrency(
-                    selectedVariant?.price || product.variants[0]?.price,
-                    "GHS"
-                  )
+                  <p>
+                    {formatCurrency(
+                      selectedVariant?.price || product.variants[0]?.price,
+                      "GHS"
+                    )}
+                    <>
+                      {product.variants.length === 1 && (
+                        <span className="text-base font-medium text-neutral-500 ">
+                          /
+                          {`${selectedVariant?.weight}${selectedVariant?.unit}`}
+                        </span>
+                      )}
+                    </>
+                  </p>
                 )}
               </span>
             </div>
