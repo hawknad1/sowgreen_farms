@@ -61,6 +61,14 @@ export type CustomerDetailType = {
   orders?: Order[]
 }
 
+export type RepliedNote = {
+  text: string
+  sender: string
+  timestamp: string
+  read: boolean
+  readAt: string
+}
+
 export type OrderStatus =
   | "processing"
   | "confirmed"
@@ -81,6 +89,7 @@ export type Order = {
   remainingAmount?: number
   balanceDeducted?: number
   updatedBalance?: number
+  specialNotes?: string
   userWhatsappOptIn?: {
     customerPhone: string
     whatsappOptIn: boolean
@@ -88,6 +97,7 @@ export type Order = {
     method: "checkbox"
   }
   status: OrderStatus
+  repliedNotes: RepliedNote[]
   dispatchRider: Staff
   deliveryMethod?: string
   deliveryFee: number
@@ -103,6 +113,14 @@ export type Order = {
   products: ProductOrder[] // Change from Product[] to ProductOrder[]
   createdAt: string
 }
+
+// type Order = { ...; repliedNotes: RepliedNote[] };
+
+// export type RepliedNote = {
+//   text: String
+//   sender: String // e.g., "admin" or the admin's name
+//   timestamp: Date
+// }
 
 export type TCategory = {
   id: string

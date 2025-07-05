@@ -27,6 +27,7 @@ export const CheckoutSchema = z.object({
   city: z.string().min(1, "City is required"),
   address: z.string().min(1, "Address is required"),
   deliveryMethod: z.string().min(1, "Delivery method is required"),
+  specialNotes: z.string().optional(), // New field for special notes
   pickupOption: z.string().optional(), // Add pickupOption as optional
   whatsappOptIn: z.boolean().refine((val) => val, {
     message: "You must agree to receive WhatsApp updates",

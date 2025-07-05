@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  
 }
 
 datasource db {
@@ -130,9 +129,9 @@ model ShippingAddress {
 }
 
 model Product {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  title String  @unique
-  slug  String? @unique
+  id            String           @id @default(auto()) @map("_id") @db.ObjectId
+  title         String           @unique
+  slug          String?          @unique
   imageUrl      String
   images        Json?
   description   String
@@ -180,6 +179,14 @@ model ProductOrder {
   order         Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
+type RepliedNote {
+  text      String
+  sender    String // e.g., "admin" or the admin's name
+  timestamp DateTime  @default(now())
+  read      Boolean   @default(false)
+  readAt    DateTime?
+}
+
 model Order {
   id                       String           @id @default(auto()) @map("_id") @db.ObjectId
   referenceNumber          String
@@ -191,6 +198,8 @@ model Order {
   balanceApplied           Boolean?
   whatsappOptIn            Boolean?
   updatedOrderTotal        Float?
+  specialNotes             String?
+  repliedNotes             RepliedNote[]
   userWhatsappOptIn        Json?
   balanceDeducted          Float?
   remainingAmount          Float?

@@ -15,8 +15,8 @@
 // import { CheckoutSchema } from "@/schemas"
 // import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
 // import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
+// import { Badge } from "@/components/ui/badge"
 
-// // Define types for props
 // interface DeliveryMethodProps {
 //   setSelectedDeliveryMethod: (method: string) => void
 //   selectedDeliveryMethod: string
@@ -46,14 +46,14 @@
 //           method: "GET",
 //           cache: "no-store",
 //         })
-//         if (res.ok) {
-//           const data = await res.json()
-//           setPickupOptions(
-//             data.map((option: { id: string; location: string }) =>
-//               option.location.trim()
-//             )
-//           )
-//         }
+// if (res.ok) {
+//   const data = await res.json()
+//   setPickupOptions(
+//     data.map((option: { id: string; location: string }) =>
+//       option.location.trim()
+//     )
+//   )
+// }
 //       } catch (error) {
 //         console.error("Error fetching pickup options:", error)
 //       }
@@ -74,131 +74,130 @@
 //   }, [selectedDeliveryMethod, selectedPickupOption, form])
 
 //   return (
-//     <div className="border border-neutral-300 w-full h-fit p-4 rounded-lg">
-//       <FormField
-//         control={form.control}
-//         name="deliveryMethod"
-//         render={({ field }) => (
-//           <FormItem className="space-y-3">
-//             <FormControl>
-//               <RadioGroup
-//                 onValueChange={(value) => {
-//                   field.onChange(value) // Update form state
-//                   setSelectedDeliveryMethod(value)
-
-//                   // Clear pickup option if not "Schedule Pickup"
-//                   if (value !== "schedule-pickup") {
-//                     setSelectedPickupOption("")
-//                   }
-//                 }}
-//                 defaultValue={field.value}
-//                 className="flex flex-col"
-//               >
-//                 {deliveryMethods.map((option) => (
-//                   <div key={option.value}>
-//                     <FormItem
-//                       className={`flex items-center space-x-3 space-y-0 px-3 py-2 rounded-lg ${
-//                         selectedDeliveryMethod === option.value
-//                           ? "border border-neutral-400"
-//                           : "border border-transparent"
-//                       }`}
-//                     >
-//                       <FormControl>
-//                         <RadioGroupItem
-//                           value={option.value}
-//                           onClick={() => setSelectedDeliveryDate(option.date)}
-//                         />
-//                       </FormControl>
-//                       <FormLabel className="font-semibold flex items-center gap-x-2 text-xs md:text-sm lg:text-base">
+//     <FormField
+//       control={form.control}
+//       name="deliveryMethod"
+//       render={({ field }) => (
+//         <FormItem className="space-y-3">
+//           <FormControl>
+//             <RadioGroup
+//               onValueChange={(value) => {
+//                 field.onChange(value)
+//                 setSelectedDeliveryMethod(value)
+//                 if (value !== "schedule-pickup") {
+//                   setSelectedPickupOption("")
+//                 }
+//               }}
+//               defaultValue={field.value}
+//               className="space-y-4"
+//             >
+//               {deliveryMethods.map((option) => (
+//                 <div key={option.value}>
+//                   <FormItem
+//                     className={`flex items-start space-x-3 space-y-0 p-4 rounded-lg border transition-all ${
+//                       selectedDeliveryMethod === option.value
+//                         ? "border-primary bg-primary/5"
+//                         : "border-gray-200 hover:border-primary/50"
+//                     }`}
+//                   >
+//                     <FormControl>
+//                       <RadioGroupItem
+//                         value={option.value}
+//                         onClick={() => setSelectedDeliveryDate(option.date)}
+//                         className="mt-0.5 text-primary"
+//                       />
+//                     </FormControl>
+//                     <div className="space-y-1">
+//                       <FormLabel className="font-semibold text-base cursor-pointer">
 //                         {option.label}
 //                         {option.tag && (
-//                           <span className="font-medium text-green-600 ">
+//                           <Badge variant="secondary" className="ml-2">
 //                             {option.tag}
-//                           </span>
-//                         )}
-//                         {option.date && (
-//                           <span className="font-medium text-green-600">
-//                             - {option.date}
-//                           </span>
+//                           </Badge>
 //                         )}
 //                       </FormLabel>
-//                     </FormItem>
+//                       {option.date && (
+//                         <p className="text-sm text-gray-600">
+//                           Delivery date: {option.date}
+//                         </p>
+//                       )}
+//                     </div>
+//                   </FormItem>
 
-//                     {/* Conditionally render the pickup options if 'Schedule Pickup' is selected */}
-//                     {option.value === "schedule-pickup" &&
-//                       selectedDeliveryMethod === "schedule-pickup" && (
-//                         <div className="ml-8 mt-3 space-y-3">
-//                           <p className="font-semibold">Pickup Options:</p>
-//                           <RadioGroup
-//                             onValueChange={(pickupValue) => {
-//                               setSelectedPickupOption(pickupValue)
-//                               form.clearErrors("deliveryMethod") // Clear error when a pickup option is selected
-//                             }}
-//                             value={selectedPickupOption}
-//                             className="flex flex-col"
-//                           >
-//                             {pickupOptions.map((pickupOption, index) => {
-//                               const normalizedOption = pickupOption
-//                                 .trim()
-//                                 .toUpperCase()
-//                               const date =
-//                                 normalizedOption === "DZORWULU"
-//                                   ? formatDeliveryDate(wednesday)
-//                                   : [
-//                                       "WEB DuBOIS CENTER",
-//                                       "PARKS & GARDENS",
-//                                     ].some(
+//                   {option.value === "schedule-pickup" &&
+//                     selectedDeliveryMethod === "schedule-pickup" && (
+//                       <div className="ml-8 mt-3 space-y-3">
+//                         <p className="font-medium text-gray-700">
+//                           Select pickup location:
+//                         </p>
+//                         <RadioGroup
+//                           onValueChange={(pickupValue) => {
+//                             setSelectedPickupOption(pickupValue)
+//                             form.clearErrors("deliveryMethod")
+//                           }}
+//                           value={selectedPickupOption}
+//                           className="space-y-2"
+//                         >
+//                           {pickupOptions.map((pickupOption, index) => {
+//                             const normalizedOption = pickupOption
+//                               .trim()
+//                               .toUpperCase()
+//                             const date =
+//                               normalizedOption === "DZORWULU"
+//                                 ? formatDeliveryDate(wednesday)
+//                                 : ["WEB DuBOIS CENTER", "PARKS & GARDENS"].some(
 //                                       (loc) =>
 //                                         loc.toUpperCase() === normalizedOption
 //                                     )
 //                                   ? formatDeliveryDate(saturday)
 //                                   : null
 
-//                               return (
-//                                 <FormItem
-//                                   key={`${pickupOption}-${index}`}
-//                                   className={`flex items-center space-x-3 p-2 rounded-lg ${
-//                                     selectedPickupOption === pickupOption
-//                                       ? "border border-neutral-400"
-//                                       : "border border-transparent"
-//                                   }`}
-//                                 >
-//                                   <FormControl>
-//                                     <RadioGroupItem
-//                                       value={pickupOption}
-//                                       onClick={() =>
-//                                         setSelectedDeliveryDate(date || "")
-//                                       }
-//                                     />
-//                                   </FormControl>
-//                                   <FormLabel className="flex flex-col text-xs md:text-sm">
-//                                     <span>{pickupOption}</span>
-//                                     {date && (
-//                                       <span className="text-gray-500 text-xs md:text-sm">
-//                                         {`${date} - 11AM - 5PM`}
-//                                       </span>
-//                                     )}
+//                             return (
+//                               <FormItem
+//                                 key={`${pickupOption}-${index}`}
+//                                 className={`flex items-start space-x-3 p-3 rounded-lg border transition-all ${
+//                                   selectedPickupOption === pickupOption
+//                                     ? "border-primary bg-primary/5"
+//                                     : "border-gray-200 hover:border-primary/50"
+//                                 }`}
+//                               >
+//                                 <FormControl>
+//                                   <RadioGroupItem
+//                                     value={pickupOption}
+//                                     onClick={() =>
+//                                       setSelectedDeliveryDate(date || "")
+//                                     }
+//                                     className="mt-0.5 text-primary"
+//                                   />
+//                                 </FormControl>
+//                                 <div className="space-y-1">
+//                                   <FormLabel className="font-medium text-sm cursor-pointer">
+//                                     {pickupOption}
 //                                   </FormLabel>
-//                                 </FormItem>
-//                               )
-//                             })}
-//                           </RadioGroup>
-//                         </div>
-//                       )}
-//                   </div>
-//                 ))}
-//               </RadioGroup>
-//             </FormControl>
-//             {/* <FormMessage /> */}
-//             {form.formState.errors.deliveryMethod && (
-//               <FormMessage>
-//                 {form.formState.errors.deliveryMethod.message}
-//               </FormMessage>
-//             )}
-//           </FormItem>
-//         )}
-//       />
-//     </div>
+//                                   {date && (
+//                                     <p className="text-xs text-gray-500">
+//                                       Available: {date} (11AM - 5PM)
+//                                     </p>
+//                                   )}
+//                                 </div>
+//                               </FormItem>
+//                             )
+//                           })}
+//                         </RadioGroup>
+//                       </div>
+//                     )}
+//                 </div>
+//               ))}
+//             </RadioGroup>
+//           </FormControl>
+//           {form.formState.errors.deliveryMethod && (
+//             <FormMessage className="text-red-600">
+//               {form.formState.errors.deliveryMethod.message}
+//             </FormMessage>
+//           )}
+//         </FormItem>
+//       )}
+//     />
 //   )
 // }
 
@@ -219,8 +218,8 @@ import { deliveryMethods } from "@/constants"
 import { CheckoutSchema } from "@/schemas"
 import { getUpcomingDeliveryDates } from "@/lib/getUpcomingDeliveryDates"
 import { formatDeliveryDate } from "@/lib/formateDeliveryDate"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { CheckCircle2 } from "lucide-react"
 
 interface DeliveryMethodProps {
   setSelectedDeliveryMethod: (method: string) => void
@@ -305,13 +304,18 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                         : "border-gray-200 hover:border-primary/50"
                     }`}
                   >
-                    <FormControl>
-                      <RadioGroupItem
-                        value={option.value}
-                        onClick={() => setSelectedDeliveryDate(option.date)}
-                        className="mt-0.5 text-primary"
-                      />
-                    </FormControl>
+                    <div className="flex items-center">
+                      <FormControl>
+                        <RadioGroupItem
+                          value={option.value}
+                          onClick={() => setSelectedDeliveryDate(option.date)}
+                          className="mt-0.5 text-primary"
+                        />
+                      </FormControl>
+                      {selectedDeliveryMethod === option.value && (
+                        <CheckCircle2 className="ml-2 h-4 w-4 text-green-500" />
+                      )}
+                    </div>
                     <div className="space-y-1">
                       <FormLabel className="font-semibold text-base cursor-pointer">
                         {option.label}
@@ -351,11 +355,11 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                               normalizedOption === "DZORWULU"
                                 ? formatDeliveryDate(wednesday)
                                 : ["WEB DuBOIS CENTER", "PARKS & GARDENS"].some(
-                                    (loc) =>
-                                      loc.toUpperCase() === normalizedOption
-                                  )
-                                ? formatDeliveryDate(saturday)
-                                : null
+                                      (loc) =>
+                                        loc.toUpperCase() === normalizedOption
+                                    )
+                                  ? formatDeliveryDate(saturday)
+                                  : null
 
                             return (
                               <FormItem
@@ -366,15 +370,20 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
                                     : "border-gray-200 hover:border-primary/50"
                                 }`}
                               >
-                                <FormControl>
-                                  <RadioGroupItem
-                                    value={pickupOption}
-                                    onClick={() =>
-                                      setSelectedDeliveryDate(date || "")
-                                    }
-                                    className="mt-0.5 text-primary"
-                                  />
-                                </FormControl>
+                                <div className="flex items-center">
+                                  <FormControl>
+                                    <RadioGroupItem
+                                      value={pickupOption}
+                                      onClick={() =>
+                                        setSelectedDeliveryDate(date || "")
+                                      }
+                                      className="mt-0.5 text-primary"
+                                    />
+                                  </FormControl>
+                                  {selectedPickupOption === pickupOption && (
+                                    <CheckCircle2 className="ml-2 h-4 w-4 text-green-500" />
+                                  )}
+                                </div>
                                 <div className="space-y-1">
                                   <FormLabel className="font-medium text-sm cursor-pointer">
                                     {pickupOption}

@@ -511,6 +511,7 @@ const ConfirmOrderPage = () => {
         orderNumber,
         deliveryDate,
         deliveryFee: deliveryFee,
+        specialNotes: shippingInfo.specialNotes,
         referenceNumber: reference?.reference || "cash-on-delivery",
         cardType: verifyData?.cardType,
         last4Digits: verifyData?.last4Digits,
@@ -634,6 +635,10 @@ const ConfirmOrderPage = () => {
                     {formData?.email || "N/A"}
                   </p>
                 </div>
+                <p className="text-xs mt-5 italic md:text-sm font-medium text-gray-700">
+                  NOTES: <br />
+                  <span className="line-clamp-2">{formData.specialNotes}</span>
+                </p>
               </div>
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-primary pb-2 mb-4 flex items-center">
@@ -688,7 +693,7 @@ const ConfirmOrderPage = () => {
                   Information
                 </h2>
                 <div className="bg-blue-50/50 p-4 sm:p-6 rounded-lg border border-blue-100 mb-4 flex-grow">
-                  <div className="space-y-3">
+                  <div className="space-y-1.5">
                     <p className="text-sm md:text-base text-gray-700">
                       {formData?.name || "N/A"}
                     </p>
@@ -705,6 +710,12 @@ const ConfirmOrderPage = () => {
                       {formData?.email || "N/A"}
                     </p>
                   </div>
+                  <p className="text-xs mt-5 italic md:text-sm font-medium text-gray-700">
+                    NOTES: <br />
+                    <span className="line-clamp-2">
+                      {formData.specialNotes}
+                    </span>
+                  </p>
                 </div>
                 <div className="mt-auto">
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-primary pb-2 mb-4 flex items-center">

@@ -38,7 +38,9 @@ const ThankYouPage = () => {
     products,
     total,
     subtotal,
+    specialNotes,
     deliveryDate,
+
     deliveryMethod,
   } = ordersData || {}
 
@@ -155,6 +157,30 @@ const ThankYouPage = () => {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Special Note Card */}
+            {/* <Card>
+              <CardHeader>
+                <CardTitle>Note</CardTitle>
+              </CardHeader>
+              <CardContent className="p">
+                <p className="text-sm text-gray-600">
+                  Contact our customer support for any questions about your
+                  order.
+                </p>
+              </CardContent>
+            </Card> */}
+
+            {specialNotes && (
+              <div className="bg-white rounded-lg flex flex-col gap-2 shadow-sm p-2 border">
+                <h3 className="text-lg px-4  font-semibold leading-none tracking-tight">
+                  Note:
+                </h3>
+                <p className="text-sm px-4 line-clamp-1 text-gray-600">
+                  {specialNotes}
+                </p>
+              </div>
+            )}
 
             {/* Customer Support Card */}
             <Card>

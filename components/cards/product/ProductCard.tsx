@@ -123,7 +123,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ data, loading = false }) => {
       })
       toast.success("Added to cart")
     } else {
-      router.push(`/products/${data.id}`)
+      router.push(`/products/${data.slug}`)
     }
   }
 

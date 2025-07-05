@@ -330,3 +330,53 @@ export async function PUT(
     return NextResponse.json({ message: error }, { status: 500 })
   }
 }
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const session = await auth()
+  const orderId = params.id
+
+  // 1. Authorization: Ensure an admin is logged in
+  if (!session?.user?.email) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
+  // You can add a check for admin role if needed
+
+  try {
+    const body = await req.json()
+    const { repliedNote } = body
+
+    if (!repliedNote) {
+      return NextResponse.json(
+        { error: "Replied note content is missing" },
+        { status: 400 }
+      )
+    }
+
+    // 2. Use Prisma's 'push' to add the new note to the array
+    const updatedOrder = await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        repliedNotes: {
+          push: {
+            text: repliedNote,
+            sender: session.user.name || "Admin", // Use admin's name or a default
+            read: false, // Mark as unread by default
+
+            // The timestamp is set by default in the schema
+          },
+        },
+      },
+    })
+
+    // 3. Return the entire updated order object
+    return NextResponse.json(updatedOrder, { status: 200 })
+  } catch (error) {
+    console.error("Failed to update order:", error)
+    return NextResponse.json({ error: "Something went wrong" }, { status: 500 })
+  }
+}
