@@ -291,6 +291,10 @@ export const StaffSchema = z.object({
   phone: z.string().regex(phoneRegex, "Invalid Number!"),
 })
 
+export const EditNotesSchema = z.object({
+  specialNotes: z.string().optional(),
+})
+
 export const AddPartnerSchema = z.object({
   brand: z.string().min(1, { message: "Brand is required!" }),
   owner: z.string().optional(),

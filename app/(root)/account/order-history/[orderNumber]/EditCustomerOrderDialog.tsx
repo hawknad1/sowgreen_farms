@@ -166,8 +166,8 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          size="sm"
-          className="gap-2"
+          // size="sm"
+          className="gap-2 text-xs lg:text-sm"
           disabled={isReadOnly}
         >
           <Pencil className="h-4 w-4" />

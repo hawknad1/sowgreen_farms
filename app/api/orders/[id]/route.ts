@@ -136,6 +136,7 @@ export async function PUT(
       deliveryMethod,
       whatsappOptIn,
       deliveryFee,
+      specialNotes,
       subtotal,
       shippingAddress,
       referenceNumber,
@@ -310,6 +311,7 @@ export async function PUT(
         whatsappOptIn: whatsappOptInBool,
         updatedBalance,
         creditAppliedTotal,
+        specialNotes,
         shippingAddress: {
           update: {
             address,

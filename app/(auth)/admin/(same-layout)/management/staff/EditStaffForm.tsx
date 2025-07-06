@@ -34,8 +34,6 @@ const EditStaffForm = ({ staff }: Props) => {
   const [isSaving, setIsSaving] = useState(false)
   const { data: session } = useSession()
   const user = session?.user
-  console.log(staff, "staff")
-  console.log(user, "user--")
 
   const form = useForm<z.infer<typeof StaffSchema>>({
     resolver: zodResolver(StaffSchema),

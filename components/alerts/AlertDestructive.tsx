@@ -10,7 +10,7 @@ export function AlertDestructive({ message }: AlertDestructiveProps) {
   return (
     <Alert variant="destructive" className="bg-red-500/15">
       <AlertCircle className="h-4 w-4" />
-      <AlertTitle>Error</AlertTitle>
+      <AlertTitle>Attention!</AlertTitle>
       <AlertDescription className="">{message}</AlertDescription>
     </Alert>
   )

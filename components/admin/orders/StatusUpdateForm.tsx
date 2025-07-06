@@ -23,6 +23,7 @@ import {
 import { Order, OrderStatus } from "@/types"
 import { UpdateStatusSchema } from "@/schemas"
 import {
+  sendCustomerNoteGroup,
   sendOrderConfirmation,
   sendOrderConfirmationGroup,
 } from "@/lib/actions/sendWhatsappMessage"
@@ -166,6 +167,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
         await Promise.all([
           sendOrderConfirmation(updatedOrder),
           sendOrderConfirmationGroup(updatedOrder),
+          sendCustomerNoteGroup(updatedOrder),
         ]).catch((error) => {
           console.error("Failed to send notifications:", error)
           throw new Error("Notifications failed to send")

@@ -138,8 +138,6 @@ export async function POST(request: NextRequest) {
 
     const order = (await request.json()) as Order
 
-    console.log(order, "order")
-
     if (
       !order ||
       typeof order.orderNumber !== "string" ||
@@ -288,11 +286,6 @@ export async function POST(request: NextRequest) {
     const message = await twilioClient.conversations.v1
       .conversations(targetConversationSid) // Use SID from .env
       .messages.create(messageData)
-
-    console.log(messageData.body, "messageData.body")
-    console.log(message, "message")
-    console.log(calculatedBodyForTemplate, "calculatedBodyForTemplate")
-    console.log(allTemplateVariables, "allTemplateVariables")
 
     await prisma.conversationMessage.create({
       data: {
