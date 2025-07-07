@@ -85,7 +85,7 @@ const EditNotesDialog = ({ order, className }: Props) => {
       <div className="flex justify-between items-center mt-2">
         <div>
           <h3 className="font-medium text-sm">
-            NOTE: <br />
+            NOTES: <br />
             <span className="text-sm line-clamp-1">{order?.specialNotes}</span>
           </h3>
         </div>

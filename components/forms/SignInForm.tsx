@@ -20,6 +20,7 @@ import { FormSuccess } from "@/components/form-success"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff } from "lucide-react"
+import Link from "next/link"
 
 interface PasswordInputProps {
   field: any
@@ -116,13 +117,38 @@ function SignInForm() {
               </FormItem>
             )}
           />
-          <FormField
+          {/* <FormField
             control={form.control}
             name="password"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Password</FormLabel>
 
+                <FormControl>
+                  <PasswordInput
+                    field={field}
+                    disabled={loading}
+                    placeholder="******"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex justify-between items-center">
+                  <FormLabel>Password</FormLabel>
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm font-medium text-primary hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
                 <FormControl>
                   <PasswordInput
                     field={field}

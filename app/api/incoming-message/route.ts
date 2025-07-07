@@ -130,7 +130,7 @@ export async function POST(req: NextRequest) {
       // 1. Mark replies as read
       const order = await prisma.order.findUnique({
         where: { id: orderId },
-        select: { repliedNotes: true, orderNumber: true },
+        select: { repliedNotes: true, orderNumber: true, specialNotes: true },
       })
 
       if (!order) {
@@ -151,7 +151,8 @@ export async function POST(req: NextRequest) {
 
       // 2. Send the latest reply
       const lastReply = updatedNotes[updatedNotes.length - 1]
-      const messageText = `Your order #${order.orderNumber} reply:\n\n${lastReply.sender}: ${lastReply.text}`
+      // const messageText = `Your order #${order.orderNumber} reply:\n\n${lastReply.sender}: ${lastReply.text}`
+      const messageText = `Your order #${order.orderNumber} - Reply from our team:\nYour Note:\n${order?.specialNotes}\n\nAdmin Response (${lastReply.sender}):\n${lastReply.text}`
 
       // 2. Fetch the order with updated read status
 

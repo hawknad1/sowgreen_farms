@@ -392,8 +392,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
         ? `233${phoneNumber.substring(1)}`
         : phoneNumber
 
-      console.log("Sending WhatsApp message to:", formattedPhone)
-
       const whatsappResponse = await fetch("/api/whatsapp/reply-note", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -414,7 +412,6 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
       }
 
       const whatsappResult = await whatsappResponse.json()
-      console.log("WhatsApp message sent:", whatsappResult.sid)
 
       setSendStatus({ success: true, message: "Reply sent successfully!" })
     } catch (error) {

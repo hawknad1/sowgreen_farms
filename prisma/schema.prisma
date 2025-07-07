@@ -100,6 +100,17 @@ model Authenticator {
   @@unique([userId, credentialId])
 }
 
+model PasswordResetToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String
+  token     String   @unique
+  expires   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
 model Category {
   id           String    @id @default(auto()) @map("_id") @db.ObjectId
   categoryName String    @unique
