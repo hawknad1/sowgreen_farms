@@ -119,49 +119,7 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json({ success: true })
     }
-    // Handle direct customer messages
-    else if (body) {
-      // Find most recent order for this phone number
-      const order = await prisma.order.findFirst({
-        where: {
-          shippingAddress: {
-            phone: {
-              contains: phoneNumber.slice(-9), // Match last 9 digits
-            },
-          },
-        },
-        orderBy: { createdAt: "desc" },
-      })
 
-      if (order) {
-        await Promise.all([
-          prisma.order.update({
-            where: { id: order.id },
-            data: { customerLastMessagedAt: new Date() },
-          }),
-          prisma.whatsappMessage.create({
-            data: {
-              content: body,
-              sender: "customer",
-              orderId: order.id,
-            },
-          }),
-          twilioClient.messages.create({
-            from: `whatsapp:${whatsappNumber}`,
-            to: from,
-            // body: "Thanks for your message! Our team will respond shortly.",
-          }),
-        ])
-      } else {
-        await twilioClient.messages.create({
-          from: `whatsapp:${whatsappNumber}`,
-          to: from,
-          body: "Thanks for your message. Please provide your order number for assistance.",
-        })
-      }
-
-      return NextResponse.json({ success: true })
-    }
     // Handle order confirmation requests
     else if (buttonPayload && isValidObjectId(buttonPayload)) {
       const order = await getFullOrderDetails(buttonPayload)
@@ -198,6 +156,104 @@ export async function POST(req: NextRequest) {
       }
 
       return NextResponse.json({ success: true, messageSids: sentMessageSids })
+    }
+    // Handle direct customer messages
+    else if (body) {
+      // Find most recent order for this phone number
+      // const order = await prisma.order.findFirst({
+      //   where: {
+      //     shippingAddress: {
+      //       phone: {
+      //         contains: phoneNumber.slice(-9), // Match last 9 digits
+      //       },
+      //     },
+      //   },
+      //   orderBy: { createdAt: "desc" },
+      // })
+
+      // if (order) {
+      //   await Promise.all([
+      //     prisma.order.update({
+      //       where: { id: order.id },
+      //       data: { customerLastMessagedAt: new Date() },
+      //     }),
+      //     prisma.whatsappMessage.create({
+      //       data: {
+      //         content: body,
+      //         sender: "customer",
+      //         orderId: order.id,
+      //       },
+      //     }),
+      //     twilioClient.messages.create({
+      //       from: `whatsapp:${whatsappNumber}`,
+      //       to: from,
+      //       // body: "Thanks for your message! Our team will respond shortly.",
+      //     }),
+      //   ])
+      // } else {
+      //   await twilioClient.messages.create({
+      //     from: `whatsapp:${whatsappNumber}`,
+      //     to: from,
+      //     body: "Thanks for your message. Please provide your order number for assistance.",
+      //   })
+      // }
+      const order = await prisma.order.findFirst({
+        where: {
+          shippingAddress: {
+            phone: {
+              contains: phoneNumber.slice(-9), // Match last 9 digits
+            },
+          },
+        },
+        orderBy: { createdAt: "desc" },
+        include: {
+          whatsappConversation: {
+            where: {
+              content: body,
+              sender: "customer",
+            },
+            take: 1,
+          },
+        },
+      })
+
+      if (order) {
+        // Only save if this exact message doesn't already exist
+        if (order.whatsappConversation.length === 0) {
+          await Promise.all([
+            prisma.order.update({
+              where: { id: order.id },
+              data: {
+                customerLastMessagedAt: new Date(),
+                // Only set specialNotes if it's empty
+                ...(!order.specialNotes && { specialNotes: body }),
+              },
+            }),
+            prisma.whatsappMessage.create({
+              data: {
+                content: body,
+                sender: "customer",
+                orderId: order.id,
+              },
+            }),
+          ])
+        } else {
+          // Just update the timestamp if message exists
+          await prisma.order.update({
+            where: { id: order.id },
+            data: { customerLastMessagedAt: new Date() },
+          })
+        }
+
+        await twilioClient.messages.create({
+          from: `whatsapp:${whatsappNumber}`,
+          to: from,
+          // body: "Thanks for your message! Our team will respond shortly.",
+          body: "",
+        })
+      }
+
+      return NextResponse.json({ success: true })
     }
 
     return NextResponse.json(
