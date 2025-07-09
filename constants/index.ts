@@ -41,6 +41,8 @@ import {
   Salad,
   ListOrdered,
   LayoutDashboard,
+  MessageSquareCode,
+  MessageSquare,
 } from "lucide-react"
 
 export const menuLinks = [
@@ -351,6 +353,11 @@ export const sidebarLinks = {
         //   url: "/admin/broadcast-message",
         // },
       ],
+    },
+    {
+      title: "Messages",
+      url: "/admin/chat",
+      icon: MessageSquare,
     },
     {
       title: "Customers",

@@ -75,6 +75,62 @@ import { NextResponse } from "next/server"
 const contentSid = process.env.TWILIO_TEMPLATE_CONTENT_SID_NOTES!
 const whatsappNumber = process.env.TWILIO_WHATSAPP_SENDER!
 
+// export async function POST(req: Request) {
+//   try {
+//     const session = await auth()
+//     // Assuming you also pass the orderId when calling this endpoint
+//     const { to, order } = await req.json()
+
+//     const orderId = order?.id
+//     const name = order?.shippingAddress?.name
+
+//     // if (!session) {
+//     //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+//     // }
+
+//     // const user = await prisma.user.findUnique({
+//     //   where: { email: session.user?.email! },
+//     // })
+
+//     // if (user?.role !== "admin") {
+//     //   return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+//     // }
+
+//     // if (!to || !name || !orderId) {
+//     //   return NextResponse.json(
+//     //     { error: "Missing 'to', 'name', or 'orderId'" },
+//     //     { status: 400 }
+//     //   )
+//     // }
+
+//     const message = await twilioClient.messages.create({
+//       contentSid,
+//       contentVariables: JSON.stringify({
+//         1: name, // Example: Customer's name
+//         2: "Sowgreen Farms", // Example: Your company name
+//         3: order?.orderNumber, // Example: The note content
+//         // highlight-start
+//         // Set a unique payload for the reply button
+//         4: `reply_to_${orderId}`,
+//         // highlight-end
+//       }),
+//       from: `whatsapp:${whatsappNumber}`,
+//       to: `whatsapp:${to}`,
+//     })
+
+//     return NextResponse.json({
+//       success: true,
+//       sid: message.sid,
+//     })
+//   } catch (error: any) {
+//     console.error("Twilio Error:", error)
+//     return NextResponse.json(
+//       { error: "Failed to send message", details: error.message },
+//       { status: 500 }
+//     )
+//   }
+// }
+
 export async function POST(req: Request) {
   try {
     const session = await auth()
@@ -84,35 +140,14 @@ export async function POST(req: Request) {
     const orderId = order?.id
     const name = order?.shippingAddress?.name
 
-    // if (!session) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    // }
-
-    // const user = await prisma.user.findUnique({
-    //   where: { email: session.user?.email! },
-    // })
-
-    // if (user?.role !== "admin") {
-    //   return NextResponse.json({ error: "Forbidden" }, { status: 403 })
-    // }
-
-    // if (!to || !name || !orderId) {
-    //   return NextResponse.json(
-    //     { error: "Missing 'to', 'name', or 'orderId'" },
-    //     { status: 400 }
-    //   )
-    // }
-
     const message = await twilioClient.messages.create({
       contentSid,
       contentVariables: JSON.stringify({
         1: name, // Example: Customer's name
         2: "Sowgreen Farms", // Example: Your company name
         3: order?.orderNumber, // Example: The note content
-        // highlight-start
         // Set a unique payload for the reply button
         4: `reply_to_${orderId}`,
-        // highlight-end
       }),
       from: `whatsapp:${whatsappNumber}`,
       to: `whatsapp:${to}`,

@@ -199,9 +199,9 @@ type RepliedNote {
 }
 
 model Order {
-  id                       String           @id @default(auto()) @map("_id") @db.ObjectId
+  id                       String            @id @default(auto()) @map("_id") @db.ObjectId
   referenceNumber          String
-  orderNumber              String           @unique
+  orderNumber              String            @unique
   total                    Float?
   totalDue                 Float?
   subtotal                 Float?
@@ -216,27 +216,57 @@ model Order {
   remainingAmount          Float?
   updatedBalance           Float?
   creditAppliedDeliveryFee Float?
-  status                   String?          @default("processing")
-  dispatchRiderId          String?          @db.ObjectId
-  dispatchRider            DispatchRider?   @relation(fields: [dispatchRiderId], references: [id], onDelete: Cascade)
-  shippingAddressId        String?          @db.ObjectId
-  shippingAddress          ShippingAddress? @relation(fields: [shippingAddressId], references: [id])
+  status                   String?           @default("processing")
+  dispatchRiderId          String?           @db.ObjectId
+  dispatchRider            DispatchRider?    @relation(fields: [dispatchRiderId], references: [id], onDelete: Cascade)
+  shippingAddressId        String?           @db.ObjectId
+  shippingAddress          ShippingAddress?  @relation(fields: [shippingAddressId], references: [id])
   products                 ProductOrder[]
   deliveryMethod           String?
   deliveryFee              Int?
-  customerId               String?          @db.ObjectId
-  customer                 Customer?        @relation(fields: [customerId], references: [id])
+  customerId               String?           @db.ObjectId
+  customer                 Customer?         @relation(fields: [customerId], references: [id])
   deliveryDate             String?
   cardType                 String?
   last4Digits              String?
   paymentMode              String?
   paymentAction            String?
+  customerLastMessagedAt   DateTime? // Track when customer last messaged
+  whatsappConversation     WhatsappMessage[] // Store conversation history
   // Add relationship to User
-  userId                   String?          @db.ObjectId
-  user                     User?            @relation(fields: [userId], references: [id], name: "UserOrders")
-  createdAt                DateTime         @default(now())
-  updatedAt                DateTime         @updatedAt
+  userId                   String?           @db.ObjectId
+  user                     User?             @relation(fields: [userId], references: [id], name: "UserOrders")
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
 }
+
+model WhatsappMessage {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  contactPhone String? // ADD THIS: The customer's phone number, the new primary conversation key
+  orderId      String    @db.ObjectId
+  order        Order     @relation(fields: [orderId], references: [id])
+  content      String
+  sender       String // 'customer' or 'admin'
+  timestamp    DateTime  @default(now())
+  read         Boolean   @default(false)
+  readAt       DateTime?
+
+  @@index([contactPhone]) // ADD THIS: Add an index for faster lookups
+}
+
+// model WhatsappMessage {
+//   id           String    @id @default(auto()) @map("_id") @db.ObjectId
+//   contactPhone String    // ADD THIS: The customer's phone number, the new primary conversation key
+//   orderId      String?   @db.ObjectId // CHANGE THIS: Make orderId optional
+//   order        Order?    @relation(fields: [orderId], references: [id], onDelete: SetNull) // CHANGE THIS: Make order relation optional
+//   content      String
+//   sender       String    // 'customer' or 'admin'
+//   timestamp    DateTime  @default(now())
+//   read         Boolean   @default(false)
+//   readAt       DateTime?
+
+//   @@index([contactPhone]) // ADD THIS: Add an index for faster lookups
+// }
 
 model PickupLocations {
   id      String  @id @default(auto()) @map("_id") @db.ObjectId

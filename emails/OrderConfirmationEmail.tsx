@@ -12,7 +12,7 @@ import {
   Hr,
 } from "@react-email/components"
 import { Product, ShippingAddress } from "@/types"
-import { date } from "@/lib/utils"
+import { date, formatCurrency } from "@/lib/utils"
 
 interface OrderConfirmationEmailProps {
   order: Order
@@ -27,6 +27,7 @@ export type Order = {
   dispatchRider?: string
   deliveryMethod: string
   deliveryFee: number
+  creditAppliedTotal: number
   shippingAddress: ShippingAddress
   products: ProductOrder[]
   createdAt: string | Date
@@ -49,10 +50,13 @@ export type ProductOrder = {
 const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
   order,
 }) => {
+  const balance = order?.creditAppliedTotal
+  const totalAmount = order?.total + balance
+  const totalDue = totalAmount + order?.deliveryFee
   return (
     <Html>
       <Head />
-      <Preview>Your Order Has Been Confirmed!</Preview>
+      <Preview>Your Order Has Been Received!</Preview>
       <Body style={{ backgroundColor: "#f3f4f6", padding: "20px" }}>
         <Container
           style={{
@@ -177,16 +181,22 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
           {/* Pricing Summary */}
           <Section style={{ color: "#4b5563", fontSize: "14px" }}>
             <Text>
-              <strong>Subtotal:</strong> {`GHS ${order?.total.toFixed(2)}`}
+              <strong>Subtotal:</strong>{" "}
+              {formatCurrency(order?.total ?? 0, "GHS")}
             </Text>
             <Text>
-              <strong>Shipping Fee:</strong>{" "}
-              {`GHS ${order?.deliveryFee.toFixed(2)}`}
+              <strong>Delivery Fee:</strong>{" "}
+              {formatCurrency(order?.deliveryFee ?? 0, "GHS")}
+            </Text>
+            <Text>
+              <strong>{balance >= 0 ? "Credit Balance" : "Balance Due"}</strong>{" "}
+              {formatCurrency(balance ?? 0, "GHS")}
             </Text>
             <Heading
               style={{ fontSize: "20px", color: "#1d4ed8", marginTop: "16px" }}
             >
-              Total: {`GHS ${(order?.total + order?.deliveryFee).toFixed(2)}`}
+              {/* Total: {`GHS ${(order?.total + order?.deliveryFee).toFixed(2)}`} */}
+              Total: {formatCurrency(totalDue ?? 0, "GHS")}
             </Heading>
           </Section>
 
