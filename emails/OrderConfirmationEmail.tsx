@@ -50,7 +50,7 @@ export type ProductOrder = {
 const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
   order,
 }) => {
-  const balance = order?.creditAppliedTotal
+  const balance = Math.abs(order?.creditAppliedTotal ?? 0)
   const totalAmount = order?.total + balance
   const totalDue = totalAmount + order?.deliveryFee
   return (

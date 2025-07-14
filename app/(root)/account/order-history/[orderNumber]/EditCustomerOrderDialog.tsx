@@ -168,16 +168,18 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
           variant="outline"
           // size="sm"
           className="gap-2 text-xs lg:text-sm"
-          disabled={isReadOnly}
+          // disabled={isReadOnly}
         >
           <Pencil className="h-4 w-4" />
           <span className="sr-only md:not-sr-only">Edit</span>
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="max-w-4xl h-[90dvh] sm:h-[80vh] flex flex-col p-0 rounded-lg">
+      <DialogContent
+        className={` ${isReadOnly ? "h-fit w-full" : "sm:h-[80vh] h-[90dvh] max-w-4xl "}  flex flex-col p-0 rounded-lg`}
+      >
         {isReadOnly ? (
-          <div className="p-6">
+          <div className="p-0.5">
             <div className="bg-red-50 border border-red-200 rounded-lg p-4">
               <h3 className="font-medium text-red-800">
                 Order cannot be modified
@@ -228,23 +230,6 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
                 <div className="lg:col-span-5 flex flex-col h-full">
                   <div className="flex-1 p-2 sm:p-4">
                     <div className="space-y-2 sm:space-y-3">
-                      {/* {orderItems?.length > 0 ? (
-                        orderItems?.map((item) => (
-                          <ProductRow
-                            key={item.id}
-                            item={item}
-                            onRemove={handleRemoveItem}
-                            onQuantityChange={handleQuantityChange}
-                            onVariantChange={handleVariantChange}
-                            onAvailabilityChange={handleAvailabilityChange}
-                            isCustomer={true}
-                          />
-                        ))
-                      ) : (
-                        <div className="text-center py-8 text-muted-foreground">
-                          No products in this order
-                        </div>
-                      )} */}
                       {isLoadingOrderItems ? (
                         <div className="flex justify-center py-8">
                           <Loader2 className="h-6 w-6 animate-spin" />

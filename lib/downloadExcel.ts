@@ -149,6 +149,8 @@ export default async function downloadExcel(from: Date, to: Date) {
   let totalRevenue = 0
 
   orders.forEach((order: any) => {
+    const orderNumber = `#${order.orderNumber}`
+    const balance = Math.abs(order?.creditAppliedTotal)
     const customerName = order.shippingAddress.name
       .toLowerCase()
       .split(" ")
@@ -208,12 +210,12 @@ export default async function downloadExcel(from: Date, to: Date) {
       return totalQuantity > 0 ? totalQuantity : "N/A"
     })
 
-    const totalOrderAmount = order.total + order.deliveryFee
+    const totalOrderAmount = order.total + order.deliveryFee + balance
     totalRevenue += totalOrderAmount // Accumulate the total revenue
 
     // Add the row with customer name, their order details, and the total
     worksheet.addRow([
-      customerName,
+      orderNumber,
       ...orderDetails,
       totalOrderAmount,
       customerName,
@@ -253,6 +255,7 @@ export default async function downloadExcel(from: Date, to: Date) {
     { width: 20 }, // Customer Name Column (A)
     ...products.map(() => ({ width: 6 })), // Product columns
     { width: 10 }, // Total Order Amount column
+    { width: 15 }, // Total Order Amount column
   ]
 
   // Apply cream color pattern to product data starting from C3, E3, G3, etc.
@@ -300,7 +303,7 @@ export default async function downloadExcel(from: Date, to: Date) {
   })
   const link = document.createElement("a")
   link.href = URL.createObjectURL(blob)
-  link.download = `Export_${currentDate.replace(/\//g, "-")}.xlsx`
+  link.download = `Confirmed Orders Export_${currentDate.replace(/\//g, "-")}.xlsx`
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
