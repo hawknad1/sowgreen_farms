@@ -275,7 +275,6 @@ async function getProducts(
   }
 }
 
-// ... (The rest of your ProductsPage component)
 const ProductsPage = async ({
   searchParams,
 }: {

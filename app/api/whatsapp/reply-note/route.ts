@@ -72,7 +72,8 @@ import prisma from "@/lib/prismadb"
 import twilioClient from "@/lib/twilio/twilio"
 import { NextResponse } from "next/server"
 
-const contentSid = process.env.TWILIO_TEMPLATE_CONTENT_SID_NOTES!
+// const contentSid = process.env.TWILIO_TEMPLATE_CONTENT_SID_NOTES!
+const contentSid = process.env.TWILIO_TEMPLATE_CONTENT_SID_INCOMING_MESSAGE!
 const whatsappNumber = process.env.TWILIO_WHATSAPP_SENDER!
 
 // export async function POST(req: Request) {
@@ -142,12 +143,16 @@ export async function POST(req: Request) {
 
     const message = await twilioClient.messages.create({
       contentSid,
+      // contentVariables: JSON.stringify({
+      //   1: name, // Example: Customer's name
+      //   2: "Sowgreen Farms", // Example: Your company name
+      //   3: order?.orderNumber, // Example: The note content
+      //   // Set a unique payload for the reply button
+      //   4: `reply_to_${orderId}`,
+      // }),
       contentVariables: JSON.stringify({
         1: name, // Example: Customer's name
-        2: "Sowgreen Farms", // Example: Your company name
-        3: order?.orderNumber, // Example: The note content
-        // Set a unique payload for the reply button
-        4: `reply_to_${orderId}`,
+        2: `reply_to_${orderId}`,
       }),
       from: `whatsapp:${whatsappNumber}`,
       to: `whatsapp:${to}`,

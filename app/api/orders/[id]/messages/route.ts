@@ -111,6 +111,9 @@ export async function POST(
 
     const { content, sender } = await req.json()
 
+    console.log(content, "content")
+    console.log(sender, "sender")
+
     // Validate required fields
     if (!content || typeof content !== "string") {
       return NextResponse.json(

@@ -117,11 +117,6 @@ const ProductsClient = ({
     }
   }, [inView, loading, products.length, currentPage, productsPerPage])
 
-  //   const currentProducts = useMemo(() => {
-  //     // This check provides a final layer of safety
-  //     if (!Array.isArray(products)) return []
-  //     return products.slice(0, currentPage * productsPerPage)
-  //   }, [products, currentPage, productsPerPage])
 
   const currentProducts = useMemo(() => {
     if (!Array.isArray(sortedProducts)) return [] // Use the new sortedProducts

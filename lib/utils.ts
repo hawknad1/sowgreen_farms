@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from "clsx"
 import { twMerge } from "tailwind-merge"
 
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -16,7 +18,7 @@ export async function fetchProduct(productId: any) {
 
 export async function getCategories() {
   try {
-    const res = await fetch("http://localhost:3000/api/categories", {
+    const res = await fetch(`${baseUrl}/api/categories`, {
       cache: "no-store",
       method: "GET",
     })
@@ -32,7 +34,7 @@ export async function getCategories() {
 
 export async function getCategory(params: string) {
   try {
-    const res = await fetch(`http://localhost:3000/api/categories/${params}`)
+    const res = await fetch(`${baseUrl}/api/categories/${params}`)
     if (res.ok) {
       const category = await res.json()
       return category
