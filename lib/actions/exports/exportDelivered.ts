@@ -107,7 +107,7 @@ export default async function exportDeliveredSheet(from: Date, to: Date) {
   let totalRevenue = 0
 
   orders.forEach((order: any) => {
-    const orderNumber = `#${order?.orderNumber}`
+    const orderNumber = order?.orderNumber
     const balance = Math.abs(order?.creditAppliedTotal)
     const paymentAction = order?.paymentAction.toUpperCase()
     const customerName = order.shippingAddress.name

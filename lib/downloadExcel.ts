@@ -84,6 +84,7 @@ export default async function downloadExcel(from: Date, to: Date) {
     "Totals",
     ...products.map(() => 0),
     0,
+    "Customer Name",
   ])
 
   // Style the totals row
@@ -149,7 +150,7 @@ export default async function downloadExcel(from: Date, to: Date) {
   let totalRevenue = 0
 
   orders.forEach((order: any) => {
-    const orderNumber = `#${order.orderNumber}`
+    const orderNumber = order.orderNumber
     const balance = Math.abs(order?.creditAppliedTotal)
     const customerName = order.shippingAddress.name
       .toLowerCase()
@@ -254,8 +255,8 @@ export default async function downloadExcel(from: Date, to: Date) {
   worksheet.columns = [
     { width: 20 }, // Customer Name Column (A)
     ...products.map(() => ({ width: 6 })), // Product columns
-    { width: 10 }, // Total Order Amount column
     { width: 15 }, // Total Order Amount column
+    { width: 20 }, // Total Order Amount column
   ]
 
   // Apply cream color pattern to product data starting from C3, E3, G3, etc.
@@ -270,9 +271,23 @@ export default async function downloadExcel(from: Date, to: Date) {
     }
   }
 
+  // // Apply borders to all cells (including headers and product data)
+  // for (let rowIndex = 1; rowIndex <= totalRows; rowIndex++) {
+  //   for (let colIndex = 1; colIndex <= products.length + 2; colIndex++) {
+  //     const cell = worksheet.getCell(rowIndex, colIndex)
+  //     cell.border = {
+  //       top: { style: "thin" },
+  //       left: { style: "thin" },
+  //       bottom: { style: "thin" },
+  //       right: { style: "thin" },
+  //     }
+  //   }
+  // }
+
   // Apply borders to all cells (including headers and product data)
+  const totalColumns = products.length + 3 // Total number of columns
   for (let rowIndex = 1; rowIndex <= totalRows; rowIndex++) {
-    for (let colIndex = 1; colIndex <= products.length + 2; colIndex++) {
+    for (let colIndex = 1; colIndex <= totalColumns; colIndex++) {
       const cell = worksheet.getCell(rowIndex, colIndex)
       cell.border = {
         top: { style: "thin" },

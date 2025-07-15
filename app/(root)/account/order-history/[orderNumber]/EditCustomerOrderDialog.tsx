@@ -27,6 +27,7 @@ import { deductBalance } from "@/lib/actions/deductBalance"
 import { useSession } from "next-auth/react"
 import { ProductRow } from "@/components/admin/orders/dialogs/ProductRow"
 import { SearchPanel } from "@/components/admin/orders/dialogs/SearchPanel"
+import { AlertDestructive } from "@/components/alerts/AlertDestructive"
 
 const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -179,17 +180,21 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
         className={` ${isReadOnly ? "h-fit w-full" : "sm:h-[80vh] h-[90dvh] max-w-4xl "}  flex flex-col p-0 rounded-lg`}
       >
         {isReadOnly ? (
-          <div className="p-0.5">
-            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-              <h3 className="font-medium text-red-800">
-                Order cannot be modified
-              </h3>
-              <p className="text-sm text-red-600 mt-1">
-                This order is already being processed. Please contact support
-                for assistance.
-              </p>
-            </div>
-          </div>
+          // <div className="p-0.5">
+          //   <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          //     <h3 className="font-medium text-red-800">
+          //       Order cannot be modified
+          //     </h3>
+          //     <p className="text-sm text-red-600 mt-1">
+          //       This order is already being processed. Please contact support
+          //       for assistance.
+          //     </p>
+          //   </div>
+          // </div>
+          <AlertDestructive
+            message={`Your order is being confirmed and cannot be modified at this moment. 
+                      `}
+          />
         ) : (
           <>
             <DialogHeader className="px-4 sm:px-6 pt-4 sm:pt-6 pb-2 sm:pb-4 border-b sticky top-0 rounded-lg bg-white z-10">

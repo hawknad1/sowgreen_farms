@@ -50,7 +50,9 @@ export type ProductOrder = {
 const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
   order,
 }) => {
-  const balance = Math.abs(order?.creditAppliedTotal ?? 0)
+  // const balance = Math.abs(order?.creditAppliedTotal ?? 0)
+  const balance = order?.creditAppliedTotal
+
   const totalAmount = order?.total + balance
   const totalDue = totalAmount + order?.deliveryFee
   return (
@@ -188,9 +190,9 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
               <strong>Delivery Fee:</strong>{" "}
               {formatCurrency(order?.deliveryFee ?? 0, "GHS")}
             </Text>
-            <Text>
+            <Text className={`${balance >= 0 ? "" : "text-red-500"}`}>
               <strong>{balance >= 0 ? "Credit Balance" : "Balance Due"}</strong>{" "}
-              {formatCurrency(balance ?? 0, "GHS")}
+              {formatCurrency(Math.abs(balance ?? 0), "GHS")}
             </Text>
             <Heading
               style={{ fontSize: "20px", color: "#1d4ed8", marginTop: "16px" }}

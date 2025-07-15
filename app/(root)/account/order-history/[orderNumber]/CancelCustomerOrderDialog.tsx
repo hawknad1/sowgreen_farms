@@ -82,8 +82,7 @@ const CancelCustomerOrderDialog = ({ order, className }: Props) => {
         {order?.status === "confirmed" ? (
           <AlertDestructive
             message="Your order is being confirmed and cannot be modified at this moment. 
-            Kindly call Sowgreen Organic on 0546729407 / 0544437775 for assistance. 
-            Thank you!"
+            "
           />
         ) : (
           <>
