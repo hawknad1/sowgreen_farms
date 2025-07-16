@@ -53,7 +53,7 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
   // const balance = Math.abs(order?.creditAppliedTotal ?? 0)
   const balance = order?.creditAppliedTotal
 
-  const totalAmount = order?.total + balance
+  const totalAmount = order?.total + Math.abs(balance)
   const totalDue = totalAmount + order?.deliveryFee
   return (
     <Html>
@@ -191,14 +191,16 @@ const OrderConfirmationEmail: React.FC<OrderConfirmationEmailProps> = ({
               {formatCurrency(order?.deliveryFee ?? 0, "GHS")}
             </Text>
             <Text className={`${balance >= 0 ? "" : "text-red-500"}`}>
-              <strong>{balance >= 0 ? "Credit Balance" : "Balance Due"}</strong>{" "}
+              <strong>
+                {balance >= 0 ? "Credit Balance:" : "Balance Due:"}
+              </strong>{" "}
               {formatCurrency(Math.abs(balance ?? 0), "GHS")}
             </Text>
             <Heading
               style={{ fontSize: "20px", color: "#1d4ed8", marginTop: "16px" }}
             >
               {/* Total: {`GHS ${(order?.total + order?.deliveryFee).toFixed(2)}`} */}
-              Total: {formatCurrency(totalDue ?? 0, "GHS")}
+              Total Due: {formatCurrency(totalDue ?? 0, "GHS")}
             </Heading>
           </Section>
 

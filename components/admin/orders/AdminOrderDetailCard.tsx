@@ -62,6 +62,8 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   const rider = orders?.dispatchRider?.fullName || "Not Assigned"
   const specialNotes = orders?.specialNotes
 
+  // console.log(specialNotes, "special Note")
+
   const loadMessages = async () => {
     try {
       const res = await fetch(
@@ -339,14 +341,22 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                     className="relative cursor-pointer"
                     onClick={handleOpenNotes}
                   >
-                    {unreadCount > 0 && (
+                    {!hasReadNotes ? (
+                      <Badge
+                        variant="destructive"
+                        className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center"
+                      >
+                        !
+                      </Badge>
+                    ) : unreadCount > 0 && !hasReadNotes ? (
                       <Badge
                         variant="destructive"
                         className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center"
                       >
                         {unreadCount}
                       </Badge>
-                    )}
+                    ) : null}
+
                     <Button
                       variant="outline"
                       size="sm"
@@ -393,7 +403,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
 
                   <div className="flex-1 flex flex-col min-h-0">
                     <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                      {specialNotes && (
+                      {/* {specialNotes && (
                         <MessageBubble
                           message={{
                             content: specialNotes,
@@ -403,7 +413,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
                           }}
                           isCustomer={true}
                         />
-                      )}
+                      )} */}
 
                       {messages.map((message, index) => (
                         <MessageBubble
