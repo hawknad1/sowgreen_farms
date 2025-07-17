@@ -113,18 +113,6 @@ export async function PUT(
       )
     }
 
-    // 2. Check user role (if you have admin/users distinction)
-    const user = await prisma.user.findUnique({
-      where: { email: session.user?.email },
-    })
-
-    if (user?.role !== "admin") {
-      // Add this if you want admin-only access
-      return NextResponse.json(
-        { error: "Forbidden - You don't have permission" },
-        { status: 403 }
-      )
-    }
     const {
       status,
       dispatchRider,

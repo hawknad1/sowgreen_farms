@@ -6,10 +6,7 @@ const PartnerLogos = () => {
   const partners = [
     { id: 1, name: "Sowgreen Organic", logo: "/images/logo.png" },
     { id: 2, name: "Kawa Moka", logo: "/images/kawa-moka.png" },
-    { id: 3, name: "Visa", logo: "/images/visa.png" },
-    { id: 4, name: "Mastercard", logo: "/images/mastercard.png" },
-    { id: 5, name: "Paypal", logo: "/images/paypal.png" },
-    { id: 6, name: "Hendy Farms", logo: "/svg/hendy.svg" },
+    { id: 3, name: "Hendy Farms", logo: "/svg/hendy.svg" },
   ]
 
   // Duplicate the array to create seamless looping
