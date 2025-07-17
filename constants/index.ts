@@ -355,11 +355,6 @@ export const sidebarLinks = {
       ],
     },
     {
-      title: "Messages",
-      url: "/admin/chat",
-      icon: MessageSquare,
-    },
-    {
       title: "Customers",
       url: "/admin/customers",
       icon: Contact,
