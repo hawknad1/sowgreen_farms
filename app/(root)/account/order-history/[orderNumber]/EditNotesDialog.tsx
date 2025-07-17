@@ -119,11 +119,7 @@ const EditNotesDialog = ({ order, className }: Props) => {
         }`}
       >
         {order?.status === "confirmed" || order?.repliedNotes.length > 1 ? (
-          <AlertDestructive
-            message="Your order is being confirmed and cannot be modified at this moment. 
-            Kindly call Sowgreen Organic on 0546729407 / 0544437775 for assistance. 
-            Thank you!"
-          />
+          <AlertDestructive message="Your order is being confirmed and cannot be modified at this moment." />
         ) : (
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
