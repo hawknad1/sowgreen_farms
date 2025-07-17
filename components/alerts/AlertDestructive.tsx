@@ -26,9 +26,10 @@ import { Skeleton } from "../ui/skeleton"
 
 interface AlertDestructiveProps {
   message: string
+  admin?: boolean
 }
 
-export function AlertDestructive({ message }: AlertDestructiveProps) {
+export function AlertDestructive({ message, admin }: AlertDestructiveProps) {
   const { staff, loading, error } = useStaff()
 
   console.log(staff, "support staff")
@@ -44,8 +45,10 @@ export function AlertDestructive({ message }: AlertDestructiveProps) {
       <AlertTitle>Attention!</AlertTitle>
       <AlertDescription>
         {message}
-        {`Kindly call Sowgreen Organic on ${supportNumbers} for assistance.
-        Thank you!`}
+        {!admin && (
+          <span>{`Kindly call Sowgreen Organic on ${supportNumbers} for assistance.
+        Thank you!`}</span>
+        )}
       </AlertDescription>
     </Alert>
   )

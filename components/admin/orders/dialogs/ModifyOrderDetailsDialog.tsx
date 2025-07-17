@@ -44,7 +44,7 @@ const ModifyOrderDetailsDialog = ({ order, children, className }: Props) => {
           order?.status === "confirmed" ||
           order?.status === "in-transit" ||
           order?.status === "delivered"
-            ? "max-w-2xl h-fit p-1 rounded-lg"
+            ? "max-w-md h-fit p-4 rounded-lg"
             : "max-w-sm rounded-lg"
         }`}
       >

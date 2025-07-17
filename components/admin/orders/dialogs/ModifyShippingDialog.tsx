@@ -54,14 +54,13 @@ const ModifyShippingDialog = ({ order, balance, updatedOrderTotal }: Props) => {
         order?.status === "in-transit" ||
         order?.status === "delivered" ? (
           <AlertDestructive
-            message="Your order is being confirmed and cannot be modified at this moment. 
-                    Kindly call Sowgreen Organic on 0546729407 / 0544437775 for assistance. 
-                    Thank you!"
+            admin={true}
+            message="Order status is 'Confirmed'. Switch back to 'Processing' to make changes."
           />
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>{`Modify address. `}</DialogTitle>
+              <DialogTitle>{`Modify address.`}</DialogTitle>
               <DialogDescription>
                 Update delivery method and shipping address
               </DialogDescription>
