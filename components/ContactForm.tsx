@@ -21,9 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Send } from "lucide-react"
-import { toast } from "@/components/ui/use-toast"
+import toast from "react-hot-toast"
+import React from "react"
 
 // Form validation schema
 const formSchema = z.object({
@@ -34,12 +34,11 @@ const formSchema = z.object({
   orderNumber: z.string().optional(),
   subject: z.string().min(1, "Please select a subject"),
   message: z.string().min(10, "Message must be at least 10 characters"),
-  privacy: z.boolean().refine((val) => val === true, {
-    message: "You must agree to the terms and privacy policy",
-  }),
 })
 
 export function ContactForm() {
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,12 +50,13 @@ export function ContactForm() {
       orderNumber: "",
       subject: "",
       message: "",
-      privacy: false,
     },
   })
 
   // 2. Define a submit handler.
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsSubmitting(true)
     try {
       const response = await fetch("/api/send-contact-email", {
         method: "POST",
@@ -66,23 +66,19 @@ export function ContactForm() {
         body: JSON.stringify(values),
       })
 
+      const data = await response.json()
+
       if (response.ok) {
-        toast({
-          title: "Message Sent!",
-          description:
-            "We've received your message and will get back to you soon.",
-        })
+        toast.success("Message Sent!")
         form.reset()
       } else {
-        throw new Error("Failed to send message")
+        throw new Error(data.error || "Failed to send message")
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          "There was a problem sending your message. Please try again.",
-        variant: "destructive",
-      })
+      toast.error(`There was a problem sending your message. Please try again.`)
+      console.error("Submission error:", error)
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -236,42 +232,15 @@ export function ContactForm() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="privacy"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-4">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel>
-                          I agree to the{" "}
-                          <a
-                            href="/terms"
-                            className="text-green-600 hover:text-green-700"
-                          >
-                            Terms & Conditions
-                          </a>{" "}
-                          and{" "}
-                          <a
-                            href="/privacy"
-                            className="text-green-600 hover:text-green-700"
-                          >
-                            Privacy Policy
-                          </a>
-                        </FormLabel>
-                      </div>
-                    </FormItem>
+                <Button type="submit" disabled={isSubmitting} className="w-full">
+                  {isSubmitting ? (
+                    <span className="loading loading-infinity loading-md"></span>
+                  ) : (
+                    <>
+                      <Send className="h-5 w-5 mr-2" />
+                      Send Message
+                    </>
                   )}
-                />
-
-                <Button type="submit" className="w-full">
-                  <Send className="h-5 w-5 mr-2" />
-                  Send Message
                 </Button>
               </form>
             </Form>

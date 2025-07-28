@@ -117,14 +117,17 @@ export const accordion = [
 
 export const quickLinks = [
   { id: 1, title: "Sign In", href: "/sign-in" },
-  { id: 1, title: "Shop", href: "/products" },
-  { id: 2, title: "View Cart", href: "/basket" },
-  { id: 3, title: "Track Order", href: "/account/order-history" },
+  { id: 2, title: "Shop", href: "/products" },
+  { id: 3, title: "View Cart", href: "/basket" },
+  { id: 4, title: "Track Order", href: "/account/order-history" },
 ]
 
 export const companyLinks = [
   { id: 1, title: "About Us", href: "/about" },
-  { id: 4, title: "Contact Us", href: "/contact-us" },
+  { id: 2, title: "Contact Us", href: "/contact-us" },
+  { id: 3, title: "FAQs", href: "/faqs" },
+  { id: 4, title: "Locations", href: "/locations" },
+
   // { id: 5, title: "Terms & Conditions", href: "/contact" },
   // { id: 6, title: "Careers", href: "/careers" },
 ]
