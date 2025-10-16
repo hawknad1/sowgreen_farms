@@ -465,6 +465,123 @@ const ConfirmOrderPage = () => {
     publicKey: process.env.PAYSTACK_PUBLIC_TEST_KEY as string,
   }
 
+  // async function handlePaystackSuccessAction(reference?: any) {
+  //   setIsConfirming(true)
+  //   const toastId = toast.loading("Processing your order...")
+
+  //   try {
+  //     let verifyData: PaymentInfo = null
+
+  //     if (
+  //       reference?.status === "success" &&
+  //       reference?.reference !== "cash-on-delivery"
+  //     ) {
+  //       const verifyTransaction = await fetch("/api/verify-transaction", {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({ reference: reference?.reference }),
+  //       })
+
+  //       if (!verifyTransaction.ok) {
+  //         throw new Error("Failed to verify transaction")
+  //       }
+
+  //       const verifiedResponse = await verifyTransaction.json()
+  //       verifyData = {
+  //         ...verifiedResponse,
+  //         paymentAction: "paid",
+  //       }
+  //       setResult(verifyData)
+  //     } else if (reference?.reference === "cash-on-delivery") {
+  //       verifyData = {
+  //         status: "success",
+  //         paymentMode: "cash",
+  //         paymentAction: "pending",
+  //         cardType: null,
+  //         last4Digits: null,
+  //       }
+  //       setResult(verifyData)
+  //     } else {
+  //       throw new Error("Invalid payment reference or status")
+  //     }
+
+  //     const ordersData = {
+  //       products: transformedCart,
+  //       shippingAddress: shippingInfo,
+  //       orderNumber,
+  //       deliveryDate,
+  //       deliveryFee: deliveryFee,
+  //       specialNotes: shippingInfo.specialNotes,
+  //       referenceNumber: reference?.reference || "cash-on-delivery",
+  //       cardType: verifyData?.cardType,
+  //       last4Digits: verifyData?.last4Digits,
+  //       paymentMode: verifyData?.paymentMode,
+  //       paymentAction: verifyData?.paymentAction,
+  //       total: total,
+  //       subtotal: cartTotal,
+  //       creditAppliedTotal: balance,
+  //       balanceDeducted: deductedBalance,
+  //       userWhatsappOptIn,
+  //       updatedOrderTotal,
+  //       remainingAmount,
+  //     }
+
+  //     setOrdersData(ordersData)
+
+  //     // API Calls
+  //     const shippingResponse = await fetch("/api/address", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(addressPayload),
+  //     })
+  //     if (!shippingResponse.ok)
+  //       throw new Error("Failed to save shipping address.")
+
+  //     const ordersResponse = await fetch("/api/orders", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(ordersData),
+  //     })
+  //     if (!ordersResponse.ok) throw new Error("Failed to save order.")
+
+  //     await fetch("/api/products/updatePurchaseCount", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ products: transformedCart }),
+  //     })
+
+  //     const quantityResponse = await fetch("/api/products/updateQuantity", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ products: ordersData.products }),
+  //     })
+  //     if (!quantityResponse.ok)
+  //       throw new Error("Failed to update product quantities.")
+
+  //     const email = await fetch("/api/send-order-email", {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({ order: ordersData }),
+  //     })
+  //     if (!email.ok) throw new Error("Failed to send order confirmation email.")
+
+  //     // Clear the session storage after successful order
+  //     sessionStorage.removeItem("checkoutData")
+  //     clearCart()
+  //     toast.success("Order placed successfully!", { id: toastId })
+  //     router.push("/success/thank-you")
+  //   } catch (error) {
+  //     console.error("Order processing error:", error)
+  //     toast.error(`Order failed: ${error || "Please try again."}`, {
+  //       id: toastId,
+  //     })
+  //   } finally {
+  //     setIsConfirming(false)
+  //   }
+  // }
+
   async function handlePaystackSuccessAction(reference?: any) {
     setIsConfirming(true)
     const toastId = toast.loading("Processing your order...")
@@ -530,51 +647,149 @@ const ConfirmOrderPage = () => {
 
       setOrdersData(ordersData)
 
-      // API Calls
-      const shippingResponse = await fetch("/api/address", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(addressPayload),
-      })
-      if (!shippingResponse.ok)
-        throw new Error("Failed to save shipping address.")
+      console.log("=== Starting Order Processing ===")
+      console.log("Order Number:", orderNumber)
+      console.log(
+        "Products to update:",
+        JSON.stringify(ordersData.products, null, 2)
+      )
 
-      const ordersResponse = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ordersData),
-      })
-      if (!ordersResponse.ok) throw new Error("Failed to save order.")
+      // Step 1: Save shipping address
+      console.log("\n[1/5] Saving shipping address...")
+      try {
+        const shippingResponse = await fetch("/api/address", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(addressPayload),
+        })
 
-      await fetch("/api/products/updatePurchaseCount", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ products: transformedCart }),
-      })
+        if (!shippingResponse.ok) {
+          const errorData = await shippingResponse.json().catch(() => ({}))
+          console.error("Shipping address error:", errorData)
+          throw new Error(errorData.error || "Failed to save shipping address")
+        }
 
-      const quantityResponse = await fetch("/api/products/updateQuantity", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ products: ordersData.products }),
-      })
-      if (!quantityResponse.ok)
-        throw new Error("Failed to update product quantities.")
+        const shippingResult = await shippingResponse.json()
+        console.log("✅ Shipping address saved:", shippingResult)
+      } catch (error: any) {
+        console.error("❌ Shipping address failed:", error.message)
+        throw new Error(`Failed to save shipping address: ${error.message}`)
+      }
 
-      const email = await fetch("/api/send-order-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ order: ordersData }),
-      })
-      if (!email.ok) throw new Error("Failed to send order confirmation email.")
+      // Step 2: Save order
+      console.log("\n[2/5] Saving order...")
+      try {
+        const ordersResponse = await fetch("/api/orders", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(ordersData),
+        })
 
-      // Clear the session storage after successful order
+        if (!ordersResponse.ok) {
+          const errorData = await ordersResponse.json().catch(() => ({}))
+          console.error("Orders error:", errorData)
+          throw new Error(errorData.error || "Failed to save order")
+        }
+
+        const orderResult = await ordersResponse.json()
+        console.log("✅ Order saved:", orderResult)
+      } catch (error: any) {
+        console.error("❌ Order save failed:", error.message)
+        throw new Error(`Failed to save order: ${error.message}`)
+      }
+
+      // Step 3: Update purchase count (non-critical)
+      console.log("\n[3/5] Updating purchase count...")
+      try {
+        const purchaseResponse = await fetch(
+          "/api/products/updatePurchaseCount",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ products: transformedCart }),
+          }
+        )
+
+        if (purchaseResponse.ok) {
+          console.log("✅ Purchase count updated")
+        } else {
+          console.warn("⚠️ Purchase count update failed (non-critical)")
+        }
+      } catch (error: any) {
+        console.warn(
+          "⚠️ Purchase count update error (non-critical):",
+          error.message
+        )
+      }
+
+      // Step 4: Update product quantities (CRITICAL)
+      console.log("\n[4/5] Updating product quantities...")
+      console.log(
+        "Payload being sent:",
+        JSON.stringify({ products: ordersData.products }, null, 2)
+      )
+
+      try {
+        const quantityResponse = await fetch("/api/products/updateQuantity", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ products: ordersData.products }),
+        })
+
+        const quantityData = await quantityResponse.json()
+
+        if (!quantityResponse.ok) {
+          console.error("❌ Quantity update error response:", quantityData)
+          throw new Error(
+            quantityData.details ||
+              quantityData.error ||
+              "Failed to update product quantities"
+          )
+        }
+
+        console.log("✅ Product quantities updated:", quantityData)
+      } catch (error: any) {
+        console.error("❌ Quantity update failed:", error.message)
+        throw new Error(`Failed to update product quantities: ${error.message}`)
+      }
+
+      // Step 5: Send confirmation email (non-critical)
+      console.log("\n[5/5] Sending confirmation email...")
+      try {
+        const emailResponse = await fetch("/api/send-order-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ order: ordersData }),
+        })
+
+        if (emailResponse.ok) {
+          console.log("✅ Confirmation email sent")
+        } else {
+          console.warn("⚠️ Email send failed (non-critical)")
+        }
+      } catch (error: any) {
+        console.warn("⚠️ Email error (non-critical):", error.message)
+      }
+
+      // Success! Clean up and redirect
+      console.log("\n=== Order Processing Complete ===")
       sessionStorage.removeItem("checkoutData")
       clearCart()
+
       toast.success("Order placed successfully!", { id: toastId })
+
+      // Small delay to ensure everything is saved
+      await new Promise((resolve) => setTimeout(resolve, 300))
+
+      console.log("Redirecting to success page...")
       router.push("/success/thank-you")
-    } catch (error) {
-      console.error("Order processing error:", error)
-      toast.error(`Order failed: ${error || "Please try again."}`, {
+    } catch (error: any) {
+      console.error("\n=== ORDER PROCESSING FAILED ===")
+      console.error("Error:", error)
+      console.error("Error message:", error?.message)
+      console.error("Error stack:", error?.stack)
+
+      toast.error(`Order failed: ${error?.message || "Please try again"}`, {
         id: toastId,
       })
     } finally {
