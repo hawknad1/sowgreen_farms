@@ -787,41 +787,40 @@ const EditShippingDetails = ({ order, customer }: ShippingProps) => {
   }
 
   const onSubmit = async (values: z.infer<typeof ShippingInfoMethodSchema>) => {
-    console.log(values, "values")
-    // setIsSaving(true)
-    // const toastId = toast.loading("Updating shipping information...")
+    setIsSaving(true)
+    const toastId = toast.loading("Updating shipping information...")
 
-    // try {
-    //   const finalTotal = calculatedTotal
-    //   const updateData = {
-    //     ...values,
-    //     deliveryMethod:
-    //       deliveryMethod === "pickup"
-    //         ? selectedPickupLocation?.address || "pickup"
-    //         : deliveryMethod,
-    //     deliveryFee,
-    //     deliveryDate: selectedDeliveryDate,
-    //     total: finalTotal,
-    //     subtotal: order?.total || 0,
-    //     updatedOrderTotal,
-    //   }
+    try {
+      const finalTotal = calculatedTotal
+      const updateData = {
+        ...values,
+        deliveryMethod:
+          deliveryMethod === "pickup"
+            ? selectedPickupLocation?.address || "pickup"
+            : deliveryMethod,
+        deliveryFee,
+        deliveryDate: selectedDeliveryDate,
+        total: finalTotal,
+        subtotal: order?.total || 0,
+        updatedOrderTotal,
+      }
 
-    //   const res = await fetch(`/api/orders/${order?.id}`, {
-    //     method: "PUT",
-    //     headers: { "Content-Type": "application/json" },
-    //     body: JSON.stringify(updateData),
-    //   })
+      const res = await fetch(`/api/orders/${order?.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updateData),
+      })
 
-    //   if (!res.ok) throw new Error(await res.text())
+      if (!res.ok) throw new Error(await res.text())
 
-    //   toast.success("Shipping information updated!", { id: toastId })
-    //   window.location.reload()
-    // } catch (error) {
-    //   console.error("Update error:", error)
-    //   toast.error("Failed to update shipping information", { id: toastId })
-    // } finally {
-    //   setIsSaving(false)
-    // }
+      toast.success("Shipping information updated!", { id: toastId })
+      window.location.reload()
+    } catch (error) {
+      console.error("Update error:", error)
+      toast.error("Failed to update shipping information", { id: toastId })
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const handleDeliveryFeeSave = async (newFee?: number) => {
