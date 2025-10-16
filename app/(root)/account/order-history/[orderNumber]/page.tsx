@@ -312,7 +312,7 @@ const OrderDetailPage = ({ params }: { params: { orderNumber: string } }) => {
               />
               <EditCustomerOrderDialog order={orderDetails} />
               <CancelCustomerOrderDialog order={orderDetails} />
-              <ChangeDeliveryMethodDialog order={orderDetails} />
+              <ChangeDeliveryMethodDialog order={orderDetails} customer />
             </div>
           </div>
         </div>

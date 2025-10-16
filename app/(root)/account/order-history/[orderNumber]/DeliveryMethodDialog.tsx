@@ -20,12 +20,14 @@ interface Props {
   order: Order
   balance?: number
   updatedOrderTotal?: number
+  customer?: Boolean
 }
 
 const ChangeDeliveryMethodDialog = ({
   order,
   balance,
   updatedOrderTotal,
+  customer,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -74,7 +76,7 @@ const ChangeDeliveryMethodDialog = ({
                 Update delivery method and shipping address
               </DialogDescription>
             </DialogHeader>
-            <EditShippingDetails order={order} balance={balance} />
+            <EditShippingDetails order={order} balance={balance} customer />
             <DialogFooter></DialogFooter>
           </>
         )}
