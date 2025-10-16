@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem } from "@/components/ui/select"
 import { useCartStore } from "@/store"
+import { Product } from "@/types"
 import Image from "next/image"
 import { useState } from "react"
 
@@ -14,21 +15,21 @@ interface Variant {
   unit: string
 }
 
-interface Product {
-  categoryName: string
-  createdAt: string
-  description: string
-  discount: number
-  id: string
-  slug: string
-  imageUrl: string
-  isInStock: string
-  purchaseCount: number
-  quantity: number
-  title: string
-  updatedAt: string
-  variants: Variant[]
-}
+// interface Product {
+//   categoryName: string
+//   createdAt: string
+//   description: string
+//   discount: number
+//   id: string
+//   slug: string
+//   imageUrl: string
+//   isInStock: string
+//   purchaseCount: number
+//   quantity: number
+//   title: string
+//   updatedAt: string
+//   variants: Variant[]
+// }
 
 interface CartItem {
   variantId: string

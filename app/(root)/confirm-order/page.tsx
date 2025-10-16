@@ -380,6 +380,8 @@ const ConfirmOrderPage = () => {
   const { deliveryDate, ...newFormData } = formData
   const whatsappOptIn = formData.whatsappOptIn
 
+  console.log(formData, "FORM DATA")
+
   const shippingInfo = {
     deliveryDate,
     ...formData,
@@ -623,7 +625,10 @@ const ConfirmOrderPage = () => {
                     {formData?.name || "N/A"}
                   </p>
                   <p className="text-sm md:text-base text-gray-700">
-                    {formData?.address || "N/A"}, {formData?.city || "N/A"}
+                    {formData?.address || "N/A"},{" "}
+                    {formData?.city.includes("Unknown Location")
+                      ? formData?.unknownCity
+                      : formData?.city}
                   </p>
                   <p className="text-sm md:text-base text-gray-700">
                     {formData?.region || "N/A"}
@@ -635,10 +640,18 @@ const ConfirmOrderPage = () => {
                     {formData?.email || "N/A"}
                   </p>
                 </div>
-                <p className="text-xs mt-5 italic md:text-sm font-medium text-gray-700">
+                {/* <p className="text-xs mt-5 italic md:text-sm font-medium text-gray-700">
                   NOTES: <br />
                   <span className="line-clamp-2">{formData.specialNotes}</span>
-                </p>
+                </p> */}
+                {formData.specialNotes && (
+                  <p className="text-xs mt-5 italic md:text-sm font-medium text-gray-700">
+                    NOTES: <br />
+                    <span className="line-clamp-2">
+                      {formData.specialNotes}
+                    </span>
+                  </p>
+                )}
               </div>
               <div>
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-primary pb-2 mb-4 flex items-center">
@@ -692,13 +705,16 @@ const ConfirmOrderPage = () => {
                   <span className="text-primary pr-2">1.</span> Delivery
                   Information
                 </h2>
-                <div className="bg-blue-50/50 p-4 sm:p-6 rounded-lg border border-blue-100 mb-4 flex-grow">
+                <div className="bg-blue-50/50 p-4 sm:p-6 rounded-lg border border-blue-100 h-fit mb-4 flex-grow">
                   <div className="space-y-1.5">
                     <p className="text-sm md:text-base text-gray-700">
                       {formData?.name || "N/A"}
                     </p>
                     <p className="text-sm md:text-base text-gray-700">
-                      {formData?.address || "N/A"}, {formData?.city || "N/A"}
+                      {formData?.address || "N/A"},{" "}
+                      {formData?.city.includes("Unknown Location")
+                        ? formData?.unknownCity
+                        : formData?.city}
                     </p>
                     <p className="text-sm md:text-base text-gray-700">
                       {formData?.region || "N/A"}
@@ -710,12 +726,14 @@ const ConfirmOrderPage = () => {
                       {formData?.email || "N/A"}
                     </p>
                   </div>
-                  <p className="text-xs mt-5 italic md:text-sm font-medium text-gray-700">
-                    NOTES: <br />
-                    <span className="line-clamp-2">
-                      {formData.specialNotes}
-                    </span>
-                  </p>
+                  {formData.specialNotes && (
+                    <p className="text-xs mt-5 italic md:text-sm font-medium text-gray-700">
+                      NOTES: <br />
+                      <span className="line-clamp-2">
+                        {formData.specialNotes}
+                      </span>
+                    </p>
+                  )}
                 </div>
                 <div className="mt-auto">
                   <h2 className="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-primary pb-2 mb-4 flex items-center">

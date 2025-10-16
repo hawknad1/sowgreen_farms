@@ -26,6 +26,7 @@ import {
   sendCustomerNoteGroup,
   sendOrderConfirmation,
   sendOrderConfirmationGroup,
+  sendPickupOrderConfirmation,
 } from "@/lib/actions/sendWhatsappMessage"
 import { useDispatchRidersStore } from "@/store"
 import { status } from "@/constants"
@@ -163,15 +164,48 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       })
 
       // 5. Send notifications only after confirming update
+      // if (updatedOrder.status === "confirmed") {
+      //   await Promise.all([
+
+      //     if(orders.shippingAddress.deliveryMethod.includes('Home Delivery')){
+      //       sendOrderConfirmation(updatedOrder),
+      //       sendOrderConfirmationGroup(updatedOrder),
+      //       sendCustomerNoteGroup(updatedOrder),
+      //     } else{
+      //       sendPickupOrderConfirmation(updatedOrder),
+
+      //     }
+
+      //   ]).catch((error) => {
+      //     console.error("Failed to send notifications:", error)
+      //     throw new Error("Notifications failed to send")
+      //   })
+      // }
       if (updatedOrder.status === "confirmed") {
-        await Promise.all([
-          sendOrderConfirmation(updatedOrder),
-          sendOrderConfirmationGroup(updatedOrder),
-          sendCustomerNoteGroup(updatedOrder),
-        ]).catch((error) => {
-          console.error("Failed to send notifications:", error)
-          throw new Error("Notifications failed to send")
-        })
+        try {
+          const isHomeDelivery =
+            orders.shippingAddress?.deliveryMethod?.includes("Home Delivery")
+
+          const notificationPromises = []
+
+          if (isHomeDelivery) {
+            notificationPromises.push(
+              sendOrderConfirmation(updatedOrder)
+              // sendOrderConfirmationGroup(updatedOrder),
+              // sendCustomerNoteGroup(updatedOrder)
+            )
+          } else {
+            notificationPromises.push(sendPickupOrderConfirmation(updatedOrder))
+          }
+
+          await Promise.all(notificationPromises)
+        } catch (error) {
+          console.error(
+            "Failed to send order confirmation notifications:",
+            error
+          )
+          throw new Error("Order confirmation notifications failed to send")
+        }
       }
 
       // 6. Handle balance updates if needed

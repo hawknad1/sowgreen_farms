@@ -40,12 +40,12 @@ export default function Footer() {
               </div>
               <div className="flex items-start gap-3 text-sm text-slate-300 hover:text-white transition-colors">
                 <Mail className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
-                <span>info@sowgreenorganic.com</span>
+                <span>admin@sowgreenorganic.com</span>
               </div>
               <div className="flex items-start gap-3 text-sm text-slate-300 hover:text-white transition-colors">
                 <MapPin className="h-4 w-4 text-blue-400 mt-0.5 flex-shrink-0" />
                 <span>
-                  14 High Street, Sowgreen Farms Building,
+                  Genesis Court - G56 Chelsea High St
                   <br />
                   Dzorwulu, Accra.
                 </span>

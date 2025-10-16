@@ -19,20 +19,107 @@ const schema = z.object({
   phone: z.string().regex(phoneRegex, "Invalid Number!"),
 })
 
-export const CheckoutSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  phone: z.string().min(1, "Phone number is required"),
-  email: z.string().email("Invalid email address"),
-  region: z.string().min(1, "Region is required"),
-  city: z.string().min(1, "City is required"),
-  address: z.string().min(1, "Address is required"),
-  deliveryMethod: z.string().min(1, "Delivery method is required"),
-  specialNotes: z.string().optional(), // New field for special notes
-  pickupOption: z.string().optional(), // Add pickupOption as optional
-  whatsappOptIn: z.boolean().refine((val) => val, {
-    message: "You must agree to receive WhatsApp updates",
-  }),
-})
+// export const CheckoutSchema = z.object({
+//   name: z.string().min(1, "Name is required"),
+//   phone: z.string().min(1, "Phone number is required"),
+//   email: z.string().email("Invalid email address"),
+//   region: z.string().min(1, "Region is required"),
+//   city: z.string().min(1, "City is required"),
+//   unknownCity: z.string().optional(),
+//   address: z.string().min(1, "Address is required"),
+//   deliveryMethod: z.string().min(1, "Delivery method is required"),
+//   specialNotes: z.string().optional(), // New field for special notes
+//   pickupOption: z.string().optional(), // Add pickupOption as optional
+//   whatsappOptIn: z.boolean().refine((val) => val, {
+//     message: "You must agree to receive WhatsApp updates",
+//   }),
+// })
+
+export const CheckoutSchema = z
+  .object({
+    name: z
+      .string()
+      .min(1, "Name is required")
+      .min(2, "Name must be at least 2 characters")
+      .max(100, "Name must not exceed 100 characters")
+      .regex(
+        /^[a-zA-Z\s'-]+$/,
+        "Name can only contain letters, spaces, hyphens, and apostrophes"
+      ),
+
+    phone: z
+      .string()
+      .min(1, "Phone number is required")
+      .regex(/^[\d\s\-\+\(\)]+$/, "Invalid phone number format")
+      .min(10, "Phone number must be at least 10 digits"),
+
+    email: z
+      .string()
+      .min(1, "Email is required")
+      .email("Please enter a valid email address")
+      .toLowerCase(),
+
+    region: z.string().min(1, "Please select a region"),
+
+    city: z.string().min(1, "Please select a city"),
+
+    unknownCity: z.string().optional(),
+
+    address: z
+      .string()
+      .min(1, "Delivery address is required")
+      .min(5, "Please provide a more detailed address")
+      .max(500, "Address must not exceed 500 characters"),
+
+    deliveryMethod: z.string().min(1, "Please select a delivery method"),
+
+    specialNotes: z
+      .string()
+      .max(1000, "Special notes must not exceed 1000 characters")
+      .optional(),
+
+    pickupOption: z.string().optional(),
+
+    whatsappOptIn: z.boolean().default(false),
+  })
+  .superRefine((data, ctx) => {
+    // Validate unknownCity when "Unknown Location" is selected
+    if (data.city === "Unknown Location") {
+      if (!data.unknownCity || data.unknownCity.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please enter your city name",
+          path: ["unknownCity"],
+        })
+      } else if (data.unknownCity.length < 2) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "City name must be at least 2 characters",
+          path: ["unknownCity"],
+        })
+      }
+    }
+
+    // Validate pickupOption when "schedule-pickup" is selected
+    if (data.deliveryMethod === "schedule-pickup") {
+      if (!data.pickupOption || data.pickupOption.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Please select a pickup option",
+          path: ["pickupOption"],
+        })
+      }
+    }
+
+    // Optional: Enforce WhatsApp opt-in (remove if you want it to be truly optional)
+    if (!data.whatsappOptIn) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please agree to receive order updates via WhatsApp",
+        path: ["whatsappOptIn"],
+      })
+    }
+  })
 
 export const DeliveryMethodSchema = z.object({
   address: z.string().min(1, "Address is required"),
@@ -199,44 +286,89 @@ export const PaymentActionSchema = z.object({
   paymentAction: z.string(),
 })
 
+// export const EditProductAdminSchema = z.object({
+//   description: z.string(),
+//   title: z.string(),
+//   categoryName: z.string(),
+
+//   partner: z
+//     .object({
+//       id: z.string(),
+//       brand: z.string(),
+//       owner: z.string().optional(),
+//       phone: z.string(),
+//     })
+//     .optional()
+//     .nullable(),
+
+//   // partner: z
+//   //   .union([
+//   //     z.string(),
+//   //     z.object({
+//   //       brand: z.string().optional(),
+//   //       owner: z.string().optional(),
+//   //       phone: z.string().optional(),
+//   //     }),
+//   //   ])
+//   //   .optional(),
+
+//   discount: z.coerce.number().optional(),
+//   quantity: z.coerce.number().min(0), // Allow 0 or positive numbers
+//   isInStock: z.string().optional(),
+//   variants: z
+//     .array(
+//       z.object({
+//         price: z.coerce.number().positive(),
+//         weight: z.coerce.number().positive().optional(),
+//         unit: z.string().optional(),
+//       })
+//     )
+//     .nonempty("At least one variation is required"),
+// })
+
+// In your schema file
+// schemas/index.ts
+
+// schemas/index.ts
 export const EditProductAdminSchema = z.object({
-  description: z.string(),
-  title: z.string(),
-  categoryName: z.string(),
-  partner: z
-    .object({
-      id: z.string(),
-      brand: z.string(),
-      owner: z.string().optional(),
-      phone: z.string(),
+  title: z.string().min(1, "Title is required"),
+  categoryName: z.string().min(1, "Category is required"),
+  partnerId: z.string().nullable().optional(),
+  price: z.number().nullable().optional(),
+  discount: z.number().nullable().optional(),
+  quantity: z.number().min(0, "Quantity cannot be negative"),
+  isInStock: z.enum(["in-stock", "out-of-stock"]),
+  description: z.string().min(1, "Description is required"),
+  changeNote: z.string().optional(),
+  variants: z.array(
+    z.object({
+      price: z.number().min(0, "Price must be positive"),
+      weight: z.number().nullable().optional(),
+      unit: z.string().nullable().optional(),
+      discountedPrice: z.number().nullable().optional(),
     })
-    .optional()
-    .nullable(),
-
-  // partner: z
-  //   .union([
-  //     z.string(),
-  //     z.object({
-  //       brand: z.string().optional(),
-  //       owner: z.string().optional(),
-  //       phone: z.string().optional(),
-  //     }),
-  //   ])
-  //   .optional(),
-
-  discount: z.coerce.number().optional(),
-  quantity: z.coerce.number().min(0), // Allow 0 or positive numbers
-  isInStock: z.string().optional(),
-  variants: z
-    .array(
-      z.object({
-        price: z.coerce.number().positive(),
-        weight: z.coerce.number().positive().optional(),
-        unit: z.string().optional(),
-      })
-    )
-    .nonempty("At least one variation is required"),
+  ),
 })
+
+// export const EditProductAdminSchema = z.object({
+//   title: z.string().min(1, "Title is required"),
+//   categoryName: z.string().min(1, "Category is required"),
+//   partnerId: z.string().optional(),
+//   price: z.number().optional(),
+//   discount: z.number().optional(),
+//   quantity: z.number().min(0, "Quantity cannot be negative"),
+//   isInStock: z.enum(["in-stock", "out-of-stock"]),
+//   description: z.string().min(1, "Description is required"),
+//   changeNote: z.string().optional(),
+//   variants: z.array(
+//     z.object({
+//       price: z.number().min(0, "Price must be positive"),
+//       weight: z.number().optional(),
+//       unit: z.string().optional(),
+//       discountedPrice: z.number().optional(),
+//     })
+//   ),
+// })
 
 export const EditProductSchema = z.object({
   title: z.string().optional(),

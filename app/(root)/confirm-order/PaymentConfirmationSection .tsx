@@ -119,7 +119,7 @@ const PaymentConfirmationSection = ({
           disabled={isConfirming}
           onClick={() => router.push("/basket")}
           variant="outline"
-          className="w-full border-primary text-primary hover:bg-primary/5 hover:text-primary/90 h-12 text-base"
+          className="w-full border-neutral-200 text-primary hover:bg-primary/5 hover:text-primary/90 h-12 text-base"
         >
           Edit Order
         </Button>

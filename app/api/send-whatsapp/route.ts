@@ -331,7 +331,6 @@ export async function POST(req: Request) {
       ? `\n\n+ ${order.products.length - 10} more items`
       : ""
 
-  console.log(orderSummary, "orderSummary")
   const deliveryFee = formatCurrency(order.deliveryFee ?? 0, "GHS")
   const totalAmount = formatCurrency(order?.total + order?.deliveryFee, "GHS")
   const creditBalance = formatCurrency(order?.creditAppliedTotal, "GHS")

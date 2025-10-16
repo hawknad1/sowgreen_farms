@@ -269,205 +269,702 @@ export async function DELETE(
 //   }
 // }
 
+// In your PUT handler, add price history tracking
+
+// app/api/products/[slug]/route.ts
+
+// app/api/products/[slug]/route.ts
+// app/api/products/[slug]/route.ts - Complete working version
+// export async function PUT(
+//   request: NextRequest,
+//   { params }: { params: { slug: string } }
+// ) {
+//   try {
+//     const session = await auth()
+//     if (!session?.user) {
+//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+//     }
+
+//     const body = await request.json()
+//     const { variants, changeNote, ...productData } = body
+
+//     // Get current product data
+//     const currentProduct = await prisma.product.findUnique({
+//       where: { slug: params.slug },
+//       include: { variants: true },
+//     })
+
+//     if (!currentProduct) {
+//       return NextResponse.json({ error: "Product not found" }, { status: 404 })
+//     }
+
+//     const historyEntries = []
+
+//     // Define fields to track with their display names
+//     const fieldsToTrack = {
+//       title: "Product Name",
+//       description: "Description",
+//       price: "Price",
+//       discount: "Discount",
+//       isInStock: "Stock Status",
+//       quantity: "Quantity",
+//       categoryName: "Category",
+//       partnerId: "Partner",
+//     }
+
+//     console.log("🔍 CHECKING FOR PRODUCT CHANGES...")
+
+//     for (const [field, displayName] of Object.entries(fieldsToTrack)) {
+//       const currentValue = currentProduct[field as keyof typeof currentProduct]
+//       const newValue = productData[field]
+
+//       // Only proceed if newValue is defined (field was submitted)
+//       if (newValue !== undefined) {
+//         // Convert to comparable strings
+//         const currentStr =
+//           currentValue !== null && currentValue !== undefined
+//             ? String(currentValue)
+//             : "Empty"
+//         const newStr =
+//           newValue !== null && newValue !== undefined
+//             ? String(newValue)
+//             : "Empty"
+
+//         const hasChanged = currentStr !== newStr
+
+//         console.log(`📋 ${field}:`, {
+//           current: currentStr,
+//           new: newStr,
+//           changed: hasChanged,
+//         })
+
+//         if (hasChanged) {
+//           console.log(`🎯 ${field} CHANGED: "${currentStr}" → "${newStr}"`)
+
+//           historyEntries.push({
+//             productId: currentProduct.id,
+//             fieldChanged: field,
+//             oldValue: currentStr === "Empty" ? null : currentStr,
+//             newValue: newStr === "Empty" ? null : newStr,
+//             changedBy: session.user.name || session.user.email || "Unknown",
+//             changedById: session.user.id,
+//             changeNote: changeNote || `${displayName} updated`,
+//           })
+//         }
+//       } else {
+//         console.log(`⏭️ ${field}: Not provided in update`)
+//       }
+//     }
+
+//     // Create product history entries
+//     if (historyEntries.length > 0) {
+//       console.log(
+//         `💾 Creating ${historyEntries.length} product history entries`
+//       )
+//       await prisma.productHistory.createMany({
+//         data: historyEntries,
+//       })
+//     } else {
+//       console.log("📝 No product changes detected")
+//     }
+
+//     // Track variant changes (existing code)
+//     const variantHistoryEntries = []
+
+//     for (let i = 0; i < variants.length; i++) {
+//       const variant = variants[i]
+//       const currentVariant = currentProduct.variants[i]
+
+//       if (currentVariant) {
+//         const variantChanges: any = {
+//           variantId: currentVariant.id,
+//           changedBy: session.user.name || session.user.email || "Unknown",
+//           changedById: session.user.id,
+//           changeNote: changeNote || "Variant updated",
+//         }
+
+//         let hasChanges = false
+
+//         // Check each field for changes
+//         if (
+//           variant.price !== undefined &&
+//           variant.price !== currentVariant.price
+//         ) {
+//           variantChanges.oldPrice = currentVariant.price
+//           variantChanges.newPrice = variant.price
+//           hasChanges = true
+//         }
+
+//         if (
+//           variant.discountedPrice !== undefined &&
+//           variant.discountedPrice !== currentVariant.discountedPrice
+//         ) {
+//           variantChanges.oldDiscounted = currentVariant.discountedPrice
+//           variantChanges.newDiscounted = variant.discountedPrice
+//           hasChanges = true
+//         }
+
+//         if (
+//           variant.weight !== undefined &&
+//           variant.weight !== currentVariant.weight
+//         ) {
+//           variantChanges.oldWeight = currentVariant.weight
+//           variantChanges.newWeight = variant.weight
+//           hasChanges = true
+//         }
+
+//         if (
+//           variant.unit !== undefined &&
+//           variant.unit !== currentVariant.unit
+//         ) {
+//           variantChanges.oldUnit = currentVariant.unit
+//           variantChanges.newUnit = variant.unit
+//           hasChanges = true
+//         }
+
+//         if (hasChanges) {
+//           variantHistoryEntries.push(variantChanges)
+//         }
+
+//         // Update the variant
+//         await prisma.productVariant.update({
+//           where: { id: currentVariant.id },
+//           data: {
+//             price: variant.price,
+//             weight: variant.weight,
+//             unit: variant.unit,
+//             discountedPrice: variant.discountedPrice,
+//           },
+//         })
+//       }
+//     }
+
+//     // Create variant history entries
+//     if (variantHistoryEntries.length > 0) {
+//       console.log(
+//         `💾 Creating ${variantHistoryEntries.length} variant history entries`
+//       )
+//       await prisma.variantPriceHistory.createMany({
+//         data: variantHistoryEntries,
+//       })
+//     }
+
+//     // Update main product
+//     const updatedProduct = await prisma.product.update({
+//       where: { slug: params.slug },
+//       data: {
+//         title: productData.title,
+//         categoryName: productData.categoryName,
+//         partnerId: productData.partnerId || null,
+//         isInStock: productData.isInStock,
+//         discount: productData.discount || null,
+//         quantity: productData.quantity,
+//         description: productData.description,
+//         price: productData.price || null,
+//       },
+//       include: {
+//         variants: true,
+//         category: true,
+//         partner: true,
+//       },
+//     })
+
+//     console.log("✅ Product update completed successfully")
+//     return NextResponse.json(updatedProduct)
+//   } catch (error) {
+//     console.error("❌ Error updating product:", error)
+//     return NextResponse.json(
+//       { error: "Internal server error" },
+//       { status: 500 }
+//     )
+//   }
+// }
+
 export async function PUT(
-  req: NextRequest,
+  request: NextRequest,
   { params }: { params: { slug: string } }
 ) {
   try {
     const session = await auth()
-
-    if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized - You must be logged in" },
-        { status: 401 }
-      )
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    // Check user role
-    const user = await prisma.user.findUnique({
-      where: { email: session.user?.email },
+    const body = await request.json()
+    const { variants, changeNote, ...productData } = body
+
+    // Get current product data
+    const currentProduct = await prisma.product.findUnique({
+      where: { slug: params.slug },
+      include: { variants: true },
     })
 
-    if (user?.role !== "admin") {
-      return NextResponse.json(
-        { error: "Forbidden - You don't have permission" },
-        { status: 403 }
-      )
+    if (!currentProduct) {
+      return NextResponse.json({ error: "Product not found" }, { status: 404 })
     }
 
-    const {
-      title,
-      description,
-      imageUrl,
-      images,
-      unit,
-      categoryName,
-      partner,
-      quantity,
-      discount,
-      isInStock,
-      variants,
-    } = await req.json()
+    const historyEntries = []
 
-    const updatedProduct = await prisma.$transaction(async (prisma) => {
-      // First get the product ID from the slug
-      const existingProduct = await prisma.product.findUnique({
-        where: { slug: params.slug },
-        select: { id: true },
-      })
+    // Define fields to track with their display names
+    const fieldsToTrack = {
+      title: "Product Name",
+      description: "Description",
+      price: "Price",
+      discount: "Discount",
+      isInStock: "Stock Status",
+      quantity: "Quantity",
+      categoryName: "Category",
+      partnerId: "Partner",
+    }
 
-      if (!existingProduct) {
-        throw new Error("Product not found")
-      }
+    console.log("🔍 CHECKING FOR PRODUCT CHANGES...")
 
-      const productId = existingProduct.id
+    for (const [field, displayName] of Object.entries(fieldsToTrack)) {
+      const currentValue = currentProduct[field as keyof typeof currentProduct]
+      const newValue = productData[field]
 
-      // Build update data
-      const updateData: any = {
-        title,
-        description,
-        imageUrl,
-        images,
-        unit,
-        quantity,
-        discount,
-        isInStock,
-      }
+      if (newValue !== undefined) {
+        const currentStr =
+          currentValue !== null && currentValue !== undefined
+            ? String(currentValue)
+            : "Empty"
+        const newStr =
+          newValue !== null && newValue !== undefined
+            ? String(newValue)
+            : "Empty"
 
-      // Handle category relationship
-      if (categoryName !== undefined) {
-        updateData.category = {
-          connect: { categoryName },
-        }
-      }
+        const hasChanged = currentStr !== newStr
 
-      // Handle partner relationship
-      if (partner !== undefined) {
-        if (partner === null) {
-          updateData.partner = { disconnect: true }
-        } else if (partner.id) {
-          updateData.partner = { connect: { id: partner.id } }
-        }
-      }
-
-      // Update the product
-      const product = await prisma.product.update({
-        where: { id: productId },
-        data: updateData,
-      })
-
-      // Only process variants if they're provided in the request
-      if (variants !== undefined) {
-        const existingVariants = await prisma.productVariant.findMany({
-          where: { productId },
-          select: { id: true },
+        console.log(`📋 ${field}:`, {
+          current: currentStr,
+          new: newStr,
+          changed: hasChanged,
         })
 
-        const existingVariantIds = existingVariants.map((v) => v.id)
-        const incomingVariantIds = variants
-          .map((v: any) => v.id)
-          .filter(Boolean)
+        if (hasChanged) {
+          console.log(`🎯 ${field} CHANGED: "${currentStr}" → "${newStr}"`)
 
-        // Delete variants not in the incoming list
-        const variantsToDelete = existingVariantIds.filter(
-          (id) => !incomingVariantIds.includes(id)
-        )
-
-        if (variantsToDelete.length > 0) {
-          await prisma.productVariant.deleteMany({
-            where: { id: { in: variantsToDelete } },
+          historyEntries.push({
+            productId: currentProduct.id,
+            fieldChanged: field,
+            oldValue: currentStr === "Empty" ? null : currentStr,
+            newValue: newStr === "Empty" ? null : newStr,
+            changedBy: session.user.name || session.user.email || "Unknown",
+            changedById: session.user.id,
+            changeNote: changeNote || `${displayName} updated`,
           })
         }
+      } else {
+        console.log(`⏭️ ${field}: Not provided in update`)
+      }
+    }
 
-        // Upsert variants
-        for (const variant of variants) {
-          const variantData = {
+    // Create product history entries
+    if (historyEntries.length > 0) {
+      console.log(
+        `💾 Creating ${historyEntries.length} product history entries`
+      )
+      await prisma.productHistory.createMany({
+        data: historyEntries,
+      })
+    } else {
+      console.log("📝 No product changes detected")
+    }
+
+    // ============================================
+    // IMPROVED VARIANT HANDLING
+    // ============================================
+    const variantHistoryEntries = []
+    const currentVariantIds = currentProduct.variants.map((v) => v.id)
+    const processedVariantIds = new Set<string>()
+
+    console.log(`📦 Processing ${variants.length} variants...`)
+
+    // Process each variant from the form
+    for (let i = 0; i < variants.length; i++) {
+      const variant = variants[i]
+      const currentVariant = currentProduct.variants[i]
+
+      if (currentVariant) {
+        // UPDATE EXISTING VARIANT
+        console.log(`✏️ Updating existing variant ${i + 1}`)
+        processedVariantIds.add(currentVariant.id)
+
+        const variantChanges: any = {
+          variantId: currentVariant.id,
+          changedBy: session.user.name || session.user.email || "Unknown",
+          changedById: session.user.id,
+          changeNote: changeNote || `Variant ${i + 1} updated`,
+        }
+
+        let hasChanges = false
+
+        // Check each field for changes
+        if (
+          variant.price !== undefined &&
+          variant.price !== currentVariant.price
+        ) {
+          variantChanges.oldPrice = currentVariant.price
+          variantChanges.newPrice = variant.price
+          hasChanges = true
+        }
+
+        if (
+          variant.discountedPrice !== undefined &&
+          variant.discountedPrice !== currentVariant.discountedPrice
+        ) {
+          variantChanges.oldDiscounted = currentVariant.discountedPrice
+          variantChanges.newDiscounted = variant.discountedPrice
+          hasChanges = true
+        }
+
+        if (
+          variant.weight !== undefined &&
+          variant.weight !== currentVariant.weight
+        ) {
+          variantChanges.oldWeight = currentVariant.weight
+          variantChanges.newWeight = variant.weight
+          hasChanges = true
+        }
+
+        if (
+          variant.unit !== undefined &&
+          variant.unit !== currentVariant.unit
+        ) {
+          variantChanges.oldUnit = currentVariant.unit
+          variantChanges.newUnit = variant.unit
+          hasChanges = true
+        }
+
+        if (hasChanges) {
+          variantHistoryEntries.push(variantChanges)
+          console.log(`📝 Variant ${i + 1} has changes, tracked in history`)
+        }
+
+        // Update the variant
+        await prisma.productVariant.update({
+          where: { id: currentVariant.id },
+          data: {
             price: variant.price,
             weight: variant.weight,
             unit: variant.unit,
-            discountedPrice:
-              discount && discount > 0
-                ? variant.price * (1 - discount / 100)
-                : variant.discountedPrice || null,
-          }
+            discountedPrice: variant.discountedPrice,
+          },
+        })
+      } else {
+        // CREATE NEW VARIANT
+        console.log(`➕ Creating new variant ${i + 1}`)
 
-          if (variant.id) {
-            await prisma.productVariant.update({
-              where: { id: variant.id },
-              data: variantData,
-            })
-          } else {
-            await prisma.productVariant.create({
-              data: {
-                ...variantData,
-                productId,
-              },
-            })
-          }
+        const newVariant = await prisma.productVariant.create({
+          data: {
+            productId: currentProduct.id,
+            price: variant.price,
+            weight: variant.weight,
+            unit: variant.unit,
+            discountedPrice: variant.discountedPrice,
+          },
+        })
+
+        // Track new variant creation in history
+        variantHistoryEntries.push({
+          variantId: newVariant.id,
+          oldPrice: null,
+          newPrice: variant.price,
+          oldWeight: null,
+          newWeight: variant.weight,
+          oldUnit: null,
+          newUnit: variant.unit,
+          oldDiscounted: null,
+          newDiscounted: variant.discountedPrice,
+          changedBy: session.user.name || session.user.email || "Unknown",
+          changedById: session.user.id,
+          changeNote: changeNote || `New variant ${i + 1} created`,
+        })
+
+        console.log(`✅ New variant ${i + 1} created and tracked`)
+      }
+    }
+
+    // DELETE REMOVED VARIANTS (if user removed variants from the form)
+    const variantsToDelete = currentVariantIds.filter(
+      (id) => !processedVariantIds.has(id)
+    )
+
+    if (variantsToDelete.length > 0) {
+      console.log(`🗑️ Deleting ${variantsToDelete.length} removed variants`)
+
+      // Track deletions in history
+      for (const variantId of variantsToDelete) {
+        const deletedVariant = currentProduct.variants.find(
+          (v) => v.id === variantId
+        )
+        if (deletedVariant) {
+          variantHistoryEntries.push({
+            variantId: deletedVariant.id,
+            oldPrice: deletedVariant.price,
+            newPrice: null,
+            oldWeight: deletedVariant.weight,
+            newWeight: null,
+            oldUnit: deletedVariant.unit,
+            newUnit: null,
+            oldDiscounted: deletedVariant.discountedPrice,
+            newDiscounted: null,
+            changedBy: session.user.name || session.user.email || "Unknown",
+            changedById: session.user.id,
+            changeNote: changeNote || "Variant deleted",
+          })
         }
       }
 
-      return product
+      await prisma.productVariant.deleteMany({
+        where: { id: { in: variantsToDelete } },
+      })
+    }
 
-      // // Handle variants
-      // const existingVariants = await prisma.productVariant.findMany({
-      //   where: { productId },
-      //   select: { id: true },
-      // })
+    // Create variant history entries
+    if (variantHistoryEntries.length > 0) {
+      console.log(
+        `💾 Creating ${variantHistoryEntries.length} variant history entries`
+      )
+      await prisma.variantPriceHistory.createMany({
+        data: variantHistoryEntries,
+      })
+    }
 
-      // const existingVariantIds = existingVariants.map((v) => v.id)
-      // const incomingVariantIds = variants.map((v: any) => v.id).filter(Boolean)
-
-      // // Delete variants not in the incoming list
-      // const variantsToDelete = existingVariantIds.filter(
-      //   (id) => !incomingVariantIds.includes(id)
-      // )
-
-      // if (variantsToDelete.length > 0) {
-      //   await prisma.productVariant.deleteMany({
-      //     where: { id: { in: variantsToDelete } },
-      //   })
-      // }
-
-      // // Upsert variants
-      // for (const variant of variants) {
-      //   const variantData = {
-      //     price: variant.price,
-      //     weight: variant.weight,
-      //     unit: variant.unit,
-      //     discountedPrice:
-      //       discount && discount > 0
-      //         ? variant.price * (1 - discount / 100)
-      //         : variant.discountedPrice || null,
-      //   }
-
-      //   if (variant.id) {
-      //     await prisma.productVariant.update({
-      //       where: { id: variant.id },
-      //       data: variantData,
-      //     })
-      //   } else {
-      //     await prisma.productVariant.create({
-      //       data: {
-      //         ...variantData,
-      //         productId,
-      //       },
-      //     })
-      //   }
-      // }
-
-      // return product
+    // Update main product
+    const updatedProduct = await prisma.product.update({
+      where: { slug: params.slug },
+      data: {
+        title: productData.title,
+        categoryName: productData.categoryName,
+        partnerId: productData.partnerId || null,
+        isInStock: productData.isInStock,
+        discount: productData.discount || null,
+        quantity: productData.quantity,
+        description: productData.description,
+        price: productData.price || null,
+      },
+      include: {
+        variants: true,
+        category: true,
+        partner: true,
+      },
     })
+
+    console.log("✅ Product update completed successfully")
+    console.log(
+      `📊 Summary: ${historyEntries.length} product changes, ${variantHistoryEntries.length} variant changes`
+    )
 
     return NextResponse.json(updatedProduct)
   } catch (error) {
-    console.error("Error updating product:", error)
+    console.error("❌ Error updating product:", error)
     return NextResponse.json(
-      {
-        error: "Error editing product",
-        message: error instanceof Error ? error.message : "Unknown error",
-      },
+      { error: "Internal server error" },
       { status: 500 }
     )
   }
 }
+
+// export async function PUT(
+//   req: NextRequest,
+//   { params }: { params: { slug: string } }
+// ) {
+//   try {
+//     const session = await auth()
+
+//     if (!session) {
+//       return NextResponse.json(
+//         { error: "Unauthorized - You must be logged in" },
+//         { status: 401 }
+//       )
+//     }
+
+//     // Check user role
+//     const user = await prisma.user.findUnique({
+//       where: { email: session.user?.email },
+//     })
+
+//     if (user?.role !== "admin") {
+//       return NextResponse.json(
+//         { error: "Forbidden - You don't have permission" },
+//         { status: 403 }
+//       )
+//     }
+
+//     const {
+//       title,
+//       description,
+//       imageUrl,
+//       images,
+//       unit,
+//       categoryName,
+//       partner,
+//       quantity,
+//       discount,
+//       isInStock,
+//       variants,
+//     } = await req.json()
+
+//     const updatedProduct = await prisma.$transaction(async (prisma) => {
+//       // First get the product ID from the slug
+//       const existingProduct = await prisma.product.findUnique({
+//         where: { slug: params.slug },
+//         select: { id: true },
+//       })
+
+//       if (!existingProduct) {
+//         throw new Error("Product not found")
+//       }
+
+//       const productId = existingProduct.id
+
+//       // Build update data
+//       const updateData: any = {
+//         title,
+//         description,
+//         imageUrl,
+//         images,
+//         unit,
+//         quantity,
+//         discount,
+//         isInStock,
+//       }
+
+//       // Handle category relationship
+//       if (categoryName !== undefined) {
+//         updateData.category = {
+//           connect: { categoryName },
+//         }
+//       }
+
+//       // Handle partner relationship
+//       if (partner !== undefined) {
+//         if (partner === null) {
+//           updateData.partner = { disconnect: true }
+//         } else if (partner.id) {
+//           updateData.partner = { connect: { id: partner.id } }
+//         }
+//       }
+
+//       // Update the product
+//       const product = await prisma.product.update({
+//         where: { id: productId },
+//         data: updateData,
+//       })
+
+//       // Only process variants if they're provided in the request
+//       if (variants !== undefined) {
+//         const existingVariants = await prisma.productVariant.findMany({
+//           where: { productId },
+//           select: { id: true },
+//         })
+
+//         const existingVariantIds = existingVariants.map((v) => v.id)
+//         const incomingVariantIds = variants
+//           .map((v: any) => v.id)
+//           .filter(Boolean)
+
+//         // Delete variants not in the incoming list
+//         const variantsToDelete = existingVariantIds.filter(
+//           (id) => !incomingVariantIds.includes(id)
+//         )
+
+//         if (variantsToDelete.length > 0) {
+//           await prisma.productVariant.deleteMany({
+//             where: { id: { in: variantsToDelete } },
+//           })
+//         }
+
+//         // Upsert variants
+//         for (const variant of variants) {
+//           const variantData = {
+//             price: variant.price,
+//             weight: variant.weight,
+//             unit: variant.unit,
+//             discountedPrice:
+//               discount && discount > 0
+//                 ? variant.price * (1 - discount / 100)
+//                 : variant.discountedPrice || null,
+//           }
+
+//           if (variant.id) {
+//             await prisma.productVariant.update({
+//               where: { id: variant.id },
+//               data: variantData,
+//             })
+//           } else {
+//             await prisma.productVariant.create({
+//               data: {
+//                 ...variantData,
+//                 productId,
+//               },
+//             })
+//           }
+//         }
+//       }
+
+//       return product
+
+//       // // Handle variants
+//       // const existingVariants = await prisma.productVariant.findMany({
+//       //   where: { productId },
+//       //   select: { id: true },
+//       // })
+
+//       // const existingVariantIds = existingVariants.map((v) => v.id)
+//       // const incomingVariantIds = variants.map((v: any) => v.id).filter(Boolean)
+
+//       // // Delete variants not in the incoming list
+//       // const variantsToDelete = existingVariantIds.filter(
+//       //   (id) => !incomingVariantIds.includes(id)
+//       // )
+
+//       // if (variantsToDelete.length > 0) {
+//       //   await prisma.productVariant.deleteMany({
+//       //     where: { id: { in: variantsToDelete } },
+//       //   })
+//       // }
+
+//       // // Upsert variants
+//       // for (const variant of variants) {
+//       //   const variantData = {
+//       //     price: variant.price,
+//       //     weight: variant.weight,
+//       //     unit: variant.unit,
+//       //     discountedPrice:
+//       //       discount && discount > 0
+//       //         ? variant.price * (1 - discount / 100)
+//       //         : variant.discountedPrice || null,
+//       //   }
+
+//       //   if (variant.id) {
+//       //     await prisma.productVariant.update({
+//       //       where: { id: variant.id },
+//       //       data: variantData,
+//       //     })
+//       //   } else {
+//       //     await prisma.productVariant.create({
+//       //       data: {
+//       //         ...variantData,
+//       //         productId,
+//       //       },
+//       //     })
+//       //   }
+//       // }
+
+//       // return product
+//     })
+
+//     return NextResponse.json(updatedProduct)
+//   } catch (error) {
+//     console.error("Error updating product:", error)
+//     return NextResponse.json(
+//       {
+//         error: "Error editing product",
+//         message: error instanceof Error ? error.message : "Unknown error",
+//       },
+//       { status: 500 }
+//     )
+//   }
+// }

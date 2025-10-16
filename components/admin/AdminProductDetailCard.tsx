@@ -228,6 +228,8 @@ import { Button } from "../ui/button"
 import EditProduct from "./products/EditProduct"
 import DeleteProductDialog from "./products/DeleteProductDialog"
 import AddImage from "./AddImage"
+import ProductHistory from "./ProductHistory"
+import ViewProductHistoryDialog from "./ViewProductHistory"
 
 interface Props {
   product: Product
@@ -458,16 +460,25 @@ const AdminProductDetailCard = ({ product }: Props) => {
             <p className="text-muted-foreground">{product.description}</p>
           </div>
 
+          {/* <div className="rounded-lg border bg-card p-4 shadow-sm">
+            <ProductPriceHistory productSlug={product.slug} />
+          </div> */}
+
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 pt-2">
             <EditProduct product={product} />
             <div className="flex justify-between gap-x-6 w-full">
               <AddImage product={product} />
+              <ViewProductHistoryDialog product={product} />
               <DeleteProductDialog product={product} />
             </div>
           </div>
         </div>
       </div>
+
+      {/* <div className="mt-6 w-full">
+        <ProductHistory productSlug={product.slug} />
+      </div> */}
     </div>
   )
 }

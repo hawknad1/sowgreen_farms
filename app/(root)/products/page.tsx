@@ -252,6 +252,9 @@ async function getProducts(
         variants: true,
         partner: true,
         category: true,
+        wishLists: true,
+        productHistory: true,
+        priceHistory: true,
       },
     })
 
@@ -266,6 +269,12 @@ async function getProducts(
         createdAt: variant.createdAt.toISOString(),
         updatedAt: variant.updatedAt.toISOString(),
       })),
+      productHistory: product.productHistory
+        ? product.productHistory.map((history) => ({
+            ...history,
+            createdAt: history.createdAt.toISOString(),
+          }))
+        : [],
     }))
 
     return serializedProducts

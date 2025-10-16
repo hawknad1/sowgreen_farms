@@ -1,9 +1,15 @@
 import twilio from "twilio"
 
 import { NextRequest, NextResponse } from "next/server"
-import { getTemplateMapFromBase64 } from "@/lib/twilio/template"
+import {
+  getTemplateMapFromBase64,
+  getTemplateMapPickupFromBase64,
+} from "@/lib/twilio/template"
 import { truncate } from "@/lib/twilio/truncate"
-import { prepareOrderDetails } from "@/lib/twilio/prepareOrderDetails"
+import {
+  prepareOrderDetails,
+  prepareOrderPickupDetails,
+} from "@/lib/twilio/prepareOrderDetails"
 import { Staff } from "@/types"
 
 const accountSid = process.env.TWILIO_ACCOUNT_SID!
@@ -66,16 +72,16 @@ export async function POST(req: NextRequest) {
     const cappedProductCount = Math.min(rawProductCount, 17)
 
     // Calculate exact variable count for non-button templates
-    const baseVarCount = 7 // [name, orderNumber, date, method, address,rider, phone]
+    const baseVarCount = 5 // [name, orderNumber, pickup_date, pickup_address, phone]
     const summaryVarCount = 5 // [subtotal, delivery, credit, total, due]
     const contactVarCount = 2 // [contact1, contact2]
     const requiredVarCount =
       baseVarCount + cappedProductCount + summaryVarCount + contactVarCount
 
     // 2. Get template SID
-    const TEMPLATE_MAP = getTemplateMapFromBase64()
+    const TEMPLATE_MAP = getTemplateMapPickupFromBase64()
     const templateKey =
-      rawProductCount > 17 ? "15var_btn" : `${requiredVarCount}var`
+      rawProductCount > 17 ? "13var_btn" : `${requiredVarCount}var`
     const contentSid = TEMPLATE_MAP[templateKey]
 
     if (!contentSid) {
@@ -84,25 +90,25 @@ export async function POST(req: NextRequest) {
 
     // 3. Prepare order details
     const { baseVariables, productLines, summaryValues, contactValues } =
-      prepareOrderDetails(order, shipping, cappedProductCount, workers)
+      prepareOrderPickupDetails(order, shipping, cappedProductCount, workers)
 
     // 4. Build variables array according to template requirements
     const allVariables = [
       ...baseVariables.map((v) => truncate(v, 40)), // 7 variables
-      ...(templateKey === "15var_btn"
+      ...(templateKey === "13var_btn"
         ? [
             "Click the *View Ordered Items* button below to see all purchased products.",
           ] // Single product line for button template
         : productLines), // Multiple lines for other templates
       ...summaryValues, // 5 variables
       ...contactValues, // 2 variables
-      ...(templateKey === "15var_btn" ? [order.id] : []), // Button ID only for button template
+      ...(templateKey === "13var_btn" ? [order.id] : []), // Button ID only for button template
     ]
 
     // 5. Validate variable count matches template expectations
     const expectedVarCount =
-      templateKey === "15var_btn"
-        ? 16 // 6 + 1 + 5 + 2 + 1 (button ID)
+      templateKey === "13var_btn"
+        ? 14 // 6 + 1 + 5 + 2 + 1 (button ID)
         : requiredVarCount
 
     if (allVariables?.length !== expectedVarCount) {

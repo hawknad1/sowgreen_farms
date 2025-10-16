@@ -130,6 +130,44 @@ export type TCategory = {
   products: Product[]
 }
 
+export type ProductHistory = {
+  id: string
+  productId: string
+  fieldChanged: string
+  oldValue: string | null
+  newValue: string | null
+  changedBy: string
+  changeNote?: string
+  createdAt: string
+}
+
+// types/index.ts
+// export interface Product {
+//   id: string
+//   title: string
+//   slug: string
+//   imageUrl: string
+//   images?: { url: string; publicId: string }[]
+//   description: string
+//   discount?: number
+//   price?: number // Add this
+//   weight?: number
+//   unit?: string
+//   categoryName: string
+//   category?: Category
+//   isInStock: "in-stock" | "out-of-stock" // Fix this type
+//   quantity: number
+//   createdAt: string
+//   updatedAt: string
+//   productOrders: any[]
+//   wishLists: any[]
+//   purchaseCount: number
+//   variants: ProductVariant[]
+//   partnerId?: string
+//   partner?: PartnerType | null
+//   priceHistory: any[]
+// }
+
 export type Product = {
   categoryName: string
   createdAt: string
@@ -145,9 +183,44 @@ export type Product = {
   title: string
   updatedAt: string
   variants: Variant[]
+  wishLists: any[]
   rating?: number // Added as optional since it's used in sorting
   partner?: PartnerType | null // Match Prisma model
+  productHistory: ProductHistory[]
+  priceHistory: any[]
 }
+
+export interface ProductVariant {
+  id: string // Add this
+  productId: string
+  product?: Product
+  weight?: number
+  price: number
+  discountedPrice?: number
+  unit?: string
+  createdAt: string
+  updatedAt: string
+  priceHistory: any[]
+}
+
+// export type Product = {
+//   categoryName: string
+//   createdAt: string
+//   images?: { url: string; publicId: string }[]
+//   description: string
+//   discount: number
+//   id: string
+//   slug: string
+//   imageUrl: string
+//   isInStock: string
+//   purchaseCount: number
+//   quantity: number
+//   title: string
+//   updatedAt: string
+//   variants: Variant[]
+//   rating?: number // Added as optional since it's used in sorting
+//   partner?: PartnerType | null // Match Prisma model
+// }
 
 export type Variant = {
   id: string
@@ -297,4 +370,37 @@ export type Location = {
   region: string
   city: string
   address: string
+}
+
+// types/index.ts
+export interface PriceHistory {
+  id: string
+  productId: string
+  product?: {
+    title: string
+    slug: string
+  }
+  oldPrice: number | null
+  newPrice: number
+  changedBy: string
+  changedById?: string
+  changeNote?: string
+  createdAt: string
+}
+
+export interface VariantPriceHistory {
+  id: string
+  variantId: string
+  variant?: {
+    weight?: number
+    unit?: string
+  }
+  oldPrice: number | null
+  newPrice: number
+  oldDiscounted?: number | null
+  newDiscounted?: number | null
+  changedBy: string
+  changedById?: string
+  changeNote?: string
+  createdAt: string
 }

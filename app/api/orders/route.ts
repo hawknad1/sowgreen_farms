@@ -46,7 +46,11 @@ export async function GET(req: Request) {
         dispatchRider: true,
         products: {
           include: {
-            product: true,
+            product: {
+              include: {
+                partner: true,
+              },
+            },
           },
         },
       },

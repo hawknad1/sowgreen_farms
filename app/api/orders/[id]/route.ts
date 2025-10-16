@@ -15,7 +15,11 @@ export async function GET(
         dispatchRider: true,
         products: {
           include: {
-            product: true, // Include product details in the response
+            product: {
+              include: {
+                partner: true,
+              },
+            }, // Include product details in the response
           },
         },
       },
