@@ -198,7 +198,9 @@ export function generateOrderConfirmationMessage(
     : order.products.slice(startIndex)
 
   // Helpers
-  const UNKNOWN_BRAND = "Unknown Partner"
+  // const UNKNOWN_BRAND = "Unknown Partner"
+
+  const UNKNOWN_BRAND = "OTHER"
 
   const normalizeBrand = (raw: unknown): string => {
     if (typeof raw === "string") {

@@ -205,7 +205,9 @@ export function prepareOrderDetails(
       .join(" ")
   }
 
-  const UNKNOWN_BRAND = "Unknown Partner"
+  // const UNKNOWN_BRAND = "Unknown Partner"
+
+  const UNKNOWN_BRAND = "OTHER"
 
   const normalizeBrand = (raw: unknown): string => {
     if (typeof raw === "string") {
@@ -381,7 +383,9 @@ export function prepareOrderPickupDetails(
       .join(" ")
   }
 
-  const UNKNOWN_BRAND = "Unknown Partner"
+  // const UNKNOWN_BRAND = "Unknown Partner"
+
+  const UNKNOWN_BRAND = "OTHER"
 
   const normalizeBrand = (raw: unknown): string => {
     if (typeof raw === "string") {
