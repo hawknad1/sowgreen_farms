@@ -69,12 +69,12 @@ import prisma from "@/lib/prismadb"
 
 export async function POST(request: Request) {
   try {
-    console.log("=== Update Quantity API Called ===")
-    console.log("Environment:", process.env.NODE_ENV)
-    console.log("Database URL exists:", !!process.env.DATABASE_URL)
+    // console.log("=== Update Quantity API Called ===")
+    // console.log("Environment:", process.env.NODE_ENV)
+    // console.log("Database URL exists:", !!process.env.DATABASE_URL)
 
     const body = await request.json()
-    console.log("Raw request body:", JSON.stringify(body, null, 2))
+    // console.log("Raw request body:", JSON.stringify(body, null, 2))
 
     const { products } = body
 
@@ -102,19 +102,19 @@ export async function POST(request: Request) {
       })
     }
 
-    console.log(`Processing ${products.length} products`)
+    // console.log(`Processing ${products.length} products`)
 
     // Process each product
     for (let i = 0; i < products.length; i++) {
       const orderProduct = products[i]
-      console.log(`\n--- Processing product ${i + 1}/${products.length} ---`)
-      console.log("Order product:", JSON.stringify(orderProduct, null, 2))
+      // console.log(`\n--- Processing product ${i + 1}/${products.length} ---`)
+      // console.log("Order product:", JSON.stringify(orderProduct, null, 2))
 
       const { item, quantity } = orderProduct
 
       // Validate item exists
       if (!item) {
-        console.error(`Product ${i + 1}: Missing 'item' field`)
+        // console.error(`Product ${i + 1}: Missing 'item' field`)
         return NextResponse.json(
           { error: `Product at index ${i} is missing 'item' field` },
           { status: 400 }
@@ -123,7 +123,7 @@ export async function POST(request: Request) {
 
       // Validate productId
       if (!item.productId) {
-        console.error(`Product ${i + 1}: Missing productId in item:`, item)
+        // console.error(`Product ${i + 1}: Missing productId in item:`, item)
         return NextResponse.json(
           { error: `Product at index ${i} is missing 'productId'` },
           { status: 400 }
@@ -132,16 +132,16 @@ export async function POST(request: Request) {
 
       // Validate quantity
       if (typeof quantity !== "number" || quantity < 1) {
-        console.error(`Product ${i + 1}: Invalid quantity:`, quantity)
+        // console.error(`Product ${i + 1}: Invalid quantity:`, quantity)
         return NextResponse.json(
           { error: `Product at index ${i} has invalid quantity: ${quantity}` },
           { status: 400 }
         )
       }
 
-      console.log(
-        `Product ID: ${item.productId}, Quantity to deduct: ${quantity}`
-      )
+      // console.log(
+      //   `Product ID: ${item.productId}, Quantity to deduct: ${quantity}`
+      // )
 
       // Check if product exists
       try {
@@ -165,9 +165,9 @@ export async function POST(request: Request) {
           )
         }
 
-        console.log(
-          `Found product: ${product.title}, Current stock: ${product.quantity}`
-        )
+        // console.log(
+        //   `Found product: ${product.title}, Current stock: ${product.quantity}`
+        // )
 
         // Check stock availability
         if (product.quantity < quantity) {
@@ -188,11 +188,11 @@ export async function POST(request: Request) {
         const updatedQuantity = product.quantity - quantity
         const isInStock = updatedQuantity > 0 ? "in-stock" : "out-of-stock"
 
-        console.log(
-          `Updating: ${product.title} | ` +
-            `${product.quantity} → ${updatedQuantity} | ` +
-            `Status: ${isInStock}`
-        )
+        // console.log(
+        //   `Updating: ${product.title} | ` +
+        //     `${product.quantity} → ${updatedQuantity} | ` +
+        //     `Status: ${isInStock}`
+        // )
 
         // Update the product
         await prisma.product.update({

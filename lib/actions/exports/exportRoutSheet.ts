@@ -302,14 +302,18 @@ export default async function exportDispatchOrdersToExcel(
   // CRITICAL DEBUGGING STEP: Check your browser's developer console (F12).
   console.log("Client-side: Data received from API to be exported:", orders)
 
+  // if (!orders || orders.length === 0) {
+  //   alert(
+  //     "Export Failed: No data was found that matches all your criteria (status 'confirmed', an assigned rider, and the selected delivery date range). Please check your data or try a different date range."
+  //   )
+  //   console.warn(
+  //     "Client-side: No orders found for the given criteria. Aborting export."
+  //   )
+  //   return
+  // }
+
   if (!orders || orders.length === 0) {
-    alert(
-      "Export Failed: No data was found that matches all your criteria (status 'confirmed', an assigned rider, and the selected delivery date range). Please check your data or try a different date range."
-    )
-    console.warn(
-      "Client-side: No orders found for the given criteria. Aborting export."
-    )
-    return
+    throw new Error("NO_ORDERS_FOUND")
   }
 
   console.log(
@@ -389,12 +393,16 @@ export default async function exportDispatchOrdersToExcel(
     0
   )
 
+  // if (totalFilteredOrders === 0) {
+  //   alert(
+  //     `Export Failed: No orders found within the selected date range (${format(from, "MMM d, yyyy")} to ${format(to, "MMM d, yyyy")}). The API returned ${orders.length} orders, but none matched your date range.`
+  //   )
+  //   console.warn("Client-side: All orders were outside the selected date range")
+  //   return
+  // }
+
   if (totalFilteredOrders === 0) {
-    alert(
-      `Export Failed: No orders found within the selected date range (${format(from, "MMM d, yyyy")} to ${format(to, "MMM d, yyyy")}). The API returned ${orders.length} orders, but none matched your date range.`
-    )
-    console.warn("Client-side: All orders were outside the selected date range")
-    return
+    throw new Error("NO_ORDERS_IN_RANGE")
   }
 
   console.log(

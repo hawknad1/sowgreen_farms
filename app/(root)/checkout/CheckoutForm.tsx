@@ -133,8 +133,6 @@ export function CheckoutForm() {
     },
   })
 
-  console.log(formValues, "formValues")
-
   // Set email if user is logged in
   useEffect(() => {
     if (user?.email) {
@@ -176,7 +174,7 @@ export function CheckoutForm() {
 
     form.setValue("deliveryMethod", method, {
       shouldDirty: true,
-      shouldValidate: true,
+      shouldValidate: false,
     })
 
     // Type-safe: only set deliveryDate if it's part of the schema
@@ -297,47 +295,6 @@ export function CheckoutForm() {
     console.log(value, "value")
   }
 
-  // Handle form submission
-  // const handleFormSubmit = async (values: z.infer<typeof CheckoutSchema>) => {
-  //   setIsSubmitting(true)
-
-  //   // Validate pickup option if "Schedule Pickup" is selected
-  //   if (selectedDeliveryMethod === "schedule-pickup" && !selectedPickupOption) {
-  //     form.setError("deliveryMethod", {
-  //       type: "manual",
-  //       message: "Please select a pickup option.",
-  //     })
-  //     setIsSubmitting(false)
-  //     return
-  //   }
-
-  //   // Validate custom city if "Unknown Location" is selected
-  //   if (selectedCity === "Unknown Location" && !customCity.trim()) {
-  //     form.setError("city", {
-  //       type: "manual",
-  //       message: "City name is required for unknown locations",
-  //     })
-  //     setIsSubmitting(false)
-  //     return
-  //   }
-
-  //   // Store in sessionStorage
-  //   sessionStorage.setItem(
-  //     "checkoutData",
-  //     JSON.stringify({
-  //       ...values,
-  //       deliveryMethod: selectedDelivery,
-  //       deliveryDate: selectedDeliveryDate,
-  //       customCity:
-  //         selectedCity === "Unknown Location" ? customCity : undefined,
-  //     })
-  //   )
-
-  //   router.push("/confirm-order")
-  // }
-
-  // Replace your handleFormSubmit function with this:
-
   const handleFormSubmit = async (values: z.infer<typeof CheckoutSchema>) => {
     try {
       setIsSubmitting(true)
@@ -393,7 +350,6 @@ export function CheckoutForm() {
       await new Promise((resolve) => setTimeout(resolve, 100))
 
       // Navigate to confirmation page
-      console.log("Navigating to /confirm-order")
       await router.push("/confirm-order")
     } catch (error) {
       console.error("Error during form submission:", error)

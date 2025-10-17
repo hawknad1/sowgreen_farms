@@ -266,16 +266,16 @@ export const DeliveryMethod: React.FC<DeliveryMethodProps> = ({
   }, [])
 
   // Validate pickup option when "Schedule Pickup" is selected
-  useEffect(() => {
-    if (selectedDeliveryMethod === "schedule-pickup" && !selectedPickupOption) {
-      form.setError("deliveryMethod", {
-        type: "manual",
-        message: "Please select a pickup option.",
-      })
-    } else {
-      form.clearErrors("deliveryMethod")
-    }
-  }, [selectedDeliveryMethod, selectedPickupOption, form])
+  // useEffect(() => {
+  //   if (selectedDeliveryMethod === "schedule-pickup" && !selectedPickupOption) {
+  //     form.setError("deliveryMethod", {
+  //       type: "manual",
+  //       message: "Please select a pickup option.",
+  //     })
+  //   } else {
+  //     form.clearErrors("deliveryMethod")
+  //   }
+  // }, [selectedDeliveryMethod, selectedPickupOption, form])
 
   return (
     <FormField
