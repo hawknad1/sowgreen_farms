@@ -183,7 +183,7 @@ export function prepareOrderDetails(
   // 1) Delivery method + base variables
   const deliveryMethod = (shipping.deliveryMethod || "Pickup").trim()
   const displayMethod = deliveryMethod.includes("Home Delivery")
-    ? deliveryMethod
+    ? deliveryMethod.split("-")[0]
     : `Pickup @ ${deliveryMethod}`
 
   const baseVariables = [

@@ -583,10 +583,17 @@ const EditProductForm = ({ product }: ProductProps) => {
   }
 
   const onSubmit = async (values: z.infer<typeof EditProductAdminSchema>) => {
-    // const updatedValues = {
-    //   ...values,
-    //   quantity: values.isInStock === "out-of-stock" ? 0 : values.quantity,
-    // }
+    if (
+      values.isInStock === "in-stock" &&
+      (!values.quantity || values.quantity === 0)
+    ) {
+      toast.error("Quantity must be greater than 0 for in-stock products")
+      form.setError("quantity", {
+        type: "manual",
+        message: "Quantity must be greater than 0 when in stock",
+      })
+      return // Prevent submission
+    }
 
     const updatedValues = {
       ...values,
@@ -602,9 +609,6 @@ const EditProductForm = ({ product }: ProductProps) => {
     }
 
     updateProduct(updatedValues)
-
-    console.log(values, "values")
-    console.log(updatedValues, "updatedValues")
   }
 
   return (
@@ -775,25 +779,6 @@ const EditProductForm = ({ product }: ProductProps) => {
                 </FormItem>
               )}
             />
-
-            {/* <FormField
-              control={form.control}
-              name="quantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="Quantity"
-                      {...field}
-                      disabled={form.watch("isInStock") === "out-of-stock"}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            /> */}
 
             <FormField
               control={form.control}
