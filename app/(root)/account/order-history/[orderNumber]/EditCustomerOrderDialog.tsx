@@ -45,9 +45,12 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
   const balance = activeUser?.user?.balance || 0
   const checkTotal = order?.paymentAction !== "paid" && balance > 0
 
-  const isReadOnly = ["confirmed", "in-transit", "delivered"].includes(
-    order?.status
-  )
+  const isReadOnly = [
+    "confirmed",
+    "in-transit",
+    "delivered",
+    "cancelled",
+  ].includes(order?.status)
 
   // Calculate order totals
   const subtotal = orderItems.reduce((sum, item) => {
@@ -169,7 +172,7 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
           variant="outline"
           // size="sm"
           className="gap-2 text-xs lg:text-sm"
-          // disabled={isReadOnly}
+          disabled={isReadOnly}
         >
           <Pencil className="h-4 w-4" />
           <span className="sr-only md:not-sr-only">Edit</span>

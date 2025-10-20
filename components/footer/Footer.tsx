@@ -47,7 +47,7 @@ export default function Footer() {
                 <span>
                   Genesis Court - G56 Chelsea High St
                   <br />
-                  Dzorwulu, Accra.
+                  Spintex, Accra.
                 </span>
               </div>
             </div>

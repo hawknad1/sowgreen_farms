@@ -13,18 +13,18 @@ export default function PickupLocations() {
     {
       id: 1,
       name: "Dzorwulu",
-      address: "14 High Street",
+      address: "#1 Kwabena Anefie St, Dzorwulu",
       phone: "+ (233) 241 234 234",
       hours: {
         // weekdays: "8:00 AM - 8:00 PM",
-        Wednesday: "8:00 AM - 8:00 PM",
+        Wednesday: "11:00 AM - 4:30 PM",
         // sunday: "10:00 AM - 6:00 PM",
       },
       features: ["In-store pickup"],
 
       //   features: ["Curbside pickup", "Free parking", "Wheelchair accessible"],
       mapEmbedUrl:
-        "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3970.7012008338743!2d-0.21644662650183438!3d5.611072233096514!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9bce4831b277%3A0xf315c7b42abe6b8f!2s8%20Lincoln%20Rd%2C%20Ama_4!5e0!3m2!1sen!2sgh!4v1753652571997!5m2!1sen!2sgh",
+        "https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d2112.119651279166!2d-0.21039998560634582!3d5.611339972034553!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s1%20Kwabena%20Anefie%20St%2C%20Dzorwulu!5e0!3m2!1sen!2sgh!4v1760984010998!5m2!1sen!2sgh",
     },
     {
       id: 2,
@@ -33,8 +33,8 @@ export default function PickupLocations() {
       phone: "+ (233) 241 234 234",
       hours: {
         weekdays: "7:00 AM - 9:00 PM",
-        saturday: "8:00 AM - 8:00 PM",
-        sunday: "9:00 AM - 7:00 PM",
+        saturday: "8:00 AM - 4:30 PM",
+        sunday: "9:00 AM - 4:30 PM",
       },
       features: ["In-store pickup"],
 
@@ -49,7 +49,7 @@ export default function PickupLocations() {
       phone: "+ (233) 241 234 234",
       hours: {
         // weekdays: "9:00 AM - 7:00 PM",
-        saturday: "8:00 AM - 8:00 PM",
+        saturday: "8:00 AM - 4:030 PM",
         // sunday: "10:00 AM - 5:00 PM",
       },
       features: ["In-store pickup"],
