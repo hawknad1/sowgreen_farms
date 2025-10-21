@@ -189,7 +189,7 @@ export async function POST(req: NextRequest) {
 
     // 6. Build variables array according to template requirements
     const allVariables = [
-      ...baseVariables.map((v) => truncate(v, 40)), // 7 variables
+      ...baseVariables.map((v) => truncate(v, 70)), // 7 variables
       ...(templateKey === "15var_btn"
         ? [
             "Click the *View Ordered Items* button below to see all purchased products.",

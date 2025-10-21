@@ -49,7 +49,7 @@ export default function PickupLocations() {
       phone: "+ (233) 241 234 234",
       hours: {
         // weekdays: "9:00 AM - 7:00 PM",
-        saturday: "8:00 AM - 4:030 PM",
+        saturday: "8:00 AM - 4:30 PM",
         // sunday: "10:00 AM - 5:00 PM",
       },
       features: ["In-store pickup"],

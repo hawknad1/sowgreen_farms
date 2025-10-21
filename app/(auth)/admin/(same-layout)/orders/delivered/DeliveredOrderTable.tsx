@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/table"
 import { Order } from "@/types"
 import { confirmedColumns } from "../confirmed/confirmedColumns"
-import { columns } from "@/components/admin/orders/columns" // Corrected import for the columns
+import { columns } from "./columns"
 import DataSkeletons from "@/components/skeletons/DataSkeletons"
 import ExportDeliveredDialog from "./ExportDeliveredDialog"
 
