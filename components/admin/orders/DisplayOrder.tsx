@@ -176,7 +176,7 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
                 {/* Product Image */}
                 <div
                   className="relative flex-shrink-0 bg-white rounded-lg border border-gray-200 p-2 cursor-pointer hover:shadow-md transition-shadow"
-                  onClick={() => router.push(`/products/${ord.product.id}`)}
+                  onClick={() => router.push(`/products/${ord.product.slug}`)}
                 >
                   <Image
                     src={ord.product.imageUrl || ord?.product?.images[0]?.url}
@@ -200,7 +200,7 @@ const DisplayOrder = ({ orders }: { orders: Order }) => {
                 <div className="flex-grow min-w-0">
                   <div
                     className="cursor-pointer"
-                    onClick={() => router.push(`/products/${ord.product.id}`)}
+                    onClick={() => router.push(`/products/${ord.product.slug}`)}
                   >
                     <h4
                       className={`font-medium text-sm mb-1 line-clamp-2 ${
