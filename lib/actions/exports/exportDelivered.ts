@@ -651,9 +651,6 @@ function filterOrdersByDeliveryDate(
     "→",
     toDate.toISOString()
   )
-  console.log("From timestamp:", fromDate.getTime())
-  console.log("To timestamp:", toDate.getTime())
-  console.log("===========================\n")
 
   const filtered = orders.filter((order, index) => {
     const shouldLog = index < 5 // Log first 5 orders for debugging
@@ -709,9 +706,6 @@ function filterOrdersByDeliveryDate(
     return isInRange
   })
 
-  console.log(
-    `\n📊 Filtered ${filtered.length} orders from ${orders.length} total\n`
-  )
   return filtered
 }
 
@@ -989,7 +983,8 @@ function createWorksheetForDate(
 
   // Create header row
   const headerRow = [
-    currentDate,
+    // currentDate,
+    deliveryDate,
     ...products.map((product) => product.title),
     "Total Revenue",
   ]
@@ -1075,22 +1070,8 @@ export default async function exportDeliveredSheet(from: Date, to: Date) {
   const products = await fetchProducts()
   const allOrders = await fetchOrders("delivered")
 
-  console.log(`\nReceived ${allOrders.length} delivered orders from API`)
-  console.log(
-    "Sample deliveryDates:",
-    allOrders.slice(0, 5).map((o) => o.deliveryDate)
-  )
-
   // Filter orders by deliveryDate and ensure status is 'delivered'
   const orders = filterOrdersByDeliveryDate(allOrders, from, to)
-
-  // Debug logging
-  console.log("=== EXPORT SUMMARY ===")
-  console.log(`Total orders fetched from API: ${allOrders.length}`)
-  console.log(`Filtered delivered orders in range: ${orders.length}`)
-  console.log(
-    `Date range: ${from.toLocaleDateString()} to ${to.toLocaleDateString()}`
-  )
 
   if (allOrders.length > 0) {
     console.log("\nSample orders (first 3):")
@@ -1127,9 +1108,7 @@ export default async function exportDeliveredSheet(from: Date, to: Date) {
 
   // Group orders by delivery date
   const groupedOrders = groupOrdersByDeliveryDate(orders)
-  console.log(
-    `\n📊 Orders grouped into ${groupedOrders.size} delivery date(s):`
-  )
+
   groupedOrders.forEach((ordersForDate, deliveryDate) => {
     console.log(`  - ${deliveryDate}: ${ordersForDate.length} orders`)
   })
@@ -1137,12 +1116,8 @@ export default async function exportDeliveredSheet(from: Date, to: Date) {
   const workbook = new ExcelJS.Workbook()
   let grandTotalRevenue = 0
 
-  console.log("\n📝 Creating worksheets...")
   // Create a worksheet for each delivery date
   groupedOrders.forEach((ordersForDate, deliveryDate) => {
-    console.log(
-      `  → Creating tab for "${deliveryDate}" with ${ordersForDate.length} orders`
-    )
     const dateRevenue = createWorksheetForDate(
       workbook,
       deliveryDate,
@@ -1150,14 +1125,45 @@ export default async function exportDeliveredSheet(from: Date, to: Date) {
       products,
       currentDate
     )
-    console.log(`     Revenue: ${dateRevenue.toFixed(2)}`)
     grandTotalRevenue += dateRevenue
   })
 
-  console.log(
-    `\n💰 Grand total revenue across all dates: ${grandTotalRevenue.toFixed(2)}`
-  )
-  console.log("=== EXPORT COMPLETE ===\n")
+  // Format dates for filename
+  const formatDateForFilename = (date: Date) => {
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ]
+    const day = date.getDate()
+    const suffix =
+      day === 1 || day === 21 || day === 31
+        ? "st"
+        : day === 2 || day === 22
+          ? "nd"
+          : day === 3 || day === 23
+            ? "rd"
+            : "th"
+    return `${months[date.getMonth()]}, ${day}${suffix}, ${date.getFullYear()}`
+  }
+
+  const fromStr = formatDateForFilename(from)
+  const toStr = formatDateForFilename(to)
+
+  // Check if same date
+  const isSameDate = from.toDateString() === to.toDateString()
+  const filename = isSameDate
+    ? `Delivered_Orders_${fromStr}.xlsx`
+    : `Delivered_Orders_${fromStr} - ${toStr}.xlsx`
 
   // Export the workbook
   const buffer = await workbook.xlsx.writeBuffer()
@@ -1166,796 +1172,10 @@ export default async function exportDeliveredSheet(from: Date, to: Date) {
   })
   const link = document.createElement("a")
   link.href = URL.createObjectURL(blob)
-  link.download = `Delivered_Orders_${currentDate.replace(/\//g, "-")}.xlsx`
+  // link.download = `Delivered_Orders_${currentDate.replace(/\//g, "-")}.xlsx`
+  link.download = filename
+
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
 }
-
-// // Type definitions
-// interface Product {
-//   id: string
-//   title: string
-//   [key: string]: any
-// }
-
-// interface OrderProduct {
-//   productId: string
-//   quantity: number
-//   weight?: number
-//   unit?: string
-//   price: number
-//   available?: boolean
-//   unitsPerPack?: number // Number of units in this variant (e.g., 1 egg or 30 eggs)
-//   variantName?: string // e.g., "Single", "Crate", "Dozen"
-//   product: {
-//     title: string
-//     unitsPerPack?: number
-//   }
-// }
-
-// interface Order {
-//   id: string
-//   orderNumber: string
-//   status: string
-//   deliveryDate?: string // Formatted string like "Wednesday, Jul 16th, 2025"
-//   createdAt: string
-//   updatedAt: string
-//   creditAppliedTotal: number
-//   paymentAction: string
-//   paymentMode: string
-//   total: number
-//   subtotal: number
-//   deliveryFee: number
-//   updatedOrderTotal: number
-//   products: OrderProduct[]
-//   shippingAddress: {
-//     id: string
-//     name: string
-//     region: string
-//     city: string
-//     address: string
-//   }
-//   dispatchRider?: {
-//     id: string
-//     fullName: string
-//     phone: string
-//   }
-//   specialNotes?: string
-//   [key: string]: any
-// }
-
-// // Product-specific configurations for special quantity calculations
-// const PRODUCT_QUANTITY_CONFIG: Record<
-//   string,
-//   {
-//     keyword: string
-//     variants: Array<{
-//       priceRange?: { min: number; max: number }
-//       exactPrice?: number
-//       weight?: number
-//       unit?: string
-//       unitsPerPack: number
-//       description?: string
-//     }>
-//   }
-// > = {
-//   eggs: {
-//     keyword: "eggs",
-//     variants: [
-//       {
-//         priceRange: { min: 0, max: 10 },
-//         unitsPerPack: 1,
-//         description: "Single egg or small pack",
-//       },
-//       {
-//         priceRange: { min: 90, max: 120 },
-//         unitsPerPack: 30,
-//         description: "Crate (30 eggs)",
-//       },
-//     ],
-//   },
-//   leafTea: {
-//     keyword: "leaf tea",
-//     variants: [
-//       {
-//         weight: 30,
-//         unit: "g",
-//         unitsPerPack: 1,
-//         description: "30g Leaf Tea pack",
-//       },
-//     ],
-//   },
-//   // Add more products as needed
-// }
-
-// // Get units per pack based on product configuration
-// function getUnitsPerPack(
-//   productTitle: string,
-//   price: number,
-//   orderProduct: OrderProduct
-// ): number | null {
-//   // First, check if the order product has unitsPerPack metadata
-//   if (orderProduct.unitsPerPack) {
-//     return orderProduct.unitsPerPack
-//   }
-
-//   if (orderProduct.product.unitsPerPack) {
-//     return orderProduct.product.unitsPerPack
-//   }
-
-//   // Fall back to configuration lookup
-//   const title = productTitle.toLowerCase()
-//   const { weight, unit } = orderProduct
-
-//   for (const [productKey, config] of Object.entries(PRODUCT_QUANTITY_CONFIG)) {
-//     if (title.includes(config.keyword)) {
-//       // Find matching variant
-//       for (const variant of config.variants) {
-//         let matches = true
-
-//         // Check price if specified
-//         if (variant.exactPrice !== undefined) {
-//           matches = matches && price === variant.exactPrice
-//         }
-//         if (variant.priceRange) {
-//           matches =
-//             matches &&
-//             price >= variant.priceRange.min &&
-//             price <= variant.priceRange.max
-//         }
-
-//         // Check weight if specified
-//         if (variant.weight !== undefined) {
-//           matches = matches && weight === variant.weight
-//         }
-
-//         // Check unit if specified
-//         if (variant.unit !== undefined) {
-//           matches = matches && unit === variant.unit
-//         }
-
-//         if (matches) {
-//           return variant.unitsPerPack
-//         }
-//       }
-//     }
-//   }
-
-//   return null
-// }
-
-// // Constants
-// const COLORS = {
-//   cream: { argb: "FCE5CD" },
-//   black: { argb: "000000" },
-//   white: { argb: "FFFFFF" },
-//   gray: { argb: "D3D3D3" },
-//   cashGreen: { argb: "DCE9CB" },
-//   momoBlue: { argb: "DDEBFF" },
-//   cardPurple: { argb: "E2E4FA" },
-// } as const
-
-// // Fetch products from the API and extract details
-// async function fetchProducts(): Promise<Product[]> {
-//   try {
-//     const response = await fetch("/api/products")
-//     if (!response.ok) {
-//       throw new Error(`Failed to fetch products: ${response.statusText}`)
-//     }
-//     const data = await response.json()
-//     return data.sort((a: Product, b: Product) => a.title.localeCompare(b.title))
-//   } catch (error) {
-//     console.error("Error fetching products:", error)
-//     return []
-//   }
-// }
-
-// // Fetch orders from the API
-// async function fetchOrders(status?: string): Promise<Order[]> {
-//   try {
-//     const queryParams = new URLSearchParams()
-
-//     // Only filter by status, not by date - we'll filter by deliveryDate client-side
-//     if (status) queryParams.append("status", status)
-
-//     const url = `/api/orders${queryParams.toString() ? "?" + queryParams.toString() : ""}`
-//     console.log("Fetching orders from:", url)
-
-//     const response = await fetch(url)
-
-//     if (!response.ok) {
-//       throw new Error(`Failed to fetch orders: ${response.statusText}`)
-//     }
-
-//     const data = await response.json()
-//     console.log(
-//       `API returned ${data.length} orders with status="${status || "any"}"`
-//     )
-//     return data
-//   } catch (error) {
-//     console.error("Error fetching orders:", error)
-//     return []
-//   }
-// }
-
-// // Parse formatted date string like "Wednesday, Jul 16th, 2025"
-// function parseDeliveryDate(dateString: string): Date | null {
-//   try {
-//     // Remove day of week and ordinal suffixes (st, nd, rd, th)
-//     const cleanedDate = dateString
-//       .replace(/^[A-Za-z]+,\s*/, "") // Remove "Wednesday, "
-//       .replace(/(\d+)(st|nd|rd|th)/, "$1") // Remove ordinal suffixes
-
-//     // Parse the cleaned date
-//     const parsedDate = new Date(cleanedDate)
-
-//     // Check if date is valid
-//     if (isNaN(parsedDate.getTime())) {
-//       console.error(
-//         "Invalid date after parsing:",
-//         cleanedDate,
-//         "from original:",
-//         dateString
-//       )
-//       return null
-//     }
-
-//     // Normalize to start of day for consistent comparison
-//     parsedDate.setHours(0, 0, 0, 0)
-
-//     return parsedDate
-//   } catch (error) {
-//     console.error("Error parsing date:", dateString, error)
-//     return null
-//   }
-// }
-
-// // Filter orders by delivery date and status
-// function filterOrdersByDeliveryDate(
-//   orders: Order[],
-//   from: Date,
-//   to: Date
-// ): Order[] {
-//   // Normalize input dates to start/end of day in LOCAL timezone
-//   const fromDate = new Date(from)
-//   fromDate.setHours(0, 0, 0, 0)
-
-//   const toDate = new Date(to)
-//   toDate.setHours(23, 59, 59, 999)
-
-//   console.log("\n=== DATE FILTERING DEBUG ===")
-//   console.log("Input from date:", from)
-//   console.log("Input to date:", to)
-//   console.log(
-//     "Normalized from date:",
-//     fromDate.toDateString(),
-//     "→",
-//     fromDate.toISOString()
-//   )
-//   console.log(
-//     "Normalized to date:",
-//     toDate.toDateString(),
-//     "→",
-//     toDate.toISOString()
-//   )
-//   console.log("From timestamp:", fromDate.getTime())
-//   console.log("To timestamp:", toDate.getTime())
-//   console.log("===========================\n")
-
-//   const filtered = orders.filter((order, index) => {
-//     const shouldLog = index < 5 // Log first 5 orders for debugging
-
-//     if (shouldLog)
-//       console.log(
-//         `\nChecking order ${index + 1}/${orders.length}: ${order.orderNumber}`
-//       )
-
-//     // Ensure order is delivered
-//     if (order.status !== "delivered") {
-//       if (shouldLog)
-//         console.log(`  ✗ Status is "${order.status}", not "delivered"`)
-//       return false
-//     }
-//     if (shouldLog) console.log(`  ✓ Status is "delivered"`)
-
-//     // Ensure deliveryDate exists
-//     if (!order.deliveryDate) {
-//       if (shouldLog) console.log(`  ✗ No deliveryDate field`)
-//       return false
-//     }
-//     if (shouldLog) console.log(`  ✓ Has deliveryDate: "${order.deliveryDate}"`)
-
-//     // Parse the formatted delivery date
-//     const deliveryDate = parseDeliveryDate(order.deliveryDate)
-
-//     if (!deliveryDate) {
-//       console.warn(`  ✗ Could not parse delivery date: "${order.deliveryDate}"`)
-//       return false
-//     }
-
-//     // Check if delivery date is within range (inclusive)
-//     const deliveryTimestamp = deliveryDate.getTime()
-//     const fromTimestamp = fromDate.getTime()
-//     const toTimestamp = toDate.getTime()
-
-//     const isAfterFrom = deliveryTimestamp >= fromTimestamp
-//     const isBeforeTo = deliveryTimestamp <= toTimestamp
-//     const isInRange = isAfterFrom && isBeforeTo
-
-//     if (shouldLog || !isInRange) {
-//       console.log(`  Delivery timestamp: ${deliveryTimestamp}`)
-//       console.log(`  From timestamp: ${fromTimestamp}`)
-//       console.log(`  To timestamp: ${toTimestamp}`)
-//       console.log(`  Is after from date? ${isAfterFrom}`)
-//       console.log(`  Is before to date? ${isBeforeTo}`)
-//       console.log(
-//         `  ${isInRange ? "✓ IN RANGE - INCLUDED" : "✗ OUT OF RANGE - EXCLUDED"}`
-//       )
-//     }
-
-//     return isInRange
-//   })
-
-//   console.log(
-//     `\n📊 Filtered ${filtered.length} orders from ${orders.length} total\n`
-//   )
-//   return filtered
-// }
-
-// // Group orders by delivery date
-// function groupOrdersByDeliveryDate(orders: Order[]): Map<string, Order[]> {
-//   const grouped = new Map<string, Order[]>()
-
-//   orders.forEach((order) => {
-//     if (!order.deliveryDate) return
-
-//     const dateKey = order.deliveryDate
-//     if (!grouped.has(dateKey)) {
-//       grouped.set(dateKey, [])
-//     }
-//     grouped.get(dateKey)!.push(order)
-//   })
-
-//   // Sort by date
-//   const sortedEntries = Array.from(grouped.entries()).sort((a, b) => {
-//     const dateA = parseDeliveryDate(a[0])
-//     const dateB = parseDeliveryDate(b[0])
-//     if (!dateA || !dateB) return 0
-//     return dateA.getTime() - dateB.getTime()
-//   })
-
-//   return new Map(sortedEntries)
-// }
-
-// // Calculate product quantity for an order
-// function calculateProductQuantity(
-//   order: Order,
-//   product: Product
-// ): number | null {
-//   const orderProducts = order.products.filter(
-//     (op) => op.productId === product.id && op.available !== false
-//   )
-
-//   if (orderProducts.length === 0) return null
-
-//   let totalQuantity = 0
-
-//   orderProducts.forEach((orderProduct) => {
-//     const title = orderProduct.product.title.toLowerCase()
-//     const { weight, unit, price, quantity } = orderProduct
-
-//     // Check for products with special unit configurations (like eggs)
-//     const unitsPerPack = getUnitsPerPack(title, price, orderProduct)
-//     if (unitsPerPack !== null) {
-//       totalQuantity += unitsPerPack * quantity
-//       return
-//     }
-
-//     // Special case: 250g Coffee
-//     if (weight === 250 && unit === "g" && title.includes("coffee")) {
-//       totalQuantity += quantity
-//       return
-//     }
-
-//     // No weight: use quantity directly
-//     if (!weight || weight === 0) {
-//       totalQuantity += quantity
-//       return
-//     }
-
-//     // Liquid units (ltr/ml): use quantity directly
-//     if (unit === "ltr" || unit === "ml") {
-//       totalQuantity += quantity
-//       return
-//     }
-
-//     // Weight-based calculation
-//     if (weight > 30) {
-//       // Convert grams to kg
-//       totalQuantity += quantity * (weight / 1000)
-//     } else {
-//       totalQuantity += quantity * weight
-//     }
-//   })
-
-//   return totalQuantity > 0 ? totalQuantity : null
-// }
-
-// // Format customer name to title case
-// function formatCustomerName(name: string): string {
-//   return name
-//     .toLowerCase()
-//     .split(" ")
-//     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-//     .join(" ")
-// }
-
-// // Apply cell styling
-// function applyCellStyle(cell: any, fill: any, font?: any, alignment?: any) {
-//   if (fill) cell.fill = fill
-//   if (font) cell.font = font
-//   if (alignment) cell.alignment = alignment
-// }
-
-// // Style header row
-// function styleHeaderRow(worksheet: any, products: Product[]) {
-//   worksheet.getRow(1).eachCell((cell: any) => {
-//     cell.alignment = {
-//       textRotation: 90,
-//       vertical: "middle",
-//       horizontal: "center",
-//     }
-//   })
-
-//   // Highlight alternate product columns with cream color
-//   for (let colIndex = 3; colIndex <= products.length + 1; colIndex += 2) {
-//     const cell = worksheet.getCell(1, colIndex)
-//     cell.fill = {
-//       type: "pattern",
-//       pattern: "solid",
-//       fgColor: COLORS.cream,
-//     }
-//   }
-// }
-
-// // Style totals row
-// function styleTotalsRow(worksheet: any, products: Product[]) {
-//   const totalsRowData = worksheet.addRow([
-//     "Totals",
-//     ...products.map(() => 0),
-//     0,
-//     "Customer Name",
-//     "Payment Mode",
-//     "Action",
-//   ])
-
-//   totalsRowData.eachCell((cell: any) => {
-//     applyCellStyle(
-//       cell,
-//       {
-//         type: "pattern",
-//         pattern: "solid",
-//         fgColor: COLORS.black,
-//       },
-//       {
-//         color: { argb: COLORS.white.argb },
-//         bold: true,
-//       },
-//       {
-//         vertical: "middle",
-//         horizontal: "center",
-//       }
-//     )
-//   })
-
-//   return totalsRowData
-// }
-
-// // Apply alternating column colors
-// function applyAlternatingColors(
-//   worksheet: any,
-//   products: Product[],
-//   totalRows: number
-// ) {
-//   for (let colIndex = 3; colIndex <= products.length + 1; colIndex += 2) {
-//     for (let rowIndex = 3; rowIndex <= totalRows; rowIndex++) {
-//       const cell = worksheet.getCell(rowIndex, colIndex)
-//       cell.fill = {
-//         type: "pattern",
-//         pattern: "solid",
-//         fgColor: COLORS.cream,
-//       }
-//     }
-//   }
-// }
-
-// // Apply gray backgrounds
-// function applyGrayBackgrounds(worksheet: any, products: Product[]) {
-//   const grayFill = {
-//     type: "pattern",
-//     pattern: "solid",
-//     fgColor: COLORS.gray,
-//   }
-
-//   // Gray for order number column (A) from row 3 down
-//   worksheet.getColumn(1).eachCell((cell: any, rowNumber: number) => {
-//     if (rowNumber >= 3) {
-//       cell.fill = grayFill
-//     }
-//   })
-
-//   // Gray for action column (last column) from row 3 down
-//   const lastColumnIndex = products.length + 5
-//   for (let rowIndex = 3; rowIndex <= worksheet.rowCount; rowIndex++) {
-//     const lastCell = worksheet.getCell(rowIndex, lastColumnIndex)
-//     lastCell.fill = grayFill
-//   }
-// }
-
-// // Style payment mode cells
-// function stylePaymentModes(worksheet: any, products: Product[]) {
-//   const paymentModeColumnIndex = products.length + 4
-
-//   for (let rowIndex = 3; rowIndex <= worksheet.rowCount; rowIndex++) {
-//     const cell = worksheet.getCell(rowIndex, paymentModeColumnIndex)
-//     const paymentMode = cell.value as string
-
-//     let bgColor: any
-//     if (paymentMode === "CASH") {
-//       bgColor = COLORS.cashGreen
-//     } else if (paymentMode === "MOMO") {
-//       bgColor = COLORS.momoBlue
-//     } else if (paymentMode === "CARD") {
-//       bgColor = COLORS.cardPurple
-//     }
-
-//     if (bgColor) {
-//       applyCellStyle(
-//         cell,
-//         {
-//           type: "pattern",
-//           pattern: "solid",
-//           fgColor: bgColor,
-//         },
-//         undefined,
-//         {
-//           vertical: "middle",
-//           horizontal: "center",
-//         }
-//       )
-//     }
-//   }
-// }
-
-// // Apply borders to all cells
-// function applyBorders(worksheet: any, products: Product[]) {
-//   const totalRows = worksheet.rowCount
-//   const totalColumns = products.length + 5
-
-//   const border = {
-//     top: { style: "thin" },
-//     left: { style: "thin" },
-//     bottom: { style: "thin" },
-//     right: { style: "thin" },
-//   }
-
-//   for (let rowIndex = 1; rowIndex <= totalRows; rowIndex++) {
-//     for (let colIndex = 1; colIndex <= totalColumns; colIndex++) {
-//       worksheet.getCell(rowIndex, colIndex).border = border
-//     }
-//   }
-// }
-
-// // Calculate column totals
-// function calculateColumnTotals(worksheet: any, products: Product[]) {
-//   const totalRows = worksheet.rowCount
-
-//   for (let colIndex = 2; colIndex <= products.length + 1; colIndex++) {
-//     let total = 0
-//     for (let rowIndex = 3; rowIndex <= totalRows; rowIndex++) {
-//       const cellValue = worksheet.getCell(rowIndex, colIndex).value
-//       if (typeof cellValue === "number") {
-//         total += cellValue
-//       }
-//     }
-//     worksheet.getCell(2, colIndex).value = total
-//   }
-// }
-
-// // Create a worksheet for a specific delivery date
-// function createWorksheetForDate(
-//   workbook: any,
-//   deliveryDate: string,
-//   orders: Order[],
-//   products: Product[],
-//   currentDate: string
-// ): number {
-//   // Create worksheet with delivery date as name (sanitize for Excel)
-//   const sheetName = deliveryDate.replace(/[*?:/\\[\]]/g, "-").substring(0, 31)
-//   const worksheet = workbook.addWorksheet(sheetName)
-
-//   // Create header row
-//   const headerRow = [
-//     currentDate,
-//     ...products.map((product) => product.title),
-//     "Total Revenue",
-//   ]
-//   worksheet.addRow(headerRow)
-
-//   // Style header and add totals row
-//   styleHeaderRow(worksheet, products)
-//   styleTotalsRow(worksheet, products)
-
-//   // Process orders and add data rows
-//   let totalRevenue = 0
-
-//   orders.forEach((order) => {
-//     const orderNumber = order.orderNumber
-//     const balance = order.creditAppliedTotal
-//       ? Math.abs(order.creditAppliedTotal)
-//       : 0
-//     const paymentAction = order.paymentAction.toUpperCase()
-//     const customerName = formatCustomerName(order.shippingAddress.name)
-
-//     // Calculate quantities for each product (returns null instead of "N/A")
-//     const orderDetails = products.map((product) =>
-//       calculateProductQuantity(order, product)
-//     )
-
-//     // Use updatedOrderTotal if available, otherwise calculate
-//     const totalOrderAmount =
-//       order.updatedOrderTotal || order.total + order.deliveryFee + balance
-//     totalRevenue += totalOrderAmount
-
-//     const paymentMode = order.paymentMode.toUpperCase()
-
-//     // Add data row (null values will appear as empty cells)
-//     worksheet.addRow([
-//       orderNumber,
-//       ...orderDetails,
-//       totalOrderAmount,
-//       customerName,
-//       paymentMode,
-//       paymentAction,
-//     ])
-//   })
-
-//   // Calculate and update totals
-//   calculateColumnTotals(worksheet, products)
-//   worksheet.getCell(2, products.length + 2).value = totalRevenue
-
-//   // Apply all styling
-//   applyAlternatingColors(worksheet, products, worksheet.rowCount)
-//   applyGrayBackgrounds(worksheet, products)
-//   stylePaymentModes(worksheet, products)
-//   applyBorders(worksheet, products)
-
-//   // Set column widths
-//   worksheet.columns = [
-//     { width: 20 }, // Order Number
-//     ...products.map(() => ({ width: 6 })), // Product columns
-//     { width: 10 }, // Total Revenue
-//     { width: 20 }, // Customer Name
-//     { width: 20 }, // Payment Mode
-//     { width: 20 }, // Action
-//   ]
-
-//   // Freeze first 2 rows
-//   worksheet.views = [
-//     {
-//       state: "frozen",
-//       xSplit: 0,
-//       ySplit: 2,
-//       topLeftCell: "A3",
-//       activeCell: "A3",
-//     },
-//   ]
-
-//   return totalRevenue
-// }
-
-// // Main export function
-// export default async function exportDeliveredSheet(from: Date, to: Date) {
-//   const currentDate = formatDate(new Date())
-
-//   // Fetch data - get ALL delivered orders, then filter by deliveryDate client-side
-//   const products = await fetchProducts()
-//   const allOrders = await fetchOrders("delivered")
-
-//   console.log(`\nReceived ${allOrders.length} delivered orders from API`)
-//   console.log(
-//     "Sample deliveryDates:",
-//     allOrders.slice(0, 5).map((o) => o.deliveryDate)
-//   )
-
-//   // Filter orders by deliveryDate and ensure status is 'delivered'
-//   const orders = filterOrdersByDeliveryDate(allOrders, from, to)
-
-//   // Debug logging
-//   console.log("=== EXPORT SUMMARY ===")
-//   console.log(`Total orders fetched from API: ${allOrders.length}`)
-//   console.log(`Filtered delivered orders in range: ${orders.length}`)
-//   console.log(
-//     `Date range: ${from.toLocaleDateString()} to ${to.toLocaleDateString()}`
-//   )
-
-//   if (allOrders.length > 0) {
-//     console.log("\nSample orders (first 3):")
-//     allOrders.slice(0, 3).forEach((order) => {
-//       console.log(
-//         `  - ${order.orderNumber}: status="${order.status}", deliveryDate="${order.deliveryDate}"`
-//       )
-//     })
-//   }
-
-//   if (orders.length === 0) {
-//     console.warn("❌ No delivered orders found in the specified date range")
-
-//     // Show how many orders were excluded and why
-//     const statusIssues = allOrders.filter(
-//       (o) => o.status !== "delivered"
-//     ).length
-//     const noDateIssues = allOrders.filter((o) => !o.deliveryDate).length
-//     const dateRangeIssues = allOrders.length - statusIssues - noDateIssues
-
-//     let message = `No delivered orders found between ${from.toLocaleDateString()} and ${to.toLocaleDateString()}.\n\n`
-//     message += `Total orders fetched: ${allOrders.length}\n`
-//     if (statusIssues > 0)
-//       message += `- ${statusIssues} orders with status ≠ "delivered"\n`
-//     if (noDateIssues > 0)
-//       message += `- ${noDateIssues} orders without deliveryDate\n`
-//     if (dateRangeIssues > 0)
-//       message += `- ${dateRangeIssues} orders outside date range\n`
-//     message += `\nCheck console for detailed filtering logs.`
-
-//     alert(message)
-//     return
-//   }
-
-//   // Group orders by delivery date
-//   const groupedOrders = groupOrdersByDeliveryDate(orders)
-//   console.log(
-//     `\n📊 Orders grouped into ${groupedOrders.size} delivery date(s):`
-//   )
-//   groupedOrders.forEach((ordersForDate, deliveryDate) => {
-//     console.log(`  - ${deliveryDate}: ${ordersForDate.length} orders`)
-//   })
-
-//   const workbook = new ExcelJS.Workbook()
-//   let grandTotalRevenue = 0
-
-//   console.log("\n📝 Creating worksheets...")
-//   // Create a worksheet for each delivery date
-//   groupedOrders.forEach((ordersForDate, deliveryDate) => {
-//     console.log(
-//       `  → Creating tab for "${deliveryDate}" with ${ordersForDate.length} orders`
-//     )
-//     const dateRevenue = createWorksheetForDate(
-//       workbook,
-//       deliveryDate,
-//       ordersForDate,
-//       products,
-//       currentDate
-//     )
-//     console.log(`     Revenue: ${dateRevenue.toFixed(2)}`)
-//     grandTotalRevenue += dateRevenue
-//   })
-
-//   console.log(
-//     `\n💰 Grand total revenue across all dates: ${grandTotalRevenue.toFixed(2)}`
-//   )
-//   console.log("=== EXPORT COMPLETE ===\n")
-
-//   // Export the workbook
-//   const buffer = await workbook.xlsx.writeBuffer()
-//   const blob = new Blob([buffer], {
-//     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-//   })
-//   const link = document.createElement("a")
-//   link.href = URL.createObjectURL(blob)
-//   link.download = `Delivered_Orders_${currentDate.replace(/\//g, "-")}.xlsx`
-//   document.body.appendChild(link)
-//   link.click()
-//   document.body.removeChild(link)
-// }
