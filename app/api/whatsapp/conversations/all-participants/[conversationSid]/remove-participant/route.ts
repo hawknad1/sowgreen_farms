@@ -1,35 +1,3 @@
-// import twilioClient from "@/lib/twilio/twilio"
-// import { NextResponse } from "next/server"
-
-// export async function DELETE(
-//   req: Request,
-//   { params }: { params: { conversationSid: string } }
-// ) {
-//   const { participantSid } = await req.json()
-//   const { conversationSid } = params
-
-//   //   const conversationSid = process.env.ORDER_TARGET_CONVERSATION_SID
-//   try {
-//     const participants = await twilioClient.conversations.v1
-//       .conversations(conversationSid)
-//       .participants(participantSid)
-//       .remove()
-
-//     console.log("Participants:", participants)
-
-//     return NextResponse.json(
-//       { message: "Participant removed", participants },
-//       { status: 200 }
-//     )
-//   } catch (error) {
-//     console.error("Error listing participants:", error)
-//     return NextResponse.json(
-//       { error: "Failed to fetch participants." },
-//       { status: 500 }
-//     )
-//   }
-// }
-
 import { NextResponse } from "next/server"
 import twilioClient from "@/lib/twilio/twilio"
 import { z } from "zod"
