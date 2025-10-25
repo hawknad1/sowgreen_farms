@@ -29,8 +29,13 @@ export interface Staff {
 }
 
 export async function getStaff(): Promise<Staff[]> {
+  // Use absolute URL in production
+  const baseUrl =
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "")
+
   try {
-    const res = await fetch(`/api/management/staff`, {
+    const res = await fetch(`${baseUrl}/api/management/staff`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       cache: "no-store",
