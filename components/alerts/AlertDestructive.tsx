@@ -71,16 +71,18 @@ export function AlertDestructive({
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
+
   useEffect(() => {
     // Only fetch if user is not an admin
-    if (admin) return
+    // if (admin) return
 
     const fetchSupportStaff = async () => {
       setIsLoading(true)
       setError(null)
 
       try {
-        const response = await fetch("/api/management/staff")
+        const response = await fetch(`${baseUrl}/api/management/staff`)
 
         if (!response.ok) {
           throw new Error("Failed to fetch staff data")
@@ -97,14 +99,13 @@ export function AlertDestructive({
           .filter(Boolean) // Remove any null/undefined phone numbers
 
         setSupportPhones(
-          supportStaff.length > 0
-            ? supportStaff.join(" or ")
-            : "our support team"
+          supportStaff.length > 0 ? supportStaff.join(" or ") : "0241 234 234"
         )
       } catch (err) {
         console.error("Error fetching staff:", err)
         setError("Unable to load contact information")
-        setSupportPhones("our support team")
+        // setSupportPhones("our support team")
+        setSupportPhones("0241 234 234")
       } finally {
         setIsLoading(false)
       }
