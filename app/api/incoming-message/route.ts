@@ -476,7 +476,10 @@
 // //   })
 // // }
 
-import { generateOrderConfirmationMessage } from "@/lib/actions/whatsAppMessages/generateOrderConfirmationMessage"
+import {
+  calculateBrandAwareBatches,
+  generateOrderConfirmationMessage,
+} from "@/lib/actions/whatsAppMessages/generateOrderConfirmationMessage"
 import prisma from "@/lib/prismadb"
 import { Order } from "@/types"
 import { NextRequest, NextResponse } from "next/server"
@@ -638,12 +641,40 @@ export async function POST(req: NextRequest) {
       }
 
       // Send order confirmation in batches
-      const totalProducts = order.products.length
+      // const totalProducts = order.products.length
+      // let sentMessageSids: string[] = []
+
+      // for (let i = 0; i < totalProducts; i += PRODUCTS_PER_MESSAGE) {
+      //   const startIndex = i
+      //   const endIndex = Math.min(i + PRODUCTS_PER_MESSAGE, totalProducts)
+
+      //   const message = generateOrderConfirmationMessage(
+      //     order,
+      //     startIndex,
+      //     endIndex
+      //   )
+
+      //   console.log(
+      //     `Sending message batch ${Math.floor(i / PRODUCTS_PER_MESSAGE) + 1}`
+      //   )
+
+      //   const response = await twilioClient.messages.create({
+      //     from: `whatsapp:${whatsappNumber}`,
+      //     to: from,
+      //     body: message,
+      //   })
+
+      //   sentMessageSids.push(response.sid)
+
+      //   // Add delay between messages if there are more to send
+      //   if (endIndex < totalProducts) {
+      //     await new Promise((resolve) => setTimeout(resolve, 1000))
+      //   }
+      const batches = calculateBrandAwareBatches(order, PRODUCTS_PER_MESSAGE)
       let sentMessageSids: string[] = []
 
-      for (let i = 0; i < totalProducts; i += PRODUCTS_PER_MESSAGE) {
-        const startIndex = i
-        const endIndex = Math.min(i + PRODUCTS_PER_MESSAGE, totalProducts)
+      for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
+        const { startIndex, endIndex } = batches[batchIndex]
 
         const message = generateOrderConfirmationMessage(
           order,
@@ -652,7 +683,7 @@ export async function POST(req: NextRequest) {
         )
 
         console.log(
-          `Sending message batch ${Math.floor(i / PRODUCTS_PER_MESSAGE) + 1}`
+          `Sending brand-aware batch ${batchIndex + 1} of ${batches.length} (items ${startIndex + 1}-${endIndex})`
         )
 
         const response = await twilioClient.messages.create({
@@ -664,7 +695,7 @@ export async function POST(req: NextRequest) {
         sentMessageSids.push(response.sid)
 
         // Add delay between messages if there are more to send
-        if (endIndex < totalProducts) {
+        if (batchIndex < batches.length - 1) {
           await new Promise((resolve) => setTimeout(resolve, 1000))
         }
       }

@@ -1019,62 +1019,7 @@ const ConfirmOrderPage = () => {
         throw new Error(`Failed to save order: ${error.message}`)
       }
 
-      // Step 3: Update purchase count (non-critical)
-      console.log("\n[3/5] Updating purchase count...")
-      try {
-        const purchaseResponse = await fetch(
-          "/api/products/updatePurchaseCount",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ products: transformedCart }),
-          }
-        )
-
-        if (purchaseResponse.ok) {
-          console.log("✅ Purchase count updated")
-        } else {
-          console.warn("⚠️ Purchase count update failed (non-critical)")
-        }
-      } catch (error: any) {
-        console.warn(
-          "⚠️ Purchase count update error (non-critical):",
-          error.message
-        )
-      }
-
-      // Step 4: Update product quantities (CRITICAL)
-      // console.log("\n[4/5] Updating product quantities...")
-      // console.log(
-      //   "Payload being sent:",
-      //   JSON.stringify({ products: ordersData.products }, null, 2)
-      // )
-
-      try {
-        const quantityResponse = await fetch("/api/products/updateQuantity", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ products: ordersData.products }),
-        })
-
-        const quantityData = await quantityResponse.json()
-
-        if (!quantityResponse.ok) {
-          // console.error("❌ Quantity update error response:", quantityData)
-          throw new Error(
-            quantityData.details ||
-              quantityData.error ||
-              "Failed to update product quantities"
-          )
-        }
-
-        // console.log("✅ Product quantities updated:", quantityData)
-      } catch (error: any) {
-        console.error("❌ Quantity update failed:", error.message)
-        throw new Error(`Failed to update product quantities: ${error.message}`)
-      }
-
-      // Step 5: Send confirmation email (non-critical)
+      // Step 3: Send confirmation email (non-critical)
       console.log("\n[5/5] Sending confirmation email...")
       try {
         const emailResponse = await fetch("/api/send-order-email", {

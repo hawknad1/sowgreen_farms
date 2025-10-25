@@ -142,13 +142,16 @@ export async function sendOrderConfirmationGroup(order: Order) {
 
 export async function sendPickupOrderConfirmationGroup(order: Order) {
   try {
-    const response = await fetch("/api/whatsapp/conversations/send-message", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(order),
-    })
+    const response = await fetch(
+      "/api/whatsapp/conversations/send-message-pickup",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(order),
+      }
+    )
 
     if (!response.ok) {
       const errorText = await response.text()

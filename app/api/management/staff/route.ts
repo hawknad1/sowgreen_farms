@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     })
     return NextResponse.json(newStaff, { status: 201 })
   } catch (error) {
-    console.error("Error adding rider:", error)
+    console.log("Error adding rider:", error)
     return NextResponse.json(
       { message: "Internal server error" },
       { status: 500 }

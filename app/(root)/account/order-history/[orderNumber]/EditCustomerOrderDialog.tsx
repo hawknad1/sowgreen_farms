@@ -172,7 +172,7 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
           variant="outline"
           // size="sm"
           className="gap-2 text-xs lg:text-sm"
-          disabled={isReadOnly}
+          // disabled={isReadOnly}
         >
           <Pencil className="h-4 w-4" />
           <span className="sr-only md:not-sr-only">Edit</span>

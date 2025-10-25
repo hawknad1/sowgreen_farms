@@ -1,8 +1,14 @@
 import twilioClient from "@/lib/twilio/twilio"
 import { NextResponse, NextRequest } from "next/server"
 import { truncate } from "@/lib/formatters"
-import { getTemplateMapFromBase64 } from "@/lib/twilio/template"
-import { prepareOrderDetails } from "@/lib/twilio/prepareOrderDetails"
+import {
+  getTemplateMapFromBase64,
+  getTemplateMapPickupFromBase64,
+} from "@/lib/twilio/template"
+import {
+  prepareOrderDetails,
+  prepareOrderPickupDetails,
+} from "@/lib/twilio/prepareOrderDetails"
 import prisma from "@/lib/prismadb"
 import { auth } from "@/auth"
 
@@ -102,6 +108,9 @@ interface TwilioConversationsMessageCreateOptions {
 //       where: { email: session.user?.email },
 //     })
 
+//     console.log("Database user:", user)
+//     console.log("Database user role:", user?.role)
+
 //     if (user?.role !== "admin") {
 //       // Add this if you want admin-only access
 //       return NextResponse.json(
@@ -179,15 +188,15 @@ interface TwilioConversationsMessageCreateOptions {
 //       rawProductCount,
 //       CAPPED_PRODUCTS_IN_LIST
 //     )
-//     const baseVarCount = 7
+//     const baseVarCount = 5
 //     const summaryVarCount = 5
 //     const contactVarCount = 2
-//     const TEMPLATE_MAP = getTemplateMapFromBase64()
+//     const TEMPLATE_MAP = getTemplateMapPickupFromBase64()
 
 //     if (rawProductCount > buttonTemplateThreshold) {
-//       templateUsedKey = "15var_btn"
+//       templateUsedKey = "13var_btn"
 //       finalContentSid = TEMPLATE_MAP[templateUsedKey]
-//       expectedVarCount = 16
+//       expectedVarCount = 14
 //     } else {
 //       const totalTextVars =
 //         baseVarCount +
@@ -213,7 +222,7 @@ interface TwilioConversationsMessageCreateOptions {
 //     }
 
 //     const { baseVariables, productLines, summaryValues, contactValues } =
-//       prepareOrderDetails(
+//       prepareOrderPickupDetails(
 //         order,
 //         shippingDetails,
 //         productLinePlaceholdersInTemplate,
@@ -221,7 +230,7 @@ interface TwilioConversationsMessageCreateOptions {
 //       )
 
 //     let allTemplateVariables: (string | number)[] = []
-//     if (templateUsedKey === "15var_btn") {
+//     if (templateUsedKey === "13var_btn") {
 //       allTemplateVariables = [
 //         ...baseVariables.map((v) => truncate(v, 60)),
 //         "Click the *View Ordered Items* button below to see all purchased products.",
@@ -431,21 +440,26 @@ export async function POST(request: NextRequest) {
 
     // 2. Prepare order details FIRST (to get actual productLines length including headers)
     const { baseVariables, productLines, summaryValues, contactValues } =
-      prepareOrderDetails(order, shippingDetails, cappedProductCount, workers)
+      prepareOrderPickupDetails(
+        order,
+        shippingDetails,
+        cappedProductCount,
+        workers
+      )
 
     // 3. Calculate ACTUAL variable count using productLines.length
-    const baseVarCount = 7 // [name, orderNumber, date, method, address, rider, phone]
+    const baseVarCount = 5 // [name, orderNumber, date, method, address, rider, phone]
     const summaryVarCount = 5 // [subtotal, delivery, credit, total, due]
     const contactVarCount = 2 // [contact1, contact2]
     const requiredVarCount =
       baseVarCount + productLines.length + summaryVarCount + contactVarCount
 
     // 4. Get template SID based on ACTUAL variable count
-    const TEMPLATE_MAP = getTemplateMapFromBase64()
+    const TEMPLATE_MAP = getTemplateMapPickupFromBase64()
 
     // Use button template if variable count exceeds your largest non-button template
     const templateUsedKey =
-      requiredVarCount > 32 ? "15var_btn" : `${requiredVarCount}var`
+      requiredVarCount > 32 ? "13var_btn" : `${requiredVarCount}var`
 
     const finalContentSid = TEMPLATE_MAP[templateUsedKey]
 
@@ -465,7 +479,7 @@ export async function POST(request: NextRequest) {
     // 5. Build variables array according to template requirements
     let allTemplateVariables: (string | number)[] = []
 
-    if (templateUsedKey === "15var_btn") {
+    if (templateUsedKey === "13var_btn") {
       allTemplateVariables = [
         ...baseVariables.map((v) => truncate(v, 60)),
         "Click the *View Ordered Items* button below to see all purchased products.",
@@ -484,8 +498,8 @@ export async function POST(request: NextRequest) {
 
     // 6. Validate variable count matches template expectations
     const expectedVarCount =
-      templateUsedKey === "15var_btn"
-        ? 16 // 7 + 1 + 5 + 2 + 1 (button ID)
+      templateUsedKey === "13var_btn"
+        ? 14 // 5 + 1 + 5 + 2 + 1 (button ID)
         : requiredVarCount
 
     if (allTemplateVariables.length !== expectedVarCount) {

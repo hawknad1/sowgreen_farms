@@ -71,7 +71,8 @@ export async function POST(request: Request) {
       .conversations(conversationSid)
       .participants.create({
         "messagingBinding.address": userWhatsAppNumber, // The user's WhatsApp number
-        "messagingBinding.proxyAddress": process.env.TWILIO_WHATSAPP_NUMBER, // Your Twilio WhatsApp number
+        "messagingBinding.proxyAddress":
+          process.env.TWILIO_WHATSAPP_CONVERSATION_NUMBER, // Your Twilio WhatsApp number
       })
 
     // Save participant to our DB

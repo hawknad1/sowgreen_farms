@@ -27,6 +27,7 @@ import {
   sendOrderConfirmation,
   sendOrderConfirmationGroup,
   sendPickupOrderConfirmation,
+  sendPickupOrderConfirmationGroup,
 } from "@/lib/actions/sendWhatsappMessage"
 import { useDispatchRidersStore } from "@/store"
 import { status } from "@/constants"
@@ -169,7 +170,7 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 
       //     if(orders.shippingAddress.deliveryMethod.includes('Home Delivery')){
       //       sendOrderConfirmation(updatedOrder),
-      //       sendOrderConfirmationGroup(updatedOrder),
+      // sendOrderConfirmationGroup(updatedOrder),
       //       sendCustomerNoteGroup(updatedOrder),
       //     } else{
       //       sendPickupOrderConfirmation(updatedOrder),
@@ -181,7 +182,84 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
       //     throw new Error("Notifications failed to send")
       //   })
       // }
+
+      // const transformedCart = updatedOrder.products.map((product: any) => ({
+      //   item: {
+      //     price: product.price,
+      //     weight: product.weight,
+      //     productId: product.productId,
+      //     quantity: product.quantity,
+      //     unit: product.unit,
+      //     variantId: product.id, // Using product.id as variantId since it's not in order products
+      //     product: product.product,
+      //   },
+      //   quantity: product.quantity,
+      //   total: product.quantityTotal, // Already formatted as string in order products
+      // }))
+
       if (updatedOrder.status === "confirmed") {
+        // Transform order products to match the original cart format
+        const transformedCart = updatedOrder.products.map((product: any) => ({
+          item: {
+            price: product.price,
+            weight: product.weight,
+            productId: product.productId,
+            quantity: product.quantity,
+            unit: product.unit,
+            variantId: product.id, // Using product.id as variantId since it's not in order products
+            product: product.product,
+          },
+          quantity: product.quantity,
+          total: product.quantityTotal, // Already formatted as string in order products
+        }))
+
+        // Update purchase count (non-critical)
+        try {
+          const purchaseResponse = await fetch(
+            "/api/products/updatePurchaseCount",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ products: transformedCart }),
+            }
+          )
+
+          if (purchaseResponse.ok) {
+            console.log("✅ Purchase count updated")
+          } else {
+            console.warn("⚠️ Purchase count update failed (non-critical)")
+          }
+        } catch (error: any) {
+          console.warn(
+            "⚠️ Purchase count update error (non-critical):",
+            error.message
+          )
+        }
+
+        // Update product quantities (critical)
+        try {
+          const quantityResponse = await fetch("/api/products/updateQuantity", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ products: transformedCart }),
+          })
+
+          const quantityData = await quantityResponse.json()
+
+          if (!quantityResponse.ok) {
+            throw new Error(
+              quantityData.details ||
+                quantityData.error ||
+                "Failed to update product quantities"
+            )
+          }
+        } catch (error: any) {
+          console.error("❌ Quantity update failed:", error.message)
+          throw new Error(
+            `Failed to update product quantities: ${error.message}`
+          )
+        }
+
         try {
           const isHomeDelivery =
             orders.shippingAddress?.deliveryMethod?.includes("Home Delivery")
@@ -190,12 +268,18 @@ const StatusUpdateForm: React.FC<StatusUpdateFormProps> = ({
 
           if (isHomeDelivery) {
             notificationPromises.push(
-              sendOrderConfirmation(updatedOrder)
+              sendOrderConfirmation(updatedOrder),
+              sendOrderConfirmationGroup(updatedOrder),
+
               // sendOrderConfirmationGroup(updatedOrder),
-              // sendCustomerNoteGroup(updatedOrder)
+              sendCustomerNoteGroup(updatedOrder)
             )
           } else {
-            notificationPromises.push(sendPickupOrderConfirmation(updatedOrder))
+            notificationPromises.push(
+              sendPickupOrderConfirmation(updatedOrder),
+              sendPickupOrderConfirmationGroup(updatedOrder),
+              sendCustomerNoteGroup(updatedOrder)
+            )
           }
 
           await Promise.all(notificationPromises)
