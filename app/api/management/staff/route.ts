@@ -54,6 +54,27 @@ export async function POST(req: Request) {
 }
 
 export async function GET(req: Request) {
+  const session = await auth()
+  if (!session) {
+    return NextResponse.json(
+      { error: "Unauthorized - You must be logged in" },
+      { status: 401 }
+    )
+  }
+
+  // 2. Check user role (if you have admin/users distinction)
+  const user = await prisma.user.findUnique({
+    where: { email: session.user?.email },
+  })
+
+  if (user?.role !== "admin") {
+    // Add this if you want admin-only access
+    return NextResponse.json(
+      { error: "Forbidden - You don't have permission" },
+      { status: 403 }
+    )
+  }
+
   try {
     const staff = await prisma.staff.findMany()
     return NextResponse.json(staff, { status: 200 })
