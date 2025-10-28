@@ -165,6 +165,11 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
     }
   }, [order])
 
+  const buttonDisabled =
+    order?.status === "cancelled" ||
+    order?.status === "delivered" ||
+    order?.paymentAction === "paid"
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
@@ -173,6 +178,7 @@ const EditCustomerOrderDialog = ({ order }: { order: Order }) => {
           // size="sm"
           className="gap-2 text-xs lg:text-sm"
           // disabled={isReadOnly}
+          disabled={buttonDisabled}
         >
           <Pencil className="h-4 w-4" />
           <span className="sr-only md:not-sr-only">Edit</span>

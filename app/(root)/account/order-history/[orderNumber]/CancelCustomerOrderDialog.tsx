@@ -56,7 +56,9 @@ const CancelCustomerOrderDialog = ({ order, className }: Props) => {
   }
 
   const buttonDisabled =
-    order?.status === "cancelled" || order?.paymentAction === "paid"
+    order?.status === "cancelled" ||
+    order?.status === "delivered" ||
+    order?.paymentAction === "paid"
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>

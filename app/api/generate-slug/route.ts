@@ -33,7 +33,7 @@ export async function GET() {
       )
     }
 
-    console.log(`Found ${productsNeedingSlugs.length} products needing slugs`)
+    // console.log(`Found ${productsNeedingSlugs.length} products needing slugs`)
 
     const results = []
     for (const product of productsNeedingSlugs) {
