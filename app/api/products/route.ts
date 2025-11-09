@@ -1,6 +1,8 @@
 import { auth } from "@/auth"
 import prisma from "@/lib/prismadb"
+import { TaxService } from "@/lib/serviceCharge"
 import { slugify } from "@/lib/utils/slugify"
+import { Product } from "@/types"
 import { NextRequest, NextResponse } from "next/server"
 
 export async function POST(req: NextRequest) {
@@ -325,8 +327,18 @@ export async function GET(req: NextRequest) {
       })),
     }))
 
+    // ✅ NEW: Apply tax to the serialized products
+    // const productsWithTax = applyTaxToProducts(
+    //   serializedProducts as unknown as Product[]
+    // )
+
+    const productsWithTax = await TaxService.applyTaxToProducts(
+      serializedProducts as unknown as Product[]
+    )
+
+    // This returns a raw array with tax applied, keeping your /products page happy
+    return NextResponse.json(productsWithTax, { status: 200 })
     // This returns a raw array, keeping your /products page happy
-    return NextResponse.json(serializedProducts, { status: 200 })
   } catch (error) {
     console.error("Error fetching products:", error)
     return NextResponse.json(

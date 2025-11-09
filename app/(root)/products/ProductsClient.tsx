@@ -117,7 +117,6 @@ const ProductsClient = ({
     }
   }, [inView, loading, products.length, currentPage, productsPerPage])
 
-
   const currentProducts = useMemo(() => {
     if (!Array.isArray(sortedProducts)) return [] // Use the new sortedProducts
     return sortedProducts.slice(0, currentPage * productsPerPage)

@@ -1,4 +1,6 @@
 import prisma from "@/lib/prismadb"
+// import { applyTaxToProducts } from "@/lib/serviceCharge"
+import { Product } from "@/types"
 import { NextResponse } from "next/server"
 
 export async function GET(req: Request) {
@@ -8,6 +10,8 @@ export async function GET(req: Request) {
       orderBy: { purchaseCount: "desc" },
       take: 10, // Limit to top 10, adjust as needed
     })
+
+    // const appliedTax = applyTaxToProducts(popularProducts as unknown as Product[])
     return NextResponse.json(popularProducts, { status: 200 })
   } catch (error) {
     return NextResponse.json(

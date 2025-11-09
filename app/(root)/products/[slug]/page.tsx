@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ProductDetailSkeleton } from "@/components/skeletons/ProductDetailSkeleton"
 import CustomersWants from "@/components/cards/product/CustomersWants"
+// import { applyTaxToProduct, calculatePriceWithTax } from "@/lib/serviceCharge"
 
 // const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
 //   const router = useRouter()
@@ -454,11 +455,14 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
 
         if (productResponse.ok) {
           const productData = await productResponse.json()
+          // const newProduct = applyTaxToProduct(productData)
+
           setProduct(productData)
           document.title = `${productData.title} | Sowgreen Organic Farms`
 
           if (productData.variants?.length === 1) {
-            setSelectedVariant(productData.variants[0])
+            const singleVariant = productData?.variants[0]
+            setSelectedVariant(singleVariant)
           } else {
             setSelectedVariant(null)
           }
@@ -483,6 +487,18 @@ const ProductDetailPage = ({ params }: { params: { slug: string } }) => {
       setSelectedVariant(null)
     }
   }, [params.slug, router, setSelectedVariant])
+
+  // const newProduct = {
+  //   ...product,
+  //   variants: product?.variants?.map((variant) => ({
+  //     ...variant,
+  //     originalPrice: variant?.price, // preserve original price
+  //     price: calculatePriceWithTax(variant.price), // add taxed price
+  //     discountedPrice: variant.discountedPrice
+  //       ? calculatePriceWithTax(variant.discountedPrice)
+  //       : null,
+  //   })),
+  // }
 
   // Handle quantity increment with stock limit
   const handleQuantityIncrement = () => {

@@ -7,6 +7,12 @@ import { formatCurrency } from "@/lib/utils"
 import { useCartStore } from "@/store"
 import { XCircleIcon } from "@heroicons/react/20/solid"
 import { useRouter } from "next/navigation"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip"
 
 interface BasketCartItemsProps {
   isCheckout?: boolean
@@ -58,12 +64,24 @@ const BasketCartItems = ({ isCheckout }: BasketCartItemsProps) => {
               <div className="flex-1">
                 {isCheckout ? (
                   <>
-                    <p
-                      className="line-clamp-1 font-semibold text-sm cursor-pointer hover:text-sowgren_Color transition-colors duration-200"
-                      onClick={() => router.push(`/products/${product.id}`)}
-                    >
-                      {product?.title}
-                    </p>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <p
+                            className="line-clamp-1 font-semibold text-sm cursor-pointer hover:text-sowgren_Color transition-colors duration-200"
+                            onClick={() =>
+                              router.push(`/products/${product.slug}`)
+                            }
+                          >
+                            {product?.title}
+                          </p>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>{product?.title}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+
                     <p className="text-xs text-neutral-500 mt-1">
                       {formatCurrency(item?.price, "GHS")}
                     </p>

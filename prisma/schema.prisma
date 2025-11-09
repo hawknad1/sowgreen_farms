@@ -315,7 +315,7 @@ model ProductOrder {
   id            String   @id @default(auto()) @map("_id") @db.ObjectId
   productId     String   @db.ObjectId
   orderId       String   @db.ObjectId
-  price         Int?
+  price         Float?
   weight        Int?
   unit          String?
   quantity      Int
@@ -388,20 +388,6 @@ model WhatsappMessage {
 
   @@index([contactPhone]) // ADD THIS: Add an index for faster lookups
 }
-
-// model WhatsappMessage {
-//   id           String    @id @default(auto()) @map("_id") @db.ObjectId
-//   contactPhone String    // ADD THIS: The customer's phone number, the new primary conversation key
-//   orderId      String?   @db.ObjectId // CHANGE THIS: Make orderId optional
-//   order        Order?    @relation(fields: [orderId], references: [id], onDelete: SetNull) // CHANGE THIS: Make order relation optional
-//   content      String
-//   sender       String    // 'customer' or 'admin'
-//   timestamp    DateTime  @default(now())
-//   read         Boolean   @default(false)
-//   readAt       DateTime?
-
-//   @@index([contactPhone]) // ADD THIS: Add an index for faster lookups
-// }
 
 model PickupLocations {
   id      String  @id @default(auto()) @map("_id") @db.ObjectId
@@ -512,4 +498,14 @@ model Partner {
   owner    String?
   phone    String?
   products Product[] // Optional back-relation
+}
+
+model TaxRate {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  rate      Float // 0.12 for 12%
+  country   String? // Optional: for country-specific rates
+  region    String? // Optional: for state-specific rates
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

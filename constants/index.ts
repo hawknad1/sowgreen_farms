@@ -345,10 +345,6 @@ export const sidebarLinks = {
           title: "Staff",
           url: "/admin/management/staff",
         },
-        // {
-        //   title: "Groups",
-        //   url: "/admin/management/groups/farm",
-        // },
         {
           title: "Pickup Locations",
           url: "/admin/management/pickup-locations",
@@ -369,10 +365,6 @@ export const sidebarLinks = {
           title: "Official Partners",
           url: "/admin/management/partners",
         },
-        // {
-        //   title: "Broadcast Message",
-        //   url: "/admin/broadcast-message",
-        // },
       ],
     },
     {
@@ -385,30 +377,6 @@ export const sidebarLinks = {
       url: "/admin/transactions",
       icon: LineChart,
     },
-
-    // {
-    //   title: "Settings",
-    //   url: "/admin/settings",
-    //   icon: Settings2,
-    //   items: [
-    //     {
-    //       title: "General",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Team",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Billing",
-    //       url: "#",
-    //     },
-    //     {
-    //       title: "Limits",
-    //       url: "#",
-    //     },
-    //   ],
-    // },
   ],
   navSecondary: [
     {

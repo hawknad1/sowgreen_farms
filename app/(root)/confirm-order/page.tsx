@@ -966,12 +966,7 @@ const ConfirmOrderPage = () => {
 
       setOrdersData(ordersData)
 
-      // console.log("=== Starting Order Processing ===")
-      // console.log("Order Number:", orderNumber)
-      // console.log("Address Payload:", JSON.stringify(addressPayload, null, 2))
-
       // Step 1: Save shipping address
-      console.log("\n[1/5] Saving shipping address...")
       try {
         const shippingResponse = await fetch("/api/address", {
           method: "POST",
@@ -991,14 +986,12 @@ const ConfirmOrderPage = () => {
         }
 
         const shippingResult = await shippingResponse.json()
-        // console.log("✅ Shipping address saved:", shippingResult)
       } catch (error: any) {
         console.error("❌ Shipping address failed:", error.message)
         throw new Error(`Failed to save shipping address: ${error.message}`)
       }
 
       // Step 2: Save order
-      console.log("\n[2/5] Saving order...")
       try {
         const ordersResponse = await fetch("/api/orders", {
           method: "POST",
@@ -1020,7 +1013,6 @@ const ConfirmOrderPage = () => {
       }
 
       // Step 3: Send confirmation email (non-critical)
-      console.log("\n[5/5] Sending confirmation email...")
       try {
         const emailResponse = await fetch("/api/send-order-email", {
           method: "POST",
@@ -1038,7 +1030,6 @@ const ConfirmOrderPage = () => {
       }
 
       // Success! Clean up and redirect
-      // console.log("\n=== Order Processing Complete ===")
       sessionStorage.removeItem("checkoutData")
       clearCart()
 

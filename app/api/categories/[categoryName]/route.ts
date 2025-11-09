@@ -1,5 +1,32 @@
 import prisma from "@/lib/prismadb"
+import { TaxService } from "@/lib/serviceCharge"
+// import { applyTaxToProducts } from "@/lib/serviceCharge"
+import { Product } from "@/types"
 import { NextRequest, NextResponse } from "next/server"
+
+// export async function GET(
+//   req: NextRequest,
+//   { params }: { params: { categoryName: string } }
+// ) {
+//   try {
+//     const catName = params.categoryName
+//     const category = await prisma.category.findMany({
+//       where: { categoryName: catName },
+//       include: {
+//         products: { include: { variants: true, partner: true } },
+//       },
+//     })
+//     const response = NextResponse.json(category)
+//     response.headers.set(
+//       "Access-Control-Allow-Origin",
+//       "https://sowgreen-farms.vercel.app"
+//     )
+//     response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS")
+//     return response
+//   } catch (error) {
+//     return NextResponse.json({ message: "couldnt fetch category!" })
+//   }
+// }
 
 export async function GET(
   req: NextRequest,
@@ -10,10 +37,27 @@ export async function GET(
     const category = await prisma.category.findMany({
       where: { categoryName: catName },
       include: {
-        products: { include: { variants: true, partner: true } },
+        products: {
+          include: {
+            variants: true,
+            partner: true,
+          },
+        },
       },
     })
-    const response = NextResponse.json(category)
+
+    // const productsWithTax = await TaxService.applyTaxToProducts(products)
+
+    // Apply tax to products within each category
+    const categoryWithTaxedProducts = category.map((cat) => ({
+      ...cat,
+      // products: applyTaxToProducts(cat.products as unknown as Product[]),
+      products: TaxService.applyTaxToProducts(
+        cat.products as unknown as Product[]
+      ),
+    }))
+
+    const response = NextResponse.json(categoryWithTaxedProducts)
     response.headers.set(
       "Access-Control-Allow-Origin",
       "https://sowgreen-farms.vercel.app"
@@ -21,7 +65,11 @@ export async function GET(
     response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS")
     return response
   } catch (error) {
-    return NextResponse.json({ message: "couldnt fetch category!" })
+    console.error("Error fetching category:", error)
+    return NextResponse.json(
+      { message: "Couldn't fetch category!" },
+      { status: 500 }
+    )
   }
 }
 
