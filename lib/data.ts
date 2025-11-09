@@ -7,9 +7,7 @@ export async function getPopularProducts() {
     // We fetch the popular products for the main product carousel
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/popular`,
-      {
-        next: { revalidate: 3600 },
-      }
+      { cache: "no-store" }
     ) // Revalidate every hour
     if (!res.ok) return []
     return res.json()
@@ -23,9 +21,7 @@ export async function getCategories() {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/categories`,
-      {
-        next: { revalidate: 3600 },
-      }
+      { cache: "no-store" }
     )
     if (!res.ok) return []
     return res.json()

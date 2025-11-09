@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 //     const allProducts = categories.flatMap((category) => category.products)
 
 //     // Apply tax to all products
-//     const productsWithTax = applyTaxToProducts(
+//     const productsWithTax = TaxService.applyTaxToProducts(
 //       allProducts as unknown as Product[]
 //     )
 

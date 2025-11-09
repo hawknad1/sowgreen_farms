@@ -34,7 +34,7 @@ export async function GET(
 ) {
   try {
     const catName = params.categoryName
-    const category = await prisma.category.findMany({
+    const categories = await prisma.category.findMany({
       where: { categoryName: catName },
       include: {
         products: {
@@ -46,16 +46,15 @@ export async function GET(
       },
     })
 
-    // const productsWithTax = await TaxService.applyTaxToProducts(products)
-
-    // Apply tax to products within each category
-    const categoryWithTaxedProducts = category.map((cat) => ({
-      ...cat,
-      // products: applyTaxToProducts(cat.products as unknown as Product[]),
-      products: TaxService.applyTaxToProducts(
-        cat.products as unknown as Product[]
-      ),
-    }))
+    // Apply tax to products within each category - AWAIT the async calls
+    const categoryWithTaxedProducts = await Promise.all(
+      categories.map(async (cat) => ({
+        ...cat,
+        products: await TaxService.applyTaxToProducts(
+          cat.products as unknown as Product[]
+        ),
+      }))
+    )
 
     const response = NextResponse.json(categoryWithTaxedProducts)
     response.headers.set(
@@ -72,6 +71,51 @@ export async function GET(
     )
   }
 }
+
+// export async function GET(
+//   req: NextRequest,
+//   { params }: { params: { categoryName: string } }
+// ) {
+//   try {
+//     const catName = params.categoryName
+//     const category = await prisma.category.findMany({
+//       where: { categoryName: catName },
+//       include: {
+//         products: {
+//           include: {
+//             variants: true,
+//             partner: true,
+//           },
+//         },
+//       },
+//     })
+
+//     // const productsWithTax = await TaxService.applyTaxToProducts(products)
+
+//     // Apply tax to products within each category
+//     const categoryWithTaxedProducts = category.map((cat) => ({
+//       ...cat,
+//       // products: applyTaxToProducts(cat.products as unknown as Product[]),
+//       products: TaxService.applyTaxToProducts(
+//         cat.products as unknown as Product[]
+//       ),
+//     }))
+
+//     const response = NextResponse.json(categoryWithTaxedProducts)
+//     response.headers.set(
+//       "Access-Control-Allow-Origin",
+//       "https://sowgreen-farms.vercel.app"
+//     )
+//     response.headers.set("Access-Control-Allow-Methods", "GET, OPTIONS")
+//     return response
+//   } catch (error) {
+//     console.error("Error fetching category:", error)
+//     return NextResponse.json(
+//       { message: "Couldn't fetch category!" },
+//       { status: 500 }
+//     )
+//   }
+// }
 
 // export async function PUT(
 //   req: NextRequest,
