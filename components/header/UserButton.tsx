@@ -187,14 +187,15 @@ const UserButton = ({ user }: { user: UserProps }) => {
               2
             )}
 
-            {user.role === "admin" &&
-              renderMenuItem(
-                () => router.push("/admin/dashboard"),
-                "Admin Dashboard",
-                <LayoutDashboard size={16} />,
-                3,
-                true
-              )}
+            {user.role === "admin" ||
+              (user.role === "supervisor" &&
+                renderMenuItem(
+                  () => router.push("/admin/dashboard"),
+                  "Admin Dashboard",
+                  <LayoutDashboard size={16} />,
+                  3,
+                  true
+                ))}
 
             {renderBalance()}
 

@@ -25,6 +25,8 @@ export default async function middleware(req: NextRequest) {
   const checkoutRoute = pathname.startsWith("/checkout")
   const accountRoute = pathname.startsWith("/account") // New: account routes
 
+  const isAdminOrSupervisor = userRole === "admin" || userRole === "supervisor"
+
   // If the user is authenticated and an admin, always redirect them to /admin/dashboard when they hit root
   if (
     isAuthenticate &&
@@ -52,7 +54,12 @@ export default async function middleware(req: NextRequest) {
   }
 
   // Redirect non-admin users trying to access admin routes
-  if (adminRoute && (!isAuthenticate || userRole !== "admin")) {
+  // if (adminRoute && (!isAuthenticate || userRole !== "admin")) {
+  //   return NextResponse.redirect(new URL(ROOT, req.url))
+  // }
+
+  // Redirect non-admin/supervisor users trying to access admin routes
+  if (adminRoute && (!isAuthenticate || !isAdminOrSupervisor)) {
     return NextResponse.redirect(new URL(ROOT, req.url))
   }
 
@@ -69,17 +76,6 @@ export default async function middleware(req: NextRequest) {
 }
 
 // Apply middleware only to specific routes
-
-// export const config = {
-//   matcher: [
-//     "/admin/:path*",
-//     "/checkout",
-//     "/",
-//     "/sign-in",
-//     "/sign-up",
-//     "/account/:path*",
-//   ],
-// }
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
