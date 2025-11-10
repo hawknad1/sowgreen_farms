@@ -49,7 +49,7 @@ export async function GET() {
       },
     })
 
-    return NextResponse.json(taxRates)
+    // return NextResponse.json(taxRates)
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch tax rates" },

@@ -2,12 +2,14 @@
 // It handles fetching from an external or internal API.
 // const API_URL = process.env.API_URL || "http://localhost:1337" // Make sure this is set in your .env file!
 
+export const dynamic = "force-dynamic" // Force dynamic rendering
+
 export async function getPopularProducts() {
   try {
     // We fetch the popular products for the main product carousel
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/popular`,
-      { cache: "no-store" }
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/popular`
+      // { cache: "no-store" }
     ) // Revalidate every hour
     if (!res.ok) return []
     return res.json()

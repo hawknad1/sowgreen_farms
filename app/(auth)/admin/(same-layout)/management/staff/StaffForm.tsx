@@ -106,7 +106,6 @@ const StaffForm = () => {
     } finally {
       setIsSaving(false)
     }
-    console.log(values, "values")
   }
 
   return (

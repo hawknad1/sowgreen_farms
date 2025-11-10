@@ -57,8 +57,6 @@ async function getProducts(
       },
     })
 
-    console.log("Fetched products from DB:", productsFromDb)
-
     // cast Prisma result to Product[] to satisfy applyTaxToProducts type
     // const newProduct = applyTaxToProducts(
     //   productsFromDb as unknown as Product[]

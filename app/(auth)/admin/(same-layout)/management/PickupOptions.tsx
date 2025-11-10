@@ -82,7 +82,6 @@ export function PickupOptions() {
 
   // Handle form submission
   async function onSubmit(data: FormValues) {
-    console.log("Updated pickup options:", data.pickupOptions)
     setIsSaving(true)
     try {
       const res = await fetch(`/api/pickup-options`, {
@@ -92,7 +91,6 @@ export function PickupOptions() {
       })
 
       const responseText = await res.text()
-      console.log("Response Text:", responseText)
 
       if (res.ok) {
         toast.success("Pickup Options Updated Successfully")

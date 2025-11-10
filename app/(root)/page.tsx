@@ -186,6 +186,7 @@ export default async function Home() {
           <CustomersWants
             message="Fresh Farm Produce"
             initialProducts={popularProducts}
+            showSkeleton={true} // Add this prop
           />
         </section>
 
