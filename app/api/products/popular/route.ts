@@ -4,17 +4,15 @@ import { TaxService } from "@/lib/serviceCharge"
 import { Product } from "@/types"
 import { NextResponse } from "next/server"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export async function GET() {
   try {
     const popularProducts = await prisma.product.findMany({
       include: { variants: true, productOrders: true },
       orderBy: { purchaseCount: "desc" },
-      // take: 10, // Adjust the number as needed
     })
-
-    // const appliedTax = applyTaxToProducts(
-    //   popularProducts as unknown as Product[]
-    // )
 
     const productsWithTax = await TaxService.applyTaxToProducts(
       popularProducts as unknown as Product[]
