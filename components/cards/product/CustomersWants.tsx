@@ -206,6 +206,30 @@ const CustomersWants = ({
     refetchProducts()
   }, [])
 
+  const checkScrollPosition = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } =
+        scrollContainerRef.current
+      setCanScrollLeft(scrollLeft > 0)
+      // Add a small buffer of 1px for precision issues in some browsers
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 1)
+    }
+  }
+
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (container) {
+      // Run the check after the component has mounted and laid out
+      const timer = setTimeout(() => checkScrollPosition(), 100)
+      container.addEventListener("scroll", checkScrollPosition)
+
+      return () => {
+        clearTimeout(timer)
+        container.removeEventListener("scroll", checkScrollPosition)
+      }
+    }
+  }, [products]) // Depend on initialProducts to re-run if it changes
+
   const handleNext = () => {
     if (scrollContainerRef.current) {
       const cardWidth =
