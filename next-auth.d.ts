@@ -24,5 +24,7 @@ declare module "next-auth" {
     id: string
     role: string // Add role field to the JWT type
     balance: number // Add balance field to the JWT type
+    email?: string // Add email field to the JWT type
+    name?: string // Add name field to the JWT type
   }
 }

@@ -20,7 +20,7 @@ export async function PUT(
       where: { email: session.user?.email },
     })
 
-    if (user?.role !== "admin") {
+    if (user?.role !== "admin" && user?.role !== "supervisor") {
       // Add this if you want admin-only access
       return NextResponse.json(
         { error: "Forbidden - You don't have permission" },
@@ -70,7 +70,7 @@ export async function DELETE(
       where: { email: session.user?.email },
     })
 
-    if (user?.role !== "admin") {
+    if (user?.role !== "admin" && user?.role !== "supervisor") {
       // Add this if you want admin-only access
       return NextResponse.json(
         { error: "Forbidden - You don't have permission" },

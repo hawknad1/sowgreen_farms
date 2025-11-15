@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
       where: { email: session.user?.email },
     })
 
-    if (user?.role !== "admin") {
+    if (user?.role !== "admin" && user?.role !== "supervisor") {
       return NextResponse.json(
         { error: "Forbidden - You don't have permission" },
         { status: 403 }

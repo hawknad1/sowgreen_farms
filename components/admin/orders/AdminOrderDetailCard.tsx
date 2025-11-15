@@ -111,7 +111,7 @@ const AdminOrderDetailCard = ({ orders }: { orders: Order }) => {
   // Fetch user details if email is provided
   useEffect(() => {
     const getUser = async () => {
-      if (!user?.email) return
+      if (!email) return
       setIsLoading(true)
       try {
         const res = await fetch(`/api/user/${email}`, {
